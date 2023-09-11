@@ -4,7 +4,7 @@ import { AppLayout } from "../components/AppLayout";
 
 import { Home } from "../screens/Home";
 import { Settings } from "../screens/Settings";
-import { Constructions } from "../screens/Constructions";
+import { ListConstructions } from "../screens/Constructions/ListConstructions";
 import { ListClients } from "../screens/Clients/ListClients";
 import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
 import { FormCollaborators } from "../screens/Collaborators/FormCollaborators";
@@ -29,7 +29,7 @@ export const AppRoutes = () => {
 
           <Route path="/clientes" element={<ListClients />} />
 
-          <Route path="/obras" element={<Constructions />} />
+          <Route path="/obras" element={<ListConstructions />} />
           <Route path="/configuracoes" element={<Settings />} />
 
           <Route path="*" element={<Navigate to="/" />} />

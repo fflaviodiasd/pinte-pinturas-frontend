@@ -9,3 +9,11 @@ export type Collaborator = {
   type: string;
   status: boolean;
 };
+
+export type Construction = {
+  id: number;
+  name: string;
+  responsible: string;
+  percentageCompleted: number;
+  status: string;
+};
