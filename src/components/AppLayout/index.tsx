@@ -17,6 +17,8 @@ import {
   ExitToAppOutlined as ExitIcon,
   FactCheckOutlined as FactCheckOutlinedIcon,
   AccountCircleOutlined as AccountCircleOutlinedIcon,
+  ConstructionOutlined as ConstructionOutlinedIcon,
+  SettingsOutlined as SettingsOutlinedIcon,
   Menu as MenuIcon,
 } from "@mui/icons-material";
 
@@ -55,10 +57,22 @@ const menuList = [
     ),
   },
   {
+    itemTitle: "Obras",
+    itemLocation: "/obras",
+    icon: (
+      <ConstructionOutlinedIcon
+        fontSize="small"
+        style={{
+          marginRight: 12,
+        }}
+      />
+    ),
+  },
+  {
     itemTitle: "Configurações",
     itemLocation: "/configuracoes",
     icon: (
-      <AccountCircleOutlinedIcon
+      <SettingsOutlinedIcon
         fontSize="small"
         style={{
           marginRight: 12,
