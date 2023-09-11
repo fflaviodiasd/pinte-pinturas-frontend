@@ -16,9 +16,12 @@ import {
   GroupOutlined as UsersIcon,
   ExitToAppOutlined as ExitIcon,
   FactCheckOutlined as FactCheckOutlinedIcon,
+  HomeOutlined as HomeOutlinedIcon,
   AccountCircleOutlined as AccountCircleOutlinedIcon,
   ConstructionOutlined as ConstructionOutlinedIcon,
+  EngineeringOutlined as EngineeringOutlinedIcon,
   SettingsOutlined as SettingsOutlinedIcon,
+  PeopleOutlined as PeopleOutlinedIcon,
   Menu as MenuIcon,
 } from "@mui/icons-material";
 
@@ -32,23 +35,35 @@ type AppLayoutProps = {
 const drawerWidth = 240;
 
 const menuList = [
-  //   {
-  //     itemTitle: "Início",
-  //     itemLocation: "/home",
-  //     icon: (
-  //       <HomeOutlinedIcon
-  //         fontSize="small"
-  //         style={{
-  //           marginRight: 12,
-  //         }}
-  //       />
-  //     ),
-  //   },
   {
-    itemTitle: "Cadastros",
-    itemLocation: "/cadastros",
+    itemTitle: "Início",
+    itemLocation: "/home",
     icon: (
-      <FactCheckOutlinedIcon
+      <HomeOutlinedIcon
+        fontSize="small"
+        style={{
+          marginRight: 12,
+        }}
+      />
+    ),
+  },
+  {
+    itemTitle: "Colaboradores",
+    itemLocation: "/colaboradores",
+    icon: (
+      <EngineeringOutlinedIcon
+        fontSize="small"
+        style={{
+          marginRight: 12,
+        }}
+      />
+    ),
+  },
+  {
+    itemTitle: "Clientes",
+    itemLocation: "/clientes",
+    icon: (
+      <PeopleOutlinedIcon
         fontSize="small"
         style={{
           marginRight: 12,

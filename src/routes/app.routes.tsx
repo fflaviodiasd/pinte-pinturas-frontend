@@ -4,16 +4,31 @@ import { AppLayout } from "../components/AppLayout";
 
 import { Home } from "../screens/Home";
 import { Settings } from "../screens/Settings";
-import { Registers } from "../screens/Registers";
 import { Constructions } from "../screens/Constructions";
+import { ListClients } from "../screens/Clients/ListClients";
+import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
+import { FormCollaborators } from "../screens/Collaborators/FormCollaborators";
 
 export const AppRoutes = () => {
   return (
     <BrowserRouter>
       <AppLayout>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/cadastros" element={<Registers />} />
+          <Route path="/home" element={<Home />} />
+
+          <Route path="/colaboradores" element={<ListCollaborators />} />
+          <Route
+            path="/colaboradores/cadastrar"
+            element={<FormCollaborators />}
+          />
+          <Route path="/colaboradores/:id" element={<FormCollaborators />} />
+          <Route
+            path="/colaboradores/:id/editar"
+            element={<FormCollaborators />}
+          />
+
+          <Route path="/clientes" element={<ListClients />} />
+
           <Route path="/obras" element={<Constructions />} />
           <Route path="/configuracoes" element={<Settings />} />
 
