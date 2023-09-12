@@ -72,7 +72,9 @@ export const ListCollaborators = () => {
             editFunction={() =>
               navigate(`/colaboradores/${params.row.id}/editar`)
             }
-            deleteFunction={() => successMessage("Dado excluído com sucesso!")}
+            deleteFunction={() =>
+              successMessage("Colaborador excluído com sucesso!")
+            }
           />
         ),
       },

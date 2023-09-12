@@ -9,6 +9,12 @@ export type Collaborator = {
   type: string;
   status: boolean;
 };
+export type Client = {
+  id: number;
+  name: string;
+  cnpj: string;
+  status: boolean;
+};
 
 export type Construction = {
   id: number;

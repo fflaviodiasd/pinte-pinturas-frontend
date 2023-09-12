@@ -35,6 +35,9 @@ export const ListConstructions = () => {
         headerName: "Porcentagem concluída",
         flex: 0.4,
         disableColumnMenu: true,
+        renderCell: (params: GridRenderCellParams) => (
+          <Typography>{`${params.value}%`}</Typography>
+        ),
       },
       {
         field: "status",
@@ -77,7 +80,7 @@ export const ListConstructions = () => {
             params={params}
             viewFunction={() => navigate(`/obras/${params.row.id}`)}
             editFunction={() => navigate(`/obras/${params.row.id}/editar`)}
-            deleteFunction={() => successMessage("Dado excluído com sucesso!")}
+            deleteFunction={() => successMessage("Obra excluída com sucesso!")}
           />
         ),
       },
