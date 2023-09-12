@@ -22,7 +22,7 @@ import { TitleScreen } from "../../../components/TitleScreen";
 import { InputMask } from "../../../components/InputMask";
 
 import { mockedListClients } from "../../../database/clients";
-import { inCreationOrEditing } from "../../../utils";
+import { inCreationOrEditing, returnedTitlePage } from "../../../utils";
 import { Client } from "../../../types";
 
 import { useStyles } from "./styles";
@@ -39,16 +39,6 @@ export const FormClients = () => {
     cnpj: "",
     status: true,
   });
-
-  const returnedTitlePage = (location: Location) => {
-    if (location.pathname.includes("cadastrar")) {
-      return "Cadastrar Cliente";
-    } else if (location.pathname.includes("editar")) {
-      return "Editar Cliente";
-    } else {
-      return "Cliente";
-    }
-  };
 
   const addClient = async (clientData: Client) => {
     try {
@@ -115,7 +105,7 @@ export const FormClients = () => {
                       <KeyboardArrowLeftIcon fontSize="medium" />
                     </IconButton>
                     <Typography className={classes.pageSubtitle}>
-                      {returnedTitlePage(location)}
+                      {returnedTitlePage(location, "Cliente")}
                     </Typography>
                   </div>
                   <div

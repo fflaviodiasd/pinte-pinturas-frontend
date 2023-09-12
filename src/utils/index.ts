@@ -12,6 +12,16 @@ export const inCreationOrEditing = (location: Location) => {
   );
 };
 
+export const returnedTitlePage = (location: Location, screenName: string) => {
+  if (location.pathname.includes("cadastrar")) {
+    return `Cadastrar ${screenName}`;
+  } else if (location.pathname.includes("editar")) {
+    return `Editar ${screenName}`;
+  } else {
+    return screenName;
+  }
+};
+
 export const returnedPhraseToModalDelete = (location: Location) => {
   switch (location.pathname) {
     case "/colaboradores":

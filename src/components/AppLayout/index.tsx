@@ -127,7 +127,9 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               width: "92%",
             }}
           /> */}
-          <Typography>Pinte Pinturas</Typography>
+          <Typography style={{ color: "#FFF", fontWeight: 700 }}>
+            Pinte Pinturas
+          </Typography>
         </div>
       </Toolbar>
       <List style={{ padding: 0 }}>
@@ -170,6 +172,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
+          // zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
         className={classes.appBar}
       >
