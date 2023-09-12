@@ -50,7 +50,7 @@ export const FormCollaborators = () => {
     }
   };
 
-  const addRace = async (collaboratorData: Collaborator) => {
+  const addCollaborator = async (collaboratorData: Collaborator) => {
     try {
       setTimeout(() => {
         navigate("/colaboradores");
@@ -61,7 +61,7 @@ export const FormCollaborators = () => {
     }
   };
 
-  const updateRace = async (collaboratorData: Collaborator) => {
+  const updateCollaborator = async (collaboratorData: Collaborator) => {
     try {
       setTimeout(() => {
         navigate("/colaboradores");
@@ -93,9 +93,9 @@ export const FormCollaborators = () => {
       initialValues={collaboratorData}
       onSubmit={(values) => {
         if (location.pathname.includes("new")) {
-          addRace(values);
+          addCollaborator(values);
         } else {
-          updateRace(values);
+          updateCollaborator(values);
         }
       }}
     >
