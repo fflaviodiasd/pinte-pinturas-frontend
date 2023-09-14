@@ -5,7 +5,7 @@ import { AppLayout } from "../components/AppLayout";
 import { Home } from "../screens/Home";
 import { Settings } from "../screens/Settings";
 import { ListConstructions } from "../screens/Constructions/ListConstructions";
-import { FormConstructions } from "../screens/Constructions/FormConstructions";
+import { DetailsConstruction } from "../screens/Constructions/DetailsConstruction";
 import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
 import { FormCollaborators } from "../screens/Collaborators/FormCollaborators";
 import { ListClients } from "../screens/Clients/ListClients";
@@ -35,9 +35,9 @@ export const AppRoutes = () => {
           <Route path="/clientes/:id/editar" element={<FormClients />} />
 
           <Route path="/obras" element={<ListConstructions />} />
-          <Route path="/obras/cadastrar" element={<FormConstructions />} />
-          <Route path="/obras/:id" element={<FormConstructions />} />
-          <Route path="/obras/:id/editar" element={<FormConstructions />} />
+          <Route path="/obras/cadastrar" element={<DetailsConstruction />} />
+          <Route path="/obras/:id" element={<DetailsConstruction />} />
+          <Route path="/obras/:id/editar" element={<DetailsConstruction />} />
 
           <Route path="/configuracoes" element={<Settings />} />
 
