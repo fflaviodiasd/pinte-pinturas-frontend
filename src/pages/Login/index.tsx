@@ -20,6 +20,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { InputMask } from "../../components/InputMask";
 
 import { useStyles } from "./styles";
+import { KEY_SIGNED } from "../../utils/consts";
 
 interface LoginData {
   cpf: string;
@@ -41,7 +42,7 @@ export const Login = () => {
 
   const fakeLogin = (values: LoginData) => {
     localStorage.clear();
-    localStorage.setItem("signed", JSON.stringify(true));
+    localStorage.setItem(KEY_SIGNED, JSON.stringify(true));
     setIsSigned(true);
     successMessage("Login realizado com sucesso!");
   };

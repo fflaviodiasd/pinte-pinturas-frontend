@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Grid, Tab, Tabs } from "@mui/material";
+
 import { TitleScreen } from "../../../components/TitleScreen";
-import { useState } from "react";
 
 import { ListAreas } from "../../Areas/ListAreas";
 import { FormArea } from "./FormArea";
@@ -16,11 +18,20 @@ function a11yProps(index: number) {
 
 export const DetailsArea = () => {
   const { classes } = useStyles();
+  const { id } = useParams();
+
   const [index, setIndex] = useState(0);
 
   const handleChangeIndex = (_: React.SyntheticEvent, newIndex: number) => {
     setIndex(newIndex);
   };
+
+  useEffect(() => {
+    if (id) {
+      console.log(id);
+      setIndex(0);
+    }
+  }, [id]);
 
   return (
     <Grid container spacing={2}>

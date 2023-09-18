@@ -21,8 +21,7 @@ import { Formik, Form as FormikForm } from "formik";
 
 import { inCreationOrEditing, returnedTitlePage } from "../../../../utils";
 
-import { useConstructions } from "../../../../hooks/useConstructions";
-import { mockedListConstructions } from "../../../../database/constructions";
+import { useAreas } from "../../../../hooks/useAreas";
 
 import { useStyles } from "./styles";
 
@@ -32,40 +31,17 @@ export const FormArea = () => {
   const { classes } = useStyles();
   const { id } = useParams();
 
-  const {
-    constructionData,
-    setConstructionData,
-    addConstruction,
-    updateConstruction,
-  } = useConstructions();
-
-  useEffect(() => {
-    if (id) {
-      let listConstructionsCopy = [...mockedListConstructions];
-      listConstructionsCopy = listConstructionsCopy.filter(
-        (construction) => construction.id === Number(id)
-      );
-      setConstructionData({
-        id: listConstructionsCopy[0].id,
-        name: listConstructionsCopy[0].name,
-        responsible: listConstructionsCopy[0].responsible,
-        status: listConstructionsCopy[0].status,
-        percentageCompleted: listConstructionsCopy[0].percentageCompleted,
-        type: listConstructionsCopy[0].type,
-        areas: listConstructionsCopy[0].areas,
-      });
-    }
-  }, [id]);
+  const { areaData, addArea, updateArea } = useAreas();
 
   return (
     <Formik
       enableReinitialize
-      initialValues={constructionData}
+      initialValues={areaData}
       onSubmit={(values) => {
         if (location.pathname.includes("cadastrar")) {
-          addConstruction(values);
+          addArea(values);
         } else {
-          updateConstruction(values);
+          updateArea(values);
         }
       }}
     >
@@ -82,7 +58,7 @@ export const FormArea = () => {
                     <KeyboardArrowLeftIcon fontSize="medium" />
                   </IconButton>
                   <Typography className={classes.pageSubtitle}>
-                    {returnedTitlePage(location, "Obra")}
+                    {returnedTitlePage(location, "Área")}
                   </Typography>
                 </div>
                 <div
@@ -138,25 +114,6 @@ export const FormArea = () => {
                     fullWidth
                     required
                     disabled={!inCreationOrEditing(location)}
-                  />
-                </Grid>
-                <Grid item xs={12} lg={3}>
-                  <InputLabel className={classes.inputLabel}>
-                    Responsável*
-                  </InputLabel>
-                  <TextField
-                    name="responsible"
-                    value={values.responsible}
-                    onChange={handleChange}
-                    placeholder="Responsável*"
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    required
-                    disabled={!inCreationOrEditing(location)}
-                    // InputProps={{
-                    //   inputComponent: InputMask as any,
-                    // }}
                   />
                 </Grid>
               </Grid>
