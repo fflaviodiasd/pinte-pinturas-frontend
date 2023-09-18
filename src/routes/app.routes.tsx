@@ -10,6 +10,7 @@ import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
 import { FormCollaborators } from "../screens/Collaborators/FormCollaborators";
 import { ListClients } from "../screens/Clients/ListClients";
 import { FormClients } from "../screens/Clients/FormClients";
+import { DetailsArea } from "../screens/Areas/DetailsArea";
 
 export const AppRoutes = () => {
   return (
@@ -38,6 +39,11 @@ export const AppRoutes = () => {
           <Route path="/obras/cadastrar" element={<DetailsConstruction />} />
           <Route path="/obras/:id" element={<DetailsConstruction />} />
           <Route path="/obras/:id/editar" element={<DetailsConstruction />} />
+
+          {/* <Route path="/areas" element={<ListConstructions />} /> */}
+          <Route path="/areas/cadastrar" element={<DetailsArea />} />
+          <Route path="/areas/:id" element={<DetailsArea />} />
+          <Route path="/areas/:id/editar" element={<DetailsArea />} />
 
           <Route path="/configuracoes" element={<Settings />} />
 

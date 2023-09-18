@@ -2,8 +2,9 @@
 import { Grid, Tab, Tabs } from "@mui/material";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useState } from "react";
-import { FormConstruction } from "./FormConstruction";
+
 import { ListAreas } from "../../Areas/ListAreas";
+import { FormArea } from "./FormArea";
 import { useStyles } from "./styles";
 
 function a11yProps(index: number) {
@@ -13,7 +14,7 @@ function a11yProps(index: number) {
   };
 }
 
-export const DetailsConstruction = () => {
+export const DetailsArea = () => {
   const { classes } = useStyles();
   const [index, setIndex] = useState(0);
 
@@ -23,25 +24,18 @@ export const DetailsConstruction = () => {
 
   return (
     <Grid container spacing={2}>
-      <TitleScreen
-        // title={`Obra${
-        //   constructionData.name ? ` - ${constructionData.name}` : ""
-        // }`}
-        title="Obra"
-      />
+      <TitleScreen title="Área" />
 
       <Grid item lg={12}>
         <Tabs
           value={index}
           onChange={handleChangeIndex}
           variant="fullWidth"
-          TabIndicatorProps={{
-            style: { backgroundColor: "#9c27b0" },
-          }}
+          TabIndicatorProps={{ style: { backgroundColor: "#9c27b0" } }}
           textColor="secondary"
         >
           <Tab
-            label="Dados da obra"
+            label="Dados da área"
             {...a11yProps(0)}
             className={classes.tab}
           />
@@ -51,7 +45,7 @@ export const DetailsConstruction = () => {
 
       {index === 0 && (
         <Grid item lg={12}>
-          <FormConstruction />
+          <FormArea />
         </Grid>
       )}
       {index === 1 && (
