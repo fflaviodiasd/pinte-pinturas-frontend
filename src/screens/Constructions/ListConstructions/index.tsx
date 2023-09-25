@@ -5,7 +5,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { Add as AddIcon } from "@mui/icons-material";
 
 import { TableActions } from "../../../components/Table/TableActions";
-import { successMessage } from "../../../components/Messages";
+
 import { TitleScreen } from "../../../components/TitleScreen";
 
 import { useStyles } from "./styles";
@@ -15,7 +15,8 @@ export const ListConstructions = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
 
-  const { getAllConstructions, listConstructions } = useConstructions();
+  const { getAllConstructions, listConstructions, disableConstruction } =
+    useConstructions();
 
   useEffect(() => {
     getAllConstructions();
@@ -86,7 +87,7 @@ export const ListConstructions = () => {
             params={params}
             viewFunction={() => navigate(`/obras/${params.row.id}`)}
             editFunction={() => navigate(`/obras/${params.row.id}/editar`)}
-            deleteFunction={() => successMessage("Obra excluída com sucesso!")}
+            deleteFunction={() => disableConstruction(params.row.id)}
           />
         ),
       },

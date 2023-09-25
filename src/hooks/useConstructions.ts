@@ -76,7 +76,7 @@ export const useConstructions = () => {
   const updateConstruction = async (constructionData: Construction) => {
     setLoading(true);
     try {
-      await api.patch(`constructions/${id}`, constructionData);
+      await api.patch(`constructions/${id}/`, { name: constructionData.name });
       successMessage("Obra atualizada com sucesso!");
       setLoading(false);
     } catch (error) {
