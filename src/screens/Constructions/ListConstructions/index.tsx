@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Grid, Paper, Typography } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
@@ -7,13 +7,19 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { TableActions } from "../../../components/Table/TableActions";
 import { successMessage } from "../../../components/Messages";
 import { TitleScreen } from "../../../components/TitleScreen";
-import { mockedListConstructions } from "../../../database/constructions";
 
 import { useStyles } from "./styles";
+import { useConstructions } from "../../../hooks/useConstructions";
 
 export const ListConstructions = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
+
+  const { getAllConstructions, listConstructions } = useConstructions();
+
+  useEffect(() => {
+    getAllConstructions();
+  }, []);
 
   const columns: GridColDef[] = useMemo(
     () => [
@@ -111,7 +117,7 @@ export const ListConstructions = () => {
       <Grid item xs={12} lg={12}>
         <div style={{ height: 630, width: "100%" }}>
           <DataGrid
-            rows={mockedListConstructions}
+            rows={listConstructions}
             columns={columns}
             disableRowSelectionOnClick
             hideFooterSelectedRowCount

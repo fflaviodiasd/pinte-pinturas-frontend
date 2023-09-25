@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Grid, Tab, Tabs } from "@mui/material";
 import { TitleScreen } from "../../../components/TitleScreen";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormConstruction } from "./FormConstruction";
-import { ListAreas } from "../../Areas/ListAreas";
+
 import { useStyles } from "./styles";
+import { useParams } from "react-router-dom";
+import { useConstructions } from "../../../hooks/useConstructions";
+import { ConstructionListAreas } from "./ConstructionListAreas";
 
 function a11yProps(index: number) {
   return {
@@ -15,6 +18,7 @@ function a11yProps(index: number) {
 
 export const DetailsConstruction = () => {
   const { classes } = useStyles();
+
   const [index, setIndex] = useState(0);
 
   const handleChangeIndex = (_: React.SyntheticEvent, newIndex: number) => {
@@ -23,12 +27,7 @@ export const DetailsConstruction = () => {
 
   return (
     <Grid container spacing={2}>
-      <TitleScreen
-        // title={`Obra${
-        //   constructionData.name ? ` - ${constructionData.name}` : ""
-        // }`}
-        title="Obra"
-      />
+      <TitleScreen title="Obra" />
 
       <Grid item lg={12}>
         <Tabs
@@ -56,7 +55,7 @@ export const DetailsConstruction = () => {
       )}
       {index === 1 && (
         <Grid item lg={12}>
-          <ListAreas />
+          <ConstructionListAreas />
         </Grid>
       )}
     </Grid>

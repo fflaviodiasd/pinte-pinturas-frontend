@@ -6,29 +6,29 @@ import { errorMessage, successMessage } from "../components/Messages";
 import { Area } from "../types";
 import { api } from "../services/api";
 
-const LIMIT = 10;
-
 export const useAreas = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const [loading, setLoading] = useState(true);
   const [areaData, setAreaData] = useState<Area>({
-    id: 1,
+    id: 0,
     name: "",
     type: "",
     level: 0,
-    childAreas: [
-      { id: 1, name: "Torre 01", type: "Torre", level: 1 },
-      { id: 2, name: "Torre 02", type: "Torre", level: 1 },
-    ],
+    childAreas: [],
   });
 
   const getArea = async (id: string) => {
     setLoading(true);
     try {
       const { data } = await api.get(`areas/${id}`);
-      // setAreaData({});
+      setAreaData({
+        id: data.id,
+        name: data.name,
+        type: data.type,
+        level: data.level,
+        childAreas: data.child_areas,
+      });
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -36,23 +36,14 @@ export const useAreas = () => {
     }
   };
 
-  const getAreaBySearch = async (id: string) => {
-    try {
-      const { data } = await api.get(`areas/${id}`);
-      const allAreas = data.results.map((area: Area) => ({
-        id: area.id,
-        name: area.name,
-      }));
-      setListAreas(allAreas);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const addArea = async (areaData: Area) => {
+  const addArea = async (idArea: string, areaData: Area) => {
     setLoading(true);
     try {
-      await api.post("areas", areaData);
+      await api.post(`areas/${idArea}/paviments/`, {
+        name: areaData.name,
+        // type: areaData.type,
+        type: 1,
+      });
       successMessage("Área adicionada com sucesso!");
       setLoading(false);
     } catch (error) {
@@ -90,28 +81,13 @@ export const useAreas = () => {
   };
 
   const [listAreas, setListAreas] = useState<Area[]>([]);
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    pageQuantity: 1,
-  });
-  const handleChangePagination = (
-    _: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
-    getAllAreas(value);
-  };
 
-  const getAllAreas = async (currentPage: number = 0) => {
+  const getAllAreas = async () => {
     setLoading(true);
-    const offset = (currentPage - 1) * LIMIT;
+
     try {
-      const { data } = await api.get(
-        `areas/?disabled=false&limit=${LIMIT}&offset=${offset}`
-      );
-      setPagination({
-        currentPage: currentPage === 0 ? 1 : currentPage,
-        pageQuantity: Math.ceil(data.count / LIMIT),
-      });
+      const { data } = await api.get(`areas/`);
+
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -122,8 +98,6 @@ export const useAreas = () => {
   return {
     loading,
     setLoading,
-    pagination,
-    handleChangePagination,
     areaData,
     setAreaData,
     listAreas,
@@ -132,6 +106,5 @@ export const useAreas = () => {
     updateArea,
     disableArea,
     getAllAreas,
-    getAreaBySearch,
   };
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
@@ -147,7 +148,6 @@ const menuList = [
 
 export const Sidebar = () => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
 

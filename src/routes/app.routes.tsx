@@ -40,10 +40,17 @@ export const AppRoutes = () => {
           <Route path="/obras/:id" element={<DetailsConstruction />} />
           <Route path="/obras/:id/editar" element={<DetailsConstruction />} />
 
+          <Route path="/obras/:id/areas/cadastrar" element={<DetailsArea />} />
+          <Route path="/obras/:id/areas/:areaId" element={<DetailsArea />} />
+          <Route
+            path="/obras/:id/areas/:areaId/editar"
+            element={<DetailsArea />}
+          />
+
           {/* <Route path="/areas" element={<ListConstructions />} /> */}
           <Route path="/areas/cadastrar" element={<DetailsArea />} />
-          <Route path="/areas/:id" element={<DetailsArea />} />
-          <Route path="/areas/:id/editar" element={<DetailsArea />} />
+          <Route path="/areas/:areaId" element={<DetailsArea />} />
+          <Route path="/areas/:areaId/editar" element={<DetailsArea />} />
 
           <Route path="/configuracoes" element={<Settings />} />
 

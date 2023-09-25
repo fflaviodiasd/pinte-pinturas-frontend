@@ -22,7 +22,7 @@ export type Area = {
   name: string;
   type: string;
   level: number;
-  childAreas?: Area[];
+  childAreas: Area[];
 };
 
 export type Construction = {

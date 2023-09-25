@@ -34,26 +34,14 @@ export const FormConstruction = () => {
 
   const {
     constructionData,
-    setConstructionData,
     addConstruction,
     updateConstruction,
+    getConstruction,
   } = useConstructions();
 
   useEffect(() => {
     if (id) {
-      let listConstructionsCopy = [...mockedListConstructions];
-      listConstructionsCopy = listConstructionsCopy.filter(
-        (construction) => construction.id === Number(id)
-      );
-      setConstructionData({
-        id: listConstructionsCopy[0].id,
-        name: listConstructionsCopy[0].name,
-        responsible: listConstructionsCopy[0].responsible,
-        status: listConstructionsCopy[0].status,
-        percentageCompleted: listConstructionsCopy[0].percentageCompleted,
-        type: listConstructionsCopy[0].type,
-        areas: listConstructionsCopy[0].areas,
-      });
+      getConstruction(id);
     }
   }, [id]);
 

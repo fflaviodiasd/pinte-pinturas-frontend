@@ -28,7 +28,6 @@ export const DetailsArea = () => {
 
   useEffect(() => {
     if (id) {
-      console.log(id);
       setIndex(0);
     }
   }, [id]);

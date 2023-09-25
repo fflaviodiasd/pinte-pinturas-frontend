@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { AxiosError } from "axios";
 import { useState } from "react";
@@ -6,7 +7,11 @@ import { errorMessage, successMessage } from "../components/Messages";
 import { Construction } from "../types";
 import { api } from "../services/api";
 
-const LIMIT = 10;
+type ConstructionArea = {
+  id: number;
+  name: string;
+  type: number;
+};
 
 export const useConstructions = () => {
   const navigate = useNavigate();
@@ -20,17 +25,18 @@ export const useConstructions = () => {
     status: "",
     percentageCompleted: 0,
     type: "",
-    areas: [
-      { id: 1, name: "Torre 01", type: "Torre", level: 1 },
-      { id: 2, name: "Torre 02", type: "Torre", level: 1 },
-    ],
+    areas: [],
   });
 
   const getConstruction = async (id: string) => {
     setLoading(true);
     try {
       const { data } = await api.get(`constructions/${id}`);
-      // setConstructionData({});
+      setConstructionData({
+        ...constructionData,
+        id: data.id,
+        name: data.name,
+      });
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -38,25 +44,26 @@ export const useConstructions = () => {
     }
   };
 
-  const getConstructionBySearch = async (id: string) => {
+  const addConstructionArea = async (constructionId: string, name: string) => {
     try {
-      const { data } = await api.get(`constructions/${id}`);
-      const allConstructions = data.results.map(
-        (construction: Construction) => ({
-          id: construction.id,
-          name: construction.name,
-        })
-      );
-      setListConstructions(allConstructions);
+      await api.post(`constructions/${constructionId}/areas/`, {
+        name,
+        level: 1,
+        type: 1,
+      });
+      successMessage("Área adicionada com sucesso!");
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      errorMessage("Não foi possível adicionar área!");
+      setLoading(false);
     }
   };
 
   const addConstruction = async (constructionData: Construction) => {
     setLoading(true);
     try {
-      await api.post("constructions", constructionData);
+      await api.post("constructions/", { name: constructionData.name });
       successMessage("Obra adicionada com sucesso!");
       setLoading(false);
     } catch (error) {
@@ -93,31 +100,40 @@ export const useConstructions = () => {
     }
   };
 
+  const [listConstructionAreas, setListConstructionAreas] = useState<
+    ConstructionArea[]
+  >([]);
+  const getAllConstructionAreas = async (constructionId: string) => {
+    try {
+      const { data } = await api.get(`constructions/${constructionId}/areas/`);
+      const allConstructionArea = data.map(
+        (construction: ConstructionArea) => ({
+          id: construction.id,
+          name: construction.name,
+          type: construction.type,
+        })
+      );
+      setListConstructionAreas(allConstructionArea);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const [listConstructions, setListConstructions] = useState<Construction[]>(
     []
   );
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    pageQuantity: 1,
-  });
-  const handleChangePagination = (
-    _: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
-    getAllConstructions(value);
-  };
-
-  const getAllConstructions = async (currentPage: number = 0) => {
+  const getAllConstructions = async () => {
     setLoading(true);
-    const offset = (currentPage - 1) * LIMIT;
     try {
-      const { data } = await api.get(
-        `constructions/?disabled=false&limit=${LIMIT}&offset=${offset}`
-      );
-      setPagination({
-        currentPage: currentPage === 0 ? 1 : currentPage,
-        pageQuantity: Math.ceil(data.count / LIMIT),
-      });
+      const { data } = await api.get(`constructions/`);
+      const constructionList = data.results.map((result: any) => ({
+        id: result.id,
+        name: result.name,
+        responsible: "",
+        percentageCompleted: 0,
+        status: "",
+      }));
+      setListConstructions(constructionList);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -128,8 +144,6 @@ export const useConstructions = () => {
   return {
     loading,
     setLoading,
-    pagination,
-    handleChangePagination,
     constructionData,
     setConstructionData,
     listConstructions,
@@ -138,6 +152,8 @@ export const useConstructions = () => {
     updateConstruction,
     disableConstruction,
     getAllConstructions,
-    getConstructionBySearch,
+    listConstructionAreas,
+    getAllConstructionAreas,
+    addConstructionArea,
   };
 };

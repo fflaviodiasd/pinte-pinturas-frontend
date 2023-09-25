@@ -24,14 +24,25 @@ import { inCreationOrEditing, returnedTitlePage } from "../../../../utils";
 import { useAreas } from "../../../../hooks/useAreas";
 
 import { useStyles } from "./styles";
+import { useConstructions } from "../../../../hooks/useConstructions";
 
 export const FormArea = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { classes } = useStyles();
-  const { id } = useParams();
+  const { id, areaId } = useParams();
 
-  const { areaData, addArea, updateArea } = useAreas();
+  const { areaData, addArea, updateArea, getArea } = useAreas();
+  const { addConstructionArea } = useConstructions();
+
+  useEffect(() => {
+    if (location.pathname.includes("obras")) {
+      console.log("Obra");
+    }
+    if (areaId) {
+      getArea(areaId);
+    }
+  }, [location, areaId]);
 
   return (
     <Formik
@@ -39,7 +50,10 @@ export const FormArea = () => {
       initialValues={areaData}
       onSubmit={(values) => {
         if (location.pathname.includes("cadastrar")) {
-          addArea(values);
+          if (id) {
+            addConstructionArea(id, values.name);
+          }
+          // addArea(values);
         } else {
           updateArea(values);
         }

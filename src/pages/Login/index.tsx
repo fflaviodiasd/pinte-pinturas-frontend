@@ -15,16 +15,15 @@ import {
 } from "@mui/icons-material";
 import { Formik, Form as FormikForm } from "formik";
 
-import { successMessage } from "../../components/Messages";
+import { errorMessage } from "../../components/Messages";
 import { UserContext } from "../../contexts/UserContext";
-import { InputMask } from "../../components/InputMask";
 
 import { useStyles } from "./styles";
-import { KEY_SIGNED } from "../../utils/consts";
+import { KEY_REFRESH_TOKEN, KEY_SIGNED, KEY_TOKEN } from "../../utils/consts";
+import { api } from "../../services/api";
 
 interface LoginData {
-  cpf: string;
-  cnpj: string;
+  username: string;
   password: string;
 }
 
@@ -33,18 +32,37 @@ export const Login = () => {
   const { setIsSigned } = useContext(UserContext);
 
   const loginData: LoginData = {
-    cpf: "",
-    cnpj: "",
+    username: "",
     password: "",
   };
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const fakeLogin = (values: LoginData) => {
+  const fakeLogin = async (values: LoginData) => {
+    api.defaults.headers.common["Authorization"] = "";
     localStorage.clear();
-    localStorage.setItem(KEY_SIGNED, JSON.stringify(true));
-    setIsSigned(true);
-    successMessage("Login realizado com sucesso!");
+
+    try {
+      const { data } = await api.post("/accounts/token/", values);
+      console.log(data);
+      api.defaults.headers.common["Authorization"] = `Bearer ${data.access}`;
+
+      // if (data.user) {
+      //   localStorage.setItem(KEY_USER, JSON.stringify(data.user));
+      // }
+      localStorage.setItem(KEY_TOKEN, data.access);
+      localStorage.setItem(KEY_REFRESH_TOKEN, data.refresh);
+      localStorage.setItem(KEY_SIGNED, JSON.stringify(true));
+      setIsSigned(true);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível realizar autenticação.");
+    }
+
+    // localStorage.clear();
+    // localStorage.setItem(KEY_SIGNED, JSON.stringify(true));
+    // setIsSigned(true);
+    // successMessage("Login realizado com sucesso!");
   };
 
   return (
@@ -55,7 +73,7 @@ export const Login = () => {
         fakeLogin(values);
       }}
     >
-      {({ handleChange, values, handleSubmit }) => (
+      {({ handleChange, values }) => (
         <FormikForm>
           <Toolbar />
           <Grid container>
@@ -65,17 +83,14 @@ export const Login = () => {
                   <div style={{ marginTop: 12 }}>
                     <InputLabel className={classes.inputLabel}>CPF</InputLabel>
                     <TextField
-                      name="cpf"
-                      value={values.cpf}
+                      name="username"
+                      value={values.username}
                       onChange={handleChange}
-                      placeholder="Insira aqui seu CPF"
+                      placeholder="Insira aqui seu usuário"
                       variant="outlined"
                       size="small"
                       fullWidth
                       required
-                      InputProps={{
-                        inputComponent: InputMask as any,
-                      }}
                     />
                   </div>
 
@@ -117,8 +132,8 @@ export const Login = () => {
 
                   <Button
                     className={classes.buttonLogin}
-                    onClick={() => handleSubmit()}
                     fullWidth
+                    type="submit"
                   >
                     Entrar
                   </Button>

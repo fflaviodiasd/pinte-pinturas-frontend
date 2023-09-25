@@ -22,7 +22,7 @@ export const useStyles = makeStyles()((theme) => {
     },
     inputLabel: {
       marginBottom: theme.spacing(1),
-      color: "#14532D",
+      color: "#482880",
       fontWeight: 600,
     },
     buttonLogin: {

@@ -4,25 +4,24 @@ import { Button, Grid, Paper } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { Add as AddIcon } from "@mui/icons-material";
 
-import { TableActions } from "../../../components/Table/TableActions";
-import { successMessage } from "../../../components/Messages";
+import { TableActions } from "../../../../components/Table/TableActions";
+import { successMessage } from "../../../../components/Messages";
 
 import { useStyles } from "./styles";
-import { useAreas } from "../../../hooks/useAreas";
+import { useConstructions } from "../../../../hooks/useConstructions";
 
-export const ListAreas = () => {
+export const ConstructionListAreas = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
+  const { id } = useParams();
 
-  const { areaId } = useParams();
-
-  const { areaData, getArea } = useAreas();
+  const { getAllConstructionAreas, listConstructionAreas } = useConstructions();
 
   useEffect(() => {
-    if (areaId) {
-      getArea(areaId);
+    if (id) {
+      getAllConstructionAreas(id);
     }
-  }, [areaId]);
+  }, [id]);
 
   const columns: GridColDef[] = useMemo(
     () => [
@@ -49,8 +48,8 @@ export const ListAreas = () => {
         renderCell: (params: GridRenderCellParams) => (
           <TableActions
             params={params}
-            viewFunction={() => navigate(`/areas/${params.row.id}`)}
-            editFunction={() => navigate(`/areas/${params.row.id}/editar`)}
+            viewFunction={() => navigate(`areas/${params.row.id}`)}
+            editFunction={() => navigate(`areas/${params.row.id}/editar`)}
             deleteFunction={() => successMessage("Área excluída com sucesso!")}
           />
         ),
@@ -68,7 +67,7 @@ export const ListAreas = () => {
               <Button
                 startIcon={<AddIcon />}
                 className={classes.buttonRegister}
-                onClick={() => navigate("cadastrar")}
+                onClick={() => navigate("areas/cadastrar")}
               >
                 Cadastrar
               </Button>
@@ -80,7 +79,7 @@ export const ListAreas = () => {
       <Grid item xs={12} lg={12}>
         <div style={{ height: 630, width: "100%" }}>
           <DataGrid
-            rows={areaData.childAreas}
+            rows={listConstructionAreas}
             columns={columns}
             disableRowSelectionOnClick
             hideFooterSelectedRowCount

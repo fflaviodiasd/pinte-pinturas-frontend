@@ -1,18 +1,19 @@
 import axios from "axios";
+import { KEY_REFRESH_TOKEN, KEY_TOKEN } from "../utils/consts";
 
 const baseApiURL = () => {
   if (process.env.NODE_ENV === "production") {
     return "https://pinte4.herokuapp.com/api/";
   }
-  return "http://127.0.0.1:8000/api/";
+  return import.meta.env.VITE_APP_API;
 };
 
 export const api = axios.create({
   baseURL: baseApiURL(),
   timeout: 12000,
   headers: {
-    Authorization: localStorage.getItem("access_token")
-      ? "Bearer " + localStorage.getItem("access_token")
+    Authorization: localStorage.getItem(KEY_TOKEN)
+      ? "Bearer " + localStorage.getItem(KEY_TOKEN)
       : null,
     "Content-Type": "application/json",
     accept: "application/json",
@@ -48,7 +49,7 @@ api.interceptors.response.use(
       error.response.status === 401 &&
       error.response.statusText === "Unauthorized"
     ) {
-      const refreshToken = localStorage.getItem("refresh_token");
+      const refreshToken = localStorage.getItem(KEY_REFRESH_TOKEN);
 
       if (refreshToken) {
         const tokenParts = JSON.parse(atob(refreshToken.split(".")[1]));
@@ -60,8 +61,8 @@ api.interceptors.response.use(
           return api
             .post("/token/refresh/", { refresh: refreshToken })
             .then((response) => {
-              localStorage.setItem("access_token", response.data.access);
-              localStorage.setItem("refresh_token", response.data.refresh);
+              localStorage.setItem(KEY_TOKEN, response.data.access);
+              localStorage.setItem(KEY_REFRESH_TOKEN, response.data.refresh);
 
               api.defaults.headers["Authorization"] =
                 "Bearer " + response.data.access;
