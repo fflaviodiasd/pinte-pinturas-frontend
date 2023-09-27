@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { AxiosError } from "axios";
 import { useState } from "react";
@@ -7,6 +8,7 @@ import { Area } from "../types";
 import { api } from "../services/api";
 
 export const useAreas = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const [loading, setLoading] = useState(true);
@@ -27,8 +29,14 @@ export const useAreas = () => {
         name: data.name,
         type: data.type,
         level: data.level,
-        childAreas: data.child_areas,
+        childAreas: data.child_areas.map((area: any) => ({
+          id: area.id,
+          name: area.name,
+          type: area.type,
+          level: area.level,
+        })),
       });
+
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -42,7 +50,7 @@ export const useAreas = () => {
       await api.post(`areas/${idArea}/paviments/`, {
         name: areaData.name,
         // type: areaData.type,
-        type: 1,
+        type: 6,
       });
       successMessage("Área adicionada com sucesso!");
       setLoading(false);
@@ -73,6 +81,7 @@ export const useAreas = () => {
       getAllAreas();
       successMessage("Área desabilitada com sucesso!");
       setLoading(false);
+      navigate(-1);
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível desabilitar área!");
@@ -87,7 +96,7 @@ export const useAreas = () => {
 
     try {
       const { data } = await api.get(`areas/`);
-
+      // setListAreas()
       setLoading(false);
     } catch (error) {
       console.log(error);

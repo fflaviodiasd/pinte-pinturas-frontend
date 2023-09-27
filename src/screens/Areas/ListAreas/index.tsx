@@ -12,6 +12,7 @@ import { useAreas } from "../../../hooks/useAreas";
 
 export const ListAreas = () => {
   const { classes } = useStyles();
+
   const navigate = useNavigate();
 
   const { areaId } = useParams();

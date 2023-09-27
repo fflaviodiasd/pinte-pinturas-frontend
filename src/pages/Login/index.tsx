@@ -19,7 +19,12 @@ import { errorMessage } from "../../components/Messages";
 import { UserContext } from "../../contexts/UserContext";
 
 import { useStyles } from "./styles";
-import { KEY_REFRESH_TOKEN, KEY_SIGNED, KEY_TOKEN } from "../../utils/consts";
+import {
+  KEY_REFRESH_TOKEN,
+  KEY_SIGNED,
+  KEY_TOKEN,
+  KEY_USER,
+} from "../../utils/consts";
 import { api } from "../../services/api";
 
 interface LoginData {
@@ -29,7 +34,7 @@ interface LoginData {
 
 export const Login = () => {
   const { classes } = useStyles();
-  const { setIsSigned } = useContext(UserContext);
+  const { setIsSigned, setUser } = useContext(UserContext);
 
   const loginData: LoginData = {
     username: "",
@@ -47,9 +52,25 @@ export const Login = () => {
       console.log(data);
       api.defaults.headers.common["Authorization"] = `Bearer ${data.access}`;
 
-      // if (data.user) {
-      //   localStorage.setItem(KEY_USER, JSON.stringify(data.user));
-      // }
+      if (data.user) {
+        localStorage.setItem(
+          KEY_USER,
+          JSON.stringify({
+            id: data.user.id,
+            isFirst: data.user.is_first,
+            type: data.user.type,
+            name: data.user.name || "",
+            company: data.user.company || 0,
+          })
+        );
+        setUser({
+          id: data.user.id,
+          isFirst: data.user.is_first,
+          type: data.user.type,
+          name: data.user.name || "",
+          company: data.user.company || 0,
+        });
+      }
       localStorage.setItem(KEY_TOKEN, data.access);
       localStorage.setItem(KEY_REFRESH_TOKEN, data.refresh);
       localStorage.setItem(KEY_SIGNED, JSON.stringify(true));

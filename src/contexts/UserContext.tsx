@@ -5,14 +5,16 @@ import {
   SetStateAction,
   useState,
 } from "react";
-import { KEY_SIGNED } from "../utils/consts";
+import { KEY_SIGNED, KEY_USER } from "../utils/consts";
+import { User } from "../types";
 
 type UserContextProviderProps = {
   children: ReactNode;
 };
 
 type UserContextProps = {
-  // user: User;
+  user: User;
+  setUser: Dispatch<SetStateAction<User>>;
   isSigned: boolean;
   setIsSigned: Dispatch<SetStateAction<boolean>>;
 };
@@ -26,19 +28,20 @@ type UserContextProps = {
 const UserContext = createContext<UserContextProps>({} as UserContextProps);
 
 const UserContextProvider = ({ children }: UserContextProviderProps) => {
-  // const [user, setUser] = useState<User>(() => {
-  //   const storageUser = localStorage.getItem(KEY_USER);
-  //   if (storageUser) {
-  //     const userParsed: User = JSON.parse(storageUser);
-  //     return {
-  //       id: userParsed.id,
-  //       is_first: userParsed.is_first,
-  //       type: userParsed.type,
-  //       username: userParsed.username,
-  //     };
-  //   }
-  //   return { id: 0, is_first: false, type: 0, username: "" };
-  // });
+  const [user, setUser] = useState<User>(() => {
+    const storageUser = localStorage.getItem(KEY_USER);
+    if (storageUser) {
+      const userParsed: User = JSON.parse(storageUser);
+      return {
+        id: userParsed.id,
+        isFirst: userParsed.isFirst,
+        type: userParsed.type,
+        name: userParsed.name,
+        company: userParsed.company,
+      };
+    }
+    return { id: 0, isFirst: false, type: 0, name: "", company: 0 };
+  });
 
   const loadStorage = () => {
     const storageIsAuthenticated = localStorage.getItem(KEY_SIGNED);
@@ -50,7 +53,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
   const [isSigned, setIsSigned] = useState<boolean>(loadStorage());
 
   return (
-    <UserContext.Provider value={{ isSigned, setIsSigned }}>
+    <UserContext.Provider value={{ isSigned, setIsSigned, user, setUser }}>
       {children}
     </UserContext.Provider>
   );

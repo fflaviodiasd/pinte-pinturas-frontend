@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type User = {
-  user: any;
+  company: number;
+  id: number;
+  name: string;
+  isFirst: boolean;
+  type: number;
 };
 
 export type Collaborator = {

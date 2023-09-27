@@ -48,8 +48,7 @@ export const useConstructions = () => {
     try {
       await api.post(`constructions/${constructionId}/areas/`, {
         name,
-        level: 1,
-        type: 1,
+        type: 5,
       });
       successMessage("Área adicionada com sucesso!");
       setLoading(false);
@@ -66,6 +65,7 @@ export const useConstructions = () => {
       await api.post("constructions/", { name: constructionData.name });
       successMessage("Obra adicionada com sucesso!");
       setLoading(false);
+      navigate("/obras");
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível adicionar obra!");
@@ -79,6 +79,7 @@ export const useConstructions = () => {
       await api.patch(`constructions/${id}/`, { name: constructionData.name });
       successMessage("Obra atualizada com sucesso!");
       setLoading(false);
+      navigate("/obras");
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível atualizar obra!");

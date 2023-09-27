@@ -36,10 +36,8 @@ export const FormArea = () => {
   const { addConstructionArea } = useConstructions();
 
   useEffect(() => {
-    if (location.pathname.includes("obras")) {
-      console.log("Obra");
-    }
-    if (areaId) {
+    console.log(areaId);
+    if (areaId && !location.pathname.includes("cadastrar")) {
       getArea(areaId);
     }
   }, [location, areaId]);
@@ -49,12 +47,30 @@ export const FormArea = () => {
       enableReinitialize
       initialValues={areaData}
       onSubmit={(values) => {
-        if (location.pathname.includes("cadastrar")) {
-          if (id) {
-            addConstructionArea(id, values.name);
-          }
-          // addArea(values);
-        } else {
+        if (
+          location.pathname.includes("cadastrar") &&
+          location.pathname.includes("obras") &&
+          id &&
+          !areaId
+        ) {
+          addConstructionArea(id, values.name);
+        }
+        if (
+          location.pathname.includes("cadastrar") &&
+          !location.pathname.includes("obras") &&
+          areaId
+        ) {
+          addArea(areaId, values);
+        }
+        if (
+          location.pathname.includes("cadastrar") &&
+          location.pathname.includes("obras") &&
+          areaId
+        ) {
+          addArea(areaId, values);
+        }
+
+        if (location.pathname.includes("editar")) {
           updateArea(values);
         }
       }}
