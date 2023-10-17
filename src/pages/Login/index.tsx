@@ -79,11 +79,6 @@ export const Login = () => {
       console.log(error);
       errorMessage("Não foi possível realizar autenticação.");
     }
-
-    // localStorage.clear();
-    // localStorage.setItem(KEY_SIGNED, JSON.stringify(true));
-    // setIsSigned(true);
-    // successMessage("Login realizado com sucesso!");
   };
 
   return (

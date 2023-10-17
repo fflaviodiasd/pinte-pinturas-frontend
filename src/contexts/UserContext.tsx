@@ -28,7 +28,7 @@ type UserContextProps = {
 const UserContext = createContext<UserContextProps>({} as UserContextProps);
 
 const UserContextProvider = ({ children }: UserContextProviderProps) => {
-  const [user, setUser] = useState<User>(() => {
+  const loadUser = () => {
     const storageUser = localStorage.getItem(KEY_USER);
     if (storageUser) {
       const userParsed: User = JSON.parse(storageUser);
@@ -41,7 +41,8 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
       };
     }
     return { id: 0, isFirst: false, type: 0, name: "", company: 0 };
-  });
+  };
+  const [user, setUser] = useState<User>(loadUser());
 
   const loadStorage = () => {
     const storageIsAuthenticated = localStorage.getItem(KEY_SIGNED);

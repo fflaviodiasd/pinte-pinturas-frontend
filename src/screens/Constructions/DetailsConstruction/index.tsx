@@ -39,23 +39,23 @@ export const DetailsConstruction = () => {
           }}
           textColor="secondary"
         >
+          <Tab label="Áreas" {...a11yProps(0)} className={classes.tab} />
           <Tab
             label="Dados da obra"
-            {...a11yProps(0)}
+            {...a11yProps(1)}
             className={classes.tab}
           />
-          <Tab label="Áreas" {...a11yProps(1)} className={classes.tab} />
         </Tabs>
       </Grid>
 
       {index === 0 && (
         <Grid item lg={12}>
-          <FormConstruction />
+          <ConstructionListAreas />
         </Grid>
       )}
       {index === 1 && (
         <Grid item lg={12}>
-          <ConstructionListAreas />
+          <FormConstruction />
         </Grid>
       )}
     </Grid>
