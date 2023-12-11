@@ -52,7 +52,7 @@ type ResetPasswdData = {
 const UserContext = createContext<UserContextProps>({} as UserContextProps);
 
 const UserContextProvider = ({ children }: UserContextProviderProps) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const loadUser = () => {
     const storageUser = localStorage.getItem(KEY_USER);
