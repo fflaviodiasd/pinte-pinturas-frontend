@@ -25,6 +25,11 @@ export const useStyles = makeStyles()((theme) => {
       fontWeight: 600,
       marginTop: 16,
     },
+    formInstruction: {
+      color: "#8F9193",
+      fontFamily: "Open Sans",
+      fontSize: 12,
+    },
     buttonLogin: {
       fontSize: 18,
       fontWeight: 600,
