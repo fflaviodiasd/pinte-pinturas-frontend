@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 
-import { errorMessage } from "../components/Messages";
+// import { errorMessage } from "../components/Messages";
 
 import { api } from "../services/api";
 import {
@@ -22,16 +22,17 @@ type UserContextProviderProps = {
 };
 
 type UserContextProps = {
+  loading: boolean;
   user: User;
   setUser: Dispatch<SetStateAction<User>>;
   isSigned: boolean;
   setIsSigned: Dispatch<SetStateAction<boolean>>;
   loginData: LoginData;
-  login: (values: LoginData) => Promise<void>;
+  login: (values: LoginData) => Promise<true | undefined>;
   recoverPasswdData: RecoverPasswdData;
   recoverPasswd: (values: RecoverPasswdData) => Promise<true | undefined>;
   resetPasswdData: ResetPasswdData;
-  resetPasswd: (values: ResetPasswdData) => Promise<void>;
+  resetPasswd: (values: ResetPasswdData) => Promise<true | undefined>;
 };
 
 type LoginData = {
@@ -51,6 +52,8 @@ type ResetPasswdData = {
 const UserContext = createContext<UserContextProps>({} as UserContextProps);
 
 const UserContextProvider = ({ children }: UserContextProviderProps) => {
+  const [loading, setLoading] = useState(true);
+
   const loadUser = () => {
     const storageUser = localStorage.getItem(KEY_USER);
     if (storageUser) {
@@ -82,6 +85,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
   };
 
   const login = async (values: LoginData) => {
+    setLoading(true);
     api.defaults.headers.common["Authorization"] = "";
     localStorage.clear();
 
@@ -113,9 +117,13 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
       localStorage.setItem(KEY_REFRESH_TOKEN, data.refresh);
       localStorage.setItem(KEY_SIGNED, JSON.stringify(true));
       setIsSigned(true);
+      setLoading(false);
     } catch (error) {
+      const shouldOpenModal = true;
       console.log(error);
-      errorMessage("Não foi possível realizar autenticação.");
+      // errorMessage("Não foi possível realizar autenticação.");
+      setLoading(false);
+      return shouldOpenModal;
     }
   };
 
@@ -131,7 +139,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
       return true;
     } catch (error) {
       console.log(error);
-      errorMessage("Não foi possível realizar autenticação.");
+      // errorMessage("Não foi possível realizar autenticação.");
     }
   };
 
@@ -148,13 +156,14 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
       return true;
     } catch (error) {
       console.log(error);
-      errorMessage("Não foi possível realizar autenticação.");
+      // errorMessage("Não foi possível realizar autenticação.");
     }
   };
 
   return (
     <UserContext.Provider
       value={{
+        loading,
         isSigned,
         setIsSigned,
         user,

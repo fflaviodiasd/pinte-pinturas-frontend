@@ -5,7 +5,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { Add as AddIcon } from "@mui/icons-material";
 
 import { TableActions } from "../../../components/Table/TableActions";
-import { successMessage } from "../../../components/Messages";
+
 import { TitleScreen } from "../../../components/TitleScreen";
 import { mockedListCollaborators } from "../../../database/collaborators";
 
@@ -71,9 +71,6 @@ export const ListCollaborators = () => {
             viewFunction={() => navigate(`/colaboradores/${params.row.id}`)}
             editFunction={() =>
               navigate(`/colaboradores/${params.row.id}/editar`)
-            }
-            deleteFunction={() =>
-              successMessage("Colaborador excluído com sucesso!")
             }
           />
         ),

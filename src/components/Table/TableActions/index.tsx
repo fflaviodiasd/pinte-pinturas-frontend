@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import {
@@ -5,18 +7,14 @@ import {
   MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
 
-import { ModalDelete } from "../../Modals/ModalDelete";
-
 type TableActionProps = {
   params: any;
   editFunction: () => void;
   viewFunction: () => void;
-  deleteFunction: () => void;
 };
 
 export const TableActions = ({
   params,
-  deleteFunction,
   editFunction,
   viewFunction,
 }: TableActionProps) => {
@@ -69,12 +67,6 @@ export const TableActions = ({
           Excluir
         </MenuItem>
       </Menu>
-
-      <ModalDelete
-        isModalOpen={isModalOpen}
-        closeModal={() => setIsModalOpen(false)}
-        deleteFunction={deleteFunction}
-      />
     </div>
   );
 };
