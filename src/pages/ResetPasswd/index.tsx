@@ -29,7 +29,7 @@ export const ResetPasswd = () => {
   const navigate = useNavigate();
   const { resetPasswdData, resetPasswd } = useContext(UserContext);
 
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showPasswords, setShowPasswords] = useState({
     newPasswd: false,
     confirmPasswd: false,
@@ -157,7 +157,7 @@ export const ResetPasswd = () => {
           </Layout>
 
           <Modal
-            type="warning"
+            type="success"
             isModalOpen={isModalOpen}
             closeModal={() => navigate("/")}
             closeButtonText="Voltar ao Login"

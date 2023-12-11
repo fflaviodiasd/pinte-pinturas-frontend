@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
+  CircularProgress,
   IconButton,
   InputAdornment,
   Paper,
@@ -22,12 +23,14 @@ import { loginSchema } from "../../utils/schemas";
 import logo from "../../assets/images/logo.png";
 
 import { useStyles } from "./styles";
+import { Modal } from "../../components/Modal";
 
 export const Login = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { login, loginData } = useContext(UserContext);
+  const { login, loginData, loading } = useContext(UserContext);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -35,7 +38,7 @@ export const Login = () => {
       enableReinitialize
       initialValues={loginData}
       onSubmit={(values) => {
-        login(values);
+        setIsModalOpen(Boolean(login(values)));
       }}
       validationSchema={loginSchema}
     >
@@ -97,9 +100,13 @@ export const Login = () => {
                 </div>
 
                 <Button className={classes.buttonLogin} fullWidth type="submit">
-                  <Typography className={classes.buttonLoginText}>
-                    Entrar
-                  </Typography>
+                  {loading ? (
+                    <CircularProgress size={16} style={{ color: "#FFF" }} />
+                  ) : (
+                    <Typography className={classes.buttonLoginText}>
+                      Entrar
+                    </Typography>
+                  )}
                 </Button>
 
                 <Button
@@ -118,6 +125,12 @@ export const Login = () => {
               </div>
             </Paper>
           </Layout>
+
+          <Modal
+            type="warning"
+            isModalOpen={isModalOpen}
+            closeModal={() => setIsModalOpen(false)}
+          />
         </FormikForm>
       )}
     </Formik>

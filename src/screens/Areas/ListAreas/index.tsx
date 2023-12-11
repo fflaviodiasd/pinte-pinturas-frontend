@@ -5,7 +5,6 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { Add as AddIcon } from "@mui/icons-material";
 
 import { TableActions } from "../../../components/Table/TableActions";
-import { successMessage } from "../../../components/Messages";
 
 import { useStyles } from "./styles";
 import { useAreas } from "../../../hooks/useAreas";
@@ -52,7 +51,6 @@ export const ListAreas = () => {
             params={params}
             viewFunction={() => navigate(`/areas/${params.row.id}`)}
             editFunction={() => navigate(`/areas/${params.row.id}/editar`)}
-            deleteFunction={() => successMessage("Área excluída com sucesso!")}
           />
         ),
       },

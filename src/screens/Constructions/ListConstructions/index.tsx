@@ -15,8 +15,7 @@ export const ListConstructions = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
 
-  const { getAllConstructions, listConstructions, disableConstruction } =
-    useConstructions();
+  const { getAllConstructions, listConstructions } = useConstructions();
 
   useEffect(() => {
     getAllConstructions();
@@ -87,7 +86,6 @@ export const ListConstructions = () => {
             params={params}
             viewFunction={() => navigate(`/obras/${params.row.id}`)}
             editFunction={() => navigate(`/obras/${params.row.id}/editar`)}
-            deleteFunction={() => disableConstruction(params.row.id)}
           />
         ),
       },
