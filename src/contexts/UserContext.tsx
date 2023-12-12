@@ -28,23 +28,23 @@ type UserContextProps = {
   isSigned: boolean;
   setIsSigned: Dispatch<SetStateAction<boolean>>;
   loginData: LoginData;
-  login: (values: LoginData) => Promise<true | undefined>;
+  login: (values: LoginData) => Promise<boolean>;
   recoverPasswdData: RecoverPasswdData;
-  recoverPasswd: (values: RecoverPasswdData) => Promise<true | undefined>;
+  recoverPasswd: (values: RecoverPasswdData) => Promise<boolean>;
   resetPasswdData: ResetPasswdData;
-  resetPasswd: (values: ResetPasswdData) => Promise<true | undefined>;
+  resetPasswd: (values: ResetPasswdData) => Promise<boolean>;
 };
 
-type LoginData = {
+export type LoginData = {
   email: string;
   password: string;
 };
 
-type RecoverPasswdData = {
+export type RecoverPasswdData = {
   email: string;
 };
 
-type ResetPasswdData = {
+export type ResetPasswdData = {
   newPasswd: string;
   confirmPasswd: string;
 };
@@ -128,12 +128,12 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
       localStorage.setItem(KEY_SIGNED, JSON.stringify(true));
       setIsSigned(true);
       setLoading(false);
+      return false;
     } catch (error) {
-      // const shouldOpenModal = true;
       console.log(error);
       // errorMessage("Não foi possível realizar autenticação.");
       setLoading(false);
-      // return shouldOpenModal;
+      return true;
     }
   };
 
@@ -142,14 +142,21 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
   };
 
   const recoverPasswd = async (values: RecoverPasswdData) => {
+    setLoading(true);
     try {
-      // const { data } = await api.post("/accounts/token/", values.email);
-      // console.log(data);
+      const { data } = await api.post(
+        "/accounts/password_recovery/",
+        values.email
+      );
+      console.log(data);
       console.log(values);
+      setLoading(false);
       return true;
     } catch (error) {
+      setLoading(false);
       console.log(error);
       // errorMessage("Não foi possível realizar autenticação.");
+      return false;
     }
   };
 
@@ -167,6 +174,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
     } catch (error) {
       console.log(error);
       // errorMessage("Não foi possível realizar autenticação.");
+      return false;
     }
   };
 

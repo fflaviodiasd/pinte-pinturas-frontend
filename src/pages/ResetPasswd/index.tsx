@@ -17,7 +17,7 @@ import { Formik, Form as FormikForm } from "formik";
 import { Layout } from "../../components/Layout";
 import { Modal } from "../../components/Modal";
 
-import { UserContext } from "../../contexts/UserContext";
+import { ResetPasswdData, UserContext } from "../../contexts/UserContext";
 import { resetPasswdSchema } from "../../utils/schemas";
 
 import logo from "../../assets/images/logo.png";
@@ -35,12 +35,17 @@ export const ResetPasswd = () => {
     confirmPasswd: false,
   });
 
+  const resetPassword = async (values: ResetPasswdData) => {
+    const shouldOpen = await resetPasswd(values);
+    setIsModalOpen(shouldOpen);
+  };
+
   return (
     <Formik
       enableReinitialize
       initialValues={resetPasswdData}
       onSubmit={(values) => {
-        setIsModalOpen(Boolean(resetPasswd(values)));
+        resetPassword(values);
       }}
       validationSchema={resetPasswdSchema}
     >
