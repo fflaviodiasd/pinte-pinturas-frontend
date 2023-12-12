@@ -60,13 +60,21 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
       const userParsed: User = JSON.parse(storageUser);
       return {
         id: userParsed.id,
-        isFirst: userParsed.isFirst,
+        isFirstAccessUser: userParsed.isFirstAccessUser,
+        isFirstLogin: userParsed.isFirstLogin,
         type: userParsed.type,
-        name: userParsed.name,
+        profileName: userParsed.profileName,
         company: userParsed.company,
       };
     }
-    return { id: 0, isFirst: false, type: 0, name: "", company: 0 };
+    return {
+      id: 0,
+      isFirstAccessUser: false,
+      isFirstLogin: false,
+      type: 0,
+      profileName: "",
+      company: 0,
+    };
   };
   const [user, setUser] = useState<User>(loadUser());
 
@@ -99,17 +107,19 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
           KEY_USER,
           JSON.stringify({
             id: data.user.id,
-            isFirst: data.user.is_first,
+            isFirstAccessUser: data.user.is_first_access_user,
+            isFirstLogin: data.user.is_first_login,
             type: data.user.type,
-            name: data.user.name || "",
+            profileName: data.user.profile_name || "",
             company: data.user.company || 0,
           })
         );
         setUser({
           id: data.user.id,
-          isFirst: data.user.is_first,
+          isFirstAccessUser: data.user.is_first_access_user,
+          isFirstLogin: data.user.is_first_login,
           type: data.user.type,
-          name: data.user.name || "",
+          profileName: data.user.profile_name || "",
           company: data.user.company || 0,
         });
       }
@@ -119,11 +129,11 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
       setIsSigned(true);
       setLoading(false);
     } catch (error) {
-      const shouldOpenModal = true;
+      // const shouldOpenModal = true;
       console.log(error);
       // errorMessage("Não foi possível realizar autenticação.");
       setLoading(false);
-      return shouldOpenModal;
+      // return shouldOpenModal;
     }
   };
 
