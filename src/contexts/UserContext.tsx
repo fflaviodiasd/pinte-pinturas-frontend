@@ -32,7 +32,7 @@ type UserContextProps = {
   recoverPasswdData: RecoverPasswdData;
   recoverPasswd: (values: RecoverPasswdData) => Promise<boolean>;
   resetPasswdData: ResetPasswdData;
-  resetPasswd: (values: ResetPasswdData) => Promise<boolean>;
+  resetPasswd: (values: ResetPasswdData, token: string) => Promise<boolean>;
 };
 
 export type LoginData = {
@@ -144,10 +144,9 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
   const recoverPasswd = async (values: RecoverPasswdData) => {
     setLoading(true);
     try {
-      const { data } = await api.post(
-        "/accounts/password_recovery/",
-        values.email
-      );
+      const { data } = await api.post("/accounts/password_recovery/", {
+        email: values.email,
+      });
       console.log(data);
       console.log(values);
       setLoading(false);
@@ -165,9 +164,12 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
     confirmPasswd: "",
   };
 
-  const resetPasswd = async (values: ResetPasswdData) => {
+  const resetPasswd = async (values: ResetPasswdData, token: string) => {
     try {
-      // const { data } = await api.post("/accounts/token/", values);
+      await api.post("/accounts/password_recovery/confirm/", {
+        password: values.confirmPasswd,
+        token: token,
+      });
       // console.log(data);
       console.log(values);
       return true;

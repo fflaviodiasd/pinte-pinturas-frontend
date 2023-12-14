@@ -104,7 +104,12 @@ export const Login = () => {
                   />
                 </div>
 
-                <Button className={classes.buttonLogin} fullWidth type="submit">
+                <Button
+                  className={classes.buttonLogin}
+                  disabled={loading}
+                  type="submit"
+                  fullWidth
+                >
                   {loading ? (
                     <CircularProgress size={27} style={{ color: "#FFF" }} />
                   ) : (
