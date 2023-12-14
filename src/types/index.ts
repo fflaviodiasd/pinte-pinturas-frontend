@@ -2,8 +2,9 @@
 export type User = {
   company: number;
   id: number;
-  name: string;
-  isFirst: boolean;
+  profileName: string;
+  isFirstAccessUser: boolean;
+  isFirstLogin: boolean;
   type: number;
 };
 

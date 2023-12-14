@@ -1,32 +1,43 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Paper, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 import { Formik, Form as FormikForm } from "formik";
 
 import { Modal } from "../../components/Modal";
 import { Layout } from "../../components/Layout";
 
-import { UserContext } from "../../contexts/UserContext";
+import { RecoverPasswdData, UserContext } from "../../contexts/UserContext";
+import { recoverPasswdSchema } from "../../utils/schemas";
 
 import logo from "../../assets/images/logo.png";
 
 import { useStyles } from "./styles";
-import { recoverPasswdSchema } from "../../utils/schemas";
 
 export const RecoverPasswd = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { recoverPasswdData, recoverPasswd } = useContext(UserContext);
+  const { recoverPasswdData, recoverPasswd, loading } = useContext(UserContext);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const recoverPassword = async (values: RecoverPasswdData) => {
+    const shouldOpen = await recoverPasswd(values);
+    setIsModalOpen(shouldOpen);
+  };
 
   return (
     <Formik
       enableReinitialize
       initialValues={recoverPasswdData}
       onSubmit={(values) => {
-        setIsModalOpen(Boolean(recoverPasswd(values)));
+        recoverPassword(values);
       }}
       validationSchema={recoverPasswdSchema}
     >
@@ -60,9 +71,13 @@ export const RecoverPasswd = () => {
                 </div>
 
                 <Button className={classes.buttonLogin} fullWidth type="submit">
-                  <Typography className={classes.buttonLoginText}>
-                    Solicitar
-                  </Typography>
+                  {loading ? (
+                    <CircularProgress size={27} style={{ color: "#FFF" }} />
+                  ) : (
+                    <Typography className={classes.buttonLoginText}>
+                      Solicitar
+                    </Typography>
+                  )}
                 </Button>
 
                 <Button

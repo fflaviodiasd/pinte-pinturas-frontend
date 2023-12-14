@@ -17,7 +17,7 @@ import { Formik, Form as FormikForm } from "formik";
 
 import { Layout } from "../../components/Layout";
 
-import { UserContext } from "../../contexts/UserContext";
+import { LoginData, UserContext } from "../../contexts/UserContext";
 import { loginSchema } from "../../utils/schemas";
 
 import logo from "../../assets/images/logo.png";
@@ -33,12 +33,17 @@ export const Login = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const signIn = async (values: LoginData) => {
+    const shouldOpen = await login(values);
+    setIsModalOpen(shouldOpen);
+  };
+
   return (
     <Formik
       enableReinitialize
       initialValues={loginData}
       onSubmit={(values) => {
-        setIsModalOpen(Boolean(login(values)));
+        signIn(values);
       }}
       validationSchema={loginSchema}
     >
@@ -99,9 +104,14 @@ export const Login = () => {
                   />
                 </div>
 
-                <Button className={classes.buttonLogin} fullWidth type="submit">
+                <Button
+                  className={classes.buttonLogin}
+                  disabled={loading}
+                  type="submit"
+                  fullWidth
+                >
                   {loading ? (
-                    <CircularProgress size={16} style={{ color: "#FFF" }} />
+                    <CircularProgress size={27} style={{ color: "#FFF" }} />
                   ) : (
                     <Typography className={classes.buttonLoginText}>
                       Entrar

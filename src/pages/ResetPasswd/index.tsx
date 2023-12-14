@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
   IconButton,
@@ -17,7 +17,7 @@ import { Formik, Form as FormikForm } from "formik";
 import { Layout } from "../../components/Layout";
 import { Modal } from "../../components/Modal";
 
-import { UserContext } from "../../contexts/UserContext";
+import { ResetPasswdData, UserContext } from "../../contexts/UserContext";
 import { resetPasswdSchema } from "../../utils/schemas";
 
 import logo from "../../assets/images/logo.png";
@@ -27,6 +27,7 @@ import { useStyles } from "./styles";
 export const ResetPasswd = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
+  const { token } = useParams();
   const { resetPasswdData, resetPasswd } = useContext(UserContext);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,12 +36,17 @@ export const ResetPasswd = () => {
     confirmPasswd: false,
   });
 
+  const resetPassword = async (values: ResetPasswdData, token: string) => {
+    const shouldOpen = await resetPasswd(values, token);
+    setIsModalOpen(shouldOpen);
+  };
+
   return (
     <Formik
       enableReinitialize
       initialValues={resetPasswdData}
       onSubmit={(values) => {
-        setIsModalOpen(Boolean(resetPasswd(values)));
+        resetPassword(values, token || "");
       }}
       validationSchema={resetPasswdSchema}
     >
