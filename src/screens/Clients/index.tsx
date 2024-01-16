@@ -6,6 +6,7 @@ import { HeaderButton } from "../../components/Screen/HeaderButton";
 import { NavbarClients } from "../../components/Navbar/Clients";
 import { FormClientsGeneralData } from "./FormClientsGeneralData";
 import { FormClientsAddress } from "./FormClientsAddress";
+import { ListCLientsEmployees } from "./ListClientsEmployees";
 
 export const Clients = () => {
   const [indexDisplay, setIndexDisplay] = useState(0);
@@ -23,7 +24,7 @@ export const Clients = () => {
     }
 
     if (indexDisplay === 2) {
-      return <ListClients />;
+      return <ListCLientsEmployees />;
     }
 
     if (indexDisplay === 3) {
