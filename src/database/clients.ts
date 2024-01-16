@@ -12,7 +12,7 @@ export const mockedListClients: Client[] = [
   { id: 9, name: "André", cnpj: "99.999.999/9999-99", status: true },
 ];
 
-// Mocked List Clients Employees
+// Mocked List Clients Employees and Constructions
 
 export type Person = {
   id: number;
@@ -20,6 +20,8 @@ export type Person = {
   phone: number;
   role: string;
   profile: string;
+  constructionName?: string;
+  responsible?: string;
 };
 
 export const data: Person[] = [
@@ -29,6 +31,8 @@ export const data: Person[] = [
     phone: 999999999,
     role: "Mungus",
     profile: "Administrador",
+    constructionName: "Obra 1234",
+    responsible: "John Doe",
   },
   {
     id: 2,
@@ -36,6 +40,8 @@ export const data: Person[] = [
     phone: 999999999,
     role: "Mungus",
     profile: "Administrador",
+    constructionName: "Obra 1234",
+    responsible: "John Doe",
   },
   {
     id: 3,
@@ -43,6 +49,8 @@ export const data: Person[] = [
     phone: 999999999,
     role: "Mungus",
     profile: "Administrador",
+    constructionName: "Obra 1234",
+    responsible: "John Doe",
   },
   {
     id: 4,
@@ -50,6 +58,8 @@ export const data: Person[] = [
     phone: 999999999,
     role: "Mungus",
     profile: "Administrador",
+    constructionName: "Obra 1234",
+    responsible: "John Doe",
   },
   {
     id: 1,
@@ -57,6 +67,8 @@ export const data: Person[] = [
     phone: 999999999,
     role: "Mungus",
     profile: "Administrador",
+    constructionName: "Obra 1234",
+    responsible: "John Doe",
   },
   {
     id: 2,
@@ -64,6 +76,8 @@ export const data: Person[] = [
     phone: 999999999,
     role: "Mungus",
     profile: "Administrador",
+    constructionName: "Obra 1234",
+    responsible: "John Doe",
   },
   {
     id: 3,
@@ -71,6 +85,8 @@ export const data: Person[] = [
     phone: 999999999,
     role: "Mungus",
     profile: "Administrador",
+    constructionName: "Obra 1234",
+    responsible: "John Doe",
   },
   {
     id: 4,
@@ -78,5 +94,7 @@ export const data: Person[] = [
     phone: 999999999,
     role: "Mungus",
     profile: "Administrador",
+    constructionName: "Obra 1234",
+    responsible: "John Doe",
   },
 ];
