@@ -1,6 +1,7 @@
 import { Construction } from "../types";
 
-export const mockedListConstructions: Construction[] = [
+{
+  /*export const mockedListConstructions: Construction[] = [
   {
     id: 1,
     name: "Empreendimento Novaes",
@@ -9,3 +10,6 @@ export const mockedListConstructions: Construction[] = [
     status: "Em Andamento",
   },
 ];
+
+*/
+}

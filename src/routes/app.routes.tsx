@@ -13,6 +13,7 @@ import { FormClients } from "../screens/Clients/FormClients";
 import { DetailsArea } from "../screens/Areas/DetailsArea";
 import { FormArea } from "../screens/Areas/DetailsArea/FormArea";
 import { Clients } from "../screens/Clients";
+import { Collaborators } from "../screens/Collaborators";
 
 export const AppRoutes = () => {
   return (
@@ -21,7 +22,7 @@ export const AppRoutes = () => {
         <Routes>
           <Route path="/home" element={<Home />} />
 
-          <Route path="/colaboradores" element={<ListCollaborators />} />
+          <Route path="/colaboradores" element={<Collaborators />} />
           <Route
             path="/colaboradores/cadastrar"
             element={<FormCollaborators />}
