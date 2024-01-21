@@ -34,7 +34,6 @@ export const Clients = () => {
 
   return (
     <Grid container sx={{ display: "flex", flexDirection: "column" }}>
-      <NavbarClients />
       <Box sx={{ display: "flex" }}>
         <HeaderButton
           text="Dados Gerais"

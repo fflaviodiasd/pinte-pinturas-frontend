@@ -1,31 +1,31 @@
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
 import { BackgroundAvatar } from "../../Avatar";
+import { Button, Grid, Paper } from "@mui/material";
+import { useStyles } from "./styles";
 
 export function NavbarClients() {
+  const { classes } = useStyles();
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#FFF" }}>
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Box sx={{ display: "flex", gap: "0.5rem" }}>
+    <Grid item xs={12} lg={12}>
+      <Paper className={classes.paper}>
+        <div className={classes.actionBar}>
+          <div className={classes.actionBarLeftContent}>
             <BackgroundAvatar />
-
-            <Typography
-              sx={{
-                color: "#2E3132",
-                fontWeight: "bold",
-                lineHeight: "2.25rem",
-                fontSize: "1.625rem",
-              }}
-            >
+            <Typography className={classes.pageSubtitle}>
               Smile Company
             </Typography>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+          </div>
+          <div
+            style={{
+              display: "flex",
+            }}
+          >
+            <Button type="submit" className={classes.buttonSave}>
+              Salvar
+            </Button>
+          </div>
+        </div>
+      </Paper>
+    </Grid>
   );
 }
