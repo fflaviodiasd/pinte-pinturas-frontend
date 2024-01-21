@@ -20,6 +20,13 @@ export type Client = {
   name: string;
   cnpj: string;
   status: boolean;
+  responsible: string;
+  tradingName: string;
+  phone: string;
+  email: string;
+  corporateName: string;
+  municipalRegistration: string;
+  stateRegistration: string;
 };
 
 export type Area = {

@@ -16,8 +16,15 @@ export const useClients = () => {
   const [clientData, setClientData] = useState<Client>({
     id: 0,
     name: "",
-    cnpj: "",
     status: true,
+    responsible: "",
+    tradingName: "",
+    cnpj: "",
+    phone: "",
+    email: "",
+    corporateName: "",
+    municipalRegistration: "",
+    stateRegistration: "",
   });
 
   const getClient = async (id: string) => {
@@ -49,6 +56,19 @@ export const useClients = () => {
     setLoading(true);
     try {
       await api.post("clients", clientData);
+      successMessage("Cliente adicionado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível adicionar cliente!");
+      setLoading(false);
+    }
+  };
+
+  const addClientGeneralData = async (clientData: Client) => {
+    setLoading(true);
+    try {
+      await api.post("customers", clientData);
       successMessage("Cliente adicionado com sucesso!");
       setLoading(false);
     } catch (error) {
@@ -124,6 +144,7 @@ export const useClients = () => {
     listClients,
     getClient,
     addClient,
+    addClientGeneralData,
     updateClient,
     disableClient,
     getAllClients,
