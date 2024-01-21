@@ -143,7 +143,6 @@ export const FormClientsGeneralData = () => {
                     />
                   </Grid>
                 </Grid>
-                <Button type="submit">Salvar</Button>
               </Paper>
             </Grid>
           </Grid>

@@ -37,6 +37,9 @@ export const useStyles = makeStyles()((theme) => {
       textTransform: "capitalize",
       transition: ".5s ease",
       backgroundColor: "#0076BE",
+      "&:hover": {
+        backgroundColor: "#0076BE",
+      },
       borderRadius: 5,
       textDecoration: "none",
     },
