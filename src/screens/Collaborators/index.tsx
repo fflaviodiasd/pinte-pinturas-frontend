@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Box, Grid } from "@mui/material";
 
 import { HeaderButton } from "../../components/Screen/HeaderButton";
-import { NavbarClients } from "../../components/Navbar/Clients";
 import { FormCollaboratorsPersonalData } from "./FormCollaboratorsPersonalData";
 import { FormCollaboratorsAddress } from "./FormCollaboratorsAddress";
 import { ListCollaboratorsConstructions } from "./ListCollaboratorsConstructions";
@@ -34,7 +33,6 @@ export const Collaborators = () => {
 
   return (
     <Grid container sx={{ display: "flex", flexDirection: "column" }}>
-      <NavbarClients />
       <Box sx={{ display: "flex" }}>
         <HeaderButton
           text="Dados Pessoais"
