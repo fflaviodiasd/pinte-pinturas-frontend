@@ -38,8 +38,15 @@ export const FormClients = () => {
   const [clientData, setClientData] = useState<Client>({
     id: 0,
     name: "",
-    cnpj: "",
     status: true,
+    responsible: "",
+    tradingName: "",
+    cnpj: "",
+    phone: "",
+    email: "",
+    corporateName: "",
+    municipalRegistration: "",
+    stateRegistration: "",
   });
 
   const addClient = async (clientData: Client) => {
@@ -64,7 +71,8 @@ export const FormClients = () => {
     }
   };
 
-  useEffect(() => {
+  {
+    /*useEffect(() => {
     if (id) {
       let listClientsCopy = [...mockedListClients];
       listClientsCopy = listClientsCopy.filter(
@@ -78,6 +86,9 @@ export const FormClients = () => {
       });
     }
   }, [id]);
+
+*/
+  }
 
   return (
     <Formik
