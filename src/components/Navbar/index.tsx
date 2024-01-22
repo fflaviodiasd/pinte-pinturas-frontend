@@ -1,9 +1,9 @@
 import Typography from "@mui/material/Typography";
-import { BackgroundAvatar } from "../../Avatar";
+import { BackgroundAvatar } from "../Avatar";
 import { Button, Grid, Paper } from "@mui/material";
 import { useStyles } from "./styles";
 
-export function NavbarClients() {
+export function Navbar() {
   const { classes } = useStyles();
   return (
     <Grid item xs={12} lg={12}>

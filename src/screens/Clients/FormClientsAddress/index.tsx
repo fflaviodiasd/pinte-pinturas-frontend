@@ -1,7 +1,7 @@
 import { Grid, Paper, TextField } from "@mui/material";
 
 import { useStyles } from "./styles";
-import { NavbarClients } from "../../../components/Navbar/Clients";
+import { Navbar } from "../../../components/Navbar";
 
 export const FormClientsAddress = () => {
   const { classes } = useStyles();
@@ -9,7 +9,7 @@ export const FormClientsAddress = () => {
   return (
     <form>
       <Grid container spacing={2}>
-        <NavbarClients />
+        <Navbar />
         <Grid item xs={12} lg={12}>
           <Paper className={classes.paper}>
             <Grid container spacing={1} className={classes.formContainer}>

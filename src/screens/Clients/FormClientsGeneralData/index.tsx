@@ -4,7 +4,7 @@ import { Form, Formik } from "formik";
 import { useState } from "react";
 import { useClients } from "../../../hooks/useClients";
 import { Client } from "../../../types";
-import { NavbarClients } from "../../../components/Navbar/Clients";
+import { Navbar } from "../../../components/Navbar";
 
 export const FormClientsGeneralData = () => {
   const { classes } = useStyles();
@@ -40,7 +40,7 @@ export const FormClientsGeneralData = () => {
       {({ handleChange, values }) => (
         <Form>
           <Grid container spacing={2}>
-            <NavbarClients />
+            <Navbar />
             <Grid item xs={12} lg={12}>
               <Paper className={classes.paper}>
                 <Grid container spacing={1} className={classes.formContainer}>

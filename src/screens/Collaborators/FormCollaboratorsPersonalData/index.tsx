@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 
 import { useStyles } from "./styles";
+import { Navbar } from "../../../components/Navbar";
 
 export const FormCollaboratorsPersonalData = () => {
   const { classes } = useStyles();
@@ -15,6 +16,7 @@ export const FormCollaboratorsPersonalData = () => {
   return (
     <form>
       <Grid container spacing={2}>
+        <Navbar />
         <Grid item xs={12} lg={12}>
           <Paper className={classes.paper}>
             <Grid container spacing={1} className={classes.formContainer}>
