@@ -25,6 +25,13 @@ export const useClients = () => {
     corporateName: "",
     municipalRegistration: "",
     stateRegistration: "",
+    cep: "",
+    state: "",
+    city: "",
+    neighborhood: "",
+    publicPlace: "",
+    complement: "",
+    number: "",
   });
 
   const getClient = async (id: string) => {
@@ -66,6 +73,19 @@ export const useClients = () => {
   };
 
   const addClientGeneralData = async (clientData: Client) => {
+    setLoading(true);
+    try {
+      await api.post("customers", clientData);
+      successMessage("Cliente adicionado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível adicionar cliente!");
+      setLoading(false);
+    }
+  };
+
+  const addClientAddress = async (clientData: Client) => {
     setLoading(true);
     try {
       await api.post("customers", clientData);
@@ -145,6 +165,7 @@ export const useClients = () => {
     getClient,
     addClient,
     addClientGeneralData,
+    addClientAddress,
     updateClient,
     disableClient,
     getAllClients,

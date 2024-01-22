@@ -27,6 +27,13 @@ export type Client = {
   corporateName: string;
   municipalRegistration: string;
   stateRegistration: string;
+  cep: string;
+  state: string;
+  city: string;
+  neighborhood: string;
+  publicPlace: string;
+  complement: string;
+  number: string;
 };
 
 export type Area = {
