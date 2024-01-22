@@ -9,6 +9,7 @@ import {
 
 import { useStyles } from "./styles";
 import { Navbar } from "../../../components/Navbar";
+import { InputMask } from "../../../components/InputMask";
 
 export const FormCollaboratorsPersonalData = () => {
   const { classes } = useStyles();
@@ -22,105 +23,127 @@ export const FormCollaboratorsPersonalData = () => {
             <Grid container spacing={1} className={classes.formContainer}>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="Nome Completo"
+                  label="Nome Completo"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
                 />
               </Grid>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="Cargo"
+                  label="Cargo"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
                 />
               </Grid>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="Perfil"
+                  label="Perfil"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
                 />
               </Grid>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="Celular"
+                  name="phone"
+                  label="Celular"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
-                />
-              </Grid>
-            </Grid>
-            <Grid container spacing={1} className={classes.formContainer}>
-              <Grid item xs={12} lg={3}>
-                <TextField
-                  placeholder="CPF"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} lg={3}>
-                <TextField
-                  placeholder="Data de Nascimento"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} lg={3}>
-                <TextField
-                  placeholder="Matrícula"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} lg={3}>
-                <TextField
-                  placeholder="E-mail"
-                  variant="outlined"
-                  size="small"
-                  fullWidth
-                  required
+                  //required
+                  InputProps={{
+                    inputComponent: InputMask as any,
+                  }}
                 />
               </Grid>
             </Grid>
             <Grid container spacing={1} className={classes.formContainer}>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="Data de Admissão"
+                  name="cpf"
+                  label="CPF"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
+                  InputProps={{
+                    inputComponent: InputMask as any,
+                  }}
                 />
               </Grid>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="Data de Demissão"
+                  label="Data de Nascimento"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
+                  InputProps={{
+                    inputComponent: InputMask as any,
+                  }}
                 />
               </Grid>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="Telefone"
+                  label="Matrícula"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
+                />
+              </Grid>
+              <Grid item xs={12} lg={3}>
+                <TextField
+                  label="E-mail"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  //required
+                  type="email"
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={1} className={classes.formContainer}>
+              <Grid item xs={12} lg={3}>
+                <TextField
+                  label="Data de Admissão"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  //required
+                  InputProps={{
+                    inputComponent: InputMask as any,
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} lg={3}>
+                <TextField
+                  label="Data de Demissão"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  //required
+                  InputProps={{
+                    inputComponent: InputMask as any,
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} lg={3}>
+                <TextField
+                  name="phone"
+                  label="Telefone"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  //required
+                  InputProps={{
+                    inputComponent: InputMask as any,
+                  }}
                 />
               </Grid>
               <Box marginLeft="1rem">

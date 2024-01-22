@@ -2,6 +2,7 @@ import { Grid, Paper, TextField } from "@mui/material";
 
 import { useStyles } from "./styles";
 import { Navbar } from "../../../components/Navbar";
+import { InputMask } from "../../../components/InputMask";
 
 export const FormClientsAddress = () => {
   const { classes } = useStyles();
@@ -15,67 +16,72 @@ export const FormClientsAddress = () => {
             <Grid container spacing={1} className={classes.formContainer}>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="CEP"
+                  name="cep"
+                  label="CEP"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
+                  InputProps={{
+                    inputComponent: InputMask as any,
+                  }}
                 />
               </Grid>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="Estado"
+                  label="Estado"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
                 />
               </Grid>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="Cidade"
+                  label="Cidade"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
                 />
               </Grid>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="Bairro"
+                  label="Bairro"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
                 />
               </Grid>
             </Grid>
             <Grid container spacing={1} className={classes.formContainer}>
               <Grid item xs={12} lg={6}>
                 <TextField
-                  placeholder="Logradouro"
+                  label="Logradouro"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
                 />
               </Grid>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="Complemento"
+                  label="Complemento"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
                 />
               </Grid>
               <Grid item xs={12} lg={3}>
                 <TextField
-                  placeholder="Número"
+                  label="Número"
                   variant="outlined"
                   size="small"
                   fullWidth
-                  required
+                  //required
+                  type="number"
                 />
               </Grid>
             </Grid>

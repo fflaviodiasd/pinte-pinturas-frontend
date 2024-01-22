@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useClients } from "../../../hooks/useClients";
 import { Client } from "../../../types";
 import { Navbar } from "../../../components/Navbar";
+import { InputMask } from "../../../components/InputMask";
 
 export const FormClientsGeneralData = () => {
   const { classes } = useStyles();
@@ -49,11 +50,11 @@ export const FormClientsGeneralData = () => {
                       name="responsible"
                       value={values.responsible}
                       onChange={handleChange}
-                      placeholder="Nome Responsável"
+                      label="Nome Responsável"
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
+                      //required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -61,11 +62,11 @@ export const FormClientsGeneralData = () => {
                       name="tradingName"
                       value={values.tradingName}
                       onChange={handleChange}
-                      placeholder="Nome Fantasia"
+                      label="Nome Fantasia"
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
+                      //required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -73,11 +74,14 @@ export const FormClientsGeneralData = () => {
                       value={values.cnpj}
                       onChange={handleChange}
                       name="cnpj"
-                      placeholder="CNPJ"
+                      label="CNPJ"
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
+                      //required
+                      InputProps={{
+                        inputComponent: InputMask as any,
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -85,11 +89,14 @@ export const FormClientsGeneralData = () => {
                       value={values.phone}
                       onChange={handleChange}
                       name="phone"
-                      placeholder="Telefone"
+                      label="Telefone"
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
+                      //required
+                      InputProps={{
+                        inputComponent: InputMask as any,
+                      }}
                     />
                   </Grid>
                 </Grid>
@@ -99,11 +106,12 @@ export const FormClientsGeneralData = () => {
                       value={values.email}
                       onChange={handleChange}
                       name="email"
-                      placeholder="E-mail"
+                      label="E-mail"
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
+                      //required
+                      type="email"
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -111,11 +119,11 @@ export const FormClientsGeneralData = () => {
                       value={values.corporateName}
                       onChange={handleChange}
                       name="corporateName"
-                      placeholder="Razão Social"
+                      label="Razão Social"
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
+                      //required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -123,11 +131,11 @@ export const FormClientsGeneralData = () => {
                       value={values.municipalRegistration}
                       onChange={handleChange}
                       name="municipalRegistration"
-                      placeholder="Inscrição Municipal"
+                      label="Inscrição Municipal"
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
+                      //required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -135,11 +143,11 @@ export const FormClientsGeneralData = () => {
                       value={values.stateRegistration}
                       onChange={handleChange}
                       name="stateRegistration"
-                      placeholder="Inscrição Estadual"
+                      label="Inscrição Estadual"
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
+                      //required
                     />
                   </Grid>
                 </Grid>
