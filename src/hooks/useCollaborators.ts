@@ -16,8 +16,17 @@ export const useCollaborators = () => {
   const [collaboratorData, setCollaboratorData] = useState<Collaborator>({
     id: 0,
     name: "",
-    type: "",
+    type: 0,
     status: true,
+    role: "",
+    profile: "",
+    phone: "",
+    cpf: "",
+    dateOfBirth: "",
+    registration: "",
+    email: "",
+    admissionDate: "",
+    dismissalDate: "",
   });
 
   const getCollaborator = async (id: string) => {
@@ -51,6 +60,27 @@ export const useCollaborators = () => {
     setLoading(true);
     try {
       await api.post("collaborators", collaboratorData);
+      successMessage("Colaborador adicionado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível adicionar colaborador!");
+      setLoading(false);
+    }
+  };
+
+  const addCollaboratorPersonalData = async (
+    collaboratorData: Collaborator
+  ) => {
+    setLoading(true);
+    try {
+      await api.post(`employees/`, {
+        cpf: collaboratorData.cpf,
+        name: collaboratorData.name,
+        registration: collaboratorData.registration,
+        type: collaboratorData.type,
+        email: collaboratorData.email,
+      });
       successMessage("Colaborador adicionado com sucesso!");
       setLoading(false);
     } catch (error) {
@@ -128,6 +158,7 @@ export const useCollaborators = () => {
     listCollaborators,
     getCollaborator,
     addCollaborator,
+    addCollaboratorPersonalData,
     updateCollaborator,
     disableCollaborator,
     getAllCollaborators,

@@ -11,8 +11,17 @@ export type User = {
 export type Collaborator = {
   id: number;
   name: string;
-  type: string;
+  type: number;
   status: boolean;
+  role: string;
+  profile: string;
+  phone: string;
+  cpf: string;
+  dateOfBirth: string;
+  registration: string;
+  email: string;
+  admissionDate: string;
+  dismissalDate: string;
 };
 
 export type Client = {
