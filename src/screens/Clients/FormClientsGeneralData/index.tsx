@@ -23,6 +23,13 @@ export const FormClientsGeneralData = () => {
     corporateName: "",
     municipalRegistration: "",
     stateRegistration: "",
+    cep: "",
+    state: "",
+    city: "",
+    neighborhood: "",
+    publicPlace: "",
+    complement: "",
+    number: "",
   });
 
   const onSubmit = async (values: any) => {

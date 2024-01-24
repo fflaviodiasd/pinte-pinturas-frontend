@@ -75,7 +75,13 @@ export const useClients = () => {
   const addClientGeneralData = async (clientData: Client) => {
     setLoading(true);
     try {
-      await api.post("customers", clientData);
+      await api.post(`customers/`, {
+        corporate_name: clientData.corporateName,
+        municipal_registration: clientData.municipalRegistration,
+        cnpj: clientData.cnpj,
+        email: clientData.email,
+        //description: areaData.description,
+      });
       successMessage("Cliente adicionado com sucesso!");
       setLoading(false);
     } catch (error) {
