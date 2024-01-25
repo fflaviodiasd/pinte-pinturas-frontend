@@ -29,5 +29,5 @@ export const ButtonTextContainer = styled.div<ButtonTextContainerProps>`
   padding: 0.25rem 1rem 0.25rem 1rem;
   color: ${({ isactive }) => (isactive ? "#FFF" : "#0076BE")};
   font-weight: bold;
-  background-color: ${({ isactive }) => (isactive ? "#0076BE" : "#FFF")};
+  background-color: ${({ isactive }) => (isactive ? "#0076BE" : "none")};
 `;

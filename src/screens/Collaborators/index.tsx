@@ -32,7 +32,14 @@ export const Collaborators = () => {
   };
 
   return (
-    <Grid container sx={{ display: "flex", flexDirection: "column" }}>
+    <Grid
+      container
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#eff1f3",
+      }}
+    >
       <Box sx={{ display: "flex" }}>
         <HeaderButton
           text="Dados Pessoais"
