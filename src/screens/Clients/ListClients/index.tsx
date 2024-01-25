@@ -70,9 +70,6 @@ export const ListClients = () => {
             params={params}
             viewFunction={() => navigate(`/clientes/${params.row.id}`)}
             editFunction={() => navigate(`/clientes/${params.row.id}/editar`)}
-            deleteFunction={() =>
-              successMessage("Cliente excluído com sucesso!")
-            }
           />
         ),
       },

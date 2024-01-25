@@ -33,7 +33,7 @@ export const Sidebar = () => {
   };
 
   const navItems: NavItem[] = [
-    { text: "Clientes", path: "/clientes", icon: <Business /> },
+    { text: "Clientes", path: "/clientes/cadastro", icon: <Business /> },
     { text: "Funcionários", path: "/colaboradores", icon: <Badge /> },
     { text: "Obras", path: "/obras", icon: <Business /> },
   ];

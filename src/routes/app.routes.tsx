@@ -33,10 +33,11 @@ export const AppRoutes = () => {
             element={<FormCollaborators />}
           />
 
-          <Route path="/clientes" element={<Clients />} />
+          <Route path="/clientes/cadastro" element={<Clients />} />
           <Route path="/clientes/cadastrar" element={<FormClients />} />
           <Route path="/clientes/:id" element={<FormClients />} />
           <Route path="/clientes/:id/editar" element={<FormClients />} />
+          <Route path="/clientes/listagem" element={<ListClients />} />
 
           <Route path="/obras" element={<ListConstructions />} />
           <Route path="/obras/cadastrar" element={<DetailsConstruction />} />
