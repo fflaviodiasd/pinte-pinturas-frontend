@@ -136,12 +136,21 @@ export const useCollaborators = () => {
     const offset = (currentPage - 1) * LIMIT;
     try {
       const { data } = await api.get(
-        `collaborators/?disabled=false&limit=${LIMIT}&offset=${offset}`
+        `employees/?disabled=false&limit=${LIMIT}&offset=${offset}`
       );
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
+      const allCollaborators = data.results.map((result: any) => ({
+        id: result.id,
+        name: result.name,
+        cellPhone: result.cell_phone,
+        profile: result.profile,
+        email: result.email,
+        role: result.office,
+      }));
+      setListCollaborators(allCollaborators);
       setLoading(false);
     } catch (error) {
       console.log(error);

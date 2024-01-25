@@ -28,9 +28,10 @@ export const AppRoutes = () => {
             element={<FormCollaborators />}
           />
           <Route path="/colaboradores/:id" element={<FormCollaborators />} />
+          <Route path="/colaboradores/:id/editar" element={<Collaborators />} />
           <Route
-            path="/colaboradores/:id/editar"
-            element={<FormCollaborators />}
+            path="/colaboradores/listagem"
+            element={<ListCollaborators />}
           />
 
           <Route path="/clientes/cadastro" element={<Clients />} />
