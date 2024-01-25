@@ -148,12 +148,21 @@ export const useClients = () => {
     const offset = (currentPage - 1) * LIMIT;
     try {
       const { data } = await api.get(
-        `clients/?disabled=false&limit=${LIMIT}&offset=${offset}`
+        `customers/?disabled=false&limit=${LIMIT}&offset=${offset}`
       );
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
+      const allClients = data.results.map((result: any) => ({
+        id: result.id,
+        tradingName: result.fantasy_name,
+        responsible: result.responsible,
+        cnpj: result.cnpj,
+        email: result.email,
+        phoneNumber: result.phone_number,
+      }));
+      setListClients(allClients);
       setLoading(false);
     } catch (error) {
       console.log(error);

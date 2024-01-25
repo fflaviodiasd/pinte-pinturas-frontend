@@ -36,7 +36,7 @@ export const AppRoutes = () => {
           <Route path="/clientes/cadastro" element={<Clients />} />
           <Route path="/clientes/cadastrar" element={<FormClients />} />
           <Route path="/clientes/:id" element={<FormClients />} />
-          <Route path="/clientes/:id/editar" element={<FormClients />} />
+          <Route path="/clientes/:id/editar" element={<Clients />} />
           <Route path="/clientes/listagem" element={<ListClients />} />
 
           <Route path="/obras" element={<ListConstructions />} />
