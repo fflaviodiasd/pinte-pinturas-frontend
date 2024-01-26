@@ -80,10 +80,22 @@ export const useClients = () => {
         municipal_registration: clientData.municipalRegistration,
         cnpj: clientData.cnpj,
         email: clientData.email,
+        responsible: clientData.responsible,
+        fantasy_name: clientData.tradingName,
+        phone_number: clientData.phone,
+        stateRegistration: clientData.stateRegistration,
+        cep: clientData.cep,
+        state: clientData.state,
+        city: clientData.city,
+        neighborhood: clientData.neighborhood,
+        public_place: clientData.publicPlace,
+        complement: clientData.complement,
+        number: clientData.number,
         //description: areaData.description,
       });
       successMessage("Cliente adicionado com sucesso!");
       setLoading(false);
+      navigate("/clientes/listagem");
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível adicionar cliente!");

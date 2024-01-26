@@ -14,6 +14,7 @@ import { DetailsArea } from "../screens/Areas/DetailsArea";
 import { FormArea } from "../screens/Areas/DetailsArea/FormArea";
 import { Clients } from "../screens/Clients";
 import { Collaborators } from "../screens/Collaborators";
+import { MultiStepFormClients } from "../screens/Clients/MultiStepFormClients";
 
 export const AppRoutes = () => {
   return (
@@ -34,7 +35,7 @@ export const AppRoutes = () => {
             element={<ListCollaborators />}
           />
 
-          <Route path="/clientes/cadastro" element={<Clients />} />
+          <Route path="/clientes/cadastro" element={<MultiStepFormClients />} />
           <Route path="/clientes/cadastrar" element={<FormClients />} />
           <Route path="/clientes/:id" element={<FormClients />} />
           <Route path="/clientes/:id/editar" element={<Clients />} />
