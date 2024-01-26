@@ -365,9 +365,9 @@ export function FormikStepper({
                   padding: "0.25rem 1rem 0.25rem 1rem",
                   fontWeight: 600,
                   border: "none",
-                  color: "#FFF",
+                  color: "#0076BE",
                   cursor: "pointer",
-                  backgroundColor: "#0076BE",
+                  //backgroundColor: "#0076BE",
                   fontFamily: "Open Sans, sans-serif",
                   fontSize: "0.875rem",
                 }}

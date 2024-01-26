@@ -38,7 +38,10 @@ export const AppRoutes = () => {
           <Route path="/clientes/cadastro" element={<MultiStepFormClients />} />
           <Route path="/clientes/cadastrar" element={<FormClients />} />
           <Route path="/clientes/:id" element={<FormClients />} />
-          <Route path="/clientes/:id/editar" element={<Clients />} />
+          <Route
+            path="/clientes/:id/editar"
+            element={<MultiStepFormClients />}
+          />
           <Route path="/clientes/listagem" element={<ListClients />} />
 
           <Route path="/obras" element={<ListConstructions />} />

@@ -12,6 +12,7 @@ import { Link } from "../../../components/Link";
 import { useClients } from "../../../hooks/useClients";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
+import { TablePagination } from "../../../components/Table/Pagination";
 
 type ClientsTableItem = Partial<Client>;
 
@@ -111,6 +112,13 @@ export const ListClients = () => {
 
       <Grid item xs={12} lg={12}>
         <Table columns={columns} data={listClients} />
+        {Boolean(listClients.length) && (
+          <TablePagination
+            count={pagination.pageQuantity}
+            page={pagination.currentPage}
+            onChange={handleChangePagination}
+          />
+        )}
       </Grid>
     </Grid>
   );
