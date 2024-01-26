@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Grid,
@@ -20,6 +20,7 @@ import { useStyles } from "./styles";
 import { Navbar } from "../../../components/Navbar";
 import { useClients } from "../../../hooks/useClients";
 import { BackgroundAvatar } from "../../../components/Avatar";
+import { useParams } from "react-router-dom";
 
 let initialValues = {
   responsible: "",
@@ -40,12 +41,20 @@ let initialValues = {
 };
 
 export function MultiStepFormClients() {
+  const { id: clientId } = useParams();
   const { classes } = useStyles();
-  const { addClientGeneralData } = useClients();
+  const { getClient, addClientGeneralData } = useClients();
 
   const onSubmit = async (values: any) => {
     await addClientGeneralData(values);
   };
+
+  useEffect(() => {
+    if (clientId) {
+      getClient(clientId);
+      alert(clientId);
+    }
+  }, [clientId]);
 
   return (
     <Card
