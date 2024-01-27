@@ -367,6 +367,7 @@ export function FormikStepper({
           <div>
             {childrenArray.map((child, index) => (
               <button
+                type="button"
                 style={{
                   margin: "1rem",
                   height: "100%",
