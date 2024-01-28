@@ -21,6 +21,7 @@ import { Navbar } from "../../../components/Navbar";
 import { useClients } from "../../../hooks/useClients";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useParams } from "react-router-dom";
+import { ListCollaborators } from "../../Collaborators/ListCollaborators";
 
 let initialValues = {
   responsible: "",
@@ -271,6 +272,16 @@ export function MultiStepFormClients() {
               </Paper>
             </Grid>
           </FormikStep>
+
+          {isEditScreen ? (
+            <FormikStep label="Funcionário">Lista de Funcionários</FormikStep>
+          ) : null}
+
+          {isEditScreen ? (
+            <FormikStep label="Obras Relacionadas">
+              Lista de Obras Relacionadas
+            </FormikStep>
+          ) : null}
         </FormikStepper>
       </CardContent>
     </Card>
