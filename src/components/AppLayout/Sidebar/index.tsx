@@ -8,9 +8,18 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Collapse,
 } from "@mui/material";
 
-import { Business, Badge, ArrowBack, ArrowForward } from "@mui/icons-material";
+import {
+  Business,
+  Badge,
+  ArrowBack,
+  ArrowForward,
+  ExpandLess,
+  ExpandMore,
+  Menu,
+} from "@mui/icons-material";
 
 import logoImage from "../../../assets/images/logo.png";
 
@@ -27,16 +36,31 @@ export const Sidebar = () => {
   const navigate = useNavigate();
 
   const [openSidebar, setOpenSidebar] = useState(false);
+  const [openClientsItemMenu, setOpenClientsItemMenu] = useState(false);
 
   const handleDrawer = () => {
     setOpenSidebar(!openSidebar);
+    if (openSidebar) {
+      setOpenClientsItemMenu(false);
+    }
+  };
+
+  const handleClientsList = () => {
+    setOpenClientsItemMenu(!openClientsItemMenu);
   };
 
   const navItems: NavItem[] = [
-    { text: "Clientes", path: "/clientes/cadastro", icon: <Business /> },
+    { text: "Clientes", path: "/clientes", icon: <Business /> },
     { text: "Funcionários", path: "/colaboradores", icon: <Badge /> },
-    { text: "Obras", path: "/obras", icon: <Business /> },
   ];
+
+  const returnedIcon = (openClientsItemMenu: boolean) => {
+    if (openClientsItemMenu) {
+      return <ExpandLess />;
+    }
+
+    return <ExpandMore />;
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -88,15 +112,9 @@ export const Sidebar = () => {
             onClick={() => {
               handleDrawer();
             }}
-            style={{
-              color: "#0076BE",
-              border: "1px solid #0076BE",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: "10px",
-            }}
+            style={{ color: "#0076BE" }}
           >
-            {openSidebar ? <ArrowForward /> : <ArrowBack />}
+            <Menu />
           </IconButton>
         </DrawerHeader>
 
@@ -123,7 +141,12 @@ export const Sidebar = () => {
                       px: 2.5,
                     }}
                     onClick={() => {
-                      navigate(`${path}`);
+                      if (path !== "/clientes") {
+                        navigate(`${path}`);
+                      } else {
+                        handleClientsList();
+                        setOpenSidebar(true);
+                      }
                     }}
                   >
                     {/*Icons */}
@@ -151,8 +174,75 @@ export const Sidebar = () => {
                         letterSpacing: "2px",
                       }}
                     />
+                    {openSidebar &&
+                      path === "/clientes" &&
+                      returnedIcon(openClientsItemMenu)}
                   </ListItemButton>
                 </ListItem>
+                {path === "/clientes" && (
+                  <Collapse
+                    in={openClientsItemMenu}
+                    timeout="auto"
+                    unmountOnExit
+                  >
+                    <List component="div" disablePadding>
+                      <ListItem
+                        sx={{
+                          backgroundColor: location.pathname.includes(
+                            "/clientes/cadastro"
+                          )
+                            ? "#0076BE"
+                            : "#EBF4FA",
+                        }}
+                      >
+                        <ListItemButton sx={{ pl: 4 }}>
+                          <ListItemText
+                            primary="• Cadastro"
+                            onClick={() => navigate("/clientes/cadastro")}
+                            sx={{
+                              fontFamily: "Open Sans",
+                              fontSize: "1rem",
+                              color: location.pathname.includes(
+                                "/clientes/cadastro"
+                              )
+                                ? "#FFFFFF"
+                                : "#2E3132",
+                              fontWeight: 600,
+                              lineHeight: "1.625rem",
+                            }}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                      <ListItem
+                        sx={{
+                          backgroundColor: location.pathname.includes(
+                            "/clientes/listagem"
+                          )
+                            ? "#0076BE"
+                            : "#EBF4FA",
+                        }}
+                      >
+                        <ListItemButton sx={{ pl: 4 }}>
+                          <ListItemText
+                            primary="• Listagem"
+                            onClick={() => navigate("/clientes/listagem")}
+                            sx={{
+                              fontFamily: "Open Sans",
+                              fontSize: "1rem",
+                              color: location.pathname.includes(
+                                "/clientes/listagem"
+                              )
+                                ? "#FFFFFF"
+                                : "#2E3132",
+                              fontWeight: 600,
+                              lineHeight: "1.625rem",
+                            }}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    </List>
+                  </Collapse>
+                )}
               </Fragment>
             );
           })}
