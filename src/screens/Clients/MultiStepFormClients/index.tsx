@@ -42,17 +42,22 @@ let initialValues = {
 
 export function MultiStepFormClients() {
   const { id: clientId } = useParams();
+  const isEditScreen = clientId;
   const { classes } = useStyles();
-  const { getClient, addClientGeneralData } = useClients();
+  const { getClient, addClientGeneralData, updateClient } = useClients();
 
   const onSubmit = async (values: any) => {
-    await addClientGeneralData(values);
+    if (!isEditScreen) {
+      await addClientGeneralData(values);
+    } else {
+      await updateClient(values);
+    }
   };
 
   useEffect(() => {
     if (clientId) {
       getClient(clientId);
-      alert(clientId);
+      //alert(clientId);
     }
   }, [clientId]);
 
@@ -294,6 +299,8 @@ export function FormikStepper({
   ] as React.ReactElement<FormikStepProps>;
   const [completed, setCompleted] = useState(false);
   const { classes } = useStyles();
+  const { id: clientId } = useParams();
+  const isEditScreen = clientId;
 
   function isLastStep() {
     return step === childrenArray.length - 1;
@@ -304,6 +311,9 @@ export function FormikStepper({
       validationSchema={currentChild.props.validationSchema}
       onSubmit={async (values, helpers) => {
         if (isLastStep()) {
+          await props.onSubmit(values, helpers);
+          setCompleted(true);
+        } else if (isEditScreen && !isLastStep()) {
           await props.onSubmit(values, helpers);
           setCompleted(true);
         } else {
@@ -330,7 +340,7 @@ export function FormikStepper({
                 >
                   <Box sx={{ display: "flex", gap: "1rem" }}>
                     <Grid item>
-                      {step > 0 ? (
+                      {step > 0 && !isEditScreen ? (
                         <Button
                           onClick={() => setStep((s) => s - 1)}
                           variant="contained"
@@ -352,8 +362,8 @@ export function FormikStepper({
                       type="submit"
                       className={classes.buttonSave}
                     >
-                      {isSubmitting
-                        ? "Enviando"
+                      {isEditScreen
+                        ? "Salvar"
                         : isLastStep()
                         ? "Finalizar cadastro"
                         : "Avançar"}
@@ -376,11 +386,12 @@ export function FormikStepper({
                   border: "none",
                   backgroundColor: index === step ? "#0076BE" : "#eff1f3",
                   color: index === step ? "#FFF" : "#0076BE",
+                  cursor: isEditScreen ? "pointer" : undefined,
                   fontFamily: "Open Sans, sans-serif",
                   fontSize: "0.875rem",
                 }}
                 key={child.props.label}
-                //onClick={() => setStep(index)}
+                onClick={isEditScreen ? () => setStep(index) : undefined}
               >
                 {child.props.label}
               </div>
