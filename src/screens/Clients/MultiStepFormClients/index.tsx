@@ -363,22 +363,24 @@ export function FormikStepper({
                         </Button>
                       ) : null}
                     </Grid>
-                    <Button
-                      startIcon={
-                        isSubmitting ? <CircularProgress size="1rem" /> : null
-                      }
-                      disabled={isSubmitting}
-                      variant="contained"
-                      color="primary"
-                      type="submit"
-                      className={classes.buttonSave}
-                    >
-                      {isEditScreen
-                        ? "Salvar"
-                        : isLastStep()
-                        ? "Finalizar cadastro"
-                        : "Avançar"}
-                    </Button>
+                    {isEditScreen && step > 1 ? null : (
+                      <Button
+                        startIcon={
+                          isSubmitting ? <CircularProgress size="1rem" /> : null
+                        }
+                        disabled={isSubmitting}
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        className={classes.buttonSave}
+                      >
+                        {isEditScreen && step <= 1
+                          ? "Salvar"
+                          : isLastStep()
+                          ? "Finalizar cadastro"
+                          : "Avançar"}
+                      </Button>
+                    )}
                   </Box>
                 </div>
               </div>
