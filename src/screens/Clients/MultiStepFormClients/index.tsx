@@ -364,10 +364,9 @@ export function FormikStepper({
             </Paper>
           </Grid>
 
-          <div>
+          <div style={{ display: "flex" }}>
             {childrenArray.map((child, index) => (
-              <button
-                type="button"
+              <div
                 style={{
                   margin: "1rem",
                   height: "100%",
@@ -375,17 +374,16 @@ export function FormikStepper({
                   padding: "0.25rem 1rem 0.25rem 1rem",
                   fontWeight: 600,
                   border: "none",
-                  color: "#0076BE",
-                  cursor: "pointer",
-                  //backgroundColor: "#0076BE",
+                  backgroundColor: index === step ? "#0076BE" : "#eff1f3",
+                  color: index === step ? "#FFF" : "#0076BE",
                   fontFamily: "Open Sans, sans-serif",
                   fontSize: "0.875rem",
                 }}
                 key={child.props.label}
-                onClick={() => setStep(index)}
+                //onClick={() => setStep(index)}
               >
                 {child.props.label}
-              </button>
+              </div>
             ))}
           </div>
           {currentChild}
