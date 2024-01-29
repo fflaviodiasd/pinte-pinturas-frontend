@@ -37,8 +37,28 @@ export const useClients = () => {
   const getClient = async (id: string) => {
     setLoading(true);
     try {
-      const { data } = await api.get(`clients/${id}`);
-      // setClientData({});
+      const { data } = await api.get(`customers/${id}`);
+      setClientData({
+        ...clientData,
+        id: data.id,
+        responsible: data.responsible,
+        name: data.name,
+        status: data.status,
+        tradingName: data.fantasy_name,
+        cnpj: data.cnpj,
+        phone: data.phone_number,
+        email: data.email,
+        corporateName: data.corporate_name,
+        municipalRegistration: data.municipal_registration,
+        stateRegistration: data.state_registration,
+        cep: data.cep,
+        state: data.state,
+        city: data.city,
+        neighborhood: data.neighborhood,
+        publicPlace: data.public_place,
+        complement: data.complement,
+        number: data.number,
+      });
       setLoading(false);
     } catch (error) {
       console.log(error);

@@ -45,7 +45,8 @@ export function MultiStepFormClients() {
   const { id: clientId } = useParams();
   const isEditScreen = clientId;
   const { classes } = useStyles();
-  const { getClient, addClientGeneralData, updateClient } = useClients();
+  const { clientData, getClient, addClientGeneralData, updateClient } =
+    useClients();
 
   const onSubmit = async (values: any) => {
     if (!isEditScreen) {
@@ -58,7 +59,6 @@ export function MultiStepFormClients() {
   useEffect(() => {
     if (clientId) {
       getClient(clientId);
-      //alert(clientId);
     }
   }, [clientId]);
 
@@ -69,7 +69,7 @@ export function MultiStepFormClients() {
     >
       <CardContent>
         <FormikStepper
-          initialValues={initialValues}
+          initialValues={clientData}
           onSubmit={async (values) => {
             console.log("values", values);
             onSubmit(values);
