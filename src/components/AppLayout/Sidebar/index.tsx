@@ -20,13 +20,13 @@ import {
 } from "@mui/icons-material";
 
 import logoImage from "../../../assets/images/logo.png";
-
 import { Drawer, DrawerHeader } from "./styles";
 
 interface NavItem {
   text: string;
   path: string;
-  icon: ReactElement;
+  icon?: ReactElement;
+  subItems?: NavItem[];
 }
 
 export const Sidebar = () => {
@@ -35,11 +35,13 @@ export const Sidebar = () => {
 
   const [openSidebar, setOpenSidebar] = useState(false);
   const [openClientsItemMenu, setOpenClientsItemMenu] = useState(false);
+  const [openEmployeesItemMenu, setOpenEmployeesItemMenu] = useState(false);
 
   const handleDrawer = () => {
     setOpenSidebar(!openSidebar);
     if (openSidebar) {
       setOpenClientsItemMenu(false);
+      setOpenEmployeesItemMenu(false);
     }
   };
 
@@ -47,16 +49,35 @@ export const Sidebar = () => {
     setOpenClientsItemMenu(!openClientsItemMenu);
   };
 
+  const handleEmployeesList = () => {
+    setOpenEmployeesItemMenu(!openEmployeesItemMenu);
+  };
+
   const navItems: NavItem[] = [
-    { text: "Clientes", path: "/clientes", icon: <Business /> },
-    { text: "Funcionários", path: "/colaboradores/cadastrar", icon: <Badge /> },
+    {
+      text: "Clientes",
+      path: "/clientes",
+      icon: <Business />,
+      subItems: [
+        { text: "• Cadastro", path: "/clientes/cadastrar" },
+        { text: "• Listagem", path: "/clientes/listagem" },
+      ],
+    },
+    {
+      text: "Funcionários",
+      path: "/colaboradores",
+      icon: <Badge />,
+      subItems: [
+        { text: "• Cadastro", path: "/colaboradores/cadastrar" },
+        { text: "• Listagem", path: "/colaboradores/listagem" },
+      ],
+    },
   ];
 
-  const returnedIcon = (openClientsItemMenu: boolean) => {
-    if (openClientsItemMenu) {
+  const returnedIcon = (isOpen: boolean) => {
+    if (isOpen) {
       return <ExpandLess />;
     }
-
     return <ExpandMore />;
   };
 
@@ -118,8 +139,12 @@ export const Sidebar = () => {
 
         <List>
           {navItems.map((navItem) => {
-            const { path } = navItem;
+            const { path, subItems } = navItem;
             const isActive = location.pathname.includes(path);
+            const isOpen =
+              path === "/clientes"
+                ? openClientsItemMenu
+                : openEmployeesItemMenu;
 
             return (
               <Fragment key={navItem.text}>
@@ -139,15 +164,19 @@ export const Sidebar = () => {
                       px: 2.5,
                     }}
                     onClick={() => {
-                      if (path !== "/clientes") {
-                        navigate(`${path}`);
-                      } else {
-                        handleClientsList();
+                      if (subItems) {
+                        if (path === "/clientes") {
+                          handleClientsList();
+                        } else if (path === "/colaboradores") {
+                          handleEmployeesList();
+                        }
                         setOpenSidebar(true);
+                      } else {
+                        navigate(`${path}`);
                       }
                     }}
                   >
-                    {/*Icons */}
+                    {/* Icons */}
                     <ListItemIcon
                       sx={{
                         minWidth: 0,
@@ -172,74 +201,42 @@ export const Sidebar = () => {
                         letterSpacing: "2px",
                       }}
                     />
-                    {openSidebar &&
-                      path === "/clientes" &&
-                      returnedIcon(openClientsItemMenu)}
+                    {subItems && openSidebar && returnedIcon(isOpen)}
                   </ListItemButton>
                 </ListItem>
 
-                {/*Collapse */}
-                {path === "/clientes" && (
-                  <Collapse
-                    in={openClientsItemMenu}
-                    timeout="auto"
-                    unmountOnExit
-                  >
+                {/* Collapse */}
+                {subItems && (
+                  <Collapse in={isOpen} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding>
-                      <ListItem
-                        sx={{
-                          backgroundColor: location.pathname.includes(
-                            "/clientes/cadastrar"
-                          )
-                            ? "#0076BE"
-                            : "#EBF4FA",
-                        }}
-                      >
-                        <ListItemButton sx={{ pl: 4 }}>
-                          <ListItemText
-                            primary="• Cadastro"
-                            onClick={() => navigate("/clientes/cadastrar")}
-                            sx={{
-                              fontFamily: "Open Sans",
-                              fontSize: "1rem",
-                              color: location.pathname.includes(
-                                "/clientes/cadastrar"
-                              )
-                                ? "#FFFFFF"
-                                : "#2E3132",
-                              fontWeight: 600,
-                              lineHeight: "1.625rem",
-                            }}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                      <ListItem
-                        sx={{
-                          backgroundColor: location.pathname.includes(
-                            "/clientes/listagem"
-                          )
-                            ? "#0076BE"
-                            : "#EBF4FA",
-                        }}
-                      >
-                        <ListItemButton sx={{ pl: 4 }}>
-                          <ListItemText
-                            primary="• Listagem"
-                            onClick={() => navigate("/clientes/listagem")}
-                            sx={{
-                              fontFamily: "Open Sans",
-                              fontSize: "1rem",
-                              color: location.pathname.includes(
-                                "/clientes/listagem"
-                              )
-                                ? "#FFFFFF"
-                                : "#2E3132",
-                              fontWeight: 600,
-                              lineHeight: "1.625rem",
-                            }}
-                          />
-                        </ListItemButton>
-                      </ListItem>
+                      {subItems.map((subItem) => (
+                        <ListItem
+                          key={subItem.text}
+                          sx={{
+                            backgroundColor: location.pathname.includes(
+                              subItem.path
+                            )
+                              ? "#0076BE"
+                              : "#EBF4FA",
+                          }}
+                        >
+                          <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemText
+                              primary={subItem.text}
+                              onClick={() => navigate(subItem.path)}
+                              sx={{
+                                fontFamily: "Open Sans",
+                                fontSize: "1rem",
+                                color: location.pathname.includes(subItem.path)
+                                  ? "#FFFFFF"
+                                  : "#2E3132",
+                                fontWeight: 600,
+                                lineHeight: "1.625rem",
+                              }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
                     </List>
                   </Collapse>
                 )}
