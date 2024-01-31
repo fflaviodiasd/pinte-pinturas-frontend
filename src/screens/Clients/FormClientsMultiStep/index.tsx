@@ -18,6 +18,7 @@ import { useClients } from "../../../hooks/useClients";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useParams } from "react-router-dom";
 import { ListClientsRelatedWorks } from "../ListClientsRelatedWorks";
+import { ListClientsEmployees } from "../ListClientsEmployees";
 
 export function FormClientsMultiStep() {
   const { id: clientId } = useParams();
@@ -241,7 +242,9 @@ export function FormClientsMultiStep() {
           </FormikStep>
 
           {isEditScreen ? (
-            <FormikStep label="Funcionário">Lista de Funcionários</FormikStep>
+            <FormikStep label="Funcionário">
+              <ListClientsEmployees />
+            </FormikStep>
           ) : null}
 
           {isEditScreen ? (

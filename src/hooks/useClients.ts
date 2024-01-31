@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { AxiosError } from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
 import { Client } from "../types";
@@ -137,6 +137,38 @@ export const useClients = () => {
     }
   };
 
+  const [listClientsEmployees, setListClientsEmployees] = useState<Client[]>(
+    []
+  );
+
+  const getAllClientsEmployees = async (currentPage: number = 0) => {
+    setLoading(true);
+    const offset = (currentPage - 1) * LIMIT;
+    try {
+      const { data } = await api.get(
+        `companies/id/employees/?disabled=false&limit=${LIMIT}&offset=${offset}`
+      );
+      setPagination({
+        currentPage: currentPage === 0 ? 1 : currentPage,
+        pageQuantity: Math.ceil(data.count / LIMIT),
+      });
+      console.log(data);
+      const getAllClientsEmployees = data.map((result: any) => ({
+        id: result.id,
+        status: result.active,
+        fullName: result.full_name,
+        cellPhone: result.cell_phone,
+        role: result.office,
+        profile: result.type,
+      }));
+      setListClientsEmployees(getAllClientsEmployees);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const [listClientsRelatedWorks, setListClientsRelatedWorks] = useState<
     Client[]
   >([]);
@@ -212,12 +244,14 @@ export const useClients = () => {
     clientData,
     listClients,
     listClientsRelatedWorks,
+    listClientsEmployees,
     getClient,
     addClient,
     updateClient,
     disableClient,
     getAllClients,
     getAllClientsRelatedWorks,
+    getAllClientsEmployees,
     getClientBySearch,
   };
 };
