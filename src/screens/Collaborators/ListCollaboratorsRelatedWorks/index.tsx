@@ -7,19 +7,19 @@ import { useDebounce } from "use-debounce";
 import { Table } from "../../../components/Table";
 
 import { Grid } from "@mui/material";
-import { useStyles } from "./styles";
 import { Collaborator } from "../../../types";
+import { useStyles } from "./styles";
 import { useCollaborators } from "../../../hooks/useCollaborators";
 
-type ClientsRelatedWorksTableItem = Partial<Collaborator>;
+type CollaboratorsRelatedWorksTableItem = Partial<Collaborator>;
 
-export const ListClientsHistory = () => {
+export const ListCollaboratorsRelatedWorks = () => {
   const { classes } = useStyles();
 
   const navigate = useNavigate();
   const {
-    getAllCollaboratorsHistory,
-    listCollaboratorsHistory,
+    getAllCollaboratorsRelatedWorks,
+    listCollaboratorsRelatedWorks,
     disableCollaborator,
     getCollaboratorBySearch,
     pagination,
@@ -45,27 +45,27 @@ export const ListClientsHistory = () => {
     if (value) {
       getCollaboratorBySearch(value);
     } else {
-      getAllCollaboratorsHistory();
+      getAllCollaboratorsRelatedWorks();
     }
   }, [value]);
 
-  const columns = useMemo<MRT_ColumnDef<ClientsRelatedWorksTableItem>[]>(
+  const columns = useMemo<MRT_ColumnDef<CollaboratorsRelatedWorksTableItem>[]>(
     () => [
       {
         accessorKey: "id",
         header: "ID",
       },
       {
-        accessorKey: "role",
-        header: "Cargo",
+        accessorKey: "active",
+        header: "Ativa",
       },
       {
-        accessorKey: "dismissalDate",
-        header: "Data de Demissão",
+        accessorKey: "name",
+        header: "Nome da Obra",
       },
       {
-        accessorKey: "salary",
-        header: "Salário",
+        accessorKey: "responsible",
+        header: "Responsável",
       },
     ],
     []
@@ -74,7 +74,7 @@ export const ListClientsHistory = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} lg={12}>
-        <Table columns={columns} data={listCollaboratorsHistory} />
+        <Table columns={columns} data={listCollaboratorsRelatedWorks} />
       </Grid>
     </Grid>
   );

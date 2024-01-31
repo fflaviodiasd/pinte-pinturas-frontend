@@ -141,6 +141,33 @@ export const useCollaborators = () => {
     }
   };
 
+  const [listCollaboratorsRelatedWorks, setListCollaboratorsRelatedWorks] =
+    useState<Collaborator[]>([]);
+
+  const getAllCollaboratorsRelatedWorks = async (currentPage: number = 0) => {
+    setLoading(true);
+    const offset = (currentPage - 1) * LIMIT;
+    try {
+      const { data } = await api.get(
+        `employees/{id}/related_works/?disabled=false&limit=${LIMIT}&offset=${offset}`
+      );
+      setPagination({
+        currentPage: currentPage === 0 ? 1 : currentPage,
+        pageQuantity: Math.ceil(data.count / LIMIT),
+      });
+      const getAllCollaboratorsRelatedWorks = data.results.map(
+        (result: any) => ({
+          id: result.id,
+        })
+      );
+      setListCollaboratorsRelatedWorks(getAllCollaboratorsRelatedWorks);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const [listCollaborators, setListCollaborators] = useState<Collaborator[]>(
     []
   );
@@ -190,12 +217,14 @@ export const useCollaborators = () => {
     collaboratorData,
     listCollaborators,
     listCollaboratorsHistory,
+    listCollaboratorsRelatedWorks,
     getCollaborator,
     addCollaborator,
     updateCollaborator,
     disableCollaborator,
     getAllCollaborators,
     getAllCollaboratorsHistory,
+    getAllCollaboratorsRelatedWorks,
     getCollaboratorBySearch,
   };
 };

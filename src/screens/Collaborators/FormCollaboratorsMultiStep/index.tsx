@@ -20,6 +20,7 @@ import { BackgroundAvatar } from "../../../components/Avatar";
 import { useParams } from "react-router-dom";
 import { useCollaborators } from "../../../hooks/useCollaborators";
 import { ListClientsHistory } from "../ListCollaboratorsHistory";
+import { ListCollaboratorsRelatedWorks } from "../ListCollaboratorsRelatedWorks";
 
 export function FormCollaboratorsMultiStep() {
   const { id: collaboratorId } = useParams();
@@ -304,7 +305,9 @@ export function FormCollaboratorsMultiStep() {
           ) : null}
 
           {isEditScreen ? (
-            <FormikStep label="Obras Relacionadas">Histórico</FormikStep>
+            <FormikStep label="Obras Relacionadas">
+              <ListCollaboratorsRelatedWorks />
+            </FormikStep>
           ) : null}
         </FormikStepper>
       </CardContent>
