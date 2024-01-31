@@ -32,8 +32,24 @@ export const useCollaborators = () => {
   const getCollaborator = async (id: string) => {
     setLoading(true);
     try {
-      const { data } = await api.get(`collaborators/${id}`);
-      // setCollaboratorData({});
+      const { data } = await api.get(`employees/${id}`);
+      setCollaboratorData({
+        ...collaboratorData,
+        id: data.id,
+        name: data.name,
+        type: data.type,
+        status: data.status,
+        role: data.role,
+        profile: data.profile,
+        phone: data.phone,
+        cpf: data.cpf,
+        dateOfBirth: data.dateOfBirth,
+        registration: data.registration,
+        email: data.email,
+        admissionDate: data.admissionDate,
+        dismissalDate: data.dismissalDate,
+      });
+      console.log("dados", data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -74,12 +90,9 @@ export const useCollaborators = () => {
   ) => {
     setLoading(true);
     try {
-      await api.post(`employees/`, {
-        cpf: collaboratorData.cpf,
-        name: collaboratorData.name,
-        registration: collaboratorData.registration,
-        type: collaboratorData.type,
+      await api.post(`/employees/`, {
         email: collaboratorData.email,
+        type: collaboratorData.type,
       });
       successMessage("Colaborador adicionado com sucesso!");
       setLoading(false);

@@ -51,7 +51,7 @@ export const Sidebar = () => {
 
   const navItems: NavItem[] = [
     { text: "Clientes", path: "/clientes", icon: <Business /> },
-    { text: "Funcionários", path: "/colaboradores", icon: <Badge /> },
+    { text: "Funcionários", path: "/colaboradores/cadastro", icon: <Badge /> },
   ];
 
   const returnedIcon = (openClientsItemMenu: boolean) => {

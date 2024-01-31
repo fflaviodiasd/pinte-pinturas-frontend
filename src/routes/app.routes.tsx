@@ -15,6 +15,7 @@ import { FormArea } from "../screens/Areas/DetailsArea/FormArea";
 import { Clients } from "../screens/Clients";
 import { Collaborators } from "../screens/Collaborators";
 import { MultiStepFormClients } from "../screens/Clients/MultiStepFormClients";
+import { MultiStepFormCollaborators } from "../screens/Collaborators/MultiStepFormCollaborators";
 
 export const AppRoutes = () => {
   return (
@@ -28,8 +29,15 @@ export const AppRoutes = () => {
             path="/colaboradores/cadastrar"
             element={<FormCollaborators />}
           />
+          <Route
+            path="/colaboradores/cadastro"
+            element={<MultiStepFormCollaborators />}
+          />
           <Route path="/colaboradores/:id" element={<FormCollaborators />} />
-          <Route path="/colaboradores/:id/editar" element={<Collaborators />} />
+          <Route
+            path="/colaboradores/:id/editar"
+            element={<MultiStepFormCollaborators />}
+          />
           <Route
             path="/colaboradores/listagem"
             element={<ListCollaborators />}
