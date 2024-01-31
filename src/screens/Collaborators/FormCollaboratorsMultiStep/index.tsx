@@ -2,9 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import {
   Grid,
-  Stepper,
-  Step,
-  StepLabel,
   Box,
   Card,
   CardContent,
@@ -23,24 +20,20 @@ import { BackgroundAvatar } from "../../../components/Avatar";
 import { useParams } from "react-router-dom";
 import { useCollaborators } from "../../../hooks/useCollaborators";
 
-let initialValues = {
-  email: "",
-};
-
-export function MultiStepFormCollaborators() {
+export function FormCollaboratorsMultiStep() {
   const { id: collaboratorId } = useParams();
   const isEditScreen = collaboratorId;
   const { classes } = useStyles();
   const {
     collaboratorData,
     getCollaborator,
-    addCollaboratorPersonalData,
+    addCollaborator,
     updateCollaborator,
   } = useCollaborators();
 
   const onSubmit = async (values: any) => {
     if (!isEditScreen) {
-      await addCollaboratorPersonalData(values);
+      await addCollaborator(values);
     } else {
       await updateCollaborator(values);
     }
@@ -451,40 +444,6 @@ export function FormikStepper({
             ))}
           </div>
           {currentChild}
-
-          {/*
-          <Grid container spacing={2}>
-            <Grid item>
-              {step > 0 ? (
-                <Button
-                  onClick={() => setStep((s) => s - 1)}
-                  variant="contained"
-                  color="primary"
-                  disabled={isSubmitting}
-                >
-                  Voltar
-                </Button>
-              ) : null}
-            </Grid>
-            <Grid item>
-              <Button
-                startIcon={
-                  isSubmitting ? <CircularProgress size="1rem" /> : null
-                }
-                disabled={isSubmitting}
-                variant="contained"
-                color="primary"
-                type="submit"
-              >
-                {isSubmitting
-                  ? "Enviando"
-                  : isLastStep()
-                  ? "Enviar"
-                  : "Avançar"}
-              </Button>
-            </Grid>
-          </Grid>
-                */}
         </Form>
       )}
     </Formik>

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import {

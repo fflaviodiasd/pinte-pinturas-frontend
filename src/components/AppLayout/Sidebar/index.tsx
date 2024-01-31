@@ -14,8 +14,6 @@ import {
 import {
   Business,
   Badge,
-  ArrowBack,
-  ArrowForward,
   ExpandLess,
   ExpandMore,
   Menu,
@@ -51,7 +49,7 @@ export const Sidebar = () => {
 
   const navItems: NavItem[] = [
     { text: "Clientes", path: "/clientes", icon: <Business /> },
-    { text: "Funcionários", path: "/colaboradores/cadastro", icon: <Badge /> },
+    { text: "Funcionários", path: "/colaboradores/cadastrar", icon: <Badge /> },
   ];
 
   const returnedIcon = (openClientsItemMenu: boolean) => {
@@ -179,6 +177,8 @@ export const Sidebar = () => {
                       returnedIcon(openClientsItemMenu)}
                   </ListItemButton>
                 </ListItem>
+
+                {/*Collapse */}
                 {path === "/clientes" && (
                   <Collapse
                     in={openClientsItemMenu}
@@ -189,7 +189,7 @@ export const Sidebar = () => {
                       <ListItem
                         sx={{
                           backgroundColor: location.pathname.includes(
-                            "/clientes/cadastro"
+                            "/clientes/cadastrar"
                           )
                             ? "#0076BE"
                             : "#EBF4FA",
@@ -198,12 +198,12 @@ export const Sidebar = () => {
                         <ListItemButton sx={{ pl: 4 }}>
                           <ListItemText
                             primary="• Cadastro"
-                            onClick={() => navigate("/clientes/cadastro")}
+                            onClick={() => navigate("/clientes/cadastrar")}
                             sx={{
                               fontFamily: "Open Sans",
                               fontSize: "1rem",
                               color: location.pathname.includes(
-                                "/clientes/cadastro"
+                                "/clientes/cadastrar"
                               )
                                 ? "#FFFFFF"
                                 : "#2E3132",

@@ -75,21 +75,6 @@ export const useCollaborators = () => {
   const addCollaborator = async (collaboratorData: Collaborator) => {
     setLoading(true);
     try {
-      await api.post("collaborators", collaboratorData);
-      successMessage("Colaborador adicionado com sucesso!");
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      errorMessage("Não foi possível adicionar colaborador!");
-      setLoading(false);
-    }
-  };
-
-  const addCollaboratorPersonalData = async (
-    collaboratorData: Collaborator
-  ) => {
-    setLoading(true);
-    try {
       await api.post(`/employees/`, {
         email: collaboratorData.email,
         type: collaboratorData.type,
@@ -106,7 +91,7 @@ export const useCollaborators = () => {
   const updateCollaborator = async (collaboratorData: Collaborator) => {
     setLoading(true);
     try {
-      await api.patch(`collaborators/${id}`, collaboratorData);
+      await api.patch(`employees/${id}`, collaboratorData);
       successMessage("Colaborador atualizado com sucesso!");
       setLoading(false);
     } catch (error) {
@@ -119,7 +104,7 @@ export const useCollaborators = () => {
   const disableCollaborator = async (collaboratorId: number) => {
     setLoading(true);
     try {
-      await api.delete(`collaborators/${collaboratorId}`);
+      await api.delete(`employees/${collaboratorId}`);
       getAllCollaborators();
       successMessage("Colaborador desabilitado com sucesso!");
       setLoading(false);
@@ -180,7 +165,6 @@ export const useCollaborators = () => {
     listCollaborators,
     getCollaborator,
     addCollaborator,
-    addCollaboratorPersonalData,
     updateCollaborator,
     disableCollaborator,
     getAllCollaborators,

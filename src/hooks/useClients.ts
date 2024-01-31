@@ -68,7 +68,7 @@ export const useClients = () => {
 
   const getClientBySearch = async (id: string) => {
     try {
-      const { data } = await api.get(`clients/${id}`);
+      const { data } = await api.get(`customers/${id}`);
       const allClients = data.results.map((client: Client) => ({
         id: client.id,
         name: client.name,
@@ -82,20 +82,7 @@ export const useClients = () => {
   const addClient = async (clientData: Client) => {
     setLoading(true);
     try {
-      await api.post("clients", clientData);
-      successMessage("Cliente adicionado com sucesso!");
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      errorMessage("Não foi possível adicionar cliente!");
-      setLoading(false);
-    }
-  };
-
-  const addClientGeneralData = async (clientData: Client) => {
-    setLoading(true);
-    try {
-      await api.post(`customers/`, {
+      await api.post(`/customers/`, {
         corporate_name: clientData.corporateName,
         municipal_registration: clientData.municipalRegistration,
         cnpj: clientData.cnpj,
@@ -123,23 +110,10 @@ export const useClients = () => {
     }
   };
 
-  const addClientAddress = async (clientData: Client) => {
-    setLoading(true);
-    try {
-      await api.post("customers", clientData);
-      successMessage("Cliente adicionado com sucesso!");
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      errorMessage("Não foi possível adicionar cliente!");
-      setLoading(false);
-    }
-  };
-
   const updateClient = async (clientData: Client) => {
     setLoading(true);
     try {
-      await api.patch(`clients/${id}`, clientData);
+      await api.patch(`customers/${id}`, clientData);
       successMessage("Cliente atualizado com sucesso!");
       setLoading(false);
     } catch (error) {
@@ -152,7 +126,7 @@ export const useClients = () => {
   const disableClient = async (clientId: number) => {
     setLoading(true);
     try {
-      await api.delete(`clients/${clientId}`);
+      await api.delete(`customers/${clientId}`);
       getAllClients();
       successMessage("Cliente desabilitado com sucesso!");
       setLoading(false);
@@ -211,8 +185,6 @@ export const useClients = () => {
     listClients,
     getClient,
     addClient,
-    addClientGeneralData,
-    addClientAddress,
     updateClient,
     disableClient,
     getAllClients,

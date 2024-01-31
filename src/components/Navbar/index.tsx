@@ -1,6 +1,5 @@
-import Typography from "@mui/material/Typography";
 import { BackgroundAvatar } from "../Avatar";
-import { Button, Grid, Paper } from "@mui/material";
+import { Button, Grid, Paper, Typography } from "@mui/material";
 import { useStyles } from "./styles";
 
 export function Navbar() {

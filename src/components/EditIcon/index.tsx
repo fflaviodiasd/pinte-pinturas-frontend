@@ -1,16 +1,21 @@
 import { Button } from "@mui/material";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import { ModeEdit } from "@mui/icons-material";
 
-interface LinkProps {
+interface EditIconProps {
   onClick?: () => void;
   label: string;
   disabled?: boolean;
 }
 
-export const Link = ({ onClick, label, disabled, ...props }: LinkProps) => {
+export const EditIcon = ({
+  onClick,
+  label,
+  disabled,
+  ...props
+}: EditIconProps) => {
   return (
     <Button disabled={disabled} onClick={onClick} disableRipple>
-      <ModeEditIcon sx={{ color: "#C5C7C8" }} />
+      <ModeEdit />
     </Button>
   );
 };

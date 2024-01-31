@@ -44,21 +44,3 @@ export type Client = {
   complement: string;
   number: string;
 };
-
-export type Area = {
-  id: number;
-  name: string;
-  type: string;
-  level: number;
-  childAreas: Area[];
-};
-
-export type Construction = {
-  id: number;
-  name: string;
-  responsible: string;
-  percentageCompleted: number;
-  status: string;
-  type: string;
-  areas: Area[];
-};

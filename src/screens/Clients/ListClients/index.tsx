@@ -8,7 +8,7 @@ import { Table } from "../../../components/Table";
 
 import { Grid, Paper } from "@mui/material";
 import { Client } from "../../../types";
-import { Link } from "../../../components/Link";
+import { EditIcon } from "../../../components/EditIcon";
 import { useClients } from "../../../hooks/useClients";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
@@ -90,8 +90,8 @@ export const ListClients = () => {
           align: "right",
         },
         Cell: ({ cell }) => (
-          <Link
-            onClick={() => navigate(`/clientes/${cell.row.original.id}/editar`)}
+          <EditIcon
+            onClick={() => navigate(`/clientes/${cell.row.original.id}`)}
             label="Editar"
           />
         ),

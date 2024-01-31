@@ -2,9 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import {
   Grid,
-  Stepper,
-  Step,
-  StepLabel,
   Box,
   Card,
   CardContent,
@@ -17,40 +14,19 @@ import {
 import { Field, Form, Formik, FormikConfig, FormikValues } from "formik";
 import { InputMask } from "../../../components/InputMask";
 import { useStyles } from "./styles";
-import { Navbar } from "../../../components/Navbar";
 import { useClients } from "../../../hooks/useClients";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useParams } from "react-router-dom";
-import { ListCollaborators } from "../../Collaborators/ListCollaborators";
 
-let initialValues = {
-  responsible: "",
-  tradingName: "",
-  cnpj: "",
-  phone: "",
-  email: "",
-  corporateName: "",
-  municipalRegistration: "",
-  stateRegistration: "",
-  cep: "",
-  state: "",
-  city: "",
-  neighborhood: "",
-  publicPlace: "",
-  complement: "",
-  number: "",
-};
-
-export function MultiStepFormClients() {
+export function FormClientsMultiStep() {
   const { id: clientId } = useParams();
   const isEditScreen = clientId;
   const { classes } = useStyles();
-  const { clientData, getClient, addClientGeneralData, updateClient } =
-    useClients();
+  const { clientData, getClient, addClient, updateClient } = useClients();
 
   const onSubmit = async (values: any) => {
     if (!isEditScreen) {
-      await addClientGeneralData(values);
+      await addClient(values);
     } else {
       await updateClient(values);
     }
@@ -411,40 +387,6 @@ export function FormikStepper({
             ))}
           </div>
           {currentChild}
-
-          {/*
-          <Grid container spacing={2}>
-            <Grid item>
-              {step > 0 ? (
-                <Button
-                  onClick={() => setStep((s) => s - 1)}
-                  variant="contained"
-                  color="primary"
-                  disabled={isSubmitting}
-                >
-                  Voltar
-                </Button>
-              ) : null}
-            </Grid>
-            <Grid item>
-              <Button
-                startIcon={
-                  isSubmitting ? <CircularProgress size="1rem" /> : null
-                }
-                disabled={isSubmitting}
-                variant="contained"
-                color="primary"
-                type="submit"
-              >
-                {isSubmitting
-                  ? "Enviando"
-                  : isLastStep()
-                  ? "Enviar"
-                  : "Avançar"}
-              </Button>
-            </Grid>
-          </Grid>
-                */}
         </Form>
       )}
     </Formik>

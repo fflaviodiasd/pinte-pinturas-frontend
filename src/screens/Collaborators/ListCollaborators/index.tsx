@@ -8,7 +8,7 @@ import { Table } from "../../../components/Table";
 
 import { Grid, Paper } from "@mui/material";
 import { Collaborator } from "../../../types";
-import { Link } from "../../../components/Link";
+import { EditIcon } from "../../../components/EditIcon";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
 import { useCollaborators } from "../../../hooks/useCollaborators";
@@ -85,10 +85,8 @@ export const ListCollaborators = () => {
           align: "right",
         },
         Cell: ({ cell }) => (
-          <Link
-            onClick={() =>
-              navigate(`/colaboradores/${cell.row.original.id}/editar`)
-            }
+          <EditIcon
+            onClick={() => navigate(`/colaboradores/${cell.row.original.id}`)}
             label="Editar"
           />
         ),
