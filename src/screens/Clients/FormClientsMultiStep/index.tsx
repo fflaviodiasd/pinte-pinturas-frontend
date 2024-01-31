@@ -17,6 +17,7 @@ import { useStyles } from "./styles";
 import { useClients } from "../../../hooks/useClients";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useParams } from "react-router-dom";
+import { ListClientsRelatedWorks } from "../ListClientsRelatedWorks";
 
 export function FormClientsMultiStep() {
   const { id: clientId } = useParams();
@@ -245,7 +246,7 @@ export function FormClientsMultiStep() {
 
           {isEditScreen ? (
             <FormikStep label="Obras Relacionadas">
-              Lista de Obras Relacionadas
+              <ListClientsRelatedWorks />
             </FormikStep>
           ) : null}
         </FormikStepper>

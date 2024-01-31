@@ -137,6 +137,34 @@ export const useClients = () => {
     }
   };
 
+  const [listClientsRelatedWorks, setListClientsRelatedWorks] = useState<
+    Client[]
+  >([]);
+
+  const getAllClientsRelatedWorks = async (currentPage: number = 0) => {
+    setLoading(true);
+    const offset = (currentPage - 1) * LIMIT;
+    try {
+      const { data } = await api.get(
+        `customers/{id}/related_works/?disabled=false&limit=${LIMIT}&offset=${offset}`
+      );
+      setPagination({
+        currentPage: currentPage === 0 ? 1 : currentPage,
+        pageQuantity: Math.ceil(data.count / LIMIT),
+      });
+      const getAllClientsRelatedWorks = data.constructions.map(
+        (result: any) => ({
+          id: result.id,
+        })
+      );
+      setListClientsRelatedWorks(getAllClientsRelatedWorks);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const [listClients, setListClients] = useState<Client[]>([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -183,11 +211,13 @@ export const useClients = () => {
     handleChangePagination,
     clientData,
     listClients,
+    listClientsRelatedWorks,
     getClient,
     addClient,
     updateClient,
     disableClient,
     getAllClients,
+    getAllClientsRelatedWorks,
     getClientBySearch,
   };
 };
