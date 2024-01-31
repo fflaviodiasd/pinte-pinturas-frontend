@@ -70,7 +70,7 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
+                      required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -81,7 +81,7 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
+                      required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -92,7 +92,7 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
+                      required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -103,7 +103,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
                       InputProps={{
                         inputComponent: InputMask as any,
                       }}
@@ -119,7 +118,7 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
+                      required
                       InputProps={{
                         inputComponent: InputMask as any,
                       }}
@@ -133,7 +132,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
                       InputProps={{
                         inputComponent: InputMask as any,
                       }}
@@ -147,7 +145,7 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
+                      required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -158,7 +156,7 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
+                      required
                       type="email"
                     />
                   </Grid>
@@ -172,7 +170,7 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
+                      required
                       InputProps={{
                         inputComponent: InputMask as any,
                       }}
@@ -186,7 +184,7 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
+                      required
                       InputProps={{
                         inputComponent: InputMask as any,
                       }}
@@ -200,7 +198,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
                       InputProps={{
                         inputComponent: InputMask as any,
                       }}
@@ -226,7 +223,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
                       InputProps={{
                         inputComponent: InputMask as any,
                       }}
@@ -240,7 +236,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -251,7 +246,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -262,7 +256,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
                     />
                   </Grid>
                 </Grid>
@@ -275,7 +268,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -286,7 +278,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
@@ -297,7 +288,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      //required
                       type="number"
                     />
                   </Grid>
