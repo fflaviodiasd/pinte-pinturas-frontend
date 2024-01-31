@@ -19,6 +19,7 @@ import { useStyles } from "./styles";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useParams } from "react-router-dom";
 import { useCollaborators } from "../../../hooks/useCollaborators";
+import { ListClientsHistory } from "../ListCollaboratorsHistory";
 
 export function FormCollaboratorsMultiStep() {
   const { id: collaboratorId } = useParams();
@@ -297,13 +298,13 @@ export function FormCollaboratorsMultiStep() {
           </FormikStep>
 
           {isEditScreen ? (
-            <FormikStep label="Funcionário">Lista de Funcionários</FormikStep>
+            <FormikStep label="Histórico">
+              <ListClientsHistory />
+            </FormikStep>
           ) : null}
 
           {isEditScreen ? (
-            <FormikStep label="Obras Relacionadas">
-              Lista de Obras Relacionadas
-            </FormikStep>
+            <FormikStep label="Obras Relacionadas">Histórico</FormikStep>
           ) : null}
         </FormikStepper>
       </CardContent>

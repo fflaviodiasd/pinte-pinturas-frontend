@@ -115,6 +115,32 @@ export const useCollaborators = () => {
     }
   };
 
+  const [listCollaboratorsHistory, setListCollaboratorsHistory] = useState<
+    Collaborator[]
+  >([]);
+
+  const getAllCollaboratorsHistory = async (currentPage: number = 0) => {
+    setLoading(true);
+    const offset = (currentPage - 1) * LIMIT;
+    try {
+      const { data } = await api.get(
+        `employees/id/progress/?disabled=false&limit=${LIMIT}&offset=${offset}`
+      );
+      setPagination({
+        currentPage: currentPage === 0 ? 1 : currentPage,
+        pageQuantity: Math.ceil(data.count / LIMIT),
+      });
+      const allCollaboratorsHistory = data.results.map((result: any) => ({
+        id: result.id,
+      }));
+      setListCollaboratorsHistory(allCollaboratorsHistory);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const [listCollaborators, setListCollaborators] = useState<Collaborator[]>(
     []
   );
@@ -163,11 +189,13 @@ export const useCollaborators = () => {
     handleChangePagination,
     collaboratorData,
     listCollaborators,
+    listCollaboratorsHistory,
     getCollaborator,
     addCollaborator,
     updateCollaborator,
     disableCollaborator,
     getAllCollaborators,
+    getAllCollaboratorsHistory,
     getCollaboratorBySearch,
   };
 };
