@@ -32,6 +32,7 @@ export const useClients = () => {
     publicPlace: "",
     complement: "",
     number: "",
+    disabled: false,
   });
 
   const getClient = async (id: string) => {
@@ -144,11 +145,11 @@ export const useClients = () => {
     try {
       await api.delete(`customers/${clientId}`);
       getAllClients();
-      successMessage("Cliente desabilitado com sucesso!");
+      successMessage("Cliente apagado com sucesso!");
       setLoading(false);
     } catch (error) {
       console.log(error);
-      errorMessage("Não foi possível desabilitar cliente!");
+      errorMessage("Não foi possível apagar cliente!");
       setLoading(false);
     }
   };

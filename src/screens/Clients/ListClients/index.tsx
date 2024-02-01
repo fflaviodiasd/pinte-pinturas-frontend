@@ -6,13 +6,14 @@ import { useDebounce } from "use-debounce";
 
 import { Table } from "../../../components/Table";
 
-import { Grid, Paper } from "@mui/material";
+import { Checkbox, Grid, Paper } from "@mui/material";
 import { Client } from "../../../types";
 import { EditIcon } from "../../../components/EditIcon";
 import { useClients } from "../../../hooks/useClients";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
 import { TablePagination } from "../../../components/Table/Pagination";
+import { ModalDisable } from "../../../components/Table/ModalDisable";
 
 type ClientsTableItem = Partial<Client>;
 
@@ -55,10 +56,6 @@ export const ListClients = () => {
   const columns = useMemo<MRT_ColumnDef<ClientsTableItem>[]>(
     () => [
       {
-        accessorKey: "id",
-        header: "ID",
-      },
-      {
         accessorKey: "tradingName",
         header: "Nome Fantasia",
       },
@@ -80,6 +77,28 @@ export const ListClients = () => {
       },
 
       {
+        accessorKey: "disabled",
+        header: "Excluir",
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        Cell: ({ cell }) => {
+          return (
+            <Checkbox
+              checked={Boolean(cell.row.original.disabled)}
+              onChange={() => {
+                setselectedClientId(cell.row.original.id!);
+                setIsModalOpen(true);
+              }}
+            />
+          );
+        },
+      },
+
+      {
         id: "edit",
         header: "",
         columnDefType: "display",
@@ -89,6 +108,7 @@ export const ListClients = () => {
         muiTableBodyCellProps: {
           align: "right",
         },
+
         Cell: ({ cell }) => (
           <EditIcon
             onClick={() => navigate(`/clientes/${cell.row.original.id}`)}
@@ -119,6 +139,11 @@ export const ListClients = () => {
             onChange={handleChangePagination}
           />
         )}
+        <ModalDisable
+          modalOpen={modalOpen}
+          handleClose={handleClose}
+          handleDisable={handleDisable}
+        />
       </Grid>
     </Grid>
   );

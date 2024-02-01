@@ -43,4 +43,5 @@ export type Client = {
   publicPlace: string;
   complement: string;
   number: string;
+  disabled: boolean;
 };
