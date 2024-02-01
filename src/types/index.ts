@@ -22,6 +22,13 @@ export type Collaborator = {
   email: string;
   admissionDate: string;
   dismissalDate: string;
+  cep: string;
+  state: string;
+  city: string;
+  neighborhood: string;
+  publicPlace: string;
+  complement: string;
+  number: string;
 };
 
 export type Client = {

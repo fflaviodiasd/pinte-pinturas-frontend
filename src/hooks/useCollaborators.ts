@@ -27,6 +27,13 @@ export const useCollaborators = () => {
     email: "",
     admissionDate: "",
     dismissalDate: "",
+    cep: "",
+    state: "",
+    city: "",
+    neighborhood: "",
+    publicPlace: "",
+    complement: "",
+    number: "",
   });
 
   const getCollaborator = async (id: string) => {
@@ -39,17 +46,23 @@ export const useCollaborators = () => {
         name: data.name,
         type: data.type,
         status: data.status,
-        role: data.role,
+        role: data.office,
         profile: data.profile,
         phone: data.phone,
         cpf: data.cpf,
-        dateOfBirth: data.dateOfBirth,
+        dateOfBirth: data.birth_date,
         registration: data.registration,
         email: data.email,
-        admissionDate: data.admissionDate,
-        dismissalDate: data.dismissalDate,
+        admissionDate: data.admission_dt,
+        dismissalDate: data.dismissal_dt,
+        cep: data.cep,
+        state: data.state,
+        city: data.county,
+        neighborhood: data.neighborhood,
+        publicPlace: data.public_place,
+        complement: data.complement,
+        number: data.number,
       });
-      console.log("dados", data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -76,8 +89,24 @@ export const useCollaborators = () => {
     setLoading(true);
     try {
       await api.post(`/employees/`, {
+        name: collaboratorData.name,
+        office: collaboratorData.role,
+        type: collaboratorData.profile,
+        cell_phone: collaboratorData.phone,
+        cpf: collaboratorData.cpf,
+        birth_date: collaboratorData.dateOfBirth,
+        registration: collaboratorData.registration,
         email: collaboratorData.email,
-        type: collaboratorData.type,
+        admission_dt: collaboratorData.admissionDate,
+        dismissal_dt: collaboratorData.dismissalDate,
+        status: collaboratorData.status,
+        cep: collaboratorData.cep,
+        state: collaboratorData.state,
+        county: collaboratorData.city,
+        neighborhood: collaboratorData.neighborhood,
+        public_place: collaboratorData.publicPlace,
+        complement: collaboratorData.complement,
+        number: collaboratorData.number,
       });
       successMessage("Colaborador adicionado com sucesso!");
       setLoading(false);
@@ -91,7 +120,26 @@ export const useCollaborators = () => {
   const updateCollaborator = async (collaboratorData: Collaborator) => {
     setLoading(true);
     try {
-      await api.patch(`employees/${id}`, collaboratorData);
+      await api.patch(`employees/${id}/`, {
+        name: collaboratorData.name,
+        office: collaboratorData.role,
+        type: collaboratorData.profile,
+        cell_phone: collaboratorData.phone,
+        cpf: collaboratorData.cpf,
+        birth_date: collaboratorData.dateOfBirth,
+        registration: collaboratorData.registration,
+        email: collaboratorData.email,
+        admission_dt: collaboratorData.admissionDate,
+        dismissal_dt: collaboratorData.dismissalDate,
+        status: collaboratorData.status,
+        cep: collaboratorData.cep,
+        state: collaboratorData.state,
+        county: collaboratorData.city,
+        neighborhood: collaboratorData.neighborhood,
+        public_place: collaboratorData.publicPlace,
+        complement: collaboratorData.complement,
+        number: collaboratorData.number,
+      });
       successMessage("Colaborador atualizado com sucesso!");
       setLoading(false);
     } catch (error) {
@@ -106,11 +154,11 @@ export const useCollaborators = () => {
     try {
       await api.delete(`employees/${collaboratorId}`);
       getAllCollaborators();
-      successMessage("Colaborador desabilitado com sucesso!");
+      successMessage("Colaborador apagado com sucesso!");
       setLoading(false);
     } catch (error) {
       console.log(error);
-      errorMessage("Não foi possível desabilitar colaborador!");
+      errorMessage("Não foi possível apagar colaborador!");
       setLoading(false);
     }
   };
@@ -124,7 +172,7 @@ export const useCollaborators = () => {
     const offset = (currentPage - 1) * LIMIT;
     try {
       const { data } = await api.get(
-        `employees/id/progress/?disabled=false&limit=${LIMIT}&offset=${offset}`
+        `employees/${id}/progress/?disabled=false&limit=${LIMIT}&offset=${offset}`
       );
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,
@@ -149,7 +197,7 @@ export const useCollaborators = () => {
     const offset = (currentPage - 1) * LIMIT;
     try {
       const { data } = await api.get(
-        `employees/{id}/related_works/?disabled=false&limit=${LIMIT}&offset=${offset}`
+        `employees/${id}/related_works/?disabled=false&limit=${LIMIT}&offset=${offset}`
       );
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,

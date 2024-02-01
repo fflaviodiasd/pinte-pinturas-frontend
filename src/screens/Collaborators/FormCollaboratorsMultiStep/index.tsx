@@ -108,6 +108,7 @@ export function FormCollaboratorsMultiStep() {
                       InputProps={{
                         inputComponent: InputMask as any,
                       }}
+                      required
                     />
                   </Grid>
                 </Grid>
@@ -203,6 +204,7 @@ export function FormCollaboratorsMultiStep() {
                       InputProps={{
                         inputComponent: InputMask as any,
                       }}
+                      required
                     />
                   </Grid>
                   <Box marginLeft="1rem">
