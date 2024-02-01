@@ -195,7 +195,7 @@ export const useClients = () => {
     const offset = (currentPage - 1) * LIMIT;
     try {
       const { data } = await api.get(
-        `customers/{id}/related_works/?disabled=false&limit=${LIMIT}&offset=${offset}`
+        `customers/${id}/related_works/?disabled=false&limit=${LIMIT}&offset=${offset}`
       );
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,
