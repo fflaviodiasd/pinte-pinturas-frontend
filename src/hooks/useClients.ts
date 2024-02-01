@@ -5,12 +5,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
 import { Client } from "../types";
 import { api } from "../services/api";
+import { UserContext } from "../contexts/UserContext";
 
 const LIMIT = 10;
 
 export const useClients = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useContext(UserContext);
 
   const [loading, setLoading] = useState(true);
   const [clientData, setClientData] = useState<Client>({
@@ -163,13 +165,12 @@ export const useClients = () => {
     const offset = (currentPage - 1) * LIMIT;
     try {
       const { data } = await api.get(
-        `companies/id/employees/?disabled=false&limit=${LIMIT}&offset=${offset}`
+        `companies/${user.company}/employees/?disabled=false&limit=${LIMIT}&offset=${offset}`
       );
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
-      console.log(data);
       const getAllClientsEmployees = data.map((result: any) => ({
         id: result.id,
         status: result.active,
