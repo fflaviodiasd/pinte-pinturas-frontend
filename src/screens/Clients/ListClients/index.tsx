@@ -67,7 +67,7 @@ export const ListClients = () => {
         header: "Nome do Responsável",
       },
       {
-        accessorKey: "phoneNumber",
+        accessorKey: "phone",
         header: "Telefone",
       },
       {

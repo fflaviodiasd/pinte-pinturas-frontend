@@ -53,7 +53,7 @@ export const useClients = () => {
         stateRegistration: data.state_registration,
         cep: data.cep,
         state: data.state,
-        city: data.city,
+        city: data.county,
         neighborhood: data.neighborhood,
         publicPlace: data.public_place,
         complement: data.complement,
@@ -83,22 +83,21 @@ export const useClients = () => {
     setLoading(true);
     try {
       await api.post(`/customers/`, {
-        corporate_name: clientData.corporateName,
-        municipal_registration: clientData.municipalRegistration,
-        cnpj: clientData.cnpj,
-        email: clientData.email,
         responsible: clientData.responsible,
         fantasy_name: clientData.tradingName,
+        cnpj: clientData.cnpj,
         phone_number: clientData.phone,
+        email: clientData.email,
+        corporate_name: clientData.corporateName,
+        municipal_registration: clientData.municipalRegistration,
         stateRegistration: clientData.stateRegistration,
         cep: clientData.cep,
         state: clientData.state,
-        city: clientData.city,
+        county: clientData.city,
         neighborhood: clientData.neighborhood,
         public_place: clientData.publicPlace,
         complement: clientData.complement,
         number: clientData.number,
-        //description: areaData.description,
       });
       successMessage("Cliente adicionado com sucesso!");
       setLoading(false);
@@ -113,7 +112,24 @@ export const useClients = () => {
   const updateClient = async (clientData: Client) => {
     setLoading(true);
     try {
-      await api.patch(`customers/${id}`, clientData);
+      await api.patch(`customers/${id}/`, {
+        responsible: clientData.responsible,
+        fantasy_name: clientData.tradingName,
+        cnpj: clientData.cnpj,
+        phone_number: clientData.phone,
+        email: clientData.email,
+        corporate_name: clientData.corporateName,
+        municipal_registration: clientData.municipalRegistration,
+        stateRegistration: clientData.stateRegistration,
+        cep: clientData.cep,
+        state: clientData.state,
+        county: clientData.city,
+        neighborhood: clientData.neighborhood,
+        public_place: clientData.publicPlace,
+        complement: clientData.complement,
+        number: clientData.number,
+      });
+      navigate("/clientes/listagem");
       successMessage("Cliente atualizado com sucesso!");
       setLoading(false);
     } catch (error) {
@@ -226,7 +242,7 @@ export const useClients = () => {
         responsible: result.responsible,
         cnpj: result.cnpj,
         email: result.email,
-        phoneNumber: result.phone_number,
+        phone: result.phone_number,
       }));
       setListClients(allClients);
       setLoading(false);
