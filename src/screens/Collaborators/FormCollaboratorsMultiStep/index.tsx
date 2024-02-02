@@ -135,8 +135,9 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      InputProps={{
-                        inputComponent: InputMask as any,
+                      type="date"
+                      InputLabelProps={{
+                        shrink: true,
                       }}
                     />
                   </Grid>
@@ -174,8 +175,9 @@ export function FormCollaboratorsMultiStep() {
                       size="small"
                       fullWidth
                       required
-                      InputProps={{
-                        inputComponent: InputMask as any,
+                      type="date"
+                      InputLabelProps={{
+                        shrink: true,
                       }}
                     />
                   </Grid>
@@ -188,8 +190,9 @@ export function FormCollaboratorsMultiStep() {
                       size="small"
                       fullWidth
                       required
-                      InputProps={{
-                        inputComponent: InputMask as any,
+                      type="date"
+                      InputLabelProps={{
+                        shrink: true,
                       }}
                     />
                   </Grid>
