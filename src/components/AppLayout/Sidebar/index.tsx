@@ -1,4 +1,4 @@
-import { useState, ReactElement, Fragment } from "react";
+import { useState, ReactElement, Fragment, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
@@ -17,10 +17,12 @@ import {
   ExpandLess,
   ExpandMore,
   Menu,
+  Logout,
 } from "@mui/icons-material";
 
 import logoImage from "../../../assets/images/logo.png";
 import { Drawer, DrawerHeader } from "./styles";
+import { UserContext } from "../../../contexts/UserContext";
 
 interface NavItem {
   text: string;
@@ -32,6 +34,7 @@ interface NavItem {
 export const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, setIsSigned } = useContext(UserContext);
 
   const [openSidebar, setOpenSidebar] = useState(false);
   const [openClientsItemMenu, setOpenClientsItemMenu] = useState(false);
@@ -244,6 +247,33 @@ export const Sidebar = () => {
             );
           })}
         </List>
+
+        {/* Logout Button */}
+
+        <ListItem disablePadding>
+          <ListItemButton
+            sx={{
+              minHeight: 48,
+              justifyContent: openSidebar ? "initial" : "center",
+              px: 2.5,
+            }}
+            onClick={() => {
+              setIsSigned(false);
+              sessionStorage.clear();
+              localStorage.clear();
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: openSidebar ? 3 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <Logout />
+            </ListItemIcon>
+          </ListItemButton>
+        </ListItem>
       </Drawer>
     </Box>
   );
