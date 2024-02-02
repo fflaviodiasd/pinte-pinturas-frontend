@@ -362,15 +362,17 @@ export function FormikStepper({
       }}
       enableReinitialize={true}
     >
-      {({ resetForm, isSubmitting }) => (
+      {({ resetForm, isSubmitting, values }) => (
         <Form autoComplete="off">
           <Grid item xs={12} lg={12}>
             <Paper className={classes.paper}>
               <div className={classes.actionBar}>
                 <div className={classes.actionBarLeftContent}>
-                  <BackgroundAvatar />
+                  {values.name && (
+                    <BackgroundAvatar tradingName={values.name} />
+                  )}
                   <Typography className={classes.pageSubtitle}>
-                    Smile Company
+                    {values.name}
                   </Typography>
                 </div>
                 <div
