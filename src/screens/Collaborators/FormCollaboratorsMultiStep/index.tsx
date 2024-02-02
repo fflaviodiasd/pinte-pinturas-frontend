@@ -83,7 +83,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
