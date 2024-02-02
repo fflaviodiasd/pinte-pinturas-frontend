@@ -109,6 +109,7 @@ export const useCollaborators = () => {
         number: collaboratorData.number,
       });
       successMessage("Colaborador adicionado com sucesso!");
+      navigate("/colaboradores/listagem");
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -141,6 +142,7 @@ export const useCollaborators = () => {
         number: collaboratorData.number,
       });
       successMessage("Colaborador atualizado com sucesso!");
+      navigate("/colaboradores/listagem");
       setLoading(false);
     } catch (error) {
       console.log(error);
