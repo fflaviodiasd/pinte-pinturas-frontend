@@ -22,6 +22,7 @@ import { useCollaborators } from "../../../hooks/useCollaborators";
 import { ListClientsHistory } from "../ListCollaboratorsHistory";
 import { ListCollaboratorsRelatedWorks } from "../ListCollaboratorsRelatedWorks";
 import { SelectProfileComponent } from "../../../components/Select/Profile";
+import { SelectRoleComponent } from "../../../components/Select/Role";
 
 export function FormCollaboratorsMultiStep() {
   const { id: collaboratorId } = useParams();
@@ -77,13 +78,10 @@ export function FormCollaboratorsMultiStep() {
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
-                    <Field
-                      as={TextField}
+                    <SelectRoleComponent
                       name="role"
                       label="Cargo"
-                      variant="outlined"
-                      size="small"
-                      fullWidth
+                      endpoint="positions"
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
