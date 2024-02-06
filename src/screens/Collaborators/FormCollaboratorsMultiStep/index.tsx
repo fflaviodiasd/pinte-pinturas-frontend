@@ -21,6 +21,7 @@ import { useParams } from "react-router-dom";
 import { useCollaborators } from "../../../hooks/useCollaborators";
 import { ListClientsHistory } from "../ListCollaboratorsHistory";
 import { ListCollaboratorsRelatedWorks } from "../ListCollaboratorsRelatedWorks";
+import { SelectProfileComponent } from "../../../components/Select/Profile";
 
 export function FormCollaboratorsMultiStep() {
   const { id: collaboratorId } = useParams();
@@ -86,14 +87,10 @@ export function FormCollaboratorsMultiStep() {
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
-                    <Field
-                      as={TextField}
+                    <SelectProfileComponent
                       name="profile"
                       label="Perfil"
-                      variant="outlined"
-                      size="small"
-                      fullWidth
-                      required
+                      endpoint="profile_types"
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
