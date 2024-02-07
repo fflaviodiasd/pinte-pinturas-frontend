@@ -289,7 +289,7 @@ export function FormikStepper({
   return (
     <Formik
       {...props}
-      validationSchema={currentChild.props.validationSchema}
+      validationSchema={currentChild?.props?.validationSchema}
       onSubmit={async (values, helpers) => {
         if (isLastStep()) {
           await props.onSubmit(values, helpers);
