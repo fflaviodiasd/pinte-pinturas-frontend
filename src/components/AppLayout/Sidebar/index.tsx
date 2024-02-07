@@ -223,10 +223,17 @@ export const Sidebar = () => {
                               : "#EBF4FA",
                           }}
                         >
-                          <ListItemButton sx={{ pl: 4 }}>
+                          <ListItemButton
+                            sx={{ pl: 4 }}
+                            onClick={() => {
+                              navigate(subItem.path);
+                              if (subItem.path.includes("cadastrar")) {
+                                history.go(0);
+                              }
+                            }}
+                          >
                             <ListItemText
                               primary={subItem.text}
-                              onClick={() => navigate(subItem.path)}
                               sx={{
                                 fontFamily: "Open Sans",
                                 fontSize: "1rem",
