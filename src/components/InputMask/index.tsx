@@ -70,6 +70,9 @@ export const InputMask = (props: InputMaskProps) => {
         /\d/,
       ];
       break;
+    case "cep":
+      maskInput = [/\d/, /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/];
+      break;
     default:
       maskInput = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
       break;

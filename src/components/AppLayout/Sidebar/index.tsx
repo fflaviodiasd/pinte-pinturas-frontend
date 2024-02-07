@@ -1,245 +1,286 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState, ReactElement, Fragment, useContext } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
-  Drawer as MuiDrawer,
   List,
   IconButton,
   ListItem,
+  ListItemButton,
+  ListItemIcon,
   ListItemText,
-  Toolbar,
-  Typography,
+  Collapse,
 } from "@mui/material";
+
 import {
-  GroupOutlined as UsersIcon,
-  ExitToAppOutlined as ExitIcon,
-  HomeOutlined as HomeOutlinedIcon,
-  PetsOutlined as PetsOutlinedIcon,
-  FactCheckOutlined as FactCheckOutlinedIcon,
-  TrendingUpOutlined as TrendingUpOutlinedIcon,
-  ShoppingBagOutlined as ShoppingBagOutlinedIcon,
-  StickyNote2Outlined as StickyNote2OutlinedIcon,
-  AccountCircleOutlined as AccountCircleOutlinedIcon,
-  MedicalServicesOutlined as MedicalServicesOutlinedIcon,
-  MenuOpenOutlined as MenuOpenOutlinedIcon,
+  Business,
+  Badge,
+  ExpandLess,
+  ExpandMore,
+  Menu,
+  Logout,
 } from "@mui/icons-material";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { styled, Theme, CSSObject } from "@mui/material/styles";
 
-// import logoShortImage from "../../../assets/images/logo-short-image.png";
-// import logoImage from "../../../assets/images/logo-image.png";
+import logoImage from "../../../assets/images/logo.png";
+import { Drawer, DrawerHeader } from "./styles";
+import { UserContext } from "../../../contexts/UserContext";
 
-const drawerWidth = 200;
-
-const openedMixin = (theme: Theme): CSSObject => ({
-  width: drawerWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-  backgroundColor: "#16A34A",
-});
-
-const closedMixin = (theme: Theme): CSSObject => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  backgroundColor: "#16A34A",
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-}));
-
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
+interface NavItem {
+  text: string;
+  path: string;
+  icon?: ReactElement;
+  subItems?: NavItem[];
 }
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})<AppBarProps>(({ theme, open }) => ({
-  marginLeft: "64px",
-  width: `calc(100% - 64px)`,
-  backgroundColor: "#FFF",
-  boxShadow: "none",
-  borderBottom: "1px solid #EEE",
-  transition: theme.transitions.create(["width", "margin"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
-
-const menuList = [
-  // {
-  //   itemTitle: "Início",
-  //   itemLocation: "/home",
-  //   icon: (
-  //     <HomeOutlinedIcon
-  //       fontSize="small"
-  //       style={{
-  //         marginRight: 12,
-  //       }}
-  //     />
-  //   ),
-  // },
-  {
-    itemTitle: "Cadastros",
-    itemLocation: "/cadastros",
-    icon: (
-      <FactCheckOutlinedIcon
-        fontSize="small"
-        style={{
-          marginRight: 12,
-        }}
-      />
-    ),
-  },
-
-  {
-    itemTitle: "Configurações",
-    itemLocation: "/configuracoes",
-    icon: (
-      <AccountCircleOutlinedIcon
-        fontSize="small"
-        style={{
-          marginRight: 12,
-        }}
-      />
-    ),
-  },
-];
 
 export const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, setIsSigned } = useContext(UserContext);
 
-  const [open, setOpen] = useState(false);
+  const [openSidebar, setOpenSidebar] = useState(false);
+  const [openClientsItemMenu, setOpenClientsItemMenu] = useState(false);
+  const [openEmployeesItemMenu, setOpenEmployeesItemMenu] = useState(false);
 
   const handleDrawer = () => {
-    setOpen(!open);
+    setOpenSidebar(!openSidebar);
+    if (openSidebar) {
+      setOpenClientsItemMenu(false);
+      setOpenEmployeesItemMenu(false);
+    }
+  };
+
+  const handleClientsList = () => {
+    setOpenClientsItemMenu(!openClientsItemMenu);
+  };
+
+  const handleEmployeesList = () => {
+    setOpenEmployeesItemMenu(!openEmployeesItemMenu);
+  };
+
+  const navItems: NavItem[] = [
+    {
+      text: "Clientes",
+      path: "/clientes",
+      icon: <Business />,
+      subItems: [
+        { text: "• Cadastro", path: "/clientes/cadastrar" },
+        { text: "• Listagem", path: "/clientes/listagem" },
+      ],
+    },
+    {
+      text: "Funcionários",
+      path: "/colaboradores",
+      icon: <Badge />,
+      subItems: [
+        { text: "• Cadastro", path: "/colaboradores/cadastrar" },
+        { text: "• Listagem", path: "/colaboradores/listagem" },
+      ],
+    },
+  ];
+
+  const returnedIcon = (isOpen: boolean) => {
+    if (isOpen) {
+      return <ExpandLess />;
+    }
+    return <ExpandMore />;
   };
 
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar position="fixed" open={open}>
-        <Toolbar
+      <Drawer variant="permanent" open={openSidebar}>
+        {/* Container Logo */}
+        <div
           style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "flex-end",
+            display: openSidebar ? "flex" : "none",
+            justifyContent: "center",
+            height: 140,
           }}
         >
-          <Typography
-            style={{
-              fontSize: 16,
-              color: "#202025",
-              margin: "0 12px",
-              textTransform: "capitalize",
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "1rem",
             }}
           >
-            Olá, John Doe
-          </Typography>
-          <IconButton size="large" onClick={() => localStorage.clear()}>
-            <ExitIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Drawer variant="permanent" open={open}>
+            <img
+              src={logoImage}
+              alt="Logo"
+              style={{ height: "30%", width: "50%" }}
+            />
+            <div
+              style={{
+                color: "#0076BE",
+                fontFamily: "Open Sans",
+                fontWeight: "600",
+                fontSize: "1.125rem",
+                lineHeight: "1.625rem",
+              }}
+            >
+              Pinte Pinturas
+            </div>
+          </Box>
+        </div>
+
+        {/* Drawer */}
         <DrawerHeader
           style={{
             display: "flex",
-            justifyContent: !open ? "center" : "",
+            justifyContent: !openSidebar ? "center" : "flex-start",
+            margin: 0,
           }}
         >
-          <IconButton onClick={handleDrawer} style={{ color: "#FFF" }}>
-            {open ? (
-              <MenuOpenOutlinedIcon />
-            ) : (
-              <MenuOpenOutlinedIcon style={{ transform: "scaleX(-1)" }} />
-            )}
+          <IconButton
+            onClick={() => {
+              handleDrawer();
+            }}
+            style={{ color: "#0076BE" }}
+          >
+            <Menu />
           </IconButton>
         </DrawerHeader>
-        {/* <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            width: "100%",
-            color: "#FFF",
-            padding: open ? "12px 0" : "29px 0",
-          }}
-        >
-          {open ? (
-            <img src={logoImage} alt="pinte-pinturas" style={{ width: "100%" }} />
-          ) : (
-            <img src={logoShortImage} alt="pinte-pinturas" />
-          )}
-        </div> */}
-        <List style={{ padding: 0 }}>
-          {menuList.map((item) => (
-            <ListItem
-              key={item.itemTitle}
-              to={item.itemLocation}
-              component={Link}
-              // selected={location.pathname.includes(item.itemLocation)}
-              style={{
-                color: location.pathname.includes(item.itemLocation)
-                  ? "#FFF"
-                  : "#4F4F4F",
-                backgroundColor: location.pathname.includes(item.itemLocation)
-                  ? "#af52bf"
-                  : "#FFF",
-              }}
-            >
-              {item.icon}
 
-              <ListItemText>
-                <Typography
-                  style={{
-                    fontWeight: 500,
+        <List>
+          {navItems.map((navItem) => {
+            const { path, subItems } = navItem;
+            const isActive = location.pathname.includes(path);
+            const isOpen =
+              path === "/clientes"
+                ? openClientsItemMenu
+                : openEmployeesItemMenu;
+
+            return (
+              <Fragment key={navItem.text}>
+                {/* IsActive */}
+                <ListItem
+                  disablePadding
+                  sx={{
+                    display: "block",
+                    backgroundColor: isActive ? "#DEF4FF" : "",
                   }}
                 >
-                  {item.itemTitle}
-                </Typography>
-              </ListItemText>
-            </ListItem>
-          ))}
+                  {/* Navigation */}
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: openSidebar ? "initial" : "center",
+                      px: 2.5,
+                    }}
+                    onClick={() => {
+                      if (subItems) {
+                        if (path === "/clientes") {
+                          handleClientsList();
+                        } else if (path === "/colaboradores") {
+                          handleEmployeesList();
+                        }
+                        setOpenSidebar(true);
+                      } else {
+                        navigate(`${path}`);
+                      }
+                    }}
+                  >
+                    {/* Icons */}
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: openSidebar ? 3 : "auto",
+                        justifyContent: "center",
+                        color: isActive ? "#0076BE" : "#2E3132",
+                      }}
+                    >
+                      {navItem.icon}
+                    </ListItemIcon>
+
+                    {/* Text */}
+                    <ListItemText
+                      primary={navItem.text}
+                      sx={{
+                        opacity: openSidebar ? 1 : 0,
+                        fontFamily: "Open Sans",
+                        fontWeight: "600",
+                        fontSize: "1rem",
+                        lineHeight: "1.625rem",
+                        color: isActive ? "#0076BE" : "#2E3132",
+                        letterSpacing: "2px",
+                      }}
+                    />
+                    {subItems && openSidebar && returnedIcon(isOpen)}
+                  </ListItemButton>
+                </ListItem>
+
+                {/* Collapse */}
+                {subItems && (
+                  <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      {subItems.map((subItem) => (
+                        <ListItem
+                          key={subItem.text}
+                          sx={{
+                            backgroundColor: location.pathname.includes(
+                              subItem.path
+                            )
+                              ? "#0076BE"
+                              : "#EBF4FA",
+                          }}
+                        >
+                          <ListItemButton
+                            sx={{ pl: 4 }}
+                            onClick={() => {
+                              navigate(subItem.path);
+                              if (subItem.path.includes("cadastrar")) {
+                                history.go(0);
+                              }
+                            }}
+                          >
+                            <ListItemText
+                              primary={subItem.text}
+                              sx={{
+                                fontFamily: "Open Sans",
+                                fontSize: "1rem",
+                                color: location.pathname.includes(subItem.path)
+                                  ? "#FFFFFF"
+                                  : "#2E3132",
+                                fontWeight: 600,
+                                lineHeight: "1.625rem",
+                              }}
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Collapse>
+                )}
+              </Fragment>
+            );
+          })}
         </List>
+
+        {/* Logout Button */}
+
+        <ListItem disablePadding>
+          <ListItemButton
+            sx={{
+              minHeight: 48,
+              justifyContent: openSidebar ? "initial" : "center",
+              px: 2.5,
+            }}
+            onClick={() => {
+              setIsSigned(false);
+              sessionStorage.clear();
+              localStorage.clear();
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: openSidebar ? 3 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <Logout />
+            </ListItemIcon>
+          </ListItemButton>
+        </ListItem>
       </Drawer>
     </Box>
   );

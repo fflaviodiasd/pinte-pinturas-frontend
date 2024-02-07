@@ -4,7 +4,6 @@ import { AxiosError } from "axios";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
-import { Construction } from "../types";
 import { api } from "../services/api";
 
 type ConstructionArea = {
@@ -18,7 +17,7 @@ export const useConstructions = () => {
   const { id } = useParams();
 
   const [loading, setLoading] = useState(true);
-  const [constructionData, setConstructionData] = useState<Construction>({
+  const [constructionData, setConstructionData] = useState<any>({
     id: 0,
     name: "",
     responsible: "",
@@ -59,7 +58,7 @@ export const useConstructions = () => {
     }
   };
 
-  const addConstruction = async (constructionData: Construction) => {
+  const addConstruction = async (constructionData: any) => {
     setLoading(true);
     try {
       await api.post("constructions/", { name: constructionData.name });
@@ -73,7 +72,7 @@ export const useConstructions = () => {
     }
   };
 
-  const updateConstruction = async (constructionData: Construction) => {
+  const updateConstruction = async (constructionData: any) => {
     setLoading(true);
     try {
       await api.patch(`constructions/${id}/`, { name: constructionData.name });
@@ -120,9 +119,7 @@ export const useConstructions = () => {
     }
   };
 
-  const [listConstructions, setListConstructions] = useState<Construction[]>(
-    []
-  );
+  const [listConstructions, setListConstructions] = useState<any[]>([]);
   const getAllConstructions = async () => {
     setLoading(true);
     try {

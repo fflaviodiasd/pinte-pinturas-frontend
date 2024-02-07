@@ -1,78 +1,118 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
-import { Button, Grid, Paper, Typography } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import { Add as AddIcon } from "@mui/icons-material";
+import { MRT_ColumnDef } from "material-react-table";
+import { useDebounce } from "use-debounce";
 
-import { TableActions } from "../../../components/Table/TableActions";
-import { successMessage } from "../../../components/Messages";
+import { Table } from "../../../components/Table";
+
+import { Checkbox, Grid, Paper } from "@mui/material";
+import { Client } from "../../../types";
+import { EditIcon } from "../../../components/EditIcon";
+import { useClients } from "../../../hooks/useClients";
 import { TitleScreen } from "../../../components/TitleScreen";
-import { mockedListClients } from "../../../database/clients";
-
 import { useStyles } from "./styles";
+import { TablePagination } from "../../../components/Table/Pagination";
+import { ModalDisable } from "../../../components/Table/ModalDisable";
+
+type ClientsTableItem = Partial<Client>;
 
 export const ListClients = () => {
   const { classes } = useStyles();
+
   const navigate = useNavigate();
+  const {
+    getAllClients,
+    listClients,
+    disableClient,
+    getClientBySearch,
+    pagination,
+    handleChangePagination,
+  } = useClients();
 
-  const columns: GridColDef[] = useMemo(
+  const [selectedClientId, setselectedClientId] = useState<number>(0);
+  const [modalOpen, setIsModalOpen] = useState(false);
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleDisable = () => {
+    disableClient(selectedClientId);
+    setIsModalOpen(false);
+  };
+
+  const [text, setText] = useState("");
+  const [value] = useDebounce(text, 1000);
+
+  useEffect(() => {
+    if (value) {
+      getClientBySearch(value);
+    } else {
+      getAllClients();
+    }
+  }, [value]);
+
+  const columns = useMemo<MRT_ColumnDef<ClientsTableItem>[]>(
     () => [
-      { field: "id", headerName: "ID", flex: 0.1, disableColumnMenu: true },
       {
-        field: "name",
-        headerName: "Nome",
-        flex: 1,
-        disableColumnMenu: true,
+        accessorKey: "tradingName",
+        header: "Nome Fantasia",
       },
       {
-        field: "cnpj",
-        headerName: "CNPJ",
-        flex: 1,
-        disableColumnMenu: true,
+        accessorKey: "responsible",
+        header: "Nome do Responsável",
       },
       {
-        field: "status",
-        headerName: "Status",
-        width: 200,
-        disableColumnMenu: true,
-        hideSortIcons: true,
-        renderCell: (params: GridRenderCellParams) => (
-          <Typography
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
+        accessorKey: "phone",
+        header: "Telefone",
+      },
+      {
+        accessorKey: "email",
+        header: "E-mail",
+      },
+      {
+        accessorKey: "cnpj",
+        header: "CNPJ",
+      },
 
-              width: "100%",
-              padding: "4px 0px",
-              borderRadius: "4px",
-
-              fontSize: 12,
-              color: "#252525",
-              opacity: "0.8",
-              backgroundColor: params.value ? "#6FED8B" : "#FF3C40",
-            }}
-          >
-            {params.value ? "Ativo" : "Desativado"}
-          </Typography>
-        ),
-      },
       {
-        field: "actions",
-        headerName: "Ações",
-        flex: 0.17,
-        disableColumnMenu: true,
-        hideSortIcons: true,
-        sortable: false,
-        renderCell: (params: GridRenderCellParams) => (
-          <TableActions
-            params={params}
-            viewFunction={() => navigate(`/clientes/${params.row.id}`)}
-            editFunction={() => navigate(`/clientes/${params.row.id}/editar`)}
-            deleteFunction={() =>
-              successMessage("Cliente excluído com sucesso!")
-            }
+        accessorKey: "disabled",
+        header: "Excluir",
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        Cell: ({ cell }) => {
+          return (
+            <Checkbox
+              checked={Boolean(cell.row.original.disabled)}
+              onChange={() => {
+                setselectedClientId(cell.row.original.id!);
+                setIsModalOpen(true);
+              }}
+            />
+          );
+        },
+      },
+
+      {
+        id: "edit",
+        header: "",
+        columnDefType: "display",
+        muiTableHeadCellProps: {
+          align: "right",
+        },
+        muiTableBodyCellProps: {
+          align: "right",
+        },
+
+        Cell: ({ cell }) => (
+          <EditIcon
+            onClick={() => navigate(`/clientes/${cell.row.original.id}`)}
+            label="Editar"
           />
         ),
       },
@@ -82,34 +122,28 @@ export const ListClients = () => {
 
   return (
     <Grid container spacing={2}>
-      <TitleScreen title="Clientes" />
-
       <Grid item xs={12} lg={12}>
         <Paper className={classes.paper}>
           <div className={classes.searchBarContainer}>
-            <div className={classes.searchBarActionButtonsContainer}>
-              <Button
-                startIcon={<AddIcon />}
-                className={classes.buttonRegister}
-                onClick={() => navigate("/clientes/cadastrar")}
-              >
-                Cadastrar
-              </Button>
-            </div>
+            <TitleScreen title="Clientes" />
           </div>
         </Paper>
       </Grid>
 
       <Grid item xs={12} lg={12}>
-        <div style={{ height: 630, width: "100%" }}>
-          <DataGrid
-            rows={mockedListClients}
-            columns={columns}
-            disableRowSelectionOnClick
-            hideFooterSelectedRowCount
-            hideFooterPagination
+        <Table columns={columns} data={listClients} />
+        {Boolean(listClients.length) && (
+          <TablePagination
+            count={pagination.pageQuantity}
+            page={pagination.currentPage}
+            onChange={handleChangePagination}
           />
-        </div>
+        )}
+        <ModalDisable
+          modalOpen={modalOpen}
+          handleClose={handleClose}
+          handleDisable={handleDisable}
+        />
       </Grid>
     </Grid>
   );

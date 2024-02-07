@@ -3,15 +3,14 @@ import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import { AppLayout } from "../components/AppLayout";
 
 import { Home } from "../screens/Home";
-import { Settings } from "../screens/Settings";
-import { ListConstructions } from "../screens/Constructions/ListConstructions";
-import { DetailsConstruction } from "../screens/Constructions/DetailsConstruction";
-import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
-import { FormCollaborators } from "../screens/Collaborators/FormCollaborators";
+
+import { FormClientsMultiStep } from "../screens/Clients/FormClientsMultiStep";
 import { ListClients } from "../screens/Clients/ListClients";
-import { FormClients } from "../screens/Clients/FormClients";
-import { DetailsArea } from "../screens/Areas/DetailsArea";
-import { FormArea } from "../screens/Areas/DetailsArea/FormArea";
+
+import { FormCollaboratorsMultiStep } from "../screens/Collaborators/FormCollaboratorsMultiStep";
+import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
+
+import { Settings } from "../screens/Settings";
 
 export const AppRoutes = () => {
   return (
@@ -20,44 +19,25 @@ export const AppRoutes = () => {
         <Routes>
           <Route path="/home" element={<Home />} />
 
-          <Route path="/colaboradores" element={<ListCollaborators />} />
+          <Route
+            path="/clientes/cadastrar"
+            element={<FormClientsMultiStep />}
+          />
+          <Route path="/clientes/:id" element={<FormClientsMultiStep />} />
+          <Route path="/clientes/listagem" element={<ListClients />} />
+
           <Route
             path="/colaboradores/cadastrar"
-            element={<FormCollaborators />}
+            element={<FormCollaboratorsMultiStep />}
           />
-          <Route path="/colaboradores/:id" element={<FormCollaborators />} />
           <Route
-            path="/colaboradores/:id/editar"
-            element={<FormCollaborators />}
+            path="/colaboradores/:id"
+            element={<FormCollaboratorsMultiStep />}
           />
-
-          <Route path="/clientes" element={<ListClients />} />
-          <Route path="/clientes/cadastrar" element={<FormClients />} />
-          <Route path="/clientes/:id" element={<FormClients />} />
-          <Route path="/clientes/:id/editar" element={<FormClients />} />
-
-          <Route path="/obras" element={<ListConstructions />} />
-          <Route path="/obras/cadastrar" element={<DetailsConstruction />} />
-          <Route path="/obras/:id" element={<DetailsConstruction />} />
-          <Route path="/obras/:id/editar" element={<DetailsConstruction />} />
-
-          <Route path="/obras/:id/areas/cadastrar" element={<DetailsArea />} />
-
-          <Route path="/obras/:id/areas/:areaId" element={<DetailsArea />} />
           <Route
-            path="/obras/:id/areas/:areaId/cadastrar"
-            element={<FormArea />}
+            path="/colaboradores/listagem"
+            element={<ListCollaborators />}
           />
-
-          <Route
-            path="/obras/:id/areas/:areaId/editar"
-            element={<DetailsArea />}
-          />
-
-          <Route path="/areas/cadastrar" element={<DetailsArea />} />
-          <Route path="/areas/:areaId" element={<DetailsArea />} />
-          <Route path="/areas/:areaId/cadastrar" element={<FormArea />} />
-          <Route path="/areas/:areaId/editar" element={<DetailsArea />} />
 
           <Route path="/configuracoes" element={<Settings />} />
 

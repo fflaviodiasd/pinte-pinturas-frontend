@@ -111,7 +111,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
             isFirstLogin: data.user.is_first_login,
             type: data.user.type,
             profileName: data.user.profile_name || "",
-            company: data.user.company || 0,
+            company: data.user.company_id || 0,
           })
         );
         setUser({
@@ -120,7 +120,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
           isFirstLogin: data.user.is_first_login,
           type: data.user.type,
           profileName: data.user.profile_name || "",
-          company: data.user.company || 0,
+          company: data.user.company_id || 0,
         });
       }
       localStorage.setItem(KEY_TOKEN, data.access);

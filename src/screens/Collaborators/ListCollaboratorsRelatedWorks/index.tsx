@@ -6,22 +6,20 @@ import { useDebounce } from "use-debounce";
 
 import { Table } from "../../../components/Table";
 
-import { Grid, Paper } from "@mui/material";
+import { Grid } from "@mui/material";
 import { Collaborator } from "../../../types";
-import { EditIcon } from "../../../components/EditIcon";
-import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
 import { useCollaborators } from "../../../hooks/useCollaborators";
 
-type CollaboratorsTableItem = Partial<Collaborator>;
+type CollaboratorsRelatedWorksTableItem = Partial<Collaborator>;
 
-export const ListCollaborators = () => {
+export const ListCollaboratorsRelatedWorks = () => {
   const { classes } = useStyles();
 
   const navigate = useNavigate();
   const {
-    getAllCollaborators,
-    listCollaborators,
+    getAllCollaboratorsRelatedWorks,
+    listCollaboratorsRelatedWorks,
     disableCollaborator,
     getCollaboratorBySearch,
     pagination,
@@ -47,49 +45,27 @@ export const ListCollaborators = () => {
     if (value) {
       getCollaboratorBySearch(value);
     } else {
-      getAllCollaborators();
+      getAllCollaboratorsRelatedWorks();
     }
   }, [value]);
 
-  const columns = useMemo<MRT_ColumnDef<CollaboratorsTableItem>[]>(
+  const columns = useMemo<MRT_ColumnDef<CollaboratorsRelatedWorksTableItem>[]>(
     () => [
       {
         accessorKey: "id",
         header: "ID",
       },
       {
+        accessorKey: "active",
+        header: "Ativa",
+      },
+      {
         accessorKey: "name",
-        header: "Nome Completo",
+        header: "Nome da Obra",
       },
       {
-        accessorKey: "cellPhone",
-        header: "Celular",
-      },
-      {
-        accessorKey: "role",
-        header: "Cargo",
-      },
-      {
-        accessorKey: "profile",
-        header: "Perfil",
-      },
-
-      {
-        id: "edit",
-        header: "",
-        columnDefType: "display",
-        muiTableHeadCellProps: {
-          align: "right",
-        },
-        muiTableBodyCellProps: {
-          align: "right",
-        },
-        Cell: ({ cell }) => (
-          <EditIcon
-            onClick={() => navigate(`/colaboradores/${cell.row.original.id}`)}
-            label="Editar"
-          />
-        ),
+        accessorKey: "responsible",
+        header: "Responsável",
       },
     ],
     []
@@ -98,15 +74,7 @@ export const ListCollaborators = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} lg={12}>
-        <Paper className={classes.paper}>
-          <div className={classes.searchBarContainer}>
-            <TitleScreen title="Funcionários" />
-          </div>
-        </Paper>
-      </Grid>
-
-      <Grid item xs={12} lg={12}>
-        <Table columns={columns} data={listCollaborators} />
+        <Table columns={columns} data={listCollaboratorsRelatedWorks} />
       </Grid>
     </Grid>
   );
