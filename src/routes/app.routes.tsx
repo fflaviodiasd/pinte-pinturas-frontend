@@ -11,6 +11,7 @@ import { FormCollaboratorsMultiStep } from "../screens/Collaborators/FormCollabo
 import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
 
 import { Settings } from "../screens/Settings";
+import { Materials } from "../screens/Materials";
 
 export const AppRoutes = () => {
   return (
@@ -38,6 +39,8 @@ export const AppRoutes = () => {
             path="/colaboradores/listagem"
             element={<ListCollaborators />}
           />
+
+          <Route path="/materiais" element={<Materials />} />
 
           <Route path="/configuracoes" element={<Settings />} />
 
