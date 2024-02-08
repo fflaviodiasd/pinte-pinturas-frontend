@@ -6,6 +6,7 @@ import Modal from "@mui/material/Modal";
 import { DialogActions, TextField } from "@mui/material";
 import { useStyles } from "./styles";
 import { Field } from "formik";
+import { useMaterials } from "../../../../hooks/useMaterials";
 
 const style = {
   position: "absolute" as "absolute",
@@ -23,6 +24,12 @@ export function ModalRegisterMaterial() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { classes } = useStyles();
+
+  const { addMaterial } = useMaterials();
+
+  const handleSubmit = async (values: any) => {
+    await addMaterial(values);
+  };
 
   return (
     <div>
@@ -105,7 +112,7 @@ export function ModalRegisterMaterial() {
                 Cancelar
               </Typography>
             </Button>
-            <Button variant="contained">
+            <Button onClick={handleSubmit} variant="contained">
               <Typography style={{ textTransform: "capitalize" }}>
                 Cadastrar
               </Typography>

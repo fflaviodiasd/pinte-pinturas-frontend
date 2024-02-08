@@ -17,6 +17,11 @@ export const useMaterials = () => {
   const [loading, setLoading] = useState(true);
   const [materialData, setMaterialData] = useState<Material>({
     id: 0,
+    name: "",
+    group: "",
+    expectedConsumption: "",
+    typeApplication: "",
+    unit: "",
   });
 
   const getMaterial = async (id: string) => {
@@ -47,7 +52,13 @@ export const useMaterials = () => {
   const addMaterial = async (materialData: Material) => {
     setLoading(true);
     try {
-      await api.post(`/materials/`, {});
+      await api.post(`/companies/${user.company}/materials/`, {
+        name: materialData.name,
+        group: materialData.group,
+        expected_consumption: materialData.expectedConsumption,
+        type_application: materialData.typeApplication,
+        unit: materialData.unit,
+      });
       successMessage("Material adicionado com sucesso!");
       setLoading(false);
     } catch (error) {

@@ -53,4 +53,11 @@ export type Client = {
   disabled: boolean;
 };
 
-export type Material = {};
+export type Material = {
+  id: number;
+  name: string;
+  group: string;
+  expectedConsumption: string;
+  typeApplication: string;
+  unit: string;
+};
