@@ -13,6 +13,7 @@ import { useStyles } from "./styles";
 import { TablePagination } from "../../../components/Table/Pagination";
 import { Launch } from "@mui/icons-material";
 import { useMaterials } from "../../../hooks/useMaterials";
+import { ModalRegisterMaterial } from "../../../components/Modal/Materials/Register";
 
 type MaterialsTableItem = Partial<Material>;
 
@@ -97,6 +98,7 @@ export const ListMaterials = () => {
         <Paper className={classes.paper}>
           <div className={classes.searchBarContainer}>
             <TitleScreen title="Materiais" />
+            <ModalRegisterMaterial />
           </div>
         </Paper>
       </Grid>
