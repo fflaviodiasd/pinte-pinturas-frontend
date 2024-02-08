@@ -10,8 +10,9 @@ import { ListClients } from "../screens/Clients/ListClients";
 import { FormCollaboratorsMultiStep } from "../screens/Collaborators/FormCollaboratorsMultiStep";
 import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
 
+import { ListMaterials } from "../screens/Materials/ListMaterials";
+
 import { Settings } from "../screens/Settings";
-import { Materials } from "../screens/Materials";
 
 export const AppRoutes = () => {
   return (
@@ -40,7 +41,7 @@ export const AppRoutes = () => {
             element={<ListCollaborators />}
           />
 
-          <Route path="/materiais" element={<Materials />} />
+          <Route path="/materiais" element={<ListMaterials />} />
 
           <Route path="/configuracoes" element={<Settings />} />
 

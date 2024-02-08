@@ -1,0 +1,135 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { AxiosError } from "axios";
+import { useContext, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { errorMessage, successMessage } from "../components/Messages";
+import { Material } from "../types";
+import { api } from "../services/api";
+import { UserContext } from "../contexts/UserContext";
+
+const LIMIT = 10;
+
+export const useMaterials = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { user } = useContext(UserContext);
+
+  const [loading, setLoading] = useState(true);
+  const [materialData, setMaterialData] = useState<Material>({
+    id: 0,
+  });
+
+  const getMaterial = async (id: string) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`materials/${id}`);
+      setMaterialData({
+        ...materialData,
+        id: data.id,
+      });
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const getMaterialBySearch = async (id: string) => {
+    try {
+      const { data } = await api.get(`materials/${id}`);
+      const allMaterials = data.results.map((material: Material) => ({}));
+      setListMaterials(allMaterials);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addMaterial = async (materialData: Material) => {
+    setLoading(true);
+    try {
+      await api.post(`/materials/`, {});
+      successMessage("Material adicionado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível adicionar material!");
+      setLoading(false);
+    }
+  };
+
+  const updateMaterial = async (materialData: Material) => {
+    setLoading(true);
+    try {
+      await api.patch(`materials/${id}/`, {});
+      successMessage("Material atualizado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível atualizar material!");
+      setLoading(false);
+    }
+  };
+
+  const disableMaterial = async (materialId: number) => {
+    setLoading(true);
+    try {
+      await api.delete(`materials/${materialId}`);
+      getAllMaterials();
+      successMessage("Material apagado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível apagar material!");
+      setLoading(false);
+    }
+  };
+
+  const [listMaterials, setListMaterials] = useState<Material[]>([]);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    pageQuantity: 1,
+  });
+  const handleChangePagination = (
+    _: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    getAllMaterials(value);
+  };
+
+  const getAllMaterials = async (currentPage: number = 0) => {
+    setLoading(true);
+    const offset = (currentPage - 1) * LIMIT;
+    try {
+      const { data } = await api.get(
+        `materials/?disabled=false&limit=${LIMIT}&offset=${offset}`
+      );
+      setPagination({
+        currentPage: currentPage === 0 ? 1 : currentPage,
+        pageQuantity: Math.ceil(data.count / LIMIT),
+      });
+      const allMaterials = data.results.map((result: any) => ({
+        id: result.id,
+      }));
+      setListMaterials(allMaterials);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  return {
+    loading,
+    setLoading,
+    pagination,
+    handleChangePagination,
+    materialData,
+    listMaterials,
+    getMaterial,
+    addMaterial,
+    updateMaterial,
+    disableMaterial,
+    getAllMaterials,
+    getMaterialBySearch,
+  };
+};

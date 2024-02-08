@@ -52,3 +52,5 @@ export type Client = {
   number: string;
   disabled: boolean;
 };
+
+export type Material = {};
