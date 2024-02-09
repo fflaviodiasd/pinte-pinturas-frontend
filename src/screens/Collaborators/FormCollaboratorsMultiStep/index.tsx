@@ -168,7 +168,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
                       type="date"
                       InputLabelProps={{
                         shrink: true,
@@ -183,7 +182,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
                       type="date"
                       InputLabelProps={{
                         shrink: true,

@@ -17,11 +17,11 @@ export type Collaborator = {
   profile: string;
   phone: string;
   cpf: string;
-  dateOfBirth: string;
+  dateOfBirth: null;
   registration: string;
   email: string;
-  admissionDate: string;
-  dismissalDate: string;
+  admissionDate: null;
+  dismissalDate: null;
   cep: string;
   state: string;
   city: string;
