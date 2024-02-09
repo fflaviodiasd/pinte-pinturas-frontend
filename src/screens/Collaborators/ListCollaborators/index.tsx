@@ -6,12 +6,14 @@ import { useDebounce } from "use-debounce";
 
 import { Table } from "../../../components/Table";
 
-import { Grid, Paper } from "@mui/material";
+import { Checkbox, Grid, Paper } from "@mui/material";
 import { Collaborator } from "../../../types";
 import { EditIcon } from "../../../components/EditIcon";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
 import { useCollaborators } from "../../../hooks/useCollaborators";
+import { TablePagination } from "../../../components/Table/Pagination";
+import { ModalDisable } from "../../../components/Table/ModalDisable";
 
 type CollaboratorsTableItem = Partial<Collaborator>;
 
@@ -107,6 +109,18 @@ export const ListCollaborators = () => {
 
       <Grid item xs={12} lg={12}>
         <Table columns={columns} data={listCollaborators} />
+        {Boolean(listCollaborators.length) && (
+          <TablePagination
+            count={pagination.pageQuantity}
+            page={pagination.currentPage}
+            onChange={handleChangePagination}
+          />
+        )}
+        <ModalDisable
+          modalOpen={modalOpen}
+          handleClose={handleClose}
+          handleDisable={handleDisable}
+        />
       </Grid>
     </Grid>
   );

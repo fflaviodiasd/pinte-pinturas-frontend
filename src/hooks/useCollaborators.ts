@@ -34,6 +34,7 @@ export const useCollaborators = () => {
     publicPlace: "",
     complement: "",
     number: "",
+    disabled: false,
   });
 
   const getCollaborator = async (id: string) => {

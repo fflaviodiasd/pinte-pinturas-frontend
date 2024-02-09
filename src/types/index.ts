@@ -29,6 +29,7 @@ export type Collaborator = {
   publicPlace: string;
   complement: string;
   number: string;
+  disabled: boolean;
 };
 
 export type Client = {
