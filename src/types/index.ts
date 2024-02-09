@@ -15,13 +15,14 @@ export type Collaborator = {
   status: boolean;
   role: string;
   profile: string;
-  phone: string;
+  cellPhone: string;
+  phoneNumber: string;
   cpf: string;
-  dateOfBirth: string;
+  dateOfBirth: null;
   registration: string;
   email: string;
-  admissionDate: string;
-  dismissalDate: string;
+  admissionDate: null;
+  dismissalDate: null;
   cep: string;
   state: string;
   city: string;
@@ -29,6 +30,7 @@ export type Collaborator = {
   publicPlace: string;
   complement: string;
   number: string;
+  disabled: boolean;
 };
 
 export type Client = {
@@ -38,7 +40,7 @@ export type Client = {
   status: boolean;
   responsible: string;
   tradingName: string;
-  phone: string;
+  phoneNumber: string;
   email: string;
   corporateName: string;
   municipalRegistration: string;
@@ -51,4 +53,13 @@ export type Client = {
   complement: string;
   number: string;
   disabled: boolean;
+};
+
+export type Material = {
+  id: number;
+  name: string;
+  group: string;
+  expectedConsumption: string;
+  applicationType: string;
+  unit: string;
 };

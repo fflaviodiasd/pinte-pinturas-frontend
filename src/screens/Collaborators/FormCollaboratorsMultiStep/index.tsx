@@ -94,7 +94,7 @@ export function FormCollaboratorsMultiStep() {
                   <Grid item xs={12} lg={3}>
                     <Field
                       as={TextField}
-                      name="phone"
+                      name="cellPhone"
                       label="Celular"
                       variant="outlined"
                       size="small"
@@ -168,7 +168,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
                       type="date"
                       InputLabelProps={{
                         shrink: true,
@@ -183,7 +182,6 @@ export function FormCollaboratorsMultiStep() {
                       variant="outlined"
                       size="small"
                       fullWidth
-                      required
                       type="date"
                       InputLabelProps={{
                         shrink: true,
@@ -193,7 +191,7 @@ export function FormCollaboratorsMultiStep() {
                   <Grid item xs={12} lg={3}>
                     <Field
                       as={TextField}
-                      name="phone"
+                      name="phoneNumber"
                       label="Telefone"
                       variant="outlined"
                       size="small"

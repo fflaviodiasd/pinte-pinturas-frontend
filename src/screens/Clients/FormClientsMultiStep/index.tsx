@@ -95,7 +95,7 @@ export function FormClientsMultiStep() {
                   <Grid item xs={12} lg={3}>
                     <Field
                       as={TextField}
-                      name="phone"
+                      name="phoneNumber"
                       label="Telefone"
                       variant="outlined"
                       size="small"

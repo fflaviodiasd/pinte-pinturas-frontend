@@ -75,6 +75,11 @@ export const Sidebar = () => {
         { text: "• Listagem", path: "/colaboradores/listagem" },
       ],
     },
+    {
+      text: "Materiais",
+      path: "/materiais",
+      icon: <Badge />,
+    },
   ];
 
   const returnedIcon = (isOpen: boolean) => {

@@ -10,6 +10,8 @@ import { ListClients } from "../screens/Clients/ListClients";
 import { FormCollaboratorsMultiStep } from "../screens/Collaborators/FormCollaboratorsMultiStep";
 import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
 
+import { ListMaterials } from "../screens/Materials/ListMaterials";
+
 import { Settings } from "../screens/Settings";
 
 export const AppRoutes = () => {
@@ -38,6 +40,8 @@ export const AppRoutes = () => {
             path="/colaboradores/listagem"
             element={<ListCollaborators />}
           />
+
+          <Route path="/materiais" element={<ListMaterials />} />
 
           <Route path="/configuracoes" element={<Settings />} />
 
