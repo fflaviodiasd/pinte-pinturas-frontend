@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { DialogActions, TextField } from "@mui/material";
 import { useStyles } from "./styles";
-import { Field } from "formik";
+import { Field, Form, Formik } from "formik"; // Importando Formik e Field
 import { useMaterials } from "../../../../hooks/useMaterials";
 
 const style = {
@@ -29,6 +29,7 @@ export function ModalRegisterMaterial() {
 
   const handleSubmit = async (values: any) => {
     await addMaterial(values);
+    handleClose();
   };
 
   return (
@@ -60,64 +61,93 @@ export function ModalRegisterMaterial() {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Cadastrar Material
           </Typography>
-          <Box>
-            <TextField
-              name="name"
-              label="Nome "
-              variant="outlined"
-              size="small"
-              fullWidth
-              required
-            />
-
-            <TextField
-              name="groups"
-              label="Grupos"
-              variant="outlined"
-              size="small"
-              fullWidth
-              required
-            />
-
-            <TextField
-              name="expectedConsumption"
-              label="Consumo Esperado"
-              variant="outlined"
-              size="small"
-              fullWidth
-              required
-            />
-
-            <TextField
-              name="unit"
-              label="Unidade"
-              variant="outlined"
-              size="small"
-              fullWidth
-              required
-            />
-
-            <TextField
-              name="applicationType"
-              label="Tipo de aplicação"
-              variant="outlined"
-              size="small"
-              fullWidth
-              required
-            />
-          </Box>
-          <DialogActions>
-            <Button onClick={handleClose} variant="outlined">
-              <Typography style={{ textTransform: "capitalize" }}>
-                Cancelar
-              </Typography>
-            </Button>
-            <Button onClick={handleSubmit} variant="contained">
-              <Typography style={{ textTransform: "capitalize" }}>
-                Cadastrar
-              </Typography>
-            </Button>
-          </DialogActions>
+          <Formik
+            initialValues={{
+              name: "",
+              groups: "",
+              expectedConsumption: "",
+              unit: "",
+              applicationType: "",
+            }}
+            onSubmit={handleSubmit}
+          >
+            {() => (
+              <Form>
+                <Field name="name">
+                  {({ field }: any) => (
+                    <TextField
+                      {...field}
+                      label="Nome"
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      required
+                    />
+                  )}
+                </Field>
+                <Field name="group">
+                  {({ field }: any) => (
+                    <TextField
+                      {...field}
+                      label="Grupos"
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      required
+                    />
+                  )}
+                </Field>
+                <Field name="expectedConsumption">
+                  {({ field }: any) => (
+                    <TextField
+                      {...field}
+                      label="Consumo Esperado"
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      required
+                    />
+                  )}
+                </Field>
+                <Field name="unit">
+                  {({ field }: any) => (
+                    <TextField
+                      {...field}
+                      label="Unidade"
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      required
+                    />
+                  )}
+                </Field>
+                <Field name="applicationType">
+                  {({ field }: any) => (
+                    <TextField
+                      {...field}
+                      label="Unidade"
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      required
+                    />
+                  )}
+                </Field>
+                <DialogActions>
+                  <Button onClick={handleClose} variant="outlined">
+                    <Typography style={{ textTransform: "capitalize" }}>
+                      Cancelar
+                    </Typography>
+                  </Button>
+                  <Button type="submit" variant="contained">
+                    <Typography style={{ textTransform: "capitalize" }}>
+                      Cadastrar
+                    </Typography>
+                  </Button>
+                </DialogActions>
+              </Form>
+            )}
+          </Formik>
         </Box>
       </Modal>
     </div>

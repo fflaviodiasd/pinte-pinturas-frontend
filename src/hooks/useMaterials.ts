@@ -20,7 +20,7 @@ export const useMaterials = () => {
     name: "",
     group: "",
     expectedConsumption: "",
-    typeApplication: "",
+    applicationType: "",
     unit: "",
   });
 
@@ -60,7 +60,7 @@ export const useMaterials = () => {
         name: materialData.name,
         group: materialData.group,
         expected_consumption: materialData.expectedConsumption,
-        type_application: materialData.typeApplication,
+        type_application: materialData.applicationType,
         unit: materialData.unit,
       });
       successMessage("Material adicionado com sucesso!");

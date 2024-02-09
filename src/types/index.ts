@@ -60,6 +60,6 @@ export type Material = {
   name: string;
   group: string;
   expectedConsumption: string;
-  typeApplication: string;
+  applicationType: string;
   unit: string;
 };
