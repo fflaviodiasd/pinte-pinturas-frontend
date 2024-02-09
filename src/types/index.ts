@@ -15,7 +15,8 @@ export type Collaborator = {
   status: boolean;
   role: string;
   profile: string;
-  phone: string;
+  cellPhone: string;
+  phoneNumber: string;
   cpf: string;
   dateOfBirth: null;
   registration: string;
@@ -39,7 +40,7 @@ export type Client = {
   status: boolean;
   responsible: string;
   tradingName: string;
-  phone: string;
+  phoneNumber: string;
   email: string;
   corporateName: string;
   municipalRegistration: string;

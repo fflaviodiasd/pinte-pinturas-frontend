@@ -44,7 +44,6 @@ export const SelectRoleComponent: React.FC<SelectRoleComponentProps> = ({
       error={Boolean(error)}
       variant="outlined"
       size="small"
-      required
     >
       <InputLabel id={`${name}-label`}>{label}</InputLabel>
       <Select labelId={`${name}-label`} id={name} {...field} label={label}>
