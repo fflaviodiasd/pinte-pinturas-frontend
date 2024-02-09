@@ -27,10 +27,14 @@ export const useMaterials = () => {
   const getMaterial = async (id: string) => {
     setLoading(true);
     try {
-      const { data } = await api.get(`materials/${id}`);
+      const { data } = await api.get(`/materials/${id}/`);
       setMaterialData({
         ...materialData,
         id: data.id,
+        name: data.name,
+        group: data.group,
+        unit: data.unit,
+        expectedConsumption: data.expected_consumption,
       });
       setLoading(false);
     } catch (error) {
@@ -112,14 +116,18 @@ export const useMaterials = () => {
     const offset = (currentPage - 1) * LIMIT;
     try {
       const { data } = await api.get(
-        `materials/?disabled=false&limit=${LIMIT}&offset=${offset}`
+        `companies/${user.company}/materials/?disabled=false&limit=${LIMIT}&offset=${offset}`
       );
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
-      const allMaterials = data.results.map((result: any) => ({
+      const allMaterials = data.map((result: any) => ({
         id: result.id,
+        name: result.name,
+        group: result.group,
+        unit: result.unit,
+        expectedConsumption: result.expected_consumption,
       }));
       setListMaterials(allMaterials);
       setLoading(false);
