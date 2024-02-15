@@ -9,6 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
   Collapse,
+  Link,
 } from "@mui/material";
 
 import {
@@ -228,8 +229,9 @@ export const Sidebar = () => {
                               : "#EBF4FA",
                           }}
                         >
-                          <ListItemButton
-                            sx={{ pl: 4 }}
+                          <Link
+                            underline="none"
+                            sx={{ pl: 4, cursor: "pointer" }}
                             onClick={() => {
                               navigate(subItem.path);
                               if (subItem.path.includes("cadastrar")) {
@@ -249,7 +251,7 @@ export const Sidebar = () => {
                                 lineHeight: "1.625rem",
                               }}
                             />
-                          </ListItemButton>
+                          </Link>
                         </ListItem>
                       ))}
                     </List>
