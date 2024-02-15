@@ -1,112 +1,43 @@
-import { useEffect, useMemo, useState } from "react";
-
-import { useNavigate } from "react-router-dom";
-import { MRT_ColumnDef } from "material-react-table";
-import { useDebounce } from "use-debounce";
-
-import { Table } from "../../../components/Table";
-
-import { Checkbox, Grid, Paper } from "@mui/material";
-import { Client } from "../../../types";
-import { EditIcon } from "../../../components/EditIcon";
+import { useEffect, useMemo } from "react";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+  type MRT_ColumnDef,
+} from "material-react-table";
+import { Grid, Paper, darken, lighten, useTheme } from "@mui/material";
 import { useClients } from "../../../hooks/useClients";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
+import { useNavigate } from "react-router-dom";
+import { EditIcon } from "../../../components/EditIcon";
 import { TablePagination } from "../../../components/Table/Pagination";
-import { ModalDisable } from "../../../components/Table/ModalDisable";
-
-type ClientsTableItem = Partial<Client>;
 
 export const ListClients = () => {
   const { classes } = useStyles();
-
   const navigate = useNavigate();
-  const {
-    getAllClients,
-    listClients,
-    disableClient,
-    getClientBySearch,
-    pagination,
-    handleChangePagination,
-  } = useClients();
+  const { listClients, getAllClients, pagination, handleChangePagination } =
+    useClients();
+  const theme = useTheme();
 
-  const [selectedClientId, setselectedClientId] = useState<number>(0);
-  const [modalOpen, setIsModalOpen] = useState(false);
-
-  const handleClose = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleDisable = () => {
-    disableClient(selectedClientId);
-    setIsModalOpen(false);
-  };
-
-  const [text, setText] = useState("");
-  const [value] = useDebounce(text, 1000);
+  //light or dark green
+  const baseBackgroundColor =
+    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
-    if (value) {
-      getClientBySearch(value);
-    } else {
-      getAllClients();
-    }
-  }, [value]);
+    getAllClients();
+  }, []);
 
-  const columns = useMemo<MRT_ColumnDef<ClientsTableItem>[]>(
+  const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
-      {
-        accessorKey: "tradingName",
-        header: "Nome Fantasia",
-      },
-      {
-        accessorKey: "responsible",
-        header: "Nome do Responsável",
-      },
-      {
-        accessorKey: "phone",
-        header: "Telefone",
-      },
-      {
-        accessorKey: "email",
-        header: "E-mail",
-      },
-      {
-        accessorKey: "cnpj",
-        header: "CNPJ",
-      },
-
-      {
-        accessorKey: "disabled",
-        header: "Excluir",
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-        Cell: ({ cell }) => {
-          return (
-            <Checkbox
-              checked={Boolean(cell.row.original.disabled)}
-              onChange={() => {
-                setselectedClientId(cell.row.original.id!);
-                setIsModalOpen(true);
-              }}
-            />
-          );
-        },
-      },
-
       {
         id: "edit",
         header: "",
         columnDefType: "display",
         muiTableHeadCellProps: {
-          align: "right",
+          align: "center",
         },
         muiTableBodyCellProps: {
-          align: "right",
+          align: "center",
         },
 
         Cell: ({ cell }) => (
@@ -116,9 +47,72 @@ export const ListClients = () => {
           />
         ),
       },
+
+      {
+        accessorKey: "tradingName",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "Nome Fantasia",
+      },
+      {
+        accessorKey: "responsible",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "Nome do Responsável",
+      },
+      {
+        accessorKey: "phoneNumber",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "Telefone",
+      },
+      {
+        accessorKey: "email",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "E-mail",
+      },
+      {
+        accessorKey: "cnpj",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "CNPJ",
+      },
     ],
     []
   );
+
+  const table = useMaterialReactTable({
+    columns,
+    data: listClients,
+    enableColumnFilterModes: true,
+    initialState: { showColumnFilters: true },
+    filterFns: {
+      customFilterFn: (row, id, filterValue) => {
+        return row.getValue(id) === filterValue;
+      },
+    },
+    localization: {
+      filterCustomFilterFn: "Custom Filter Fn",
+    } as any,
+    muiTablePaperProps: {
+      elevation: 0,
+    },
+    muiTableBodyProps: {
+      sx: (theme) => ({
+        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
+          {
+            backgroundColor: "#FAFAFA",
+          },
+      }),
+    },
+    mrtTheme: (theme) => ({
+      baseBackgroundColor: baseBackgroundColor,
+      draggingBorderColor: theme.palette.secondary.main,
+    }),
+    enablePagination: false,
+    enableBottomToolbar: false,
+  });
 
   return (
     <Grid container spacing={2}>
@@ -131,7 +125,7 @@ export const ListClients = () => {
       </Grid>
 
       <Grid item xs={12} lg={12}>
-        <Table columns={columns} data={listClients} />
+        <MaterialReactTable table={table} />
         {Boolean(listClients.length) && (
           <TablePagination
             count={pagination.pageQuantity}
@@ -139,11 +133,6 @@ export const ListClients = () => {
             onChange={handleChangePagination}
           />
         )}
-        <ModalDisable
-          modalOpen={modalOpen}
-          handleClose={handleClose}
-          handleDisable={handleDisable}
-        />
       </Grid>
     </Grid>
   );

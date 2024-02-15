@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import { ModeEdit } from "@mui/icons-material";
+import { Launch, ModeEdit } from "@mui/icons-material";
 
 interface EditIconProps {
   onClick?: () => void;
@@ -15,7 +15,7 @@ export const EditIcon = ({
 }: EditIconProps) => {
   return (
     <Button disabled={disabled} onClick={onClick} disableRipple>
-      <ModeEdit />
+      <Launch sx={{ color: "#C5C7C8" }} />
     </Button>
   );
 };
