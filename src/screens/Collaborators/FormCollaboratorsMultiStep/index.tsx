@@ -361,6 +361,32 @@ export function FormikStepper({
         <Form autoComplete="off">
           <Grid item xs={12} lg={12}>
             <Paper className={classes.paper}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                  padding: "0.5rem 0 0 0.5rem",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "Open Sans",
+                    fontWeight: 400,
+                  }}
+                >
+                  Funcionários
+                </div>
+                <div>{">"}</div>
+                <div
+                  style={{
+                    fontFamily: "Open Sans",
+                    fontWeight: 600,
+                    color: "#2E3132",
+                  }}
+                >
+                  Cadastro
+                </div>
+              </div>
               <div className={classes.actionBar}>
                 <div className={classes.actionBarLeftContent}>
                   {values.name && (
