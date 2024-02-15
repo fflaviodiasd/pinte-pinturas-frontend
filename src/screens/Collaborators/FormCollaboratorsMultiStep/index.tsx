@@ -389,9 +389,7 @@ export function FormikStepper({
               </div>
               <div className={classes.actionBar}>
                 <div className={classes.actionBarLeftContent}>
-                  {values.name && (
-                    <BackgroundAvatar tradingName={values.name} />
-                  )}
+                  {values.name && <BackgroundAvatar avatarName={values.name} />}
                   <Typography className={classes.pageSubtitle}>
                     {values.name}
                   </Typography>

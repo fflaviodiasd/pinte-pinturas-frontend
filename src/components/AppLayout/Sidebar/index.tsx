@@ -277,7 +277,7 @@ export const Sidebar = () => {
               alignItems: "center",
             }}
           >
-            <BackgroundAvatar tradingName={user.profileName} />
+            <BackgroundAvatar avatarName={user.profileName} />
             <div
               style={{
                 display: "flex",

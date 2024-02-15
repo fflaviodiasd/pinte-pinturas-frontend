@@ -20,6 +20,7 @@ import { EditIcon } from "../../../components/EditIcon";
 import { TablePagination } from "../../../components/Table/Pagination";
 import { ModalDisable } from "../../../components/Table/ModalDisable";
 import { Delete } from "@mui/icons-material";
+import { BackgroundAvatar } from "../../../components/Avatar";
 
 export const ListClients = () => {
   const { classes } = useStyles();
@@ -86,6 +87,21 @@ export const ListClients = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Nome Fantasia",
+        Cell: ({ cell }) => (
+          <div
+            style={{
+              display: "flex",
+              gap: "0.5rem",
+
+              alignItems: "center",
+            }}
+          >
+            {cell.row.original.tradingName && (
+              <BackgroundAvatar avatarName={cell.row.original.tradingName} />
+            )}
+            {cell.row.original.tradingName}
+          </div>
+        ),
       },
       {
         accessorKey: "responsible",
