@@ -1,88 +1,151 @@
 import { useEffect, useMemo, useState } from "react";
-
-import { useNavigate } from "react-router-dom";
-import { MRT_ColumnDef } from "material-react-table";
-import { useDebounce } from "use-debounce";
-
-import { Table } from "../../../components/Table";
-
-import { Grid } from "@mui/material";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+  type MRT_ColumnDef,
+} from "material-react-table";
+import {
+  Checkbox,
+  Chip,
+  Grid,
+  Paper,
+  darken,
+  lighten,
+  useTheme,
+} from "@mui/material";
+import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
+import { useNavigate } from "react-router-dom";
+import { EditIcon } from "../../../components/EditIcon";
+import { TablePagination } from "../../../components/Table/Pagination";
+import { ModalDisable } from "../../../components/Table/ModalDisable";
+import { Delete } from "@mui/icons-material";
+import { BackgroundAvatar } from "../../../components/Avatar";
 import { useClients } from "../../../hooks/useClients";
-import { Client } from "../../../types";
-
-type ClientsEmployeesTableItem = Partial<Client>;
 
 export const ListClientsEmployees = () => {
   const { classes } = useStyles();
-
   const navigate = useNavigate();
   const {
-    getAllClientsEmployees,
     listClientsEmployees,
-    disableClient,
-    getClientBySearch,
+    getAllClientsEmployees,
     pagination,
     handleChangePagination,
   } = useClients();
+  const theme = useTheme();
 
-  const [selectedClientId, setselectedClientId] = useState<number>(0);
-  const [modalOpen, setIsModalOpen] = useState(false);
+  const [selectedClientEmployeeId, setselectedClientEmployeeId] =
+    useState<number>(0);
 
-  const handleClose = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleDisable = () => {
-    disableClient(selectedClientId);
-    setIsModalOpen(false);
-  };
-
-  const [text, setText] = useState("");
-  const [value] = useDebounce(text, 1000);
+  //light or dark green
+  const baseBackgroundColor =
+    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
-    if (value) {
-      getClientBySearch(value);
-    } else {
-      getAllClientsEmployees();
-    }
-  }, [value]);
+    getAllClientsEmployees();
+  }, []);
 
-  const columns = useMemo<MRT_ColumnDef<ClientsEmployeesTableItem>[]>(
+  const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: "id",
-        header: "ID",
+        header: "Status",
+        accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
+        id: "active",
+        filterVariant: "checkbox",
+        Cell: ({ cell }) => {
+          const status = cell.getValue() === "true" ? "Ativo" : "Inativo";
+          const chipColor = status === "Ativo" ? "success" : "error";
+          return <Chip label={status} color={chipColor} />;
+        },
+        size: 170,
       },
-      {
-        accessorKey: "status",
-        header: "Ativo",
-      },
+
       {
         accessorKey: "fullName",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
         header: "Nome Completo",
+        Cell: ({ cell }) => (
+          <div
+            style={{
+              display: "flex",
+              gap: "0.5rem",
+
+              alignItems: "center",
+            }}
+          >
+            {cell.row.original.fullName && (
+              <BackgroundAvatar avatarName={cell.row.original.fullName} />
+            )}
+            {cell.row.original.fullName}
+          </div>
+        ),
       },
       {
         accessorKey: "cellPhone",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
         header: "Celular",
       },
       {
         accessorKey: "role",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
         header: "Cargo",
       },
       {
         accessorKey: "profile",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
         header: "Perfil",
       },
     ],
     []
   );
 
+  const table = useMaterialReactTable({
+    columns,
+    data: listClientsEmployees,
+    enableColumnFilterModes: true,
+    initialState: { showColumnFilters: true },
+    filterFns: {
+      customFilterFn: (row, id, filterValue) => {
+        return row.getValue(id) === filterValue;
+      },
+    },
+    localization: {
+      filterCustomFilterFn: "Custom Filter Fn",
+    } as any,
+    muiTablePaperProps: {
+      elevation: 0,
+    },
+    muiTableBodyProps: {
+      sx: (theme) => ({
+        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
+          {
+            backgroundColor: "#FAFAFA",
+          },
+      }),
+    },
+    mrtTheme: (theme) => ({
+      baseBackgroundColor: baseBackgroundColor,
+      draggingBorderColor: theme.palette.secondary.main,
+    }),
+    enablePagination: false,
+    enableBottomToolbar: false,
+  });
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} lg={12}>
-        <Table columns={columns} data={listClientsEmployees} />
+        <MaterialReactTable table={table} />
+        {Boolean(listClientsEmployees.length) && (
+          <TablePagination
+            count={pagination.pageQuantity}
+            page={pagination.currentPage}
+            onChange={handleChangePagination}
+          />
+        )}
       </Grid>
     </Grid>
   );

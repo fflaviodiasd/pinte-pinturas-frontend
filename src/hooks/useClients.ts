@@ -173,11 +173,11 @@ export const useClients = () => {
       });
       const getAllClientsEmployees = data.map((result: any) => ({
         id: result.id,
-        status: result.active,
+        active: result.active,
         fullName: result.full_name,
         cellPhone: result.cell_phone,
         role: result.office,
-        profile: result.type,
+        profile: result.profile,
       }));
       setListClientsEmployees(getAllClientsEmployees);
       setLoading(false);
