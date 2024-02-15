@@ -1,23 +1,49 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Grid, Paper, darken, lighten, useTheme } from "@mui/material";
+import {
+  Checkbox,
+  Grid,
+  Paper,
+  darken,
+  lighten,
+  useTheme,
+} from "@mui/material";
 import { useClients } from "../../../hooks/useClients";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { EditIcon } from "../../../components/EditIcon";
 import { TablePagination } from "../../../components/Table/Pagination";
+import { ModalDisable } from "../../../components/Table/ModalDisable";
+import { Delete } from "@mui/icons-material";
 
 export const ListClients = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { listClients, getAllClients, pagination, handleChangePagination } =
-    useClients();
+  const {
+    listClients,
+    getAllClients,
+    disableClient,
+    pagination,
+    handleChangePagination,
+  } = useClients();
   const theme = useTheme();
+
+  const [selectedClientId, setselectedClientId] = useState<number>(0);
+  const [modalOpen, setIsModalOpen] = useState(false);
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleDisable = () => {
+    disableClient(selectedClientId);
+    setIsModalOpen(false);
+  };
 
   //light or dark green
   const baseBackgroundColor =
@@ -33,18 +59,25 @@ export const ListClients = () => {
         id: "edit",
         header: "",
         columnDefType: "display",
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-
         Cell: ({ cell }) => (
-          <EditIcon
-            onClick={() => navigate(`/clientes/${cell.row.original.id}`)}
-            label="Editar"
-          />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <EditIcon
+              onClick={() => navigate(`/clientes/${cell.row.original.id}`)}
+              label="Editar"
+            />
+            <Delete
+              sx={{ cursor: "pointer", color: "#C5C7C8" }}
+              onClick={() => {
+                setselectedClientId(cell.row.original.id!);
+                setIsModalOpen(true);
+              }}
+            />
+          </div>
         ),
       },
 
@@ -133,6 +166,11 @@ export const ListClients = () => {
             onChange={handleChangePagination}
           />
         )}
+        <ModalDisable
+          modalOpen={modalOpen}
+          handleClose={handleClose}
+          handleDisable={handleDisable}
+        />
       </Grid>
     </Grid>
   );
