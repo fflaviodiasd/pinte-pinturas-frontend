@@ -24,6 +24,7 @@ import {
 import logoImage from "../../../assets/images/logo.png";
 import { Drawer, DrawerHeader } from "./styles";
 import { UserContext } from "../../../contexts/UserContext";
+import { BackgroundAvatar } from "../../Avatar";
 
 interface NavItem {
   text: string;
@@ -264,29 +265,72 @@ export const Sidebar = () => {
 
         {/* Logout Button */}
 
-        <ListItem disablePadding>
-          <ListItemButton
+        <ListItem
+          disablePadding
+          sx={{ display: "flex", padding: "1rem", marginTop: "100%" }}
+        >
+          <Box
             sx={{
-              minHeight: 48,
-              justifyContent: openSidebar ? "initial" : "center",
-              px: 2.5,
-            }}
-            onClick={() => {
-              setIsSigned(false);
-              sessionStorage.clear();
-              localStorage.clear();
+              display: "flex",
+              gap: "0.5rem",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: openSidebar ? 3 : "auto",
+            <BackgroundAvatar tradingName={user.profileName} />
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
                 justifyContent: "center",
               }}
             >
-              <Logout />
-            </ListItemIcon>
-          </ListItemButton>
+              <div
+                style={{
+                  color: "#2E3132",
+                  fontFamily: "Open Sans",
+                  fontWeight: "600",
+                  fontSize: "1rem",
+                }}
+              >
+                {user.profileName}
+              </div>
+              <div
+                style={{
+                  color: "#2E3132",
+                  fontFamily: "Open Sans",
+                  fontWeight: "400",
+                  fontSize: "1rem",
+                }}
+              >
+                {user.type}
+              </div>
+            </div>
+          </Box>
+          <Box>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: openSidebar ? "initial" : "center",
+                px: 2.5,
+              }}
+              onClick={() => {
+                setIsSigned(false);
+                sessionStorage.clear();
+                localStorage.clear();
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: openSidebar ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <Logout />
+              </ListItemIcon>
+            </ListItemButton>
+          </Box>
         </ListItem>
       </Drawer>
     </Box>
