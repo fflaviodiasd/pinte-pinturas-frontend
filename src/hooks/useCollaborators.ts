@@ -252,9 +252,9 @@ export const useCollaborators = () => {
         id: result.id,
         name: result.name,
         cellPhone: result.cell_phone,
-        profile: result.profile,
+        profile: result.profile.name,
         email: result.email,
-        role: result.office,
+        role: result.office.name,
       }));
       setListCollaborators(allCollaborators);
       setLoading(false);
