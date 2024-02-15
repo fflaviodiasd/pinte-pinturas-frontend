@@ -255,6 +255,7 @@ export const useCollaborators = () => {
         profile: result.profile.name,
         email: result.email,
         role: result.office.name,
+        active: result.active,
       }));
       setListCollaborators(allCollaborators);
       setLoading(false);
