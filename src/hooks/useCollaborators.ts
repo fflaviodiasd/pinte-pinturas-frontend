@@ -185,8 +185,11 @@ export const useCollaborators = () => {
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
-      const allCollaboratorsHistory = data.results.map((result: any) => ({
+      const allCollaboratorsHistory = data.logs.map((result: any) => ({
         id: result.id,
+        role: result.office,
+        salary: result.salary,
+        dismissalDate: result.resignation_dt,
       }));
       setListCollaboratorsHistory(allCollaboratorsHistory);
       setLoading(false);

@@ -19,10 +19,10 @@ import { useStyles } from "./styles";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useParams } from "react-router-dom";
 import { useCollaborators } from "../../../hooks/useCollaborators";
-import { ListClientsHistory } from "../ListCollaboratorsHistory";
 import { ListCollaboratorsRelatedWorks } from "../ListCollaboratorsRelatedWorks";
 import { SelectProfileComponent } from "../../../components/Select/Profile";
 import { SelectRoleComponent } from "../../../components/Select/Role";
+import { ListCollaboratorsHistory } from "../ListCollaboratorsHistory";
 
 export function FormCollaboratorsMultiStep() {
   const { id: collaboratorId } = useParams();
@@ -297,7 +297,7 @@ export function FormCollaboratorsMultiStep() {
 
           {isEditScreen ? (
             <FormikStep label="Histórico">
-              <ListClientsHistory />
+              <ListCollaboratorsHistory />
             </FormikStep>
           ) : null}
 
