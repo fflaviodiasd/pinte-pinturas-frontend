@@ -70,7 +70,7 @@ export const ListCollaborators = () => {
             }}
           >
             <EditIcon
-              onClick={() => navigate(`/clientes/${cell.row.original.id}`)}
+              onClick={() => navigate(`/colaboradores/${cell.row.original.id}`)}
               label="Editar"
             />
             <Delete
