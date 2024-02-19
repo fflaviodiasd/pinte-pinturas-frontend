@@ -3,6 +3,8 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import { useMaterials } from "../../../../hooks/useMaterials";
+import { TextField } from "@mui/material";
 import { useStyles } from "./styles";
 
 const style = {
@@ -15,11 +17,17 @@ const style = {
   p: 4,
 };
 
-export default function ModalMaterialGroups() {
+export function ModalMaterialGroups() {
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const { classes } = useStyles();
+  const { listMaterialGroups, getAllMaterialGroups, loading } = useMaterials();
+
+  const handleOpen = () => {
+    setOpen(true);
+    getAllMaterialGroups();
+  };
+
+  const handleClose = () => setOpen(false);
 
   return (
     <div>
@@ -28,7 +36,24 @@ export default function ModalMaterialGroups() {
       </Button>
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <Typography>Grupos de Materiais</Typography>
+          <Typography variant="h5" gutterBottom>
+            Grupos de Materiais
+          </Typography>
+          {loading ? (
+            <Typography>Carregando...</Typography>
+          ) : (
+            <ul>
+              {listMaterialGroups.map((material) => (
+                <div key={material.id}>
+                  <TextField
+                    variant="standard"
+                    fullWidth
+                    value={material.name}
+                  />
+                </div>
+              ))}
+            </ul>
+          )}
         </Box>
       </Modal>
     </div>

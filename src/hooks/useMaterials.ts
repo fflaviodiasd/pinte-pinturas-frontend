@@ -97,6 +97,27 @@ export const useMaterials = () => {
     }
   };
 
+  const [listMaterialGroups, setListMaterialGroups] = useState<Material[]>([]);
+
+  const getAllMaterialGroups = async (currentPage: number = 0) => {
+    setLoading(true);
+    const offset = (currentPage - 1) * LIMIT;
+    try {
+      const { data } = await api.get(
+        `companies/${user.company}/materials_group/?disabled=false&limit=${LIMIT}&offset=${offset}`
+      );
+      const allMaterialGroups = data.results.map((result: any) => ({
+        id: result.id,
+        name: result.name,
+      }));
+      setListMaterialGroups(allMaterialGroups);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const [listMaterials, setListMaterials] = useState<Material[]>([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -142,10 +163,12 @@ export const useMaterials = () => {
     handleChangePagination,
     materialData,
     listMaterials,
+    listMaterialGroups,
     getMaterial,
     addMaterial,
     updateMaterial,
     disableMaterial,
+    getAllMaterialGroups,
     getAllMaterials,
     getMaterialBySearch,
   };

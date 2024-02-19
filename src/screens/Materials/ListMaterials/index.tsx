@@ -12,7 +12,7 @@ import { TablePagination } from "../../../components/Table/Pagination";
 import { Launch } from "@mui/icons-material";
 import { useMaterials } from "../../../hooks/useMaterials";
 import { ModalRegisterMaterial } from "../../../components/Modal/Materials/Register";
-import ModalMaterialGroups from "../../../components/Modal/Materials/Groups";
+import { ModalMaterialGroups } from "../../../components/Modal/Materials/Groups";
 
 export const ListMaterials = () => {
   const { classes } = useStyles();
