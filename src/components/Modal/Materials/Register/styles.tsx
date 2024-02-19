@@ -1,4 +1,5 @@
 import { makeStyles } from "tss-react/mui";
+import styled from "styled-components";
 
 export const useStyles = makeStyles()((theme) => ({
   dialogContent: {
@@ -18,5 +19,17 @@ export const useStyles = makeStyles()((theme) => ({
     display: "flex",
     justifyContent: "space-evenly",
     marginBottom: 12,
+  },
+  registerButton: {
+    textTransform: "capitalize",
+    backgroundColor: "#0076BE",
+    color: "#FFFFFF",
+    fontFamily: "Open Sans",
+    fontWeight: 600,
+    fontSize: "1rem",
+    padding: "0.5rem 1rem",
+    "&:hover": {
+      backgroundColor: "#0076BE",
+    },
   },
 }));

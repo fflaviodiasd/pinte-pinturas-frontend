@@ -33,10 +33,8 @@ export const ModalDisable = ({
       onClose={handleClose}
     >
       <DialogContent className={classes.dialogContent}>
-        <Warning sx={{ color: "#FF9800" }} />
-        <Typography sx={{ color: "#FF9800", fontWeight: "bold" }}>
-          Atenção
-        </Typography>
+        <Warning />
+        <Typography>Atenção</Typography>
         <DialogContentText className={classes.dialogContentText}>
           Tem certeza que
         </DialogContentText>
