@@ -4,28 +4,15 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import {
-  Checkbox,
-  Chip,
-  Grid,
-  Paper,
-  darken,
-  lighten,
-  useTheme,
-} from "@mui/material";
+import { Chip, Grid, useTheme } from "@mui/material";
 import { useClients } from "../../../hooks/useClients";
-import { TitleScreen } from "../../../components/TitleScreen";
-import { useStyles } from "./styles";
-import { useNavigate } from "react-router-dom";
-import { EditIcon } from "../../../components/EditIcon";
+//import { useStyles } from "./styles";
+//import { useNavigate } from "react-router-dom";
 import { TablePagination } from "../../../components/Table/Pagination";
-import { ModalDisable } from "../../../components/Table/ModalDisable";
-import { Delete } from "@mui/icons-material";
-import { BackgroundAvatar } from "../../../components/Avatar";
 
 export const ListClientsRelatedWorks = () => {
-  const { classes } = useStyles();
-  const navigate = useNavigate();
+  //const { classes } = useStyles();
+  //const navigate = useNavigate();
   const {
     listClientsRelatedWorks,
     getAllClientsRelatedWorks,
@@ -42,7 +29,6 @@ export const ListClientsRelatedWorks = () => {
     setIsModalOpen(false);
   };
 
-  //light or dark green
   const baseBackgroundColor =
     theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 

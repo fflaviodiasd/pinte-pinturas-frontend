@@ -1,17 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
+
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import {
-  Checkbox,
-  Grid,
-  Paper,
-  darken,
-  lighten,
-  useTheme,
-} from "@mui/material";
+
+import { Grid, Paper, useTheme } from "@mui/material";
 import { useClients } from "../../../hooks/useClients";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
@@ -46,7 +41,6 @@ export const ListClients = () => {
     setIsModalOpen(false);
   };
 
-  //light or dark green
   const baseBackgroundColor =
     theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 

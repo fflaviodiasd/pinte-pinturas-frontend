@@ -1,5 +1,4 @@
 import { makeStyles } from "tss-react/mui";
-import styled from "styled-components";
 
 export const useStyles = makeStyles()((theme) => ({
   dialogContent: {

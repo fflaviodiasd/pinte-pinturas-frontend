@@ -4,21 +4,12 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import {
-  Checkbox,
-  Grid,
-  Paper,
-  darken,
-  lighten,
-  useTheme,
-} from "@mui/material";
+import { Grid, Paper, useTheme } from "@mui/material";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
-import { EditIcon } from "../../../components/EditIcon";
 import { TablePagination } from "../../../components/Table/Pagination";
-import { ModalDisable } from "../../../components/Table/ModalDisable";
-import { Delete, Launch } from "@mui/icons-material";
+import { Launch } from "@mui/icons-material";
 import { useMaterials } from "../../../hooks/useMaterials";
 import { ModalRegisterMaterial } from "../../../components/Modal/Materials/Register";
 

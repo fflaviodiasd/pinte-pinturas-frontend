@@ -4,23 +4,10 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import {
-  Checkbox,
-  Chip,
-  Grid,
-  Paper,
-  darken,
-  lighten,
-  useTheme,
-} from "@mui/material";
-import { TitleScreen } from "../../../components/TitleScreen";
+import { Chip, Grid, useTheme } from "@mui/material";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
-import { EditIcon } from "../../../components/EditIcon";
 import { TablePagination } from "../../../components/Table/Pagination";
-import { ModalDisable } from "../../../components/Table/ModalDisable";
-import { Delete } from "@mui/icons-material";
-import { BackgroundAvatar } from "../../../components/Avatar";
 import { useCollaborators } from "../../../hooks/useCollaborators";
 
 export const ListCollaboratorsRelatedWorks = () => {

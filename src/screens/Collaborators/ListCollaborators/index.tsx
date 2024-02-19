@@ -4,15 +4,7 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import {
-  Checkbox,
-  Chip,
-  Grid,
-  Paper,
-  darken,
-  lighten,
-  useTheme,
-} from "@mui/material";
+import { Chip, Grid, Paper, useTheme } from "@mui/material";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
@@ -48,7 +40,6 @@ export const ListCollaborators = () => {
     setIsModalOpen(false);
   };
 
-  //light or dark green
   const baseBackgroundColor =
     theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
