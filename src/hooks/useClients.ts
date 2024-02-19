@@ -102,7 +102,9 @@ export const useClients = () => {
         complement: clientData.complement,
         number: clientData.number,
       });
-      successMessage("Cliente adicionado com sucesso!");
+      successMessage(
+        "Cliente cadastrado com sucesso, enviamos instruções de acesso para o e-mail informado!"
+      );
       setLoading(false);
       navigate("/clientes/listagem");
     } catch (error) {
