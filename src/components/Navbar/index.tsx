@@ -1,4 +1,3 @@
-import { BackgroundAvatar } from "../Avatar";
 import { Button, Grid, Paper, Typography } from "@mui/material";
 import { useStyles } from "./styles";
 
@@ -9,7 +8,6 @@ export function Navbar() {
       <Paper className={classes.paper}>
         <div className={classes.actionBar}>
           <div className={classes.actionBarLeftContent}>
-            <BackgroundAvatar />
             <Typography className={classes.pageSubtitle}>
               Smile Company
             </Typography>

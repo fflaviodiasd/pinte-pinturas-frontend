@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { AxiosError } from "axios";
 import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
@@ -102,7 +100,9 @@ export const useClients = () => {
         complement: clientData.complement,
         number: clientData.number,
       });
-      successMessage("Cliente adicionado com sucesso!");
+      successMessage(
+        "Cliente cadastrado com sucesso, enviamos instruções de acesso para o e-mail informado!"
+      );
       setLoading(false);
       navigate("/clientes/listagem");
     } catch (error) {
@@ -173,11 +173,11 @@ export const useClients = () => {
       });
       const getAllClientsEmployees = data.map((result: any) => ({
         id: result.id,
-        status: result.active,
+        active: result.active,
         fullName: result.full_name,
         cellPhone: result.cell_phone,
         role: result.office,
-        profile: result.type,
+        profile: result.profile,
       }));
       setListClientsEmployees(getAllClientsEmployees);
       setLoading(false);

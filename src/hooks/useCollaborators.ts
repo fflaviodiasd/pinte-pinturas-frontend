@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { AxiosError } from "axios";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
@@ -48,8 +46,8 @@ export const useCollaborators = () => {
         name: data.name,
         type: data.type,
         status: data.status,
-        role: data.office,
-        profile: data.profile,
+        role: data.office.id,
+        profile: data.profile.type,
         cellPhone: data.cell_phone,
         phoneNumber: data.phone,
         cpf: data.cpf,
@@ -185,8 +183,11 @@ export const useCollaborators = () => {
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
-      const allCollaboratorsHistory = data.results.map((result: any) => ({
+      const allCollaboratorsHistory = data.logs.map((result: any) => ({
         id: result.id,
+        role: result.office,
+        salary: result.salary,
+        dismissalDate: result.resignation_dt,
       }));
       setListCollaboratorsHistory(allCollaboratorsHistory);
       setLoading(false);
@@ -252,9 +253,10 @@ export const useCollaborators = () => {
         id: result.id,
         name: result.name,
         cellPhone: result.cell_phone,
-        profile: result.profile,
+        profile: result.profile.name,
         email: result.email,
-        role: result.office,
+        role: result.office.name,
+        active: result.active,
       }));
       setListCollaborators(allCollaborators);
       setLoading(false);

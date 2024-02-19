@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { DialogActions, TextField } from "@mui/material";
 import { useStyles } from "./styles";
-import { Field, Form, Formik } from "formik"; // Importando Formik e Field
+import { Field, Form, Formik } from "formik";
 import { useMaterials } from "../../../../hooks/useMaterials";
 
 const style = {
@@ -34,21 +34,7 @@ export function ModalRegisterMaterial() {
 
   return (
     <div>
-      <Button
-        sx={{
-          textTransform: "capitalize",
-          backgroundColor: "#0076BE",
-          color: "#FFFFFF",
-          fontFamily: "Open Sans",
-          fontWeight: 600,
-          fontSize: "1rem",
-          padding: "0.5rem 1rem",
-          "&:hover": {
-            backgroundColor: "#0076BE",
-          },
-        }}
-        onClick={handleOpen}
-      >
+      <Button className={classes.registerButton} onClick={handleOpen}>
         Cadastrar
       </Button>
       <Modal

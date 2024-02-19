@@ -19,7 +19,7 @@ export const SelectProfileComponent: React.FC<SelectProfileComponentProps> = ({
   endpoint,
   error,
 }) => {
-  const [field, meta, helpers] = useField(name);
+  const [field] = useField(name);
   const [options, setOptions] = useState<{ type: number; name: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 

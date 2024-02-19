@@ -9,7 +9,7 @@ export function successMessage(message: string) {
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-    theme: "colored",
+    theme: "light",
   });
 }
 

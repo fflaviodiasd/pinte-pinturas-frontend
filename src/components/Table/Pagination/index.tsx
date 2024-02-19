@@ -1,4 +1,5 @@
 import { Pagination, PaginationItem, Typography } from "@mui/material";
+import { useStyles } from "./styles";
 
 interface TablePaginationProps {
   count: number;
@@ -11,17 +12,10 @@ export const TablePagination = ({
   page,
   onChange,
 }: TablePaginationProps) => {
+  const { classes } = useStyles();
+
   return (
-    <div
-      style={{
-        width: "100%",
-        margin: "1rem 0",
-        padding: "0 2rem",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
+    <div className={classes.containerPagination}>
       <Typography>
         Mostrando {page} de {count} páginas
       </Typography>

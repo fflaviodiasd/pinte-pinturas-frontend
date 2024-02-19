@@ -1,8 +1,8 @@
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 
-function stringAvatar(tradingName: string) {
-  const initials = tradingName
+function stringAvatar(avatarName: string) {
+  const initials = avatarName
     .split(" ")
     .map((word) => word[0])
     .slice(0, 2)
@@ -16,10 +16,10 @@ function stringAvatar(tradingName: string) {
   };
 }
 
-export function BackgroundAvatar({ tradingName }: { tradingName: string }) {
+export function BackgroundAvatar({ avatarName }: { avatarName: string }) {
   return (
     <Stack direction="row" spacing={2}>
-      <Avatar {...stringAvatar(tradingName)} />
+      <Avatar {...stringAvatar(avatarName)} />
     </Stack>
   );
 }
