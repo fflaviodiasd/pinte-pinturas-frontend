@@ -1,50 +1,37 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-
-export type Person = {
-  active: string;
-  teams: string;
-  collaborators: string;
-  subRows?: Person[];
-};
-
-export const data = [
-  {
-    active: "Dylan",
-    teams: "Murray",
-    collaborators: "261 Erdman Ford",
-    subRows: [
-      {
-        active: "Ervin",
-        teams: "Reinger",
-        collaborators: "566 Brakus Inlet",
-      },
-    ],
-  },
-  {
-    active: "Raquel",
-    teams: "Kohler",
-    collaborators: "769 Dominic Grove",
-    subRows: [
-      {
-        active: "Branson",
-        teams: "Frami",
-        collaborators: "32188 Larkin Turnpike",
-      },
-    ],
-  },
-];
+import { useConstructions } from "../../../hooks/useConstructions";
+import { Chip, FormControlLabel, Switch } from "@mui/material";
 
 export const ConstructionsTeams = () => {
-  const columns = useMemo<MRT_ColumnDef<Person>[]>(
+  const { listConstructionsTeams, getAllConstructionsTeams } =
+    useConstructions();
+
+  useEffect(() => {
+    getAllConstructionsTeams();
+  }, []);
+
+  const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: "active",
-        header: "Ativa",
+        header: "Status",
+        accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
+        id: "active",
+        filterVariant: "checkbox",
+        Cell: ({ cell }) => {
+          const isActive = cell.getValue() === "true";
+          const status = isActive ? "Ativo" : "Inativo";
+          return (
+            <FormControlLabel
+              control={<Switch checked={isActive} />}
+              label={status}
+            />
+          );
+        },
       },
       {
         accessorKey: "teams",
@@ -61,7 +48,7 @@ export const ConstructionsTeams = () => {
 
   const table = useMaterialReactTable({
     columns,
-    data,
+    data: listConstructionsTeams,
     enableExpandAll: false,
     enableExpanding: true,
   });

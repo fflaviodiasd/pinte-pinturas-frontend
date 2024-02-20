@@ -116,6 +116,28 @@ export const useConstructions = () => {
     }
   };
 
+  const [listConstructionsTeams, setListConstructionsTeams] = useState<any[]>(
+    []
+  );
+  const getAllConstructionsTeams = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`constructions/${2}/teams`);
+      const constructionTeamsList = data.map((result: any) => ({
+        id: result.id,
+        active: result.active,
+        teams: result.name,
+        collaborators: result.member_count,
+      }));
+      console.log(data);
+      setListConstructionsTeams(constructionTeamsList);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const [listConstructions, setListConstructions] = useState<any[]>([]);
   const getAllConstructions = async () => {
     setLoading(true);
@@ -148,7 +170,9 @@ export const useConstructions = () => {
     disableConstruction,
     getAllConstructions,
     listConstructionAreas,
+    listConstructionsTeams,
     getAllConstructionAreas,
+    getAllConstructionsTeams,
     addConstructionArea,
   };
 };
