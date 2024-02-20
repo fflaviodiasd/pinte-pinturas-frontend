@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Box, Grid } from "@mui/material";
 import { HeaderButton } from "../../components/Screen/HeaderButton";
-import { ListMaterials } from "../Materials/ListMaterials";
+import { ConstructionsMaterials } from "./Materials";
+import { ConstructionsTeams } from "./Teams";
 
 export const Constructions = () => {
   const [indexDisplay, setIndexDisplay] = useState(0);
@@ -12,10 +13,10 @@ export const Constructions = () => {
 
   const displayContent = (indexDisplay: number) => {
     if (indexDisplay === 0) {
-      return <ListMaterials />;
+      return <ConstructionsMaterials />;
     }
     if (indexDisplay === 1) {
-      return <ListMaterials />;
+      return <ConstructionsTeams />;
     }
   };
 
