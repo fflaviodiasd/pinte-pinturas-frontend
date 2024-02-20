@@ -21,7 +21,7 @@ export const Constructions = () => {
   };
 
   return (
-    <Grid container>
+    <Grid container sx={{ display: "flex", flexDirection: "column" }}>
       <Box sx={{ display: "flex" }}>
         <HeaderButton
           text="Materiais"
