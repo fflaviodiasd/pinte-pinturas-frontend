@@ -31,6 +31,7 @@ export type Collaborator = {
   complement: string;
   number: string;
   disabled: boolean;
+  active: boolean;
 };
 
 export type Client = {
