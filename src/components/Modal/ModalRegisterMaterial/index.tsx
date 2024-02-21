@@ -16,17 +16,20 @@ import { UserContext } from "../../../contexts/UserContext";
 import { useMaterials } from "../../../hooks/useMaterials";
 import { Field, Form, Formik } from "formik";
 import { SelectComponent } from "../../Select";
+import { Delete } from "@mui/icons-material";
 
 type ModalRegisterMaterialProps = {
   modalOpen: boolean;
   handleClose: () => void;
   handleDisable?: () => void;
+  mode: "register" | "edit";
 };
 
 export const ModalRegisterMaterial = ({
   modalOpen,
   handleClose,
   handleDisable,
+  mode,
 }: ModalRegisterMaterialProps) => {
   const { classes } = useStyles();
   const { user } = useContext(UserContext);
@@ -48,7 +51,7 @@ export const ModalRegisterMaterial = ({
       <DialogContent>
         <Box>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Cadastrar Material
+            {mode === "register" ? "Cadastrar Material" : "Editar Material"}
           </Typography>
           <Formik
             initialValues={{
@@ -116,6 +119,11 @@ export const ModalRegisterMaterial = ({
                   />
                 </Box>
                 <DialogActions>
+                  <Box>
+                    {mode === "edit" ? (
+                      <Delete sx={{ color: "red", cursor: "pointer" }} />
+                    ) : null}
+                  </Box>
                   <Button onClick={handleClose} variant="outlined">
                     <Typography style={{ textTransform: "capitalize" }}>
                       Cancelar
@@ -123,7 +131,7 @@ export const ModalRegisterMaterial = ({
                   </Button>
                   <Button type="submit" variant="contained">
                     <Typography style={{ textTransform: "capitalize" }}>
-                      Cadastrar
+                      {mode === "register" ? "Cadastrar" : "Editar"}
                     </Typography>
                   </Button>
                 </DialogActions>

@@ -28,6 +28,7 @@ export const ListMaterials = () => {
 
   const [selectedMaterialId, setselectedMaterialId] = useState<number>(0);
   const [modalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<"edit" | "register">("register");
 
   const handleClose = () => {
     setIsModalOpen(false);
@@ -58,6 +59,7 @@ export const ListMaterials = () => {
               onClick={() => {
                 setselectedMaterialId(cell.row.original.id!);
                 setIsModalOpen(true);
+                setModalMode("edit");
               }}
             />
           </div>
@@ -141,6 +143,7 @@ export const ListMaterials = () => {
                 className={classes.registerButton}
                 onClick={() => {
                   setIsModalOpen(true);
+                  setModalMode("register");
                 }}
               >
                 Cadastrar
@@ -162,6 +165,7 @@ export const ListMaterials = () => {
         <ModalRegisterMaterial
           modalOpen={modalOpen}
           handleClose={handleClose}
+          mode={modalMode}
         />
       </Grid>
     </Grid>
