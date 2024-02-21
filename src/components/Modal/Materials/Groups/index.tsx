@@ -6,13 +6,14 @@ import Modal from "@mui/material/Modal";
 import { useMaterials } from "../../../../hooks/useMaterials";
 import { TextField } from "@mui/material";
 import { useStyles } from "./styles";
+import { ListMaterialGroups } from "./table";
 
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "25%",
+  width: "50%",
   bgcolor: "background.paper",
   p: 4,
 };
@@ -36,24 +37,13 @@ export function ModalMaterialGroups() {
       </Button>
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <Typography variant="h5" gutterBottom>
-            Grupos de Materiais
-          </Typography>
-          {loading ? (
-            <Typography>Carregando...</Typography>
-          ) : (
-            <ul>
-              {listMaterialGroups.map((material) => (
-                <div key={material.id}>
-                  <TextField
-                    variant="standard"
-                    fullWidth
-                    value={material.name}
-                  />
-                </div>
-              ))}
-            </ul>
-          )}
+          <h2>Grupos de Materiais</h2>
+          <ListMaterialGroups />
+          <Button onClick={handleClose} variant="contained">
+            <Typography style={{ textTransform: "capitalize" }}>
+              Fechar
+            </Typography>
+          </Button>
         </Box>
       </Modal>
     </div>
