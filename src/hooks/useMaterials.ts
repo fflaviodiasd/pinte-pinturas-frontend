@@ -108,7 +108,7 @@ export const useMaterials = () => {
       );
       const allMaterialGroups = data.results.map((result: any) => ({
         id: result.id,
-        name: result.name,
+        group: result.name,
       }));
       setListMaterialGroups(allMaterialGroups);
       setLoading(false);
