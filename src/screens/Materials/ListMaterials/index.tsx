@@ -4,15 +4,15 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Grid, Paper, useTheme } from "@mui/material";
+import { Button, Grid, Paper, useTheme } from "@mui/material";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { TablePagination } from "../../../components/Table/Pagination";
 import { Launch } from "@mui/icons-material";
 import { useMaterials } from "../../../hooks/useMaterials";
-import { ModalRegisterMaterial } from "../../../components/Modal/Materials/Register";
 import { ModalMaterialGroups } from "../../../components/Modal/Materials/Groups";
+import { ModalRegisterMaterial } from "../../../components/Modal/ModalRegisterMaterial";
 
 export const ListMaterials = () => {
   const { classes } = useStyles();
@@ -53,7 +53,13 @@ export const ListMaterials = () => {
               alignItems: "center",
             }}
           >
-            <Launch sx={{ color: "gray" }} />
+            <Launch
+              sx={{ cursor: "pointer", color: "#C5C7C8" }}
+              onClick={() => {
+                setselectedMaterialId(cell.row.original.id!);
+                setIsModalOpen(true);
+              }}
+            />
           </div>
         ),
       },
@@ -131,7 +137,14 @@ export const ListMaterials = () => {
             <TitleScreen title="Materiais" />
             <div style={{ display: "flex", gap: "1rem" }}>
               <ModalMaterialGroups />
-              <ModalRegisterMaterial />
+              <Button
+                className={classes.registerButton}
+                onClick={() => {
+                  setIsModalOpen(true);
+                }}
+              >
+                Cadastrar
+              </Button>
             </div>
           </div>
         </Paper>
@@ -146,6 +159,10 @@ export const ListMaterials = () => {
             onChange={handleChangePagination}
           />
         )}
+        <ModalRegisterMaterial
+          modalOpen={modalOpen}
+          handleClose={handleClose}
+        />
       </Grid>
     </Grid>
   );
