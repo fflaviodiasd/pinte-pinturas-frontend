@@ -116,6 +116,30 @@ export const useConstructions = () => {
     }
   };
 
+  const [listConstructionsMaterials, setListConstructionsMaterials] = useState<
+    any[]
+  >([]);
+  const getAllConstructionsMaterials = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`constructions/${2}/materials`);
+      const constructionMaterialsList = data.map((result: any) => ({
+        id: result.id,
+        material: result.material,
+        group: result.group,
+        productionBatch: result.production_batch,
+        price: result.price,
+        expirationDate: result.expiration_date,
+      }));
+      console.log(data);
+      setListConstructionsMaterials(constructionMaterialsList);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const [listConstructionsTeams, setListConstructionsTeams] = useState<any[]>(
     []
   );
@@ -164,6 +188,7 @@ export const useConstructions = () => {
     constructionData,
     setConstructionData,
     listConstructions,
+    listConstructionsMaterials,
     getConstruction,
     addConstruction,
     updateConstruction,
@@ -173,6 +198,7 @@ export const useConstructions = () => {
     listConstructionsTeams,
     getAllConstructionAreas,
     getAllConstructionsTeams,
+    getAllConstructionsMaterials,
     addConstructionArea,
   };
 };
