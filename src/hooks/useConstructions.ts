@@ -122,7 +122,7 @@ export const useConstructions = () => {
   const getAllConstructionsMaterials = async () => {
     setLoading(true);
     try {
-      const { data } = await api.get(`constructions/${2}/materials`);
+      const { data } = await api.get(`constructions/${id}/materials`);
       const constructionMaterialsList = data.map((result: any) => ({
         id: result.id,
         material: result.material,
@@ -146,7 +146,7 @@ export const useConstructions = () => {
   const getAllConstructionsTeams = async () => {
     setLoading(true);
     try {
-      const { data } = await api.get(`constructions/${2}/teams`);
+      const { data } = await api.get(`constructions/${id}/teams`);
       const constructionTeamsList = data.map((result: any) => ({
         id: result.id,
         active: result.active,
@@ -169,10 +169,11 @@ export const useConstructions = () => {
       const { data } = await api.get(`constructions/`);
       const constructionList = data.results.map((result: any) => ({
         id: result.id,
+        active: result.active,
         name: result.name,
+        client: "",
         responsible: "",
-        percentageCompleted: 0,
-        status: "",
+        percentageCompleted: result.percentage,
       }));
       setListConstructions(constructionList);
       setLoading(false);

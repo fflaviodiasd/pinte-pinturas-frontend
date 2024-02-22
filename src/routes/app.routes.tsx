@@ -12,8 +12,10 @@ import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
 
 import { ListMaterials } from "../screens/Materials/ListMaterials";
 
-import { Settings } from "../screens/Settings";
+import { ListConstructions } from "../screens/Constructions/ListConstructions";
 import { Constructions } from "../screens/Constructions";
+
+import { Settings } from "../screens/Settings";
 
 export const AppRoutes = () => {
   return (
@@ -42,7 +44,9 @@ export const AppRoutes = () => {
             element={<ListCollaborators />}
           />
 
-          <Route path="/obras" element={<Constructions />} />
+          <Route path="/obras" element={<ListConstructions />} />
+
+          <Route path="/obras/:id" element={<Constructions />} />
 
           <Route path="/materiais" element={<ListMaterials />} />
 
