@@ -70,10 +70,19 @@ export const useMaterials = () => {
     }
   };
 
-  const updateMaterial = async (materialData: Material) => {
+  const updateMaterial = async (
+    materialData: Material,
+    selectedMaterialId: number
+  ) => {
     setLoading(true);
     try {
-      await api.patch(`materials/${id}/`, {});
+      await api.patch(`materials/${selectedMaterialId}/`, {
+        name: materialData.name,
+        group: materialData.group,
+        expected_consumption: materialData.expectedConsumption,
+        type_application: materialData.applicationType,
+        unit: materialData.unit,
+      });
       successMessage("Material atualizado com sucesso!");
       setLoading(false);
     } catch (error) {

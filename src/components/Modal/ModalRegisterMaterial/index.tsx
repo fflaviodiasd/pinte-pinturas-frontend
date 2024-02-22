@@ -23,6 +23,7 @@ type ModalRegisterMaterialProps = {
   handleClose: () => void;
   handleDisable?: () => void;
   mode: "register" | "edit";
+  selectedMaterialId?: any;
 };
 
 export const ModalRegisterMaterial = ({
@@ -30,14 +31,19 @@ export const ModalRegisterMaterial = ({
   handleClose,
   handleDisable,
   mode,
+  selectedMaterialId,
 }: ModalRegisterMaterialProps) => {
   const { classes } = useStyles();
   const { user } = useContext(UserContext);
 
-  const { addMaterial } = useMaterials();
+  const { addMaterial, updateMaterial } = useMaterials();
 
   const handleSubmit = async (values: any) => {
-    await addMaterial(values);
+    if (mode === "register") {
+      await addMaterial(values);
+    } else {
+      await updateMaterial(values, selectedMaterialId);
+    }
     handleClose();
   };
 
@@ -119,11 +125,11 @@ export const ModalRegisterMaterial = ({
                   />
                 </Box>
                 <DialogActions>
-                  <Box>
+                  <Button onClick={handleDisable}>
                     {mode === "edit" ? (
                       <Delete sx={{ color: "red", cursor: "pointer" }} />
                     ) : null}
-                  </Box>
+                  </Button>
                   <Button onClick={handleClose} variant="outlined">
                     <Typography style={{ textTransform: "capitalize" }}>
                       Cancelar

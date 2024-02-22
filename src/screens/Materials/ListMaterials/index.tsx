@@ -34,6 +34,11 @@ export const ListMaterials = () => {
     setIsModalOpen(false);
   };
 
+  const handleDisable = () => {
+    disableMaterial(selectedMaterialId);
+    setIsModalOpen(false);
+  };
+
   const baseBackgroundColor =
     theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
@@ -166,6 +171,8 @@ export const ListMaterials = () => {
           modalOpen={modalOpen}
           handleClose={handleClose}
           mode={modalMode}
+          selectedMaterialId={selectedMaterialId}
+          handleDisable={handleDisable}
         />
       </Grid>
     </Grid>
