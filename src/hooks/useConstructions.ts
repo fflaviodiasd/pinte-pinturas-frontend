@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
 import { api } from "../services/api";
 import { Construction } from "../types";
+import { UserContext } from "../contexts/UserContext";
 
 type ConstructionArea = {
   id: number;
@@ -13,6 +14,7 @@ type ConstructionArea = {
 export const useConstructions = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useContext(UserContext);
 
   const [loading, setLoading] = useState(true);
   const [constructionData, setConstructionData] = useState<any>({
@@ -223,8 +225,10 @@ export const useConstructions = () => {
   const getAllConstructions = async () => {
     setLoading(true);
     try {
-      const { data } = await api.get(`constructions/`);
-      const constructionList = data.results.map((result: any) => ({
+      const { data } = await api.get(
+        `/companies/${user.company}/constructions/`
+      );
+      const constructionList = data.map((result: any) => ({
         id: result.id,
         active: result.active,
         name: result.name,
