@@ -39,11 +39,19 @@ export function ModalMaterialGroups() {
         <Box sx={style}>
           <h2>Grupos de Materiais</h2>
           <ListMaterialGroups />
-          <Button onClick={handleClose} variant="contained">
-            <Typography style={{ textTransform: "capitalize" }}>
-              Fechar
-            </Typography>
-          </Button>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "right",
+              marginTop: "1rem",
+            }}
+          >
+            <Button onClick={handleClose} variant="contained">
+              <Typography style={{ textTransform: "capitalize" }}>
+                Fechar
+              </Typography>
+            </Button>
+          </div>
         </Box>
       </Modal>
     </div>

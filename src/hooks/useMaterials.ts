@@ -92,6 +92,24 @@ export const useMaterials = () => {
     }
   };
 
+  const updateMaterialGroup = async (
+    //materialData: Material,
+    selectedMaterialGroupId: number
+  ) => {
+    setLoading(true);
+    try {
+      await api.patch(`material_groups/${selectedMaterialGroupId}/`, {
+        //name: materialData.name,
+      });
+      successMessage("Material atualizado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível atualizar material!");
+      setLoading(false);
+    }
+  };
+
   const disableMaterial = async (materialId: number) => {
     setLoading(true);
     try {
@@ -176,6 +194,7 @@ export const useMaterials = () => {
     getMaterial,
     addMaterial,
     updateMaterial,
+    updateMaterialGroup,
     disableMaterial,
     getAllMaterialGroups,
     getAllMaterials,

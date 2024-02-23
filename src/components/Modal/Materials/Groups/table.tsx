@@ -14,7 +14,11 @@ const MaterialsGroups = () => {
     Record<string, string | undefined>
   >({});
 
-  const { listMaterialGroups, getAllMaterialGroups } = useMaterials();
+  const { listMaterialGroups, getAllMaterialGroups, updateMaterialGroup } =
+    useMaterials();
+
+  const [selectedMaterialGroupId, setselectedMaterialGroupId] =
+    useState<number>(0);
 
   const theme = useTheme();
   const baseBackgroundColor =
@@ -29,20 +33,15 @@ const MaterialsGroups = () => {
       {
         accessorKey: "group",
         header: "Grupo",
-        muiEditTextFieldProps: {
-          required: true,
-          error: !!validationErrors?.groups,
-          helperText: validationErrors?.groups,
-          onFocus: () =>
-            setValidationErrors({
-              ...validationErrors,
-              groups: undefined,
-            }),
-        },
       },
     ],
     [validationErrors]
   );
+
+  const handleEditGroup = async () => {
+    await updateMaterialGroup(selectedMaterialGroupId);
+    table.setEditingRow(null);
+  };
 
   const table = useMaterialReactTable({
     columns,
@@ -71,19 +70,26 @@ const MaterialsGroups = () => {
     onCreatingRowCancel: () => setValidationErrors({}),
     //onCreatingRowSave: handleCreateUser,
     onEditingRowCancel: () => setValidationErrors({}),
-    //onEditingRowSave: handleSaveUser,
+    onEditingRowSave: handleEditGroup,
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Tooltip title="Edit">
-          <IconButton onClick={() => table.setEditingRow(row)}>
-            <EditIcon />
-          </IconButton>
-        </Tooltip>
+        <div>
+          <Tooltip title="Edit">
+            <IconButton
+              onClick={() => {
+                table.setEditingRow(row);
+                setselectedMaterialGroupId(row.original.id!);
+              }}
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
       </Box>
     ),
     renderTopToolbarCustomActions: ({ table }) => (
       <Button
-        variant="contained"
+        variant="outlined"
         onClick={() => {
           table.setCreatingRow(true);
         }}

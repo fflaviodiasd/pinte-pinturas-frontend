@@ -71,9 +71,7 @@ export const ModalRegisterMaterial = ({
           >
             {() => (
               <Form>
-                <Box
-                  sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-                >
+                <DialogContent>
                   <Field name="name">
                     {({ field }: any) => (
                       <TextField
@@ -123,7 +121,7 @@ export const ModalRegisterMaterial = ({
                     optionValueKey="id"
                     optionLabelKey="name"
                   />
-                </Box>
+                </DialogContent>
                 <DialogActions>
                   <Button onClick={handleDisable}>
                     {mode === "edit" ? (
