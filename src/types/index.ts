@@ -64,3 +64,10 @@ export type Material = {
   applicationType: string;
   unit: string;
 };
+
+export type Construction = {
+  productionBatch: string;
+  price: string;
+  expirationDate: string;
+  material: string;
+};

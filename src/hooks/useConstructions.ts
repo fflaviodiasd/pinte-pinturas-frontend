@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
 import { api } from "../services/api";
+import { Construction } from "../types";
 
 type ConstructionArea = {
   id: number;
@@ -55,6 +56,24 @@ export const useConstructions = () => {
     }
   };
 
+  const addConstructionMaterial = async (constructionData: Construction) => {
+    setLoading(true);
+    try {
+      await api.post(`/constructions/${id}/materials/`, {
+        production_batch: constructionData.productionBatch,
+        price: constructionData.price,
+        expiration_date: constructionData.expirationDate,
+        material: constructionData.material,
+      });
+      successMessage("Material da obra adicionado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível adicionar material da obra!");
+      setLoading(false);
+    }
+  };
+
   const addConstruction = async (constructionData: any) => {
     setLoading(true);
     try {
@@ -69,6 +88,30 @@ export const useConstructions = () => {
     }
   };
 
+  const updateConstructionMaterial = async (
+    constructionData: Construction,
+    selectedConstructionMaterialId: number
+  ) => {
+    setLoading(true);
+    try {
+      await api.patch(
+        `construction_materials/${selectedConstructionMaterialId}/`,
+        {
+          production_batch: constructionData.productionBatch,
+          price: constructionData.price,
+          expiration_date: constructionData.expirationDate,
+          material: constructionData.material,
+        }
+      );
+      successMessage("Material atualizado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível atualizar material!");
+      setLoading(false);
+    }
+  };
+
   const updateConstruction = async (constructionData: any) => {
     setLoading(true);
     try {
@@ -79,6 +122,20 @@ export const useConstructions = () => {
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível atualizar obra!");
+      setLoading(false);
+    }
+  };
+
+  const disableConstructionMaterial = async (materialId: number) => {
+    setLoading(true);
+    try {
+      await api.delete(``);
+      getAllConstructionsMaterials();
+      successMessage("Material da obra apagado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível apagar material da obra!");
       setLoading(false);
     }
   };
@@ -192,8 +249,11 @@ export const useConstructions = () => {
     listConstructionsMaterials,
     getConstruction,
     addConstruction,
+    addConstructionMaterial,
     updateConstruction,
+    updateConstructionMaterial,
     disableConstruction,
+    disableConstructionMaterial,
     getAllConstructions,
     listConstructionAreas,
     listConstructionsTeams,
