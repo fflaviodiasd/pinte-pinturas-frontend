@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { TablePagination } from "../../../components/Table/Pagination";
 import { Launch } from "@mui/icons-material";
 import { useMaterials } from "../../../hooks/useMaterials";
-import { ModalMaterialGroups } from "../../../components/Modal/Materials/Groups";
+import { ModalMaterialGroups } from "../../../components/Modal/ModalMaterialGroups/ModalGroups";
 import { ModalRegisterMaterial } from "../../../components/Modal/ModalRegisterMaterial";
 
 export const ListMaterials = () => {

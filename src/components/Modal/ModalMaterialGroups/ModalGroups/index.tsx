@@ -6,7 +6,7 @@ import Modal from "@mui/material/Modal";
 import { useMaterials } from "../../../../hooks/useMaterials";
 import { TextField } from "@mui/material";
 import { useStyles } from "./styles";
-import { ListMaterialGroups } from "./table";
+import { ListMaterialGroups } from "../ListGroups";
 
 const style = {
   position: "absolute" as "absolute",
