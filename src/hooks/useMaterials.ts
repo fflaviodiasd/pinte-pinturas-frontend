@@ -94,12 +94,13 @@ export const useMaterials = () => {
 
   const updateMaterialGroup = async (
     //materialData: Material,
-    selectedMaterialGroupId: number
+    selectedMaterialGroupId: number,
+    values: any
   ) => {
     setLoading(true);
     try {
       await api.patch(`material_groups/${selectedMaterialGroupId}/`, {
-        //name: materialData.name,
+        name: values.group,
       });
       successMessage("Material atualizado com sucesso!");
       setLoading(false);

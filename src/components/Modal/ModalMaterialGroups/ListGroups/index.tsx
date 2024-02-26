@@ -3,6 +3,7 @@ import {
   MaterialReactTable,
   type MRT_ColumnDef,
   useMaterialReactTable,
+  MRT_TableOptions,
 } from "material-react-table";
 import { Box, Button, IconButton, Tooltip, useTheme } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -38,9 +39,13 @@ const MaterialsGroups = () => {
     [validationErrors]
   );
 
-  const handleEditGroup = async () => {
-    await updateMaterialGroup(selectedMaterialGroupId);
-    table.setEditingRow(null);
+  //UPDATE action
+  const handleEditGroup: MRT_TableOptions<any>["onEditingRowSave"] = async ({
+    values,
+    table,
+  }) => {
+    await updateMaterialGroup(selectedMaterialGroupId, values);
+    table.setEditingRow(null); //exit editing mode
   };
 
   const table = useMaterialReactTable({
