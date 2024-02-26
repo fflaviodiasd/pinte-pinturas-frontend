@@ -51,6 +51,24 @@ export const useMaterials = () => {
     }
   };
 
+  const addMaterialGroups = async (
+    //materialData: Material,
+    values: any
+  ) => {
+    setLoading(true);
+    try {
+      await api.post(`companies/${user.company}/materials_group/`, {
+        name: values.group,
+      });
+      successMessage("Material adicionado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível adicionar material!");
+      setLoading(false);
+    }
+  };
+
   const addMaterial = async (materialData: Material) => {
     setLoading(true);
     try {
@@ -194,6 +212,7 @@ export const useMaterials = () => {
     listMaterialGroups,
     getMaterial,
     addMaterial,
+    addMaterialGroups,
     updateMaterial,
     updateMaterialGroup,
     disableMaterial,

@@ -15,8 +15,12 @@ const MaterialsGroups = () => {
     Record<string, string | undefined>
   >({});
 
-  const { listMaterialGroups, getAllMaterialGroups, updateMaterialGroup } =
-    useMaterials();
+  const {
+    listMaterialGroups,
+    getAllMaterialGroups,
+    updateMaterialGroup,
+    addMaterialGroups,
+  } = useMaterials();
 
   const [selectedMaterialGroupId, setselectedMaterialGroupId] =
     useState<number>(0);
@@ -38,6 +42,15 @@ const MaterialsGroups = () => {
     ],
     [validationErrors]
   );
+
+  //CREATE action
+  const handleCreateGroup: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
+    values,
+    table,
+  }) => {
+    await addMaterialGroups(values);
+    table.setEditingRow(null); //exit editing mode
+  };
 
   //UPDATE action
   const handleEditGroup: MRT_TableOptions<any>["onEditingRowSave"] = async ({
@@ -73,7 +86,7 @@ const MaterialsGroups = () => {
     }),
     getRowId: (row) => row.id,
     onCreatingRowCancel: () => setValidationErrors({}),
-    //onCreatingRowSave: handleCreateUser,
+    onCreatingRowSave: handleCreateGroup,
     onEditingRowCancel: () => setValidationErrors({}),
     onEditingRowSave: handleEditGroup,
     renderRowActions: ({ row, table }) => (
