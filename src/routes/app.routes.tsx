@@ -12,6 +12,9 @@ import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
 
 import { ListMaterials } from "../screens/Materials/ListMaterials";
 
+import { ListConstructions } from "../screens/Constructions/ListConstructions";
+import { Constructions } from "../screens/Constructions";
+
 import { Settings } from "../screens/Settings";
 
 export const AppRoutes = () => {
@@ -40,6 +43,10 @@ export const AppRoutes = () => {
             path="/colaboradores/listagem"
             element={<ListCollaborators />}
           />
+
+          <Route path="/obras" element={<ListConstructions />} />
+
+          <Route path="/obras/:id" element={<Constructions />} />
 
           <Route path="/materiais" element={<ListMaterials />} />
 

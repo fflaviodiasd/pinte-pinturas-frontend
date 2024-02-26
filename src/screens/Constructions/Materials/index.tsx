@@ -4,38 +4,35 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Button, Grid, Paper, useTheme } from "@mui/material";
-import { TitleScreen } from "../../../components/TitleScreen";
+import { Box, Button, Grid, useTheme } from "@mui/material";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { TablePagination } from "../../../components/Table/Pagination";
-import { Launch } from "@mui/icons-material";
-import { useMaterials } from "../../../hooks/useMaterials";
-import { ModalMaterialGroups } from "../../../components/Modal/ModalMaterialGroups/ModalGroups";
-import { ModalRegisterMaterial } from "../../../components/Modal/ModalRegisterMaterial";
+import { useConstructions } from "../../../hooks/useConstructions";
+import { ModalRegisterConstructionMaterial } from "../../../components/Modal/ModalRegisterConstructionMaterial";
+import { Add, Launch } from "@mui/icons-material";
 
-export const ListMaterials = () => {
+export const ListConstructionsMaterials = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
   const {
-    listMaterials,
-    getAllMaterials,
-    disableMaterial,
-    pagination,
-    handleChangePagination,
-  } = useMaterials();
+    listConstructionsMaterials,
+    getAllConstructionsMaterials,
+    disableConstructionMaterial,
+  } = useConstructions();
   const theme = useTheme();
 
-  const [selectedMaterialId, setselectedMaterialId] = useState<number>(0);
+  const [selectedConstructionMaterialId, setselectedConstructionMaterialId] =
+    useState<number>(0);
   const [modalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"edit" | "register">("register");
 
-  const handleClose = () => {
+  const handleDisable = () => {
+    disableConstructionMaterial(selectedConstructionMaterialId);
     setIsModalOpen(false);
   };
 
-  const handleDisable = () => {
-    disableMaterial(selectedMaterialId);
+  const handleClose = () => {
     setIsModalOpen(false);
   };
 
@@ -43,7 +40,7 @@ export const ListMaterials = () => {
     theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
-    getAllMaterials();
+    getAllConstructionsMaterials();
   }, []);
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -62,7 +59,7 @@ export const ListMaterials = () => {
             <Launch
               sx={{ cursor: "pointer", color: "#C5C7C8" }}
               onClick={() => {
-                setselectedMaterialId(cell.row.original.id!);
+                setselectedConstructionMaterialId(cell.row.original.id!);
                 setIsModalOpen(true);
                 setModalMode("edit");
               }}
@@ -71,10 +68,10 @@ export const ListMaterials = () => {
         ),
       },
       {
-        accessorKey: "name",
+        accessorKey: "material",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Nome",
+        header: "Material",
       },
       {
         accessorKey: "group",
@@ -83,22 +80,22 @@ export const ListMaterials = () => {
         header: "Grupo",
       },
       {
-        accessorKey: "unit",
+        accessorKey: "productionBatch",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Unidade",
+        header: "Lote",
       },
       {
-        accessorKey: "expectedConsumption",
+        accessorKey: "price",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Consumo Esperado",
+        header: "Preço",
       },
       {
-        accessorKey: "consumptionRealized",
+        accessorKey: "expirationDate",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Consumo Realizado",
+        header: "Data Validade",
       },
     ],
     []
@@ -106,7 +103,7 @@ export const ListMaterials = () => {
 
   const table = useMaterialReactTable({
     columns,
-    data: listMaterials,
+    data: listConstructionsMaterials,
     enableColumnFilterModes: true,
     initialState: { showColumnFilters: true },
     filterFns: {
@@ -139,39 +136,25 @@ export const ListMaterials = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} lg={12}>
-        <Paper className={classes.paper}>
-          <div className={classes.searchBarContainer}>
-            <TitleScreen title="Materiais" />
-            <div style={{ display: "flex", gap: "1rem" }}>
-              <ModalMaterialGroups />
-              <Button
-                className={classes.registerButton}
-                onClick={() => {
-                  setIsModalOpen(true);
-                  setModalMode("register");
-                }}
-              >
-                Cadastrar
-              </Button>
-            </div>
-          </div>
-        </Paper>
-      </Grid>
-
-      <Grid item xs={12} lg={12}>
+        <Box
+          sx={{ display: "flex", justifyContent: "right", marginRight: "1rem" }}
+        >
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setIsModalOpen(true);
+              setModalMode("register");
+            }}
+          >
+            <Add />
+          </Button>
+        </Box>
         <MaterialReactTable table={table} />
-        {Boolean(listMaterials.length) && (
-          <TablePagination
-            count={pagination.pageQuantity}
-            page={pagination.currentPage}
-            onChange={handleChangePagination}
-          />
-        )}
-        <ModalRegisterMaterial
+        <ModalRegisterConstructionMaterial
           modalOpen={modalOpen}
           handleClose={handleClose}
           mode={modalMode}
-          selectedMaterialId={selectedMaterialId}
+          selectedConstructionMaterialId={selectedConstructionMaterialId}
           handleDisable={handleDisable}
         />
       </Grid>

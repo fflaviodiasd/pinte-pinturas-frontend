@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
 import { api } from "../services/api";
+import { Construction } from "../types";
+import { UserContext } from "../contexts/UserContext";
 
 type ConstructionArea = {
   id: number;
@@ -12,6 +14,7 @@ type ConstructionArea = {
 export const useConstructions = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useContext(UserContext);
 
   const [loading, setLoading] = useState(true);
   const [constructionData, setConstructionData] = useState<any>({
@@ -55,6 +58,24 @@ export const useConstructions = () => {
     }
   };
 
+  const addConstructionMaterial = async (constructionData: Construction) => {
+    setLoading(true);
+    try {
+      await api.post(`/constructions/${id}/materials/`, {
+        production_batch: constructionData.productionBatch,
+        price: constructionData.price,
+        expiration_date: constructionData.expirationDate,
+        material: constructionData.material,
+      });
+      successMessage("Material da obra adicionado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível adicionar material da obra!");
+      setLoading(false);
+    }
+  };
+
   const addConstruction = async (constructionData: any) => {
     setLoading(true);
     try {
@@ -69,6 +90,30 @@ export const useConstructions = () => {
     }
   };
 
+  const updateConstructionMaterial = async (
+    constructionData: Construction,
+    selectedConstructionMaterialId: number
+  ) => {
+    setLoading(true);
+    try {
+      await api.patch(
+        `material_constructions/${selectedConstructionMaterialId}/`,
+        {
+          production_batch: constructionData.productionBatch,
+          price: constructionData.price,
+          expiration_date: constructionData.expirationDate,
+          material: constructionData.material,
+        }
+      );
+      successMessage("Material da obra atualizado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível atualizar material da obra!");
+      setLoading(false);
+    }
+  };
+
   const updateConstruction = async (constructionData: any) => {
     setLoading(true);
     try {
@@ -79,6 +124,20 @@ export const useConstructions = () => {
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível atualizar obra!");
+      setLoading(false);
+    }
+  };
+
+  const disableConstructionMaterial = async (materialId: number) => {
+    setLoading(true);
+    try {
+      await api.delete(`material_constructions/${materialId}`);
+      getAllConstructionsMaterials();
+      successMessage("Material da obra apagado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível apagar material da obra!");
       setLoading(false);
     }
   };
@@ -116,17 +175,66 @@ export const useConstructions = () => {
     }
   };
 
+  const [listConstructionsMaterials, setListConstructionsMaterials] = useState<
+    any[]
+  >([]);
+  const getAllConstructionsMaterials = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`constructions/${id}/materials`);
+      const constructionMaterialsList = data.map((result: any) => ({
+        id: result.id,
+        material: result.material,
+        group: result.group,
+        productionBatch: result.production_batch,
+        price: result.price,
+        expirationDate: result.expiration_date,
+      }));
+      console.log(data);
+      setListConstructionsMaterials(constructionMaterialsList);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const [listConstructionsTeams, setListConstructionsTeams] = useState<any[]>(
+    []
+  );
+  const getAllConstructionsTeams = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`constructions/${id}/teams`);
+      const constructionTeamsList = data.map((result: any) => ({
+        id: result.id,
+        active: result.active,
+        teams: result.name,
+        collaborators: result.member_count,
+      }));
+      console.log(data);
+      setListConstructionsTeams(constructionTeamsList);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const [listConstructions, setListConstructions] = useState<any[]>([]);
   const getAllConstructions = async () => {
     setLoading(true);
     try {
-      const { data } = await api.get(`constructions/`);
-      const constructionList = data.results.map((result: any) => ({
+      const { data } = await api.get(
+        `/companies/${user.company}/constructions/`
+      );
+      const constructionList = data.map((result: any) => ({
         id: result.id,
+        active: result.active,
         name: result.name,
+        client: "",
         responsible: "",
-        percentageCompleted: 0,
-        status: "",
+        percentageCompleted: result.percentage,
       }));
       setListConstructions(constructionList);
       setLoading(false);
@@ -142,13 +250,20 @@ export const useConstructions = () => {
     constructionData,
     setConstructionData,
     listConstructions,
+    listConstructionsMaterials,
     getConstruction,
     addConstruction,
+    addConstructionMaterial,
     updateConstruction,
+    updateConstructionMaterial,
     disableConstruction,
+    disableConstructionMaterial,
     getAllConstructions,
     listConstructionAreas,
+    listConstructionsTeams,
     getAllConstructionAreas,
+    getAllConstructionsTeams,
+    getAllConstructionsMaterials,
     addConstructionArea,
   };
 };

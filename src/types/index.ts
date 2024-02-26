@@ -31,6 +31,7 @@ export type Collaborator = {
   complement: string;
   number: string;
   disabled: boolean;
+  active: boolean;
 };
 
 export type Client = {
@@ -62,4 +63,11 @@ export type Material = {
   expectedConsumption: string;
   applicationType: string;
   unit: string;
+};
+
+export type Construction = {
+  productionBatch: string;
+  price: string;
+  expirationDate: string;
+  material: string;
 };

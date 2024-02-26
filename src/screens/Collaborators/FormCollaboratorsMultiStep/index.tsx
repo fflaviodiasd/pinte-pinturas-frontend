@@ -35,11 +35,14 @@ export function FormCollaboratorsMultiStep() {
     updateCollaborator,
   } = useCollaborators();
 
+  const [active, setActive] = useState(collaboratorData.active);
+
   const onSubmit = async (values: any) => {
+    const updatedValues = { ...values, active };
     if (!isEditScreen) {
       await addCollaborator(values);
     } else {
-      await updateCollaborator(values);
+      await updateCollaborator(updatedValues);
     }
   };
 
@@ -47,7 +50,8 @@ export function FormCollaboratorsMultiStep() {
     if (collaboratorId) {
       getCollaborator(collaboratorId);
     }
-  }, [collaboratorId]);
+    setActive(collaboratorData.active);
+  }, [collaboratorId, collaboratorData.active]);
 
   return (
     <Card
@@ -203,7 +207,13 @@ export function FormCollaboratorsMultiStep() {
                     />
                   </Grid>
                   <Box marginLeft="1rem">
-                    <FormControlLabel control={<Switch />} label="Ativo" />
+                    <FormControlLabel
+                      control={<Switch />}
+                      label="Ativo"
+                      name="active"
+                      checked={active}
+                      onChange={(e: any) => setActive(e.target.checked)}
+                    />
                   </Box>
                 </Grid>
               </Paper>

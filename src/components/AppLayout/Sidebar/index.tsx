@@ -78,6 +78,11 @@ export const Sidebar = () => {
       ],
     },
     {
+      text: "Obras",
+      path: "/obras",
+      icon: <Badge />,
+    },
+    {
       text: "Materiais",
       path: "/materiais",
       icon: <Badge />,

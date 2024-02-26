@@ -4,46 +4,29 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Button, Grid, Paper, useTheme } from "@mui/material";
+import { Chip, Grid, Paper, useTheme } from "@mui/material";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
+import { EditIcon } from "../../../components/EditIcon";
 import { TablePagination } from "../../../components/Table/Pagination";
-import { Launch } from "@mui/icons-material";
-import { useMaterials } from "../../../hooks/useMaterials";
-import { ModalMaterialGroups } from "../../../components/Modal/ModalMaterialGroups/ModalGroups";
-import { ModalRegisterMaterial } from "../../../components/Modal/ModalRegisterMaterial";
+import { BackgroundAvatar } from "../../../components/Avatar";
+import { useConstructions } from "../../../hooks/useConstructions";
 
-export const ListMaterials = () => {
+export const ListConstructions = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const {
-    listMaterials,
-    getAllMaterials,
-    disableMaterial,
-    pagination,
-    handleChangePagination,
-  } = useMaterials();
+  const { listConstructions, getAllConstructions } = useConstructions();
   const theme = useTheme();
 
-  const [selectedMaterialId, setselectedMaterialId] = useState<number>(0);
-  const [modalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<"edit" | "register">("register");
-
-  const handleClose = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleDisable = () => {
-    disableMaterial(selectedMaterialId);
-    setIsModalOpen(false);
-  };
+  const [selectedConstructionId, setselectedConstructionId] =
+    useState<number>(0);
 
   const baseBackgroundColor =
     theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
-    getAllMaterials();
+    getAllConstructions();
   }, []);
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -59,46 +42,64 @@ export const ListMaterials = () => {
               alignItems: "center",
             }}
           >
-            <Launch
-              sx={{ cursor: "pointer", color: "#C5C7C8" }}
-              onClick={() => {
-                setselectedMaterialId(cell.row.original.id!);
-                setIsModalOpen(true);
-                setModalMode("edit");
-              }}
+            <EditIcon
+              onClick={() => navigate(`/obras/${cell.row.original.id}`)}
+              label="Editar"
             />
           </div>
         ),
       },
       {
+        header: "Status",
+        accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
+        id: "active",
+        filterVariant: "checkbox",
+        Cell: ({ cell }) => {
+          const status = cell.getValue() === "true" ? "Ativo" : "Inativo";
+          const chipColor = status === "Ativo" ? "success" : "error";
+          return <Chip label={status} color={chipColor} />;
+        },
+        size: 170,
+      },
+
+      {
         accessorKey: "name",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Nome",
+        header: "Nome da Obra",
+        Cell: ({ cell }) => (
+          <div
+            style={{
+              display: "flex",
+              gap: "0.5rem",
+
+              alignItems: "center",
+            }}
+          >
+            {cell.row.original.name && (
+              <BackgroundAvatar avatarName={cell.row.original.name} />
+            )}
+            {cell.row.original.name}
+          </div>
+        ),
       },
       {
-        accessorKey: "group",
+        accessorKey: "client",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Grupo",
+        header: "Cliente",
       },
       {
-        accessorKey: "unit",
+        accessorKey: "responsible",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Unidade",
+        header: "Encarregado",
       },
       {
-        accessorKey: "expectedConsumption",
+        accessorKey: "percentageCompleted",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Consumo Esperado",
-      },
-      {
-        accessorKey: "consumptionRealized",
-        enableColumnFilterModes: false,
-        filterFn: "startsWith",
-        header: "Consumo Realizado",
+        header: "Execução",
       },
     ],
     []
@@ -106,7 +107,7 @@ export const ListMaterials = () => {
 
   const table = useMaterialReactTable({
     columns,
-    data: listMaterials,
+    data: listConstructions,
     enableColumnFilterModes: true,
     initialState: { showColumnFilters: true },
     filterFns: {
@@ -141,39 +142,13 @@ export const ListMaterials = () => {
       <Grid item xs={12} lg={12}>
         <Paper className={classes.paper}>
           <div className={classes.searchBarContainer}>
-            <TitleScreen title="Materiais" />
-            <div style={{ display: "flex", gap: "1rem" }}>
-              <ModalMaterialGroups />
-              <Button
-                className={classes.registerButton}
-                onClick={() => {
-                  setIsModalOpen(true);
-                  setModalMode("register");
-                }}
-              >
-                Cadastrar
-              </Button>
-            </div>
+            <TitleScreen title="Obras" />
           </div>
         </Paper>
       </Grid>
 
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />
-        {Boolean(listMaterials.length) && (
-          <TablePagination
-            count={pagination.pageQuantity}
-            page={pagination.currentPage}
-            onChange={handleChangePagination}
-          />
-        )}
-        <ModalRegisterMaterial
-          modalOpen={modalOpen}
-          handleClose={handleClose}
-          mode={modalMode}
-          selectedMaterialId={selectedMaterialId}
-          handleDisable={handleDisable}
-        />
       </Grid>
     </Grid>
   );

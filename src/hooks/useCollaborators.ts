@@ -34,6 +34,7 @@ export const useCollaborators = () => {
     complement: "",
     number: "",
     disabled: false,
+    active: false,
   });
 
   const getCollaborator = async (id: string) => {
@@ -63,6 +64,7 @@ export const useCollaborators = () => {
         publicPlace: data.public_place,
         complement: data.complement,
         number: data.number,
+        active: data.active,
       });
       setLoading(false);
     } catch (error) {
@@ -143,6 +145,7 @@ export const useCollaborators = () => {
         public_place: collaboratorData.publicPlace,
         complement: collaboratorData.complement,
         number: collaboratorData.number,
+        active: collaboratorData.active,
       });
       successMessage("Colaborador atualizado com sucesso!");
       navigate("/colaboradores/listagem");

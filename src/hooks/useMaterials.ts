@@ -51,6 +51,24 @@ export const useMaterials = () => {
     }
   };
 
+  const addMaterialGroups = async (
+    //materialData: Material,
+    values: any
+  ) => {
+    setLoading(true);
+    try {
+      await api.post(`companies/${user.company}/materials_group/`, {
+        name: values.group,
+      });
+      successMessage("Material adicionado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível adicionar material!");
+      setLoading(false);
+    }
+  };
+
   const addMaterial = async (materialData: Material) => {
     setLoading(true);
     try {
@@ -70,10 +88,38 @@ export const useMaterials = () => {
     }
   };
 
-  const updateMaterial = async (materialData: Material) => {
+  const updateMaterial = async (
+    materialData: Material,
+    selectedMaterialId: number
+  ) => {
     setLoading(true);
     try {
-      await api.patch(`materials/${id}/`, {});
+      await api.patch(`materials/${selectedMaterialId}/`, {
+        name: materialData.name,
+        group: materialData.group,
+        expected_consumption: materialData.expectedConsumption,
+        type_application: materialData.applicationType,
+        unit: materialData.unit,
+      });
+      successMessage("Material atualizado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível atualizar material!");
+      setLoading(false);
+    }
+  };
+
+  const updateMaterialGroup = async (
+    //materialData: Material,
+    selectedMaterialGroupId: number,
+    values: any
+  ) => {
+    setLoading(true);
+    try {
+      await api.patch(`material_groups/${selectedMaterialGroupId}/`, {
+        name: values.group,
+      });
       successMessage("Material atualizado com sucesso!");
       setLoading(false);
     } catch (error) {
@@ -93,6 +139,27 @@ export const useMaterials = () => {
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível apagar material!");
+      setLoading(false);
+    }
+  };
+
+  const [listMaterialGroups, setListMaterialGroups] = useState<Material[]>([]);
+
+  const getAllMaterialGroups = async (currentPage: number = 0) => {
+    setLoading(true);
+    const offset = (currentPage - 1) * LIMIT;
+    try {
+      const { data } = await api.get(
+        `companies/${user.company}/materials_group/?disabled=false&limit=${LIMIT}&offset=${offset}`
+      );
+      const allMaterialGroups = data.results.map((result: any) => ({
+        id: result.id,
+        group: result.name,
+      }));
+      setListMaterialGroups(allMaterialGroups);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
       setLoading(false);
     }
   };
@@ -142,10 +209,14 @@ export const useMaterials = () => {
     handleChangePagination,
     materialData,
     listMaterials,
+    listMaterialGroups,
     getMaterial,
     addMaterial,
+    addMaterialGroups,
     updateMaterial,
+    updateMaterialGroup,
     disableMaterial,
+    getAllMaterialGroups,
     getAllMaterials,
     getMaterialBySearch,
   };
