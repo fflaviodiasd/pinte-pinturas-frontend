@@ -97,7 +97,7 @@ export const useConstructions = () => {
     setLoading(true);
     try {
       await api.patch(
-        `construction_materials/${selectedConstructionMaterialId}/`,
+        `material_constructions/${selectedConstructionMaterialId}/`,
         {
           production_batch: constructionData.productionBatch,
           price: constructionData.price,
@@ -105,11 +105,11 @@ export const useConstructions = () => {
           material: constructionData.material,
         }
       );
-      successMessage("Material atualizado com sucesso!");
+      successMessage("Material da obra atualizado com sucesso!");
       setLoading(false);
     } catch (error) {
       console.log(error);
-      errorMessage("Não foi possível atualizar material!");
+      errorMessage("Não foi possível atualizar material da obra!");
       setLoading(false);
     }
   };
@@ -131,7 +131,7 @@ export const useConstructions = () => {
   const disableConstructionMaterial = async (materialId: number) => {
     setLoading(true);
     try {
-      await api.delete(``);
+      await api.delete(`material_constructions/${materialId}`);
       getAllConstructionsMaterials();
       successMessage("Material da obra apagado com sucesso!");
       setLoading(false);
