@@ -30,6 +30,8 @@ export const ListClients = () => {
   const theme = useTheme();
 
   const [selectedClientId, setselectedClientId] = useState<number>(0);
+  const [selectedTradingName, setselectedTradingName] = useState<string>("");
+
   const [modalOpen, setIsModalOpen] = useState(false);
 
   const handleClose = () => {
@@ -69,6 +71,8 @@ export const ListClients = () => {
               sx={{ cursor: "pointer", color: "#C5C7C8" }}
               onClick={() => {
                 setselectedClientId(cell.row.original.id!);
+                setselectedTradingName(cell.row.original.tradingName);
+
                 setIsModalOpen(true);
               }}
             />
@@ -180,6 +184,7 @@ export const ListClients = () => {
           modalOpen={modalOpen}
           handleClose={handleClose}
           handleDisable={handleDisable}
+          selectedDisableName={selectedTradingName}
         />
       </Grid>
     </Grid>

@@ -29,6 +29,9 @@ export const ListCollaborators = () => {
 
   const [selectedCollaboratorId, setselectedCollaboratorId] =
     useState<number>(0);
+  const [selectedCollaboratorName, setselectedCollaboratorName] =
+    useState<string>("");
+
   const [modalOpen, setIsModalOpen] = useState(false);
 
   const handleClose = () => {
@@ -68,6 +71,8 @@ export const ListCollaborators = () => {
               sx={{ cursor: "pointer", color: "#C5C7C8" }}
               onClick={() => {
                 setselectedCollaboratorId(cell.row.original.id!);
+                setselectedCollaboratorName(cell.row.original.name);
+
                 setIsModalOpen(true);
               }}
             />
@@ -179,6 +184,7 @@ export const ListCollaborators = () => {
           modalOpen={modalOpen}
           handleClose={handleClose}
           handleDisable={handleDisable}
+          selectedDisableName={selectedCollaboratorName}
         />
       </Grid>
     </Grid>
