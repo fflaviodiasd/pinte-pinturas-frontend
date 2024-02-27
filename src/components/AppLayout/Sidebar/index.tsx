@@ -25,6 +25,7 @@ import logoImage from "../../../assets/images/logo.png";
 import { Drawer, DrawerHeader } from "./styles";
 import { UserContext } from "../../../contexts/UserContext";
 import { BackgroundAvatar } from "../../Avatar";
+import AccountMenu from "../../AccountMenu";
 
 interface NavItem {
   text: string;
@@ -36,7 +37,6 @@ interface NavItem {
 export const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, setIsSigned } = useContext(UserContext);
 
   const [openSidebar, setOpenSidebar] = useState(false);
   const [openClientsItemMenu, setOpenClientsItemMenu] = useState(false);
@@ -270,73 +270,9 @@ export const Sidebar = () => {
 
         {/* Logout Button */}
 
-        <ListItem
-          disablePadding
-          sx={{ display: "flex", padding: "1rem", marginTop: "100%" }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              gap: "0.5rem",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <BackgroundAvatar avatarName={user.profileName} />
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <div
-                style={{
-                  color: "#2E3132",
-                  fontFamily: "Open Sans",
-                  fontWeight: "600",
-                  fontSize: "1rem",
-                }}
-              >
-                {user.profileName}
-              </div>
-              <div
-                style={{
-                  color: "#2E3132",
-                  fontFamily: "Open Sans",
-                  fontWeight: "400",
-                  fontSize: "1rem",
-                }}
-              >
-                {user.type}
-              </div>
-            </div>
-          </Box>
-          <Box>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: openSidebar ? "initial" : "center",
-                px: 2.5,
-              }}
-              onClick={() => {
-                setIsSigned(false);
-                sessionStorage.clear();
-                localStorage.clear();
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: openSidebar ? 3 : "auto",
-                  justifyContent: "center",
-                }}
-              >
-                <Logout />
-              </ListItemIcon>
-            </ListItemButton>
-          </Box>
-        </ListItem>
+        <Box sx={{ marginTop: "100%" }}>
+          <AccountMenu />
+        </Box>
       </Drawer>
     </Box>
   );
