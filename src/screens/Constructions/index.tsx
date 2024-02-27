@@ -3,6 +3,7 @@ import { Box, Grid } from "@mui/material";
 import { HeaderButton } from "../../components/Screen/HeaderButton";
 import { ConstructionsTeams } from "./Teams";
 import { ListConstructionsMaterials } from "./Materials";
+import { ListLocal } from "./Local";
 
 export const Constructions = () => {
   const [indexDisplay, setIndexDisplay] = useState(0);
@@ -17,6 +18,9 @@ export const Constructions = () => {
     }
     if (indexDisplay === 1) {
       return <ConstructionsTeams />;
+    }
+    if (indexDisplay === 2) {
+      return <ListLocal />;
     }
   };
 
@@ -33,6 +37,12 @@ export const Constructions = () => {
           text="Equipes"
           isActive={indexDisplay === 1}
           onClick={() => handleChangeContent(1)}
+        />
+
+        <HeaderButton
+          text="Locais"
+          isActive={indexDisplay === 2}
+          onClick={() => handleChangeContent(2)}
         />
       </Box>
 
