@@ -136,9 +136,20 @@ export const useMaterials = () => {
       getAllMaterials();
       successMessage("Material apagado com sucesso!");
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      errorMessage("Não foi possível apagar material!");
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data.detail ===
+          "Material já associado a uma ou mais obras. É necessário remover o material de cada obra antes de apagar."
+      ) {
+        errorMessage(
+          "Material já associado a uma ou mais obras. É necessário remover o material de cada obra antes de apagar."
+        );
+      } else {
+        errorMessage("Não foi possível apagar material!");
+      }
       setLoading(false);
     }
   };
