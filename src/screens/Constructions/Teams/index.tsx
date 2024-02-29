@@ -63,7 +63,7 @@ export const ConstructionsTeams = () => {
       },
     }),
     renderDetailPanel: ({ row }) =>
-      row.original.teams ? <ListTeamMembers /> : null,
+      row.original.teams ? <ListTeamMembers teamId={row.original.id} /> : null,
   });
 
   return <MaterialReactTable table={table} />;

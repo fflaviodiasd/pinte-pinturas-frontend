@@ -10,10 +10,11 @@ import { useNavigate } from "react-router-dom";
 import { BackgroundAvatar } from "../../../../components/Avatar";
 import { useConstructions } from "../../../../hooks/useConstructions";
 
-export const ListTeamMembers = () => {
+export const ListTeamMembers = ({ teamId }: any) => {
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { listConstructions } = useConstructions();
+  const { listConstructionsTeamMembers, getAllConstructionsTeamMembers } =
+    useConstructions();
   const theme = useTheme();
 
   const [selectedTeamMembersId, setselectedTeamMembersId] = useState<number>(0);
@@ -27,7 +28,11 @@ export const ListTeamMembers = () => {
   const baseBackgroundColor =
     theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (teamId) {
+      getAllConstructionsTeamMembers(teamId);
+    }
+  }, [teamId]);
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -89,7 +94,7 @@ export const ListTeamMembers = () => {
 
   const table = useMaterialReactTable({
     columns,
-    data: listConstructions,
+    data: listConstructionsTeamMembers,
     enableColumnFilterModes: true,
     initialState: { showColumnFilters: true },
     filterFns: {

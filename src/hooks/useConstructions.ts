@@ -221,6 +221,29 @@ export const useConstructions = () => {
     }
   };
 
+  const [listConstructionsTeamMembers, setListConstructionsTeamMembers] =
+    useState<any[]>([]);
+  const getAllConstructionsTeamMembers = async (teamId: any) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`teams/${teamId}`);
+      const constructionTeamMembersList = data.members.map((result: any) => ({
+        id: result.id,
+        active: result.active,
+        avatar: result.avatar,
+        name: result.name,
+        role: result.office,
+        profile: result.profile,
+        cellPhone: result.cell_phone,
+      }));
+      setListConstructionsTeamMembers(constructionTeamMembersList);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const [listConstructions, setListConstructions] = useState<any[]>([]);
   const getAllConstructions = async () => {
     setLoading(true);
@@ -251,6 +274,7 @@ export const useConstructions = () => {
     setConstructionData,
     listConstructions,
     listConstructionsMaterials,
+    listConstructionsTeamMembers,
     getConstruction,
     addConstruction,
     addConstructionMaterial,
@@ -264,6 +288,7 @@ export const useConstructions = () => {
     getAllConstructionAreas,
     getAllConstructionsTeams,
     getAllConstructionsMaterials,
+    getAllConstructionsTeamMembers,
     addConstructionArea,
   };
 };
