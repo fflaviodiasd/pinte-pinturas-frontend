@@ -145,6 +145,22 @@ export const useConstructions = () => {
     }
   };
 
+  const updateConstructionTeamMember = async (
+    constructionData: any,
+    teamId: any
+  ) => {
+    setLoading(true);
+    try {
+      await api.patch(`teams/${teamId}/`, { name: constructionData.teamName });
+      successMessage("Equipe atualizada com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível atualizar equipe!");
+      setLoading(false);
+    }
+  };
+
   const disableConstructionMaterial = async (materialId: number) => {
     setLoading(true);
     try {
@@ -298,6 +314,7 @@ export const useConstructions = () => {
     addConstructionMaterial,
     updateConstruction,
     updateConstructionMaterial,
+    updateConstructionTeamMember,
     disableConstruction,
     disableConstructionMaterial,
     getAllConstructions,
