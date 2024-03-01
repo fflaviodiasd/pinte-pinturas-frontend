@@ -4,11 +4,12 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Chip, Grid, TextField, useTheme } from "@mui/material";
+import { Box, Chip, Grid, TextField, useTheme } from "@mui/material";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { BackgroundAvatar } from "../../../../components/Avatar";
 import { useConstructions } from "../../../../hooks/useConstructions";
+import { FormTeamMembers } from "../FormTeamMembers";
 
 export const ListTeamMembers = ({ teamId }: any) => {
   const { classes } = useStyles();
@@ -126,9 +127,9 @@ export const ListTeamMembers = ({ teamId }: any) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <TextField label="Nome da Equipe" />
-      </Grid>
+      <Box style={{ padding: "1rem" }}>
+        <FormTeamMembers teamId={teamId} />
+      </Box>
 
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />

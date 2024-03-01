@@ -25,6 +25,7 @@ export const useConstructions = () => {
     percentageCompleted: 0,
     type: "",
     areas: [],
+    teamName: "",
   });
 
   const getConstruction = async (id: string) => {
@@ -35,6 +36,22 @@ export const useConstructions = () => {
         ...constructionData,
         id: data.id,
         name: data.name,
+      });
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const getConstructionTeamMember = async (teamId: any) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`teams/${teamId}/`);
+      setConstructionData({
+        ...constructionData,
+        id: data.id,
+        teamName: data.name,
       });
       setLoading(false);
     } catch (error) {
@@ -276,6 +293,7 @@ export const useConstructions = () => {
     listConstructionsMaterials,
     listConstructionsTeamMembers,
     getConstruction,
+    getConstructionTeamMember,
     addConstruction,
     addConstructionMaterial,
     updateConstruction,
