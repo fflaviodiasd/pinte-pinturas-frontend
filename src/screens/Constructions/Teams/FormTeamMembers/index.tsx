@@ -2,6 +2,7 @@ import { Button, TextField } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { useConstructions } from "../../../../hooks/useConstructions";
 import { useEffect } from "react";
+import AutocompleteCategories from "../../../../components/AutocompleteCategories";
 
 export function FormTeamMembers({ teamId }: any) {
   const {
@@ -39,6 +40,7 @@ export function FormTeamMembers({ teamId }: any) {
               variant="outlined"
               fullWidth
             />
+            <AutocompleteCategories />
             <Button type="submit" variant="contained">
               Salvar
             </Button>
