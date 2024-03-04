@@ -40,7 +40,9 @@ export function FormTeamMembers({ teamId }: any) {
               variant="outlined"
               fullWidth
             />
-            <AutocompleteCategories />
+            <AutocompleteCategories
+              endpoint={`teams/${teamId}/select_members`}
+            />
             <Button type="submit" variant="contained">
               Salvar
             </Button>

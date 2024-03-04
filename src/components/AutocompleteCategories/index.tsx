@@ -10,12 +10,12 @@ interface Option {
   office: string;
 }
 
-export default function AutocompleteCategories() {
+export default function AutocompleteCategories({ endpoint }: any) {
   const [options, setOptions] = useState<Option[]>([]);
 
   const fetchData = async () => {
     try {
-      const response = await api.get<Option[]>(`teams/id/select_members`);
+      const response = await api.get<Option[]>(endpoint);
       setOptions(response.data);
     } catch (error) {
       console.error("Erro ao buscar dados:", error);
