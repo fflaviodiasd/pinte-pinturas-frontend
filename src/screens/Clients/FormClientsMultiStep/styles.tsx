@@ -29,7 +29,7 @@ export const useStyles = makeStyles()((theme) => {
     },
 
     buttonSave: {
-      width: 190,
+      width: "100%",
       fontSize: 14,
       fontWeight: "bold",
       paddingTop: 12,

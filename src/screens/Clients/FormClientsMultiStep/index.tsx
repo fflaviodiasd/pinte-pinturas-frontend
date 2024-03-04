@@ -375,7 +375,7 @@ export function FormikStepper({
                         {isEditScreen && step <= 1
                           ? "Salvar"
                           : isLastStep()
-                          ? "Finalizar cadastro"
+                          ? "Finalizar"
                           : "Avançar"}
                       </Button>
                     )}
