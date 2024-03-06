@@ -14,6 +14,7 @@ import { ModalDisable } from "../../../components/Table/ModalDisable";
 import { Delete } from "@mui/icons-material";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useCollaborators } from "../../../hooks/useCollaborators";
+import { Navbar } from "../../../components/Navbar";
 
 export const ListCollaborators = () => {
   const { classes } = useStyles();
@@ -163,13 +164,7 @@ export const ListCollaborators = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <Paper className={classes.paper}>
-          <div className={classes.searchBarContainer}>
-            <TitleScreen title="Funcionários" />
-          </div>
-        </Paper>
-      </Grid>
+      <Navbar title={<TitleScreen title="Funcionários" />} />
 
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />

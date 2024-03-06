@@ -13,6 +13,7 @@ import { Launch } from "@mui/icons-material";
 import { useMaterials } from "../../../hooks/useMaterials";
 import { ModalMaterialGroups } from "../../../components/Modal/ModalMaterialGroups/ModalGroups";
 import { ModalRegisterMaterial } from "../../../components/Modal/ModalRegisterMaterial";
+import { Navbar } from "../../../components/Navbar";
 
 export const ListMaterials = () => {
   const { classes } = useStyles();
@@ -138,26 +139,23 @@ export const ListMaterials = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <Paper className={classes.paper}>
-          <div className={classes.searchBarContainer}>
-            <TitleScreen title="Materiais" />
-            <div style={{ display: "flex", gap: "1rem" }}>
-              <ModalMaterialGroups />
-              <Button
-                className={classes.registerButton}
-                onClick={() => {
-                  setIsModalOpen(true);
-                  setModalMode("register");
-                }}
-              >
-                Cadastrar
-              </Button>
-            </div>
+      <Navbar
+        title={<TitleScreen title="Materiais" />}
+        button={
+          <div style={{ display: "flex", gap: "1rem" }}>
+            <ModalMaterialGroups />
+            <Button
+              className={classes.registerButton}
+              onClick={() => {
+                setIsModalOpen(true);
+                setModalMode("register");
+              }}
+            >
+              Cadastrar
+            </Button>
           </div>
-        </Paper>
-      </Grid>
-
+        }
+      />
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />
         {Boolean(listMaterials.length) && (

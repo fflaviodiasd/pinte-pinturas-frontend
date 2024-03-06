@@ -14,5 +14,23 @@ export const useStyles = makeStyles()((theme) => {
 
       padding: 16,
     },
+    buttonSave: {
+      width: 140,
+      fontSize: 14,
+      fontWeight: "bold",
+      paddingTop: 12,
+      paddingBottom: 12,
+      paddingRight: 30,
+      paddingLeft: 30,
+      color: "#FFF",
+      textTransform: "capitalize",
+      transition: ".5s ease",
+      backgroundColor: "#0076BE",
+      "&:hover": {
+        backgroundColor: "#0076BE",
+      },
+      borderRadius: 5,
+      textDecoration: "none",
+    },
   };
 });

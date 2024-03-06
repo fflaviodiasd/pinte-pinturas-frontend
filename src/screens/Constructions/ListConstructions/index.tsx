@@ -4,7 +4,7 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Chip, Grid, Paper, useTheme } from "@mui/material";
+import { Button, Chip, Grid, Paper, useTheme } from "@mui/material";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ import { EditIcon } from "../../../components/EditIcon";
 import { TablePagination } from "../../../components/Table/Pagination";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useConstructions } from "../../../hooks/useConstructions";
+import { Navbar } from "../../../components/Navbar";
 
 export const ListConstructions = () => {
   const { classes } = useStyles();
@@ -139,14 +140,7 @@ export const ListConstructions = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <Paper className={classes.paper}>
-          <div className={classes.searchBarContainer}>
-            <TitleScreen title="Obras" />
-          </div>
-        </Paper>
-      </Grid>
-
+      <Navbar title={<TitleScreen title="Obras" />} />
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />
       </Grid>

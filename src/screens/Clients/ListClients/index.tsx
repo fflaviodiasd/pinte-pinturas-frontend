@@ -16,6 +16,7 @@ import { TablePagination } from "../../../components/Table/Pagination";
 import { ModalDisable } from "../../../components/Table/ModalDisable";
 import { Delete } from "@mui/icons-material";
 import { BackgroundAvatar } from "../../../components/Avatar";
+import { Navbar } from "../../../components/Navbar";
 
 export const ListClients = () => {
   const { classes } = useStyles();
@@ -163,13 +164,7 @@ export const ListClients = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <Paper className={classes.paper}>
-          <div className={classes.searchBarContainer}>
-            <TitleScreen title="Clientes" />
-          </div>
-        </Paper>
-      </Grid>
+      <Navbar title={<TitleScreen title="Clientes" />} />
 
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />
