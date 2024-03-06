@@ -21,7 +21,13 @@ import {
   Logout,
 } from "@mui/icons-material";
 
+import ClientsIcon from "../../../assets/images/clients.svg";
+import EmployeesIcon from "../../../assets/images/employees.svg";
+import ConstructionsIcon from "../../../assets/images/constructions.svg";
+import MaterialsIcon from "../../../assets/images/materials.svg";
+
 import logoImage from "../../../assets/images/logo.png";
+
 import { Drawer, DrawerHeader } from "./styles";
 import { UserContext } from "../../../contexts/UserContext";
 import { BackgroundAvatar } from "../../Avatar";
@@ -62,7 +68,7 @@ export const Sidebar = () => {
     {
       text: "Clientes",
       path: "/clientes",
-      icon: <Business />,
+      icon: <img src={ClientsIcon} alt="Clientes" />,
       subItems: [
         { text: "• Cadastro", path: "/clientes/cadastrar" },
         { text: "• Listagem", path: "/clientes/listagem" },
@@ -71,7 +77,7 @@ export const Sidebar = () => {
     {
       text: "Funcionários",
       path: "/colaboradores",
-      icon: <Badge />,
+      icon: <img src={EmployeesIcon} alt="Funcionários" />,
       subItems: [
         { text: "• Cadastro", path: "/colaboradores/cadastrar" },
         { text: "• Listagem", path: "/colaboradores/listagem" },
@@ -80,12 +86,12 @@ export const Sidebar = () => {
     {
       text: "Obras",
       path: "/obras",
-      icon: <Badge />,
+      icon: <img src={ConstructionsIcon} alt="Obras" />,
     },
     {
       text: "Materiais",
       path: "/materiais",
-      icon: <Badge />,
+      icon: <img src={MaterialsIcon} alt="Materiais" />,
     },
   ];
 
