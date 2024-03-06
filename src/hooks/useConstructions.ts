@@ -287,10 +287,10 @@ export const useConstructions = () => {
       const constructionList = data.map((result: any) => ({
         id: result.id,
         active: result.active,
-        name: result.name,
+        name: result.corporate_name,
         client: "",
         responsible: "",
-        percentageCompleted: result.percentage,
+        percentageCompleted: result.execution,
       }));
       setListConstructions(constructionList);
       setLoading(false);
