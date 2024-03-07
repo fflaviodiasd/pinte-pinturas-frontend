@@ -71,13 +71,6 @@ export const ConstructionsTeams = () => {
 
   return (
     <Grid container spacing={2}>
-      <Navbar
-        title={<TitleScreen title="Nome da Obra" />}
-        showBreadcrumb={true}
-        breadcrumb={
-          <Breadcrumb breadcrumbPath1={"Obras"} breadcrumbPath2={"Equipes"} />
-        }
-      />
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />
       </Grid>

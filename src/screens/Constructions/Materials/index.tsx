@@ -152,16 +152,7 @@ export const ListConstructionsMaterials = () => {
             <Add />
           </Button>
         </Box>
-        <Navbar
-          title={<TitleScreen title="Nome da Obra" />}
-          showBreadcrumb={true}
-          breadcrumb={
-            <Breadcrumb
-              breadcrumbPath1={"Obras"}
-              breadcrumbPath2={"Materiais"}
-            />
-          }
-        />
+
         <MaterialReactTable table={table} />
         <ModalRegisterConstructionMaterial
           modalOpen={modalOpen}

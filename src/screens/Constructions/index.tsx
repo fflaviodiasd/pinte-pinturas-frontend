@@ -4,6 +4,9 @@ import { HeaderButton } from "../../components/Screen/HeaderButton";
 import { ConstructionsTeams } from "./Teams";
 import { ListConstructionsMaterials } from "./Materials";
 import { ListLocal } from "./Local";
+import { Navbar } from "../../components/Navbar";
+import { TitleScreen } from "../../components/TitleScreen";
+import Breadcrumb from "../../components/Breadcrumb";
 
 export const Constructions = () => {
   const [indexDisplay, setIndexDisplay] = useState(0);
@@ -26,6 +29,20 @@ export const Constructions = () => {
 
   return (
     <Grid container sx={{ display: "flex", flexDirection: "column" }}>
+      <div>
+        <Navbar
+          title={<TitleScreen title="Nome da Obra" />}
+          showBreadcrumb={true}
+          breadcrumb={
+            <Breadcrumb
+              breadcrumbPath1={"Obras"}
+              breadcrumbPath2={"Edição"}
+              hrefBreadcrumbPath1={"/obras"}
+            />
+          }
+        />
+      </div>
+
       <Box sx={{ display: "flex" }}>
         <HeaderButton
           text="Materiais"

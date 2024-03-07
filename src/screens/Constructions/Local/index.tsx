@@ -106,13 +106,6 @@ const Locations = () => {
 
   return (
     <Grid container spacing={2}>
-      <Navbar
-        title={<TitleScreen title="Locais da Obra <Nome da Obra>" />}
-        showBreadcrumb={true}
-        breadcrumb={
-          <Breadcrumb breadcrumbPath1={"Obras"} breadcrumbPath2={"Locais"} />
-        }
-      />
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />
       </Grid>

@@ -11,7 +11,11 @@ function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
   console.info("You clicked a breadcrumb.");
 }
 
-export default function Breadcrumb({ breadcrumbPath1, breadcrumbPath2 }: any) {
+export default function Breadcrumb({
+  breadcrumbPath1,
+  breadcrumbPath2,
+  hrefBreadcrumbPath1,
+}: any) {
   const { classes } = useStyles();
 
   const breadcrumbs = [
@@ -19,7 +23,7 @@ export default function Breadcrumb({ breadcrumbPath1, breadcrumbPath2 }: any) {
       underline="none"
       key="1"
       color="inherit"
-      //href="/"
+      href={hrefBreadcrumbPath1}
       //onClick={handleClick}
     >
       {breadcrumbPath1}
