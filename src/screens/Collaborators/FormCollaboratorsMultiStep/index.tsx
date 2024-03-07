@@ -376,13 +376,11 @@ export function FormikStepper({
                 <Breadcrumb
                   breadcrumbPath1={"Funcionários"}
                   breadcrumbPath2={"Edição"}
-                  hrefBreadcrumbPath2={`/colaboradores/${collaboratorId}`}
                 />
               ) : (
                 <Breadcrumb
                   breadcrumbPath1={"Funcionários"}
                   breadcrumbPath2={"Cadastro"}
-                  hrefBreadcrumbPath2={"/colaboradores/cadastrar"}
                 />
               )}
               <div className={classes.actionBar}>

@@ -4,12 +4,15 @@ import {
   type MRT_ColumnDef,
   useMaterialReactTable,
 } from "material-react-table";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { LevelComponent } from "../../../components/Level";
 import { api } from "../../../services/api";
 import { useParams } from "react-router-dom";
 import { useConstructions } from "../../../hooks/useConstructions";
+import { Navbar } from "../../../components/Navbar";
+import { TitleScreen } from "../../../components/TitleScreen";
+import Breadcrumb from "../../../components/Breadcrumb";
 
 const Locations = () => {
   const [dynamicColumns, setDynamicColumns] = useState<MRT_ColumnDef<any>[]>(
@@ -101,7 +104,20 @@ const Locations = () => {
     ),
   });
 
-  return <MaterialReactTable table={table} />;
+  return (
+    <Grid container spacing={2}>
+      <Navbar
+        title={<TitleScreen title="Locais da Obra <Nome da Obra>" />}
+        showBreadcrumb={true}
+        breadcrumb={
+          <Breadcrumb breadcrumbPath1={"Obras"} breadcrumbPath2={"Locais"} />
+        }
+      />
+      <Grid item xs={12} lg={12}>
+        <MaterialReactTable table={table} />
+      </Grid>
+    </Grid>
+  );
 };
 
 const queryClient = new QueryClient();

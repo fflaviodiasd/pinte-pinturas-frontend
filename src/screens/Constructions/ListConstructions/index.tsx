@@ -145,11 +145,7 @@ export const ListConstructions = () => {
         title={<TitleScreen title="Obras" />}
         showBreadcrumb={true}
         breadcrumb={
-          <Breadcrumb
-            breadcrumbPath1={"Obras"}
-            breadcrumbPath2={"Listagem"}
-            hrefBreadcrumbPath2={"/obras"}
-          />
+          <Breadcrumb breadcrumbPath1={"Obras"} breadcrumbPath2={"Listagem"} />
         }
       />
       <Grid item xs={12} lg={12}>

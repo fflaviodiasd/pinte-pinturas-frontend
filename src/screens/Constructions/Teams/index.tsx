@@ -4,9 +4,12 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { FormControlLabel, Switch } from "@mui/material";
+import { FormControlLabel, Grid, Switch } from "@mui/material";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { ListTeamMembers } from "./ListTeamMembers";
+import { Navbar } from "../../../components/Navbar";
+import { TitleScreen } from "../../../components/TitleScreen";
+import Breadcrumb from "../../../components/Breadcrumb";
 
 export const ConstructionsTeams = () => {
   const { listConstructionsTeams, getAllConstructionsTeams } =
@@ -66,5 +69,18 @@ export const ConstructionsTeams = () => {
       row.original.teams ? <ListTeamMembers teamId={row.original.id} /> : null,
   });
 
-  return <MaterialReactTable table={table} />;
+  return (
+    <Grid container spacing={2}>
+      <Navbar
+        title={<TitleScreen title="Nome da Obra" />}
+        showBreadcrumb={true}
+        breadcrumb={
+          <Breadcrumb breadcrumbPath1={"Obras"} breadcrumbPath2={"Equipes"} />
+        }
+      />
+      <Grid item xs={12} lg={12}>
+        <MaterialReactTable table={table} />
+      </Grid>
+    </Grid>
+  );
 };

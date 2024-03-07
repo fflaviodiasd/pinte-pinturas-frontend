@@ -1,6 +1,5 @@
 import * as React from "react";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
@@ -12,11 +11,7 @@ function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
   console.info("You clicked a breadcrumb.");
 }
 
-export default function Breadcrumb({
-  breadcrumbPath1,
-  breadcrumbPath2,
-  hrefBreadcrumbPath2,
-}: any) {
+export default function Breadcrumb({ breadcrumbPath1, breadcrumbPath2 }: any) {
   const { classes } = useStyles();
 
   const breadcrumbs = [
@@ -33,8 +28,10 @@ export default function Breadcrumb({
     <Link
       key="2"
       color="text.primary"
-      underline="hover"
-      href={hrefBreadcrumbPath2}
+      underline="none"
+      //underline="hover"
+      //href="/"
+      //onClick={handleClick}
     >
       {breadcrumbPath2}
     </Link>,

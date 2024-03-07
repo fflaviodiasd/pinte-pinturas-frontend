@@ -312,13 +312,11 @@ export function FormikStepper({
                 <Breadcrumb
                   breadcrumbPath1={"Clientes"}
                   breadcrumbPath2={"Edição"}
-                  hrefBreadcrumbPath2={`/clientes/${clientId}`}
                 />
               ) : (
                 <Breadcrumb
                   breadcrumbPath1={"Clientes"}
                   breadcrumbPath2={"Cadastro"}
-                  hrefBreadcrumbPath2={"/clientes/cadastrar"}
                 />
               )}
 

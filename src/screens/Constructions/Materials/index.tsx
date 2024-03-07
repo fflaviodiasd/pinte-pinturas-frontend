@@ -11,6 +11,9 @@ import { TablePagination } from "../../../components/Table/Pagination";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { ModalRegisterConstructionMaterial } from "../../../components/Modal/ModalRegisterConstructionMaterial";
 import { Add, Launch } from "@mui/icons-material";
+import { Navbar } from "../../../components/Navbar";
+import { TitleScreen } from "../../../components/TitleScreen";
+import Breadcrumb from "../../../components/Breadcrumb";
 
 export const ListConstructionsMaterials = () => {
   const { classes } = useStyles();
@@ -149,6 +152,16 @@ export const ListConstructionsMaterials = () => {
             <Add />
           </Button>
         </Box>
+        <Navbar
+          title={<TitleScreen title="Nome da Obra" />}
+          showBreadcrumb={true}
+          breadcrumb={
+            <Breadcrumb
+              breadcrumbPath1={"Obras"}
+              breadcrumbPath2={"Materiais"}
+            />
+          }
+        />
         <MaterialReactTable table={table} />
         <ModalRegisterConstructionMaterial
           modalOpen={modalOpen}
