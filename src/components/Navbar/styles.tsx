@@ -17,8 +17,7 @@ export const useStyles = makeStyles()((theme) => {
     pageSubtitle: {
       color: "#252525",
       fontSize: 20,
-
-      marginLeft: theme.spacing(2),
+      margin: theme.spacing(1),
     },
     paper: {
       color: theme.palette.text.secondary,

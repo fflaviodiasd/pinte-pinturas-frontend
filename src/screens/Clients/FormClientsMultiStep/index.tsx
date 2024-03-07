@@ -308,11 +308,20 @@ export function FormikStepper({
         <Form autoComplete="off">
           <Grid item xs={12} lg={12}>
             <Paper className={classes.paper}>
-              <Breadcrumb
-                breadcrumbPath1={"Clientes"}
-                breadcrumbPath2={"Cadastro"}
-                hrefBreadcrumbPath2={"/clientes/cadastrar"}
-              />
+              {isEditScreen ? (
+                <Breadcrumb
+                  breadcrumbPath1={"Clientes"}
+                  breadcrumbPath2={"Edição"}
+                  hrefBreadcrumbPath2={`/clientes/${clientId}`}
+                />
+              ) : (
+                <Breadcrumb
+                  breadcrumbPath1={"Clientes"}
+                  breadcrumbPath2={"Cadastro"}
+                  hrefBreadcrumbPath2={"/clientes/cadastrar"}
+                />
+              )}
+
               <div className={classes.actionBar}>
                 <div className={classes.actionBarLeftContent}>
                   {values.tradingName && (

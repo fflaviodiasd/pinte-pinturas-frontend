@@ -13,6 +13,7 @@ import { TablePagination } from "../../../components/Table/Pagination";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { Navbar } from "../../../components/Navbar";
+import Breadcrumb from "../../../components/Breadcrumb";
 
 export const ListConstructions = () => {
   const { classes } = useStyles();
@@ -140,7 +141,17 @@ export const ListConstructions = () => {
 
   return (
     <Grid container spacing={2}>
-      <Navbar title={<TitleScreen title="Obras" />} />
+      <Navbar
+        title={<TitleScreen title="Obras" />}
+        showBreadcrumb={true}
+        breadcrumb={
+          <Breadcrumb
+            breadcrumbPath1={"Obras"}
+            breadcrumbPath2={"Listagem"}
+            hrefBreadcrumbPath2={"/obras"}
+          />
+        }
+      />
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />
       </Grid>
