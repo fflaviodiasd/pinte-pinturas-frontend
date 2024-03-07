@@ -5,12 +5,6 @@ import { api } from "../services/api";
 import { Construction } from "../types";
 import { UserContext } from "../contexts/UserContext";
 
-type ConstructionArea = {
-  id: number;
-  name: string;
-  type: number;
-};
-
 export const useConstructions = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -62,10 +56,7 @@ export const useConstructions = () => {
 
   const addConstructionArea = async (constructionId: string, name: string) => {
     try {
-      await api.post(`constructions/${constructionId}/areas/`, {
-        name,
-        type: 5,
-      });
+      await api.post(`constructions/${constructionId}/areas/`, {});
       successMessage("Área adicionada com sucesso!");
       setLoading(false);
     } catch (error) {
@@ -189,25 +180,6 @@ export const useConstructions = () => {
     }
   };
 
-  const [listConstructionAreas, setListConstructionAreas] = useState<
-    ConstructionArea[]
-  >([]);
-  const getAllConstructionAreas = async (constructionId: string) => {
-    try {
-      const { data } = await api.get(`constructions/${constructionId}/areas/`);
-      const allConstructionArea = data.map(
-        (construction: ConstructionArea) => ({
-          id: construction.id,
-          name: construction.name,
-          type: construction.type,
-        })
-      );
-      setListConstructionAreas(allConstructionArea);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const [listConstructionsMaterials, setListConstructionsMaterials] = useState<
     any[]
   >([]);
@@ -277,6 +249,25 @@ export const useConstructions = () => {
     }
   };
 
+  const [listConstructionsAreas, setListConstructionsAreas] = useState<any[]>(
+    []
+  );
+  const getAllConstructionsAreas = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/constructions/${id}/areas/`);
+      const constructionAreaList = data.areas.map((result: any) => ({
+        id: result.id,
+        code: result.code,
+      }));
+      setListConstructionsAreas(constructionAreaList);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const [listConstructions, setListConstructions] = useState<any[]>([]);
   const getAllConstructions = async () => {
     setLoading(true);
@@ -318,12 +309,12 @@ export const useConstructions = () => {
     disableConstruction,
     disableConstructionMaterial,
     getAllConstructions,
-    listConstructionAreas,
+    listConstructionsAreas,
     listConstructionsTeams,
-    getAllConstructionAreas,
     getAllConstructionsTeams,
     getAllConstructionsMaterials,
     getAllConstructionsTeamMembers,
+    getAllConstructionsAreas,
     addConstructionArea,
   };
 };

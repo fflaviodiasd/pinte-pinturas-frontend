@@ -6,10 +6,10 @@ import {
 } from "material-react-table";
 import { Box, Button } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useMaterials } from "../../../hooks/useMaterials";
 import { LevelComponent } from "../../../components/Level";
 import { api } from "../../../services/api";
 import { useParams } from "react-router-dom";
+import { useConstructions } from "../../../hooks/useConstructions";
 
 const Locations = () => {
   const [dynamicColumns, setDynamicColumns] = useState<MRT_ColumnDef<any>[]>(
@@ -18,7 +18,12 @@ const Locations = () => {
 
   const { id: levelId } = useParams();
 
-  const { listMaterialGroups } = useMaterials();
+  const { listConstructionsAreas, getAllConstructionsAreas } =
+    useConstructions();
+
+  useEffect(() => {
+    getAllConstructionsAreas();
+  }, []);
 
   useEffect(() => {
     const fetchLevel = async () => {
@@ -27,7 +32,7 @@ const Locations = () => {
         const level = response.data.results;
         const newDynamicColumns = [
           {
-            accessorKey: "id",
+            accessorKey: "code",
             header: "ID",
             enableEditing: false,
             size: 80,
@@ -59,7 +64,7 @@ const Locations = () => {
 
   const table = useMaterialReactTable({
     columns: dynamicColumns,
-    data: listMaterialGroups,
+    data: listConstructionsAreas,
     createDisplayMode: "row",
     editDisplayMode: "cell",
     enableColumnPinning: true,
