@@ -19,6 +19,7 @@ import { BackgroundAvatar } from "../../../components/Avatar";
 import { useParams } from "react-router-dom";
 import { ListClientsRelatedWorks } from "../ListClientsRelatedWorks";
 import { ListClientsEmployees } from "../ListClientsEmployees";
+import Breadcrumb from "../../../components/Breadcrumb";
 
 export function FormClientsMultiStep() {
   const { id: clientId } = useParams();
@@ -307,32 +308,11 @@ export function FormikStepper({
         <Form autoComplete="off">
           <Grid item xs={12} lg={12}>
             <Paper className={classes.paper}>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "0.5rem",
-                  padding: "0.5rem 0 0 0.5rem",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "Open Sans",
-                    fontWeight: 400,
-                  }}
-                >
-                  Clientes
-                </div>
-                <div>{">"}</div>
-                <div
-                  style={{
-                    fontFamily: "Open Sans",
-                    fontWeight: 600,
-                    color: "#2E3132",
-                  }}
-                >
-                  Cadastro
-                </div>
-              </div>
+              <Breadcrumb
+                breadcrumbPath1={"Clientes"}
+                breadcrumbPath2={"Cadastro"}
+                hrefBreadcrumbPath2={"/clientes/cadastrar"}
+              />
               <div className={classes.actionBar}>
                 <div className={classes.actionBarLeftContent}>
                   {values.tradingName && (
