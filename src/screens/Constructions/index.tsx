@@ -43,7 +43,7 @@ export const Constructions = () => {
         />
       </div>
 
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", backgroundColor: "#eff1f3" }}>
         <HeaderButton
           text="Materiais"
           isActive={indexDisplay === 0}
