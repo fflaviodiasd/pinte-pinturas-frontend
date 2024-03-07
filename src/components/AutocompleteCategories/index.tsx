@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 
 interface Option {
+  id: number;
   firstLetter: string;
   active: boolean;
   name: string;
   office: string;
 }
 
-export default function AutocompleteCategories({ endpoint }: any) {
+export default function AutocompleteCategories({ endpoint, onSelect }: any) {
   const [options, setOptions] = useState<Option[]>([]);
 
   const fetchData = async () => {
@@ -35,6 +36,9 @@ export default function AutocompleteCategories({ endpoint }: any) {
         `${option.active} - ${option.name} - ${option.office}`
       }
       sx={{ width: 800 }}
+      onChange={(event, newValue) => {
+        onSelect(newValue.map((option: Option) => option.id));
+      }}
       renderInput={(params) => (
         <TextField
           {...params}

@@ -71,4 +71,5 @@ export type Construction = {
   expirationDate: string;
   material: string;
   teamName: string;
+  teamMembers: any[];
 };

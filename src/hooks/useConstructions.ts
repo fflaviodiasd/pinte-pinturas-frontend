@@ -142,7 +142,10 @@ export const useConstructions = () => {
   ) => {
     setLoading(true);
     try {
-      await api.patch(`teams/${teamId}/`, { name: constructionData.teamName });
+      await api.patch(`teams/${teamId}/`, {
+        name: constructionData.teamName,
+        team_members: constructionData.teamMembers,
+      });
       successMessage("Equipe atualizada com sucesso!");
       setLoading(false);
     } catch (error) {
