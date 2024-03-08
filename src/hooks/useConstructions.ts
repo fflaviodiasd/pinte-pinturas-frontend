@@ -30,6 +30,7 @@ export const useConstructions = () => {
         ...constructionData,
         id: data.id,
         name: data.name,
+        corporateName: data.corporate_name,
       });
       setLoading(false);
     } catch (error) {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, Grid } from "@mui/material";
 import { HeaderButton } from "../../components/Screen/HeaderButton";
 import { ConstructionsTeams } from "./Teams";
@@ -7,9 +7,26 @@ import { ListLocal } from "./Local";
 import { Navbar } from "../../components/Navbar";
 import { TitleScreen } from "../../components/TitleScreen";
 import Breadcrumb from "../../components/Breadcrumb";
+import { useConstructions } from "../../hooks/useConstructions";
+import { useParams } from "react-router-dom";
 
 export const Constructions = () => {
+  const { id: constructionId } = useParams();
   const [indexDisplay, setIndexDisplay] = useState(0);
+  const [selectedConstructionName, setSelectedConstructionName] = useState("");
+  const { constructionData, getConstruction } = useConstructions();
+
+  useEffect(() => {
+    if (constructionId) {
+      getConstruction(constructionId);
+    }
+  }, [constructionId]);
+
+  useEffect(() => {
+    if (constructionData && constructionData.corporateName) {
+      setSelectedConstructionName(constructionData.corporateName);
+    }
+  }, [constructionData]);
 
   const handleChangeContent = (indexDisplay: number) => {
     setIndexDisplay(indexDisplay);
@@ -31,7 +48,7 @@ export const Constructions = () => {
     <Grid container sx={{ display: "flex", flexDirection: "column" }}>
       <div>
         <Navbar
-          title={<TitleScreen title="Nome da Obra" />}
+          title={<TitleScreen title={selectedConstructionName} />}
           showBreadcrumb={true}
           breadcrumb={
             <Breadcrumb
