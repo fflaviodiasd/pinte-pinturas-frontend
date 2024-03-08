@@ -4,12 +4,14 @@ import {
   type MRT_ColumnDef,
   useMaterialReactTable,
   MRT_TableOptions,
+  MRT_Row,
 } from "material-react-table";
 import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import EditIcon from "@mui/icons-material/Edit";
 import { useMaterials } from "../../../../hooks/useMaterials";
 import { Button } from "../../../Button";
+import { Delete } from "@mui/icons-material";
 
 const MaterialsGroups = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -21,6 +23,7 @@ const MaterialsGroups = () => {
     getAllMaterialGroups,
     updateMaterialGroup,
     addMaterialGroups,
+    disableMaterialGroup,
   } = useMaterials();
 
   const [selectedMaterialGroupId, setselectedMaterialGroupId] =
@@ -62,6 +65,15 @@ const MaterialsGroups = () => {
     table.setEditingRow(null); //exit editing mode
   };
 
+  //DELETE action
+  const openDeleteConfirmModal = (row: MRT_Row<any>) => {
+    if (
+      window.confirm("Tem certeza que deseja deletar esse grupo de material?")
+    ) {
+      disableMaterialGroup(row.original.id!);
+    }
+  };
+
   const table = useMaterialReactTable({
     columns,
     data: listMaterialGroups,
@@ -101,6 +113,14 @@ const MaterialsGroups = () => {
               }}
             >
               <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton
+              color="error"
+              onClick={() => openDeleteConfirmModal(row)}
+            >
+              <Delete />
             </IconButton>
           </Tooltip>
         </div>
