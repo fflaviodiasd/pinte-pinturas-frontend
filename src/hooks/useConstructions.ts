@@ -284,7 +284,7 @@ export const useConstructions = () => {
         active: result.active,
         name: result.corporate_name,
         client: "",
-        responsible: "",
+        responsible: result.supervisor,
         percentageCompleted: result.execution,
       }));
       setListConstructions(constructionList);
