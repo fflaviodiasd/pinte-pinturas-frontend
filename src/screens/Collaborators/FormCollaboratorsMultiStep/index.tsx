@@ -207,15 +207,18 @@ export function FormCollaboratorsMultiStep() {
                       required
                     />
                   </Grid>
-                  <Box marginLeft="1rem">
-                    <FormControlLabel
-                      control={<Switch />}
-                      label="Ativo"
-                      name="active"
-                      checked={active}
-                      onChange={(e: any) => setActive(e.target.checked)}
-                    />
-                  </Box>
+
+                  {isEditScreen ? (
+                    <Box marginLeft="1rem">
+                      <FormControlLabel
+                        control={<Switch />}
+                        label="Ativo"
+                        name="active"
+                        checked={active}
+                        onChange={(e: any) => setActive(e.target.checked)}
+                      />
+                    </Box>
+                  ) : null}
                 </Grid>
               </Paper>
             </Grid>
