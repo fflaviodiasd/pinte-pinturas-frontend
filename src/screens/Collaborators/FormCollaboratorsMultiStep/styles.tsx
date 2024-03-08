@@ -29,13 +29,13 @@ export const useStyles = makeStyles()((theme) => {
     },
 
     buttonSave: {
-      width: "100%",
-      fontSize: 14,
-      fontWeight: "bold",
+      fontFamily: "Open Sans",
+      fontSize: 16,
+      fontWeight: 600,
       paddingTop: 12,
       paddingBottom: 12,
-      paddingRight: 30,
-      paddingLeft: 30,
+      paddingRight: 22,
+      paddingLeft: 22,
       color: "#FFF",
       textTransform: "capitalize",
       transition: ".5s ease",

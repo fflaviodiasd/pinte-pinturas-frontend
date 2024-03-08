@@ -4,7 +4,7 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Box, Button, Grid, useTheme } from "@mui/material";
+import { Box, Grid, useTheme } from "@mui/material";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { TablePagination } from "../../../components/Table/Pagination";
@@ -14,6 +14,7 @@ import { Add, Launch } from "@mui/icons-material";
 import { Navbar } from "../../../components/Navbar";
 import { TitleScreen } from "../../../components/TitleScreen";
 import Breadcrumb from "../../../components/Breadcrumb";
+import { Button } from "../../../components/Button";
 
 export const ListConstructionsMaterials = () => {
   const { classes } = useStyles();
@@ -143,14 +144,13 @@ export const ListConstructionsMaterials = () => {
           sx={{ display: "flex", justifyContent: "right", marginRight: "1rem" }}
         >
           <Button
-            variant="outlined"
+            label={<Add />}
+            color="secondary"
             onClick={() => {
               setIsModalOpen(true);
               setModalMode("register");
             }}
-          >
-            <Add />
-          </Button>
+          />
         </Box>
 
         <MaterialReactTable table={table} />

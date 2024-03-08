@@ -1,8 +1,9 @@
-import { Button, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { useConstructions } from "../../../../hooks/useConstructions";
 import { useEffect, useState } from "react";
 import AutocompleteCategories from "../../../../components/AutocompleteCategories";
+import { Button } from "../../../../components/Button";
 
 export function FormTeamMembers({ teamId }: any) {
   const [selectedMembers, setSelectedMembers] = useState<any[]>([]);
@@ -47,9 +48,7 @@ export function FormTeamMembers({ teamId }: any) {
               name="teamMembers"
               onSelect={(selectedIds: any[]) => setSelectedMembers(selectedIds)}
             />
-            <Button type="submit" variant="contained">
-              Salvar
-            </Button>
+            <Button label="Salvar" color="primary" />
           </div>
         </Form>
       </Formik>

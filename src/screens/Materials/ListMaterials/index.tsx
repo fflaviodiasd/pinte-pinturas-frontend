@@ -4,7 +4,7 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Button, Grid, Paper, useTheme } from "@mui/material";
+import { Grid, Paper, useTheme } from "@mui/material";
 import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,7 @@ import { useMaterials } from "../../../hooks/useMaterials";
 import { ModalMaterialGroups } from "../../../components/Modal/ModalMaterialGroups/ModalGroups";
 import { ModalRegisterMaterial } from "../../../components/Modal/ModalRegisterMaterial";
 import { Navbar } from "../../../components/Navbar";
+import { Button } from "../../../components/Button";
 
 export const ListMaterials = () => {
   const { classes } = useStyles();
@@ -144,15 +145,15 @@ export const ListMaterials = () => {
         button={
           <div style={{ display: "flex", gap: "1rem" }}>
             <ModalMaterialGroups />
+
             <Button
-              className={classes.registerButton}
+              label="Cadastrar"
+              color="primary"
               onClick={() => {
                 setIsModalOpen(true);
                 setModalMode("register");
               }}
-            >
-              Cadastrar
-            </Button>
+            />
           </div>
         }
       />

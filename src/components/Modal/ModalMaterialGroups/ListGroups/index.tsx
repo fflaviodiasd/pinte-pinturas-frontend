@@ -5,10 +5,11 @@ import {
   useMaterialReactTable,
   MRT_TableOptions,
 } from "material-react-table";
-import { Box, Button, IconButton, Tooltip, useTheme } from "@mui/material";
+import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import EditIcon from "@mui/icons-material/Edit";
 import { useMaterials } from "../../../../hooks/useMaterials";
+import { Button } from "../../../Button";
 
 const MaterialsGroups = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -107,13 +108,12 @@ const MaterialsGroups = () => {
     ),
     renderTopToolbarCustomActions: ({ table }) => (
       <Button
-        variant="outlined"
+        label="Novo Grupo"
+        color="secondary"
         onClick={() => {
           table.setCreatingRow(true);
         }}
-      >
-        Novo Grupo
-      </Button>
+      />
     ),
   });
 
