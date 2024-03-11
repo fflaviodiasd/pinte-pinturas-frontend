@@ -136,9 +136,45 @@ export const useMaterials = () => {
       getAllMaterials();
       successMessage("Material apagado com sucesso!");
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      errorMessage("Não foi possível apagar material!");
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data.detail ===
+          "Material já associado a uma ou mais obras. É necessário remover o material de cada obra antes de apagar."
+      ) {
+        errorMessage(
+          "Material já associado a uma ou mais obras. É necessário remover o material de cada obra antes de apagar."
+        );
+      } else {
+        errorMessage("Não foi possível apagar material!");
+      }
+      setLoading(false);
+    }
+  };
+
+  const disableMaterialGroup = async (materialId: number) => {
+    setLoading(true);
+    try {
+      await api.delete(`material_groups/${materialId}`);
+      getAllMaterialGroups();
+      successMessage("Grupo de material apagado com sucesso!");
+      setLoading(false);
+    } catch (error: any) {
+      console.log(error);
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data.detail ===
+          "Grupo já associado a uma ou mais materiais. É necessário remover o grupo de cada material antes de apagar."
+      ) {
+        errorMessage(
+          "Grupo já associado a um ou mais materiais. É necessário remover o grupo de cada material antes de apagar."
+        );
+      } else {
+        errorMessage("Não foi possível apagar grupo de material!");
+      }
       setLoading(false);
     }
   };
@@ -216,6 +252,7 @@ export const useMaterials = () => {
     updateMaterial,
     updateMaterialGroup,
     disableMaterial,
+    disableMaterialGroup,
     getAllMaterialGroups,
     getAllMaterials,
     getMaterialBySearch,

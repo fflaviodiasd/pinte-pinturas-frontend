@@ -4,8 +4,12 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
+import { FormControlLabel, Grid, Switch } from "@mui/material";
 import { useConstructions } from "../../../hooks/useConstructions";
-import { Chip, FormControlLabel, Switch } from "@mui/material";
+import { ListTeamMembers } from "./ListTeamMembers";
+import { Navbar } from "../../../components/Navbar";
+import { TitleScreen } from "../../../components/TitleScreen";
+import Breadcrumb from "../../../components/Breadcrumb";
 
 export const ConstructionsTeams = () => {
   const { listConstructionsTeams, getAllConstructionsTeams } =
@@ -17,6 +21,10 @@ export const ConstructionsTeams = () => {
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
+      {
+        accessorKey: "id",
+        header: "ID",
+      },
       {
         header: "Status",
         accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
@@ -50,13 +58,22 @@ export const ConstructionsTeams = () => {
     columns,
     data: listConstructionsTeams,
     enableExpandAll: false,
-    enableExpanding: true,
+    muiExpandButtonProps: ({ row, table }) => ({
+      onClick: () => table.setExpanded({ [row.id]: !row.getIsExpanded() }),
+      sx: {
+        transform: row.getIsExpanded() ? "rotate(180deg)" : "rotate(-90deg)",
+        transition: "transform 0.2s",
+      },
+    }),
+    renderDetailPanel: ({ row }) =>
+      row.original.teams ? <ListTeamMembers teamId={row.original.id} /> : null,
   });
 
   return (
-    <div>
-      <h1 style={{ margin: "1rem" }}>Equipes</h1>
-      <MaterialReactTable table={table} />
-    </div>
+    <Grid container spacing={2}>
+      <Grid item xs={12} lg={12}>
+        <MaterialReactTable table={table} />
+      </Grid>
+    </Grid>
   );
 };

@@ -14,6 +14,7 @@ import { ModalDisable } from "../../../components/Table/ModalDisable";
 import { Delete } from "@mui/icons-material";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useCollaborators } from "../../../hooks/useCollaborators";
+import { Navbar } from "../../../components/Navbar";
 
 export const ListCollaborators = () => {
   const { classes } = useStyles();
@@ -29,6 +30,9 @@ export const ListCollaborators = () => {
 
   const [selectedCollaboratorId, setselectedCollaboratorId] =
     useState<number>(0);
+  const [selectedCollaboratorName, setselectedCollaboratorName] =
+    useState<string>("");
+
   const [modalOpen, setIsModalOpen] = useState(false);
 
   const handleClose = () => {
@@ -68,6 +72,8 @@ export const ListCollaborators = () => {
               sx={{ cursor: "pointer", color: "#C5C7C8" }}
               onClick={() => {
                 setselectedCollaboratorId(cell.row.original.id!);
+                setselectedCollaboratorName(cell.row.original.name);
+
                 setIsModalOpen(true);
               }}
             />
@@ -158,13 +164,7 @@ export const ListCollaborators = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <Paper className={classes.paper}>
-          <div className={classes.searchBarContainer}>
-            <TitleScreen title="Funcionários" />
-          </div>
-        </Paper>
-      </Grid>
+      <Navbar title={<TitleScreen title="Funcionários" />} />
 
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />
@@ -179,6 +179,7 @@ export const ListCollaborators = () => {
           modalOpen={modalOpen}
           handleClose={handleClose}
           handleDisable={handleDisable}
+          selectedDisableName={selectedCollaboratorName}
         />
       </Grid>
     </Grid>

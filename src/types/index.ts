@@ -70,4 +70,6 @@ export type Construction = {
   price: string;
   expirationDate: string;
   material: string;
+  teamName: string;
+  teamMembers: any[];
 };

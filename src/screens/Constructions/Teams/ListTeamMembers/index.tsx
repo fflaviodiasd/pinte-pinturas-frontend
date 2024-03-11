@@ -4,53 +4,39 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Button, Chip, Grid, Paper, useTheme } from "@mui/material";
-import { TitleScreen } from "../../../components/TitleScreen";
+import { Box, Chip, Grid, TextField, useTheme } from "@mui/material";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
-import { EditIcon } from "../../../components/EditIcon";
-import { TablePagination } from "../../../components/Table/Pagination";
-import { BackgroundAvatar } from "../../../components/Avatar";
-import { useConstructions } from "../../../hooks/useConstructions";
-import { Navbar } from "../../../components/Navbar";
-import Breadcrumb from "../../../components/Breadcrumb";
+import { BackgroundAvatar } from "../../../../components/Avatar";
+import { useConstructions } from "../../../../hooks/useConstructions";
+import { FormTeamMembers } from "../FormTeamMembers";
 
-export const ListConstructions = () => {
+export const ListTeamMembers = ({ teamId }: any) => {
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { listConstructions, getAllConstructions } = useConstructions();
+  const { listConstructionsTeamMembers, getAllConstructionsTeamMembers } =
+    useConstructions();
   const theme = useTheme();
 
-  const [selectedConstructionId, setselectedConstructionId] =
-    useState<number>(0);
+  const [selectedTeamMembersId, setselectedTeamMembersId] = useState<number>(0);
+
+  const [modalOpen, setIsModalOpen] = useState(false);
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
 
   const baseBackgroundColor =
     theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
-    getAllConstructions();
-  }, []);
+    if (teamId) {
+      getAllConstructionsTeamMembers(teamId);
+    }
+  }, [teamId]);
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
-      {
-        id: "edit",
-        header: "",
-        columnDefType: "display",
-        Cell: ({ cell }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <EditIcon
-              onClick={() => navigate(`/obras/${cell.row.original.id}`)}
-              label="Editar"
-            />
-          </div>
-        ),
-      },
       {
         header: "Status",
         accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
@@ -68,7 +54,7 @@ export const ListConstructions = () => {
         accessorKey: "name",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Nome da Obra",
+        header: "Nome",
         Cell: ({ cell }) => (
           <div
             style={{
@@ -86,22 +72,22 @@ export const ListConstructions = () => {
         ),
       },
       {
-        accessorKey: "client",
+        accessorKey: "role",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Cliente",
+        header: "Cargo",
       },
       {
-        accessorKey: "responsible",
+        accessorKey: "profile",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Encarregado",
+        header: "Perfil",
       },
       {
-        accessorKey: "percentageCompleted",
+        accessorKey: "cellPhone",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Execução",
+        header: "Celular",
       },
     ],
     []
@@ -109,7 +95,7 @@ export const ListConstructions = () => {
 
   const table = useMaterialReactTable({
     columns,
-    data: listConstructions,
+    data: listConstructionsTeamMembers,
     enableColumnFilterModes: true,
     initialState: { showColumnFilters: true },
     filterFns: {
@@ -141,13 +127,10 @@ export const ListConstructions = () => {
 
   return (
     <Grid container spacing={2}>
-      <Navbar
-        title={<TitleScreen title="Obras" />}
-        showBreadcrumb={true}
-        breadcrumb={
-          <Breadcrumb breadcrumbPath1={"Obras"} breadcrumbPath2={"Listagem"} />
-        }
-      />
+      <Box style={{ padding: "1rem" }}>
+        <FormTeamMembers teamId={teamId} />
+      </Box>
+
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />
       </Grid>

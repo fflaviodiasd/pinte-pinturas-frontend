@@ -5,6 +5,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
+  DialogTitle,
   Slide,
   Typography,
 } from "@mui/material";
@@ -16,12 +17,14 @@ type ModalDisableProps = {
   modalOpen: boolean;
   handleClose: () => void;
   handleDisable: () => void;
+  selectedDisableName?: string;
 };
 
 export const ModalDisable = ({
   modalOpen,
   handleClose,
   handleDisable,
+  selectedDisableName,
 }: ModalDisableProps) => {
   const { classes } = useStyles();
 
@@ -32,18 +35,18 @@ export const ModalDisable = ({
       keepMounted
       onClose={handleClose}
     >
-      <DialogContent className={classes.dialogContent}>
-        <Warning />
-        <Typography>Atenção</Typography>
-        <DialogContentText className={classes.dialogContentText}>
-          Tem certeza que
-        </DialogContentText>
-        <DialogContentText className={classes.dialogContentText}>
-          deseja apagar?
-        </DialogContentText>
+      <DialogTitle className={classes.successTitle}>
+        <Warning className={classes.warningTitleIcon} />
+        <Typography className={classes.warningTitleText}>Atenção</Typography>
+      </DialogTitle>
+      <DialogContent>
+        <Typography className={classes.successTitleMessage}>
+          Tem certeza que deseja apagar
+          <div style={{ fontWeight: 600 }}>{selectedDisableName}?</div>
+        </Typography>
       </DialogContent>
-      <DialogActions className={classes.dialogActions}>
-        <Button onClick={handleClose} variant="outlined">
+      <DialogActions>
+        <Button onClick={handleClose}>
           <Typography style={{ textTransform: "capitalize" }}>
             Cancelar
           </Typography>

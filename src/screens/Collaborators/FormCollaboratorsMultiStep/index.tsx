@@ -23,6 +23,7 @@ import { ListCollaboratorsRelatedWorks } from "../ListCollaboratorsRelatedWorks"
 import { SelectProfileComponent } from "../../../components/Select/Profile";
 import { SelectRoleComponent } from "../../../components/Select/Role";
 import { ListCollaboratorsHistory } from "../ListCollaboratorsHistory";
+import Breadcrumb from "../../../components/Breadcrumb";
 
 export function FormCollaboratorsMultiStep() {
   const { id: collaboratorId } = useParams();
@@ -206,15 +207,18 @@ export function FormCollaboratorsMultiStep() {
                       required
                     />
                   </Grid>
-                  <Box marginLeft="1rem">
-                    <FormControlLabel
-                      control={<Switch />}
-                      label="Ativo"
-                      name="active"
-                      checked={active}
-                      onChange={(e: any) => setActive(e.target.checked)}
-                    />
-                  </Box>
+
+                  {isEditScreen ? (
+                    <Box marginLeft="1rem">
+                      <FormControlLabel
+                        control={<Switch />}
+                        label="Ativo"
+                        name="active"
+                        checked={active}
+                        onChange={(e: any) => setActive(e.target.checked)}
+                      />
+                    </Box>
+                  ) : null}
                 </Grid>
               </Paper>
             </Grid>
@@ -371,32 +375,17 @@ export function FormikStepper({
         <Form autoComplete="off">
           <Grid item xs={12} lg={12}>
             <Paper className={classes.paper}>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "0.5rem",
-                  padding: "0.5rem 0 0 0.5rem",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "Open Sans",
-                    fontWeight: 400,
-                  }}
-                >
-                  Funcionários
-                </div>
-                <div>{">"}</div>
-                <div
-                  style={{
-                    fontFamily: "Open Sans",
-                    fontWeight: 600,
-                    color: "#2E3132",
-                  }}
-                >
-                  Cadastro
-                </div>
-              </div>
+              {isEditScreen ? (
+                <Breadcrumb
+                  breadcrumbPath1={"Funcionários"}
+                  breadcrumbPath2={"Edição"}
+                />
+              ) : (
+                <Breadcrumb
+                  breadcrumbPath1={"Funcionários"}
+                  breadcrumbPath2={"Cadastro"}
+                />
+              )}
               <div className={classes.actionBar}>
                 <div className={classes.actionBarLeftContent}>
                   {values.name && <BackgroundAvatar avatarName={values.name} />}
@@ -437,7 +426,7 @@ export function FormikStepper({
                         {isEditScreen && step <= 1
                           ? "Salvar"
                           : isLastStep()
-                          ? "Finalizar cadastro"
+                          ? "Finalizar"
                           : "Avançar"}
                       </Button>
                     )}

@@ -1,12 +1,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useMaterials } from "../../../../hooks/useMaterials";
 import { TextField } from "@mui/material";
 import { useStyles } from "./styles";
 import { ListMaterialGroups } from "../ListGroups";
+import { Button } from "../../../Button";
 
 const style = {
   position: "absolute" as "absolute",
@@ -32,9 +32,7 @@ export function ModalMaterialGroups() {
 
   return (
     <div>
-      <Button className={classes.registerButton} onClick={handleOpen}>
-        Grupos
-      </Button>
+      <Button label="Grupos" color="primary" onClick={handleOpen} />
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           <h2>Grupos de Materiais</h2>
@@ -46,11 +44,7 @@ export function ModalMaterialGroups() {
               marginTop: "1rem",
             }}
           >
-            <Button onClick={handleClose} variant="contained">
-              <Typography style={{ textTransform: "capitalize" }}>
-                Fechar
-              </Typography>
-            </Button>
+            <Button label="Fechar" color="secondary" onClick={handleClose} />
           </div>
         </Box>
       </Modal>

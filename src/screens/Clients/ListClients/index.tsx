@@ -16,6 +16,7 @@ import { TablePagination } from "../../../components/Table/Pagination";
 import { ModalDisable } from "../../../components/Table/ModalDisable";
 import { Delete } from "@mui/icons-material";
 import { BackgroundAvatar } from "../../../components/Avatar";
+import { Navbar } from "../../../components/Navbar";
 
 export const ListClients = () => {
   const { classes } = useStyles();
@@ -30,6 +31,8 @@ export const ListClients = () => {
   const theme = useTheme();
 
   const [selectedClientId, setselectedClientId] = useState<number>(0);
+  const [selectedTradingName, setselectedTradingName] = useState<string>("");
+
   const [modalOpen, setIsModalOpen] = useState(false);
 
   const handleClose = () => {
@@ -69,6 +72,8 @@ export const ListClients = () => {
               sx={{ cursor: "pointer", color: "#C5C7C8" }}
               onClick={() => {
                 setselectedClientId(cell.row.original.id!);
+                setselectedTradingName(cell.row.original.tradingName);
+
                 setIsModalOpen(true);
               }}
             />
@@ -159,13 +164,7 @@ export const ListClients = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <Paper className={classes.paper}>
-          <div className={classes.searchBarContainer}>
-            <TitleScreen title="Clientes" />
-          </div>
-        </Paper>
-      </Grid>
+      <Navbar title={<TitleScreen title="Clientes" />} />
 
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />
@@ -180,6 +179,7 @@ export const ListClients = () => {
           modalOpen={modalOpen}
           handleClose={handleClose}
           handleDisable={handleDisable}
+          selectedDisableName={selectedTradingName}
         />
       </Grid>
     </Grid>

@@ -5,12 +5,6 @@ import { api } from "../services/api";
 import { Construction } from "../types";
 import { UserContext } from "../contexts/UserContext";
 
-type ConstructionArea = {
-  id: number;
-  name: string;
-  type: number;
-};
-
 export const useConstructions = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -25,6 +19,7 @@ export const useConstructions = () => {
     percentageCompleted: 0,
     type: "",
     areas: [],
+    teamName: "",
   });
 
   const getConstruction = async (id: string) => {
@@ -35,6 +30,23 @@ export const useConstructions = () => {
         ...constructionData,
         id: data.id,
         name: data.name,
+        corporateName: data.corporate_name,
+      });
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const getConstructionTeamMember = async (teamId: any) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`teams/${teamId}/`);
+      setConstructionData({
+        ...constructionData,
+        id: data.id,
+        teamName: data.name,
       });
       setLoading(false);
     } catch (error) {
@@ -45,10 +57,7 @@ export const useConstructions = () => {
 
   const addConstructionArea = async (constructionId: string, name: string) => {
     try {
-      await api.post(`constructions/${constructionId}/areas/`, {
-        name,
-        type: 5,
-      });
+      await api.post(`constructions/${constructionId}/areas/`, {});
       successMessage("Área adicionada com sucesso!");
       setLoading(false);
     } catch (error) {
@@ -128,6 +137,25 @@ export const useConstructions = () => {
     }
   };
 
+  const updateConstructionTeamMember = async (
+    constructionData: any,
+    teamId: any
+  ) => {
+    setLoading(true);
+    try {
+      await api.patch(`teams/${teamId}/`, {
+        name: constructionData.teamName,
+        team_members: constructionData.teamMembers,
+      });
+      successMessage("Equipe atualizada com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível atualizar equipe!");
+      setLoading(false);
+    }
+  };
+
   const disableConstructionMaterial = async (materialId: number) => {
     setLoading(true);
     try {
@@ -153,25 +181,6 @@ export const useConstructions = () => {
       console.log(error);
       errorMessage("Não foi possível desabilitar obra!");
       setLoading(false);
-    }
-  };
-
-  const [listConstructionAreas, setListConstructionAreas] = useState<
-    ConstructionArea[]
-  >([]);
-  const getAllConstructionAreas = async (constructionId: string) => {
-    try {
-      const { data } = await api.get(`constructions/${constructionId}/areas/`);
-      const allConstructionArea = data.map(
-        (construction: ConstructionArea) => ({
-          id: construction.id,
-          name: construction.name,
-          type: construction.type,
-        })
-      );
-      setListConstructionAreas(allConstructionArea);
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -221,6 +230,48 @@ export const useConstructions = () => {
     }
   };
 
+  const [listConstructionsTeamMembers, setListConstructionsTeamMembers] =
+    useState<any[]>([]);
+  const getAllConstructionsTeamMembers = async (teamId: any) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`teams/${teamId}`);
+      const constructionTeamMembersList = data.members.map((result: any) => ({
+        id: result.id,
+        active: result.active,
+        avatar: result.avatar,
+        name: result.name,
+        role: result.office,
+        profile: result.profile,
+        cellPhone: result.cell_phone,
+      }));
+      setListConstructionsTeamMembers(constructionTeamMembersList);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const [listConstructionsAreas, setListConstructionsAreas] = useState<any[]>(
+    []
+  );
+  const getAllConstructionsAreas = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/constructions/${id}/areas/`);
+      const constructionAreaList = data.areas.map((result: any) => ({
+        id: result.id,
+        code: result.code,
+      }));
+      setListConstructionsAreas(constructionAreaList);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const [listConstructions, setListConstructions] = useState<any[]>([]);
   const getAllConstructions = async () => {
     setLoading(true);
@@ -231,10 +282,10 @@ export const useConstructions = () => {
       const constructionList = data.map((result: any) => ({
         id: result.id,
         active: result.active,
-        name: result.name,
+        name: result.corporate_name,
         client: "",
-        responsible: "",
-        percentageCompleted: result.percentage,
+        responsible: result.supervisor,
+        percentageCompleted: result.execution,
       }));
       setListConstructions(constructionList);
       setLoading(false);
@@ -251,19 +302,23 @@ export const useConstructions = () => {
     setConstructionData,
     listConstructions,
     listConstructionsMaterials,
+    listConstructionsTeamMembers,
     getConstruction,
+    getConstructionTeamMember,
     addConstruction,
     addConstructionMaterial,
     updateConstruction,
     updateConstructionMaterial,
+    updateConstructionTeamMember,
     disableConstruction,
     disableConstructionMaterial,
     getAllConstructions,
-    listConstructionAreas,
+    listConstructionsAreas,
     listConstructionsTeams,
-    getAllConstructionAreas,
     getAllConstructionsTeams,
     getAllConstructionsMaterials,
+    getAllConstructionsTeamMembers,
+    getAllConstructionsAreas,
     addConstructionArea,
   };
 };
