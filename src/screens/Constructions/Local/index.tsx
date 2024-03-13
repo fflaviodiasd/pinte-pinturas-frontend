@@ -13,6 +13,7 @@ import { useConstructions } from "../../../hooks/useConstructions";
 import { useParams } from "react-router-dom";
 import { api } from "../../../services/api";
 import { LevelComponent } from "../../../components/Level";
+import { ListTeamMembers } from "../Teams/ListTeamMembers";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -42,6 +43,12 @@ const Locations = () => {
         const response = await api.get(`constructions/${id}/level_area/`);
         const level = response.data.results;
         const newDynamicColumns = [
+          {
+            accessorKey: "id",
+            header: "ID",
+            enableEditing: false,
+            size: 80,
+          },
           {
             accessorKey: "code",
             header: "ID",
@@ -106,6 +113,16 @@ const Locations = () => {
     enableColumnPinning: true,
     enableEditing: true,
     enableRowActions: true,
+
+    enableExpandAll: false,
+    muiExpandButtonProps: ({ row, table }) => ({
+      onClick: () => table.setExpanded({ [row.id]: !row.getIsExpanded() }),
+      sx: {
+        transform: row.getIsExpanded() ? "rotate(180deg)" : "rotate(-90deg)",
+        transition: "transform 0.2s",
+      },
+    }),
+    renderDetailPanel: ({ row }) => "checklist",
     getRowId: (row) => row.id,
     onCreatingRowCancel: () => setValidationErrors({}),
     onCreatingRowSave: handleCreateLocal,
