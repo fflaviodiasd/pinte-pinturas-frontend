@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import { api } from "../../../services/api";
 import { LevelComponent } from "../../../components/Level";
 import { ListTeamMembers } from "../Teams/ListTeamMembers";
+import { ChecklistComponent } from "../../../components/Checklist";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -122,7 +123,9 @@ const Locations = () => {
         transition: "transform 0.2s",
       },
     }),
-    renderDetailPanel: ({ row }) => "checklist",
+    renderDetailPanel: ({ row }) => (
+      <ChecklistComponent localId={row.original.id} />
+    ),
     getRowId: (row) => row.id,
     onCreatingRowCancel: () => setValidationErrors({}),
     onCreatingRowSave: handleCreateLocal,
