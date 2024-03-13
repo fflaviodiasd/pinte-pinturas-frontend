@@ -4,7 +4,7 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Box, Grid, useTheme } from "@mui/material";
+import { Box, Grid, Tooltip, useTheme } from "@mui/material";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { TablePagination } from "../../../components/Table/Pagination";
@@ -144,7 +144,11 @@ export const ListConstructionsMaterials = () => {
           sx={{ display: "flex", justifyContent: "right", marginRight: "1rem" }}
         >
           <Button
-            label={<Add />}
+            label={
+              <Tooltip title="Adicionar Material">
+                <Add />
+              </Tooltip>
+            }
             color="secondary"
             onClick={() => {
               setIsModalOpen(true);

@@ -4,7 +4,7 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Box, FormControlLabel, Grid, Switch } from "@mui/material";
+import { Box, FormControlLabel, Grid, Switch, Tooltip } from "@mui/material";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { ListTeamMembers } from "./ListTeamMembers";
 import { Add } from "@mui/icons-material";
@@ -86,7 +86,11 @@ export const ConstructionsTeams = () => {
           sx={{ display: "flex", justifyContent: "right", marginRight: "1rem" }}
         >
           <Button
-            label={<Add />}
+            label={
+              <Tooltip title="Adicionar Equipe">
+                <Add />
+              </Tooltip>
+            }
             color="secondary"
             onClick={handleCreateTeamClick}
           />
