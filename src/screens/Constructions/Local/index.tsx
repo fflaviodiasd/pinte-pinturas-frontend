@@ -1,43 +1,51 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
+  type MRT_Row,
+  type MRT_TableOptions,
   useMaterialReactTable,
 } from "material-react-table";
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Button, IconButton, Tooltip } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { LevelComponent } from "../../../components/Level";
-import { api } from "../../../services/api";
-import { useParams } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useConstructions } from "../../../hooks/useConstructions";
-import { Navbar } from "../../../components/Navbar";
-import { TitleScreen } from "../../../components/TitleScreen";
-import Breadcrumb from "../../../components/Breadcrumb";
+import { useParams } from "react-router-dom";
+import { api } from "../../../services/api";
+import { LevelComponent } from "../../../components/Level";
 
 const Locations = () => {
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string | undefined>
+  >({});
+
   const [dynamicColumns, setDynamicColumns] = useState<MRT_ColumnDef<any>[]>(
     []
   );
+  const { id } = useParams();
 
-  const { id: levelId } = useParams();
+  const {
+    listConstructionsLocations,
+    getAllConstructionsLocations,
+    addConstructionLocal,
+  } = useConstructions();
 
-  const { listConstructionsAreas, getAllConstructionsAreas } =
-    useConstructions();
+  const [selectedLocalId, setselectedLocalId] = useState<number>(0);
 
   useEffect(() => {
-    getAllConstructionsAreas();
+    getAllConstructionsLocations();
   }, []);
 
   useEffect(() => {
     const fetchLevel = async () => {
       try {
-        const response = await api.get(`constructions/${levelId}/level_area/`);
+        const response = await api.get(`constructions/${id}/level_area/`);
         const level = response.data.results;
         const newDynamicColumns = [
           {
             accessorKey: "code",
             header: "ID",
-            enableEditing: false,
+            enableEditing: true,
             size: 80,
           },
           {
@@ -65,28 +73,55 @@ const Locations = () => {
     fetchLevel();
   }, []);
 
+  //CREATE action
+  const handleCreateLocal: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
+    values,
+    table,
+  }) => {
+    await addConstructionLocal(values, dynamicColumns);
+  };
+
+  //UPDATE action
+  const handleEditLocal: MRT_TableOptions<any>["onEditingRowSave"] = async ({
+    values,
+    table,
+  }) => {
+    //update request
+    table.setEditingRow(null); //exit editing mode
+  };
+
+  //DELETE action
+  const openDeleteConfirmModal = (row: MRT_Row<any>) => {
+    if (window.confirm("Tem certeza que deseja deletar essa área?")) {
+      //disable request
+    }
+  };
+
   const table = useMaterialReactTable({
     columns: dynamicColumns,
-    data: listConstructionsAreas,
+    data: listConstructionsLocations,
     createDisplayMode: "row",
     editDisplayMode: "cell",
+    enableClickToCopy: false,
     enableColumnPinning: true,
     enableEditing: true,
-    enableRowActions: false,
-    enableExpanding: true,
-    enablePagination: false,
+    enableRowActions: true,
     getRowId: (row) => row.id,
-    muiTableContainerProps: {
-      sx: {
-        minHeight: "500px",
-      },
-    },
-    // onCreatingRowCancel: () => setValidationErrors({}),
+    onCreatingRowCancel: () => setValidationErrors({}),
+    onCreatingRowSave: handleCreateLocal,
+    onEditingRowSave: handleEditLocal,
+    renderRowActions: ({ row }) => (
+      <Box sx={{ display: "flex", gap: "1rem" }}>
+        <Tooltip title="Delete">
+          <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+    ),
     renderBottomToolbarCustomActions: () => (
       <Box sx={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-        <Button color="primary" variant="contained">
-          Salvar
-        </Button>
+        <Button>Salvar</Button>
       </Box>
     ),
     renderTopToolbarCustomActions: ({ table }) => (
@@ -104,13 +139,7 @@ const Locations = () => {
     ),
   });
 
-  return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <MaterialReactTable table={table} />
-      </Grid>
-    </Grid>
-  );
+  return <MaterialReactTable table={table} />;
 };
 
 const queryClient = new QueryClient();

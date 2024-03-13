@@ -4,6 +4,7 @@ import { errorMessage, successMessage } from "../components/Messages";
 import { api } from "../services/api";
 import { Construction } from "../types";
 import { UserContext } from "../contexts/UserContext";
+import { MRT_ColumnDef } from "material-react-table";
 
 export const useConstructions = () => {
   const navigate = useNavigate();
@@ -55,11 +56,42 @@ export const useConstructions = () => {
     }
   };
 
-  const addConstructionArea = async (constructionId: string, name: string) => {
+  const addConstructionLocal = async (
+    values: any,
+    dynamicColumns: MRT_ColumnDef<any>[]
+  ) => {
     try {
-      await api.post(`constructions/${constructionId}/areas/`, {});
-      successMessage("Área adicionada com sucesso!");
-      setLoading(false);
+      if (dynamicColumns && dynamicColumns.length > 0) {
+        const levels = dynamicColumns
+          .filter(
+            (column) =>
+              column.accessorKey && column.accessorKey.startsWith("nivel_")
+          )
+          .map((column) => {
+            const name =
+              values && values[column.accessorKey as keyof typeof values];
+            return {
+              level: {
+                name: column.header,
+              },
+              name: name || "",
+            };
+          });
+        const requestData = {
+          areas: [
+            {
+              code: values && values.code,
+              levels: levels,
+            },
+          ],
+        };
+        console.log(requestData);
+        await api.post(`constructions/${id}/areas/`, requestData);
+        successMessage("Área adicionada com sucesso!");
+        setLoading(false);
+      } else {
+        errorMessage("Não foi possível adicionar área!");
+      }
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível adicionar área!");
@@ -253,18 +285,25 @@ export const useConstructions = () => {
     }
   };
 
-  const [listConstructionsAreas, setListConstructionsAreas] = useState<any[]>(
-    []
-  );
-  const getAllConstructionsAreas = async () => {
+  const [listConstructionsLocations, setListConstructionsLocations] = useState<
+    any[]
+  >([]);
+  const getAllConstructionsLocations = async () => {
     setLoading(true);
     try {
       const { data } = await api.get(`/constructions/${id}/areas/`);
-      const constructionAreaList = data.areas.map((result: any) => ({
-        id: result.id,
-        code: result.code,
-      }));
-      setListConstructionsAreas(constructionAreaList);
+      const constructionLocalList = data.areas.map((result: any) => {
+        const levelNames: Record<string, string> = {};
+        result.levels.forEach((level: any, index: number) => {
+          levelNames[`nivel_${index}`] = level.name;
+        });
+        return {
+          id: result.id,
+          code: result.code,
+          ...levelNames,
+        };
+      });
+      setListConstructionsLocations(constructionLocalList);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -313,12 +352,12 @@ export const useConstructions = () => {
     disableConstruction,
     disableConstructionMaterial,
     getAllConstructions,
-    listConstructionsAreas,
+    listConstructionsLocations,
     listConstructionsTeams,
     getAllConstructionsTeams,
     getAllConstructionsMaterials,
     getAllConstructionsTeamMembers,
-    getAllConstructionsAreas,
-    addConstructionArea,
+    getAllConstructionsLocations,
+    addConstructionLocal,
   };
 };
