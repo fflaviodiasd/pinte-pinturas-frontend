@@ -131,6 +131,21 @@ export const useConstructions = () => {
     }
   };
 
+  const addConstructionTeam = async (constructionData: any) => {
+    setLoading(true);
+    try {
+      await api.post(`/constructions/${id}/teams/`, {
+        name: constructionData.teamName,
+      });
+      successMessage("Equipe adicionada com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível adicionar equipe!");
+      setLoading(false);
+    }
+  };
+
   const updateConstructionMaterial = async (
     constructionData: Construction,
     selectedConstructionMaterialId: number
@@ -346,6 +361,7 @@ export const useConstructions = () => {
     getConstructionTeamMember,
     addConstruction,
     addConstructionMaterial,
+    addConstructionTeam,
     updateConstruction,
     updateConstructionMaterial,
     updateConstructionTeamMember,
