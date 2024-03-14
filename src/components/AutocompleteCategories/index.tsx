@@ -35,7 +35,6 @@ export default function AutocompleteCategories({ endpoint, onSelect }: any) {
       getOptionLabel={(option) =>
         `${option.active} - ${option.name} - ${option.office}`
       }
-      sx={{ width: 800 }}
       onChange={(event, newValue) => {
         onSelect(newValue.map((option: Option) => option.id));
       }}

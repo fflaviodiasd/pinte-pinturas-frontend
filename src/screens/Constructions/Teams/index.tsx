@@ -11,6 +11,7 @@ import {
   Switch,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { ListTeamMembers } from "./ListTeamMembers";
@@ -37,17 +38,13 @@ export const ConstructionsTeams = () => {
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        accessorKey: "id",
-        header: "ID",
-      },
-      {
-        header: "Status",
+        header: "Ativa",
         accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
         id: "active",
         filterVariant: "checkbox",
         Cell: ({ cell }) => {
           const isActive = cell.getValue() === "true";
-          const status = isActive ? "Ativo" : "Inativo";
+          const status = isActive ? "Ativa" : "Inativa";
           return (
             <FormControlLabel
               control={<Switch checked={isActive} />}
@@ -79,6 +76,18 @@ export const ConstructionsTeams = () => {
         transition: "transform 0.2s",
       },
     }),
+    muiTablePaperProps: {
+      elevation: 0,
+    },
+    muiTableBodyProps: {
+      sx: (theme) => ({
+        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
+          {
+            backgroundColor: "#FAFAFA",
+          },
+      }),
+    },
+
     renderDetailPanel: ({ row }) =>
       row.original.teams ? <ListTeamMembers teamId={row.original.id} /> : null,
   });

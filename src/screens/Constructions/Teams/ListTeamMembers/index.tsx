@@ -127,11 +127,10 @@ export const ListTeamMembers = ({ teamId }: any) => {
 
   return (
     <Grid container spacing={2}>
-      <Box style={{ padding: "1rem" }}>
-        <FormTeamMembers teamId={teamId} />
-      </Box>
-
       <Grid item xs={12} lg={12}>
+        <Box style={{ padding: "1rem" }}>
+          <FormTeamMembers teamId={teamId} />
+        </Box>
         <MaterialReactTable table={table} />
       </Grid>
     </Grid>
