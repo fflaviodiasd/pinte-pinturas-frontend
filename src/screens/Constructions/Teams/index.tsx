@@ -4,17 +4,27 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Box, FormControlLabel, Grid, Switch, Tooltip } from "@mui/material";
+import {
+  Box,
+  FormControlLabel,
+  Grid,
+  Switch,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { ListTeamMembers } from "./ListTeamMembers";
 import { Add } from "@mui/icons-material";
 import { Button } from "../../../components/Button";
 import { FormCreateTeam } from "./FormCreateTeam";
+import { useStyles } from "./styles";
 
 export const ConstructionsTeams = () => {
   const { listConstructionsTeams, getAllConstructionsTeams } =
     useConstructions();
   const [showCreateTeamRow, setShowCreateTeamRow] = useState(false);
+
+  const { classes } = useStyles();
 
   useEffect(() => {
     getAllConstructionsTeams();
@@ -81,6 +91,11 @@ export const ConstructionsTeams = () => {
             <FormCreateTeam />
           </div>
         )}
+
+        <Typography className={classes.teamsTitle}>
+          <span className={classes.teamsBorder}>Equip</span>
+          es
+        </Typography>
 
         <Box
           sx={{ display: "flex", justifyContent: "right", marginRight: "1rem" }}
