@@ -33,7 +33,9 @@ export default function AutocompleteCategories({ endpoint, onSelect }: any) {
       options={options.sort((a, b) => a.name.localeCompare(b.name))}
       groupBy={(option) => option.name.charAt(0).toUpperCase()}
       getOptionLabel={(option) =>
-        `${option.active} - ${option.name} - ${option.office}`
+        `${option.active ? "Ativo" : "Inativo"} - ${option.name} - ${
+          option.office
+        }`
       }
       onChange={(event, newValue) => {
         onSelect(newValue.map((option: Option) => option.id));
