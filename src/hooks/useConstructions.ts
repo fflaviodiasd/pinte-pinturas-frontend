@@ -217,6 +217,20 @@ export const useConstructions = () => {
     }
   };
 
+  const disableConstructionTeam = async (teamId: number) => {
+    setLoading(true);
+    try {
+      await api.delete(`teams/${teamId}`);
+      getAllConstructionsTeams();
+      successMessage("Equipe apagada com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível apagar equipe!");
+      setLoading(false);
+    }
+  };
+
   const disableConstruction = async (constructionId: number) => {
     setLoading(true);
     try {
@@ -367,6 +381,7 @@ export const useConstructions = () => {
     updateConstructionTeamMember,
     disableConstruction,
     disableConstructionMaterial,
+    disableConstructionTeam,
     getAllConstructions,
     listConstructionsLocations,
     listConstructionsTeams,

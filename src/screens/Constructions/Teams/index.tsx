@@ -15,15 +15,33 @@ import {
 } from "@mui/material";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { ListTeamMembers } from "./ListTeamMembers";
-import { Add } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 import { Button } from "../../../components/Button";
 import { FormCreateTeam } from "./FormCreateTeam";
 import { useStyles } from "./styles";
+import { ModalDisable } from "../../../components/Table/ModalDisable";
 
 export const ConstructionsTeams = () => {
-  const { listConstructionsTeams, getAllConstructionsTeams } =
-    useConstructions();
+  const {
+    listConstructionsTeams,
+    getAllConstructionsTeams,
+    disableConstructionTeam,
+  } = useConstructions();
   const [showCreateTeamRow, setShowCreateTeamRow] = useState(false);
+
+  const [selectedTeamId, setselectedTeamId] = useState<number>(0);
+  const [selectedTeamName, setselectedTeamName] = useState<string>("");
+
+  const [modalOpen, setIsModalOpen] = useState(false);
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleDisable = () => {
+    disableConstructionTeam(selectedTeamId);
+    setIsModalOpen(false);
+  };
 
   const { classes } = useStyles();
 
@@ -37,6 +55,29 @@ export const ConstructionsTeams = () => {
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
+      {
+        id: "edit",
+        header: "",
+        columnDefType: "display",
+        Cell: ({ cell }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Delete
+              sx={{ cursor: "pointer", color: "#C5C7C8" }}
+              onClick={() => {
+                setselectedTeamId(cell.row.original.id!);
+                setselectedTeamName(cell.row.original.teams);
+
+                setIsModalOpen(true);
+              }}
+            />
+          </div>
+        ),
+      },
       {
         header: "Ativa",
         accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
@@ -121,6 +162,12 @@ export const ConstructionsTeams = () => {
         </Box>
 
         <MaterialReactTable table={table} />
+        <ModalDisable
+          modalOpen={modalOpen}
+          handleClose={handleClose}
+          handleDisable={handleDisable}
+          selectedDisableName={selectedTeamName}
+        />
       </Grid>
     </Grid>
   );
