@@ -41,7 +41,7 @@ export function FormTeamMembers({ teamId }: any) {
               name="teamName"
               label="Nome da Equipe"
               variant="outlined"
-              fullWidth
+              sx={{ width: "50%" }}
             />
             <AutocompleteCategories
               endpoint={`teams/${teamId}/select_members`}
