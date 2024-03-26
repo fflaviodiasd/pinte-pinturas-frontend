@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Button, Chip, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import { api } from "../../services/api";
 import { useParams } from "react-router-dom";
+import { ChipCustom } from "../ChipCustom";
+import { StyledGridLevel } from "./style";
+import { useEffect, useState } from "react";
 
 interface Level {
   id: number;
   name: string;
   color: string;
+  order: number;
 }
 
 interface LevelComponentProps {
@@ -18,12 +21,12 @@ const levelColors = ["black", "#DEF4FF", "#B9EAFF"];
 
 export const LevelComponent: React.FC<LevelComponentProps> = ({
   getLevelEndpoint,
-  postLevelEndpoint,
 }) => {
   const [level, setLevel] = useState<Level[]>([]);
   const [isInputVisible, setIsInputVisible] = useState(false);
-  const [newLevelName, setNewLevelName] = useState("");
   const { id: levelId } = useParams();
+  const [valueActual, setValueActual] = useState<string>("");
+  const [editingChipId, setEditingChipId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchLevel = async () => {
@@ -42,7 +45,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
     };
 
     fetchLevel();
-  }, [getLevelEndpoint]);
+  }, [getLevelEndpoint, levelId, valueActual]);
 
   const handleAddLevelClick = () => {
     setIsInputVisible(true);
@@ -53,12 +56,14 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
   ) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      if (newLevelName.trim() !== "") {
+
+      if (valueActual.trim() !== "") {
         try {
           const response = await api.post(
             `constructions/${levelId}/level_area/`,
             {
-              name: `${level.length + 1}  - ${newLevelName}`,
+              name: valueActual,
+              order: level.length + 1,
             }
           );
           console.log(response);
@@ -67,13 +72,38 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
             color: levelColors[level.length % levelColors.length],
           };
           setLevel((prevLevel) => [...prevLevel, newLevel]);
-          setNewLevelName("");
+          setValueActual("");
         } catch (error) {
           console.error("Erro ao criar um novo nível:", error);
         }
       }
       setIsInputVisible(false);
     }
+  };
+
+  const updateLevelInputKeyDown = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+
+      if (valueActual.trim() !== "") {
+        try {
+          const response = await api.put(`/level_area/${editingChipId}/`, {
+            name: valueActual,
+          });
+          console.log(response);
+          setValueActual("");
+          setEditingChipId(null);
+        } catch (error) {
+          console.error("Erro ao editar o nível:", error);
+        }
+      }
+    }
+  };
+
+  const handleChipClick = (chipId: number) => {
+    setEditingChipId(chipId); // Definir o chip clicado como o chip em edição
   };
 
   return (
@@ -86,39 +116,43 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
       }}
     >
       <h2>Níveis</h2>
-      <div>
+      <div style={{ display: "flex", gap: "10px" }}>
         <Button
           onClick={handleAddLevelClick}
           variant="contained"
           color="primary"
-          style={{ marginRight: "0.5rem" }}
+          style={{ marginRight: "0.5rem", padding: "0", maxWidth: "30px" }}
         >
           +
         </Button>
         {isInputVisible && (
-          <TextField
-            type="text"
-            value={newLevelName}
-            onChange={(e) => setNewLevelName(e.target.value)}
-            onKeyDown={handleLevelInputKeyDown}
-            placeholder="Digite o nome do nível e pressione Enter..."
+          <ChipCustom
+            name={"adicionar"}
+            id={"adicionar"}
+            bg={"black"}
+            placeholder={"Digite o nome do nível e pressione Enter..."}
+            subtmitData={handleLevelInputKeyDown}
+            setValueActual={setValueActual}
+            value={valueActual}
           />
         )}
       </div>
-      <div style={{ marginTop: "1rem" }}>
-        {level.map((level) => (
-          <Chip
+      <StyledGridLevel>
+        {level.map((level: Level) => (
+          <ChipCustom
             key={level.id}
-            label={level.name}
-            style={{
-              marginRight: "0.5rem",
-              backgroundColor: level.color,
-              color: level.color === "black" ? "white" : "black",
-              fontWeight: "bold",
-            }}
+            name={level.name}
+            id={String(level.id)}
+            value={level.name}
+            number={level.order}
+            bg={level.color}
+            setValueActual={setValueActual}
+            subtmitData={updateLevelInputKeyDown}
+            onClick={() => handleChipClick(level.id)}
+            editable={editingChipId === level.id}
           />
         ))}
-      </div>
+      </StyledGridLevel>
     </div>
   );
 };
