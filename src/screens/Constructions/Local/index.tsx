@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
@@ -10,9 +10,6 @@ import { LevelComponent } from "../../../components/Level";
 import { api } from "../../../services/api";
 import { useParams } from "react-router-dom";
 import { useConstructions } from "../../../hooks/useConstructions";
-import { Navbar } from "../../../components/Navbar";
-import { TitleScreen } from "../../../components/TitleScreen";
-import Breadcrumb from "../../../components/Breadcrumb";
 
 const Locations = () => {
   const [dynamicColumns, setDynamicColumns] = useState<MRT_ColumnDef<any>[]>(
