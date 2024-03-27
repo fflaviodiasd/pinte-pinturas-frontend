@@ -6,7 +6,7 @@ import {
   type MRT_TableOptions,
   useMaterialReactTable,
 } from "material-react-table";
-import { Box, Button, IconButton, Tooltip } from "@mui/material";
+import { Box, Button, Checkbox, IconButton, Tooltip } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useConstructions } from "../../../hooks/useConstructions";
@@ -14,11 +14,14 @@ import { useParams } from "react-router-dom";
 import { api } from "../../../services/api";
 import { LevelComponent } from "../../../components/Level";
 import { ChecklistComponent } from "../../../components/Checklist";
+import SnackbarComponent from "../../../components/Snackbar";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const [dynamicColumns, setDynamicColumns] = useState<MRT_ColumnDef<any>[]>(
     []
@@ -99,9 +102,14 @@ const Locations = () => {
 
   //DELETE action
   const openDeleteConfirmModal = (row: MRT_Row<any>) => {
-    if (window.confirm("Tem certeza que deseja deletar essa área?")) {
-      //disable request
-    }
+    setSnackbarOpen(true);
+    //disable request
+    //disableMaterialGroup(row.original.id!);
+  };
+
+  const handleCloseSnackbar = () => {
+    //disableConstructionLocal();
+    setSnackbarOpen(false);
   };
 
   const table = useMaterialReactTable({
@@ -131,11 +139,7 @@ const Locations = () => {
     onEditingRowSave: handleEditLocal,
     renderRowActions: ({ row }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Tooltip title="Delete">
-          <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
+        <Checkbox onClick={() => openDeleteConfirmModal(row)} />
       </Box>
     ),
     renderBottomToolbarCustomActions: () => (
@@ -158,7 +162,17 @@ const Locations = () => {
     ),
   });
 
-  return <MaterialReactTable table={table} />;
+  return (
+    <>
+      <MaterialReactTable table={table} />
+      <SnackbarComponent
+        snackbarOpen={snackbarOpen}
+        handleCloseSnackbar={handleCloseSnackbar}
+        message="Tem certeza que deseja deletar essa área?"
+        button="Confirmar"
+      />
+    </>
+  );
 };
 
 const queryClient = new QueryClient();
