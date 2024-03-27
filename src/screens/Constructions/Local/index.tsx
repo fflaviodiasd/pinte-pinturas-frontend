@@ -32,6 +32,7 @@ const Locations = () => {
     listConstructionsLocations,
     getAllConstructionsLocations,
     addConstructionLocal,
+    disableConstructionLocal,
   } = useConstructions();
 
   const [selectedLocalId, setselectedLocalId] = useState<number>(0);
@@ -101,14 +102,16 @@ const Locations = () => {
   };
 
   //DELETE action
+  const handleDeleteSnackbar = (row: MRT_Row<any>) => {
+    disableConstructionLocal();
+    setSnackbarOpen(false);
+  };
+
   const openDeleteConfirmModal = (row: MRT_Row<any>) => {
     setSnackbarOpen(true);
-    //disable request
-    //disableMaterialGroup(row.original.id!);
   };
 
   const handleCloseSnackbar = () => {
-    //disableConstructionLocal();
     setSnackbarOpen(false);
   };
 
@@ -170,6 +173,7 @@ const Locations = () => {
         handleCloseSnackbar={handleCloseSnackbar}
         message="Tem certeza que deseja deletar essa área?"
         button="Confirmar"
+        handleDeleteSnackbar={handleDeleteSnackbar}
       />
     </>
   );

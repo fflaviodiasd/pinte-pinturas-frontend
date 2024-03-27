@@ -231,6 +231,20 @@ export const useConstructions = () => {
     }
   };
 
+  const disableConstructionLocal = async () => {
+    setLoading(true);
+    try {
+      await api.delete(`/areas/id`);
+      getAllConstructions();
+      successMessage("Área apagada com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível apagar área!");
+      setLoading(false);
+    }
+  };
+
   const disableConstruction = async (constructionId: number) => {
     setLoading(true);
     try {
@@ -382,6 +396,7 @@ export const useConstructions = () => {
     disableConstruction,
     disableConstructionMaterial,
     disableConstructionTeam,
+    disableConstructionLocal,
     getAllConstructions,
     listConstructionsLocations,
     listConstructionsTeams,

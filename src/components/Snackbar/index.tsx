@@ -4,6 +4,7 @@ import Snackbar from "@mui/material/Snackbar";
 export default function SnackbarComponent({
   snackbarOpen,
   handleCloseSnackbar,
+  handleDeleteSnackbar,
   message,
   button,
 }: any) {
@@ -16,7 +17,7 @@ export default function SnackbarComponent({
         onClose={handleCloseSnackbar}
         message={message}
         action={
-          <Button color="secondary" size="small" onClick={handleCloseSnackbar}>
+          <Button color="secondary" size="small" onClick={handleDeleteSnackbar}>
             {button}
           </Button>
         }
