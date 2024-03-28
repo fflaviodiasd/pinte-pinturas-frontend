@@ -119,6 +119,9 @@ const Locations = () => {
       ? `${selectedLocalIds.length} Local Selecionado`
       : `${selectedLocalIds.length} Locais Selecionados`;
 
+  const deleteIconMessage =
+    selectedLocalIds.length === 1 ? "Remover Local" : "Remover Locais";
+
   const table = useMaterialReactTable({
     columns: dynamicColumns,
     data: listConstructionsLocations,
@@ -155,7 +158,7 @@ const Locations = () => {
         snackbarOpen={snackbarOpen}
         handleCloseSnackbar={handleCloseSnackbar}
         message={snackbarMessage}
-        button={<SnackbarDeleteIcon />}
+        button={<SnackbarDeleteIcon title={deleteIconMessage} />}
         handleDeleteSnackbar={handleDeleteSnackbar}
       />
     ),
