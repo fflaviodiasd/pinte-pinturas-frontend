@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
@@ -6,7 +6,7 @@ import {
   type MRT_TableOptions,
   useMaterialReactTable,
 } from "material-react-table";
-import { Box, Button, Checkbox, IconButton, Tooltip } from "@mui/material";
+import { Box, Button, Checkbox } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useConstructions } from "../../../hooks/useConstructions";
@@ -15,16 +15,13 @@ import { api } from "../../../services/api";
 import { LevelComponent } from "../../../components/Level";
 import { ChecklistComponent } from "../../../components/Checklist";
 import SnackbarComponent from "../../../components/Snackbar";
-import Delete from "@mui/icons-material/Delete";
 import { SnackbarDeleteIcon } from "../../../components/Snackbar/DeleteIcon";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
-
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-
   const [dynamicColumns, setDynamicColumns] = useState<MRT_ColumnDef<any>[]>(
     []
   );
@@ -37,7 +34,7 @@ const Locations = () => {
     disableConstructionLocal,
   } = useConstructions();
 
-  const [selectedLocalId, setselectedLocalId] = useState<number>(0);
+  const [selectedLocalIds, setSelectedLocalIds] = useState<number[]>([]);
 
   useEffect(() => {
     getAllConstructionsLocations();
@@ -86,7 +83,6 @@ const Locations = () => {
     fetchLevel();
   }, []);
 
-  //CREATE action
   const handleCreateLocal: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
     values,
     table,
@@ -94,24 +90,34 @@ const Locations = () => {
     await addConstructionLocal(values, dynamicColumns);
   };
 
-  //UPDATE action
-  const handleEditLocal: MRT_TableOptions<any>["onEditingRowSave"] = async ({
-    values,
-    table,
-  }) => {
-    //update request
-    table.setEditingRow(null); //exit editing mode
-  };
-
-  //DELETE action
-  const handleDeleteSnackbar = (row: MRT_Row<any>) => {
-    disableConstructionLocal(selectedLocalId);
+  const handleDeleteSnackbar = () => {
+    selectedLocalIds.forEach(async (id) => {
+      await disableConstructionLocal([id]);
+    });
+    setSelectedLocalIds([]);
     setSnackbarOpen(false);
   };
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
+
+  const handleCheckboxClick = (id: number) => {
+    const isSelected = selectedLocalIds.includes(id);
+    if (isSelected) {
+      setSelectedLocalIds(
+        selectedLocalIds.filter((existingId) => existingId !== id)
+      );
+    } else {
+      setSelectedLocalIds([...selectedLocalIds, id]);
+    }
+    setSnackbarOpen(true);
+  };
+
+  const snackbarMessage =
+    selectedLocalIds.length === 1
+      ? `${selectedLocalIds.length} Local Selecionado`
+      : `${selectedLocalIds.length} Locais Selecionados`;
 
   const table = useMaterialReactTable({
     columns: dynamicColumns,
@@ -122,7 +128,6 @@ const Locations = () => {
     enableColumnPinning: true,
     enableEditing: true,
     enableRowActions: true,
-
     enableExpandAll: false,
     muiExpandButtonProps: ({ row, table }) => ({
       onClick: () => table.setExpanded({ [row.id]: !row.getIsExpanded() }),
@@ -137,22 +142,22 @@ const Locations = () => {
     getRowId: (row) => row.id,
     onCreatingRowCancel: () => setValidationErrors({}),
     onCreatingRowSave: handleCreateLocal,
-    onEditingRowSave: handleEditLocal,
     renderRowActions: ({ row }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
         <Checkbox
           sx={{ cursor: "pointer", color: "#C5C7C8" }}
-          onClick={() => {
-            setselectedLocalId(row.original.id!);
-            setSnackbarOpen(true);
-          }}
+          onClick={() => handleCheckboxClick(row.original.id)}
         />
       </Box>
     ),
     renderBottomToolbarCustomActions: () => (
-      <Box sx={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-        <Button>Salvar</Button>
-      </Box>
+      <SnackbarComponent
+        snackbarOpen={snackbarOpen}
+        handleCloseSnackbar={handleCloseSnackbar}
+        message={snackbarMessage}
+        button={<SnackbarDeleteIcon />}
+        handleDeleteSnackbar={handleDeleteSnackbar}
+      />
     ),
     renderTopToolbarCustomActions: ({ table }) => (
       <div>
@@ -172,13 +177,6 @@ const Locations = () => {
   return (
     <>
       <MaterialReactTable table={table} />
-      <SnackbarComponent
-        snackbarOpen={snackbarOpen}
-        handleCloseSnackbar={handleCloseSnackbar}
-        message="Local Selecionado"
-        button={<SnackbarDeleteIcon />}
-        handleDeleteSnackbar={handleDeleteSnackbar}
-      />
     </>
   );
 };

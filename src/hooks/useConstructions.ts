@@ -231,16 +231,20 @@ export const useConstructions = () => {
     }
   };
 
-  const disableConstructionLocal = async (areaId: number) => {
+  const disableConstructionLocal = async (areaIds: number[]) => {
     setLoading(true);
     try {
-      await api.delete(`/areas/${areaId}/`);
+      await Promise.all(
+        areaIds.map(async (areaId) => {
+          await api.delete(`/areas/${areaId}/`);
+        })
+      );
       getAllConstructions();
-      successMessage("Área apagada com sucesso!");
+      successMessage("Local apagado com sucesso!");
       setLoading(false);
     } catch (error) {
       console.log(error);
-      errorMessage("Não foi possível apagar área!");
+      errorMessage("Não foi possível apagar local!");
       setLoading(false);
     }
   };
