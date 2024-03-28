@@ -16,6 +16,7 @@ import { LevelComponent } from "../../../components/Level";
 import { ChecklistComponent } from "../../../components/Checklist";
 import SnackbarComponent from "../../../components/Snackbar";
 import Delete from "@mui/icons-material/Delete";
+import { SnackbarDeleteIcon } from "../../../components/Snackbar/DeleteIcon";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -174,8 +175,8 @@ const Locations = () => {
       <SnackbarComponent
         snackbarOpen={snackbarOpen}
         handleCloseSnackbar={handleCloseSnackbar}
-        message="Tem certeza que deseja deletar essa área?"
-        button="Confirmar"
+        message="Local Selecionado"
+        button={<SnackbarDeleteIcon />}
         handleDeleteSnackbar={handleDeleteSnackbar}
       />
     </>
