@@ -231,10 +231,10 @@ export const useConstructions = () => {
     }
   };
 
-  const disableConstructionLocal = async () => {
+  const disableConstructionLocal = async (areaId: number) => {
     setLoading(true);
     try {
-      await api.delete(`/areas/id`);
+      await api.delete(`/areas/${areaId}/`);
       getAllConstructions();
       successMessage("Área apagada com sucesso!");
       setLoading(false);

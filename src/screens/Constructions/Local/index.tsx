@@ -15,6 +15,7 @@ import { api } from "../../../services/api";
 import { LevelComponent } from "../../../components/Level";
 import { ChecklistComponent } from "../../../components/Checklist";
 import SnackbarComponent from "../../../components/Snackbar";
+import Delete from "@mui/icons-material/Delete";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -103,12 +104,8 @@ const Locations = () => {
 
   //DELETE action
   const handleDeleteSnackbar = (row: MRT_Row<any>) => {
-    disableConstructionLocal();
+    disableConstructionLocal(selectedLocalId);
     setSnackbarOpen(false);
-  };
-
-  const openDeleteConfirmModal = (row: MRT_Row<any>) => {
-    setSnackbarOpen(true);
   };
 
   const handleCloseSnackbar = () => {
@@ -142,7 +139,13 @@ const Locations = () => {
     onEditingRowSave: handleEditLocal,
     renderRowActions: ({ row }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Checkbox onClick={() => openDeleteConfirmModal(row)} />
+        <Checkbox
+          sx={{ cursor: "pointer", color: "#C5C7C8" }}
+          onClick={() => {
+            setselectedLocalId(row.original.id!);
+            setSnackbarOpen(true);
+          }}
+        />
       </Box>
     ),
     renderBottomToolbarCustomActions: () => (
