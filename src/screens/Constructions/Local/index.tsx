@@ -17,6 +17,7 @@ import { ChecklistComponent } from "../../../components/Checklist";
 import SnackbarComponent from "../../../components/Snackbar";
 import { SnackbarDeleteIcon } from "../../../components/Snackbar/DeleteIcon";
 import { ChecklistIcon } from "../../../components/Snackbar/ChecklistIcon";
+import { ChecklistDrawer } from "../../../components/Checklist/ChecklistDrawer";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -36,6 +37,8 @@ const Locations = () => {
   } = useConstructions();
 
   const [selectedLocalIds, setSelectedLocalIds] = useState<number[]>([]);
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
     getAllConstructionsLocations();
@@ -116,7 +119,7 @@ const Locations = () => {
   };
 
   const handleOpenChecklistsDrawer = () => {
-    alert("drawer");
+    setIsDrawerOpen(true);
   };
 
   const snackbarMessage =
@@ -191,6 +194,10 @@ const Locations = () => {
   return (
     <>
       <MaterialReactTable table={table} />
+      <ChecklistDrawer
+        open={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+      />
     </>
   );
 };
