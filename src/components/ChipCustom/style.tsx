@@ -1,6 +1,7 @@
 import styled from "styled-components";
 interface Props {
   bg?: string;
+  post?: boolean;
 }
 
 export const StyledChipDiv = styled.div`
@@ -13,9 +14,9 @@ export const StyledChip = styled.input<Props>`
   padding: 5px 10px;
   border: 1px solid #252525;
   color: ${(props) => (props.bg === "black" ? "white" : "black")};
-  padding-left: 35px;
+  padding-left: ${(props) => (props.post ? "5px" : "35px")};
   &::placeholder {
-    color: white;
+    color: #858484;
   }
 `;
 
