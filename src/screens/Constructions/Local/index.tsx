@@ -16,6 +16,7 @@ import { LevelComponent } from "../../../components/Level";
 import { ChecklistComponent } from "../../../components/Checklist";
 import SnackbarComponent from "../../../components/Snackbar";
 import { SnackbarDeleteIcon } from "../../../components/Snackbar/DeleteIcon";
+import { ChecklistIcon } from "../../../components/Snackbar/ChecklistIcon";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -120,7 +121,7 @@ const Locations = () => {
       : `${selectedLocalIds.length} Locais Selecionados`;
 
   const deleteIconMessage =
-    selectedLocalIds.length === 1 ? "Remover Local" : "Remover Locais";
+    selectedLocalIds.length === 1 ? "Remover local" : "Remover locais";
 
   const table = useMaterialReactTable({
     columns: dynamicColumns,
@@ -158,7 +159,13 @@ const Locations = () => {
         snackbarOpen={snackbarOpen}
         handleCloseSnackbar={handleCloseSnackbar}
         message={snackbarMessage}
-        button={<SnackbarDeleteIcon title={deleteIconMessage} />}
+        checklistButton={
+          <ChecklistIcon
+            title={"Duplicar nomes de checklists cadastrados"}
+            handleClick={handleCloseSnackbar}
+          />
+        }
+        deleteButton={<SnackbarDeleteIcon title={deleteIconMessage} />}
         handleDeleteSnackbar={handleDeleteSnackbar}
       />
     ),

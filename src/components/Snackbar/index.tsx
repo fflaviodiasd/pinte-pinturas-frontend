@@ -1,12 +1,14 @@
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
+import React from "react";
 
 export default function SnackbarComponent({
   snackbarOpen,
   handleCloseSnackbar,
   handleDeleteSnackbar,
   message,
-  button,
+  deleteButton,
+  checklistButton,
 }: any) {
   return (
     <div>
@@ -17,9 +19,16 @@ export default function SnackbarComponent({
         onClose={handleCloseSnackbar}
         message={message}
         action={
-          <Button color="secondary" size="small" onClick={handleDeleteSnackbar}>
-            {button}
-          </Button>
+          <React.Fragment>
+            {checklistButton}
+            <Button
+              color="secondary"
+              size="small"
+              onClick={handleDeleteSnackbar}
+            >
+              {deleteButton}
+            </Button>
+          </React.Fragment>
         }
       />
     </div>
