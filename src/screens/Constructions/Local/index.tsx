@@ -115,6 +115,10 @@ const Locations = () => {
     setSnackbarOpen(true);
   };
 
+  const handleOpenChecklistsDrawer = () => {
+    alert("drawer");
+  };
+
   const snackbarMessage =
     selectedLocalIds.length === 1
       ? `${selectedLocalIds.length} Local Selecionado`
@@ -162,7 +166,7 @@ const Locations = () => {
         checklistButton={
           <ChecklistIcon
             title={"Duplicar nomes de checklists cadastrados"}
-            handleClick={handleCloseSnackbar}
+            handleClick={handleOpenChecklistsDrawer}
           />
         }
         deleteButton={<SnackbarDeleteIcon title={deleteIconMessage} />}
