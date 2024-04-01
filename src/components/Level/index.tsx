@@ -49,6 +49,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
 
   const handleAddLevelClick = () => {
     setIsInputVisible(true);
+    setValueActual("");
   };
 
   const handleLevelInputKeyDown = async (
@@ -134,6 +135,8 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
             subtmitData={handleLevelInputKeyDown}
             setValueActual={setValueActual}
             value={valueActual}
+            editable={true}
+            post={true}
           />
         )}
       </div>

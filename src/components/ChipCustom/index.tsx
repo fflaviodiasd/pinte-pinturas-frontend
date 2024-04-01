@@ -17,6 +17,7 @@ interface ChipCustoProps {
   setValueActual: (event: string) => void;
   onClick?: () => void;
   editable?: boolean;
+  post?: boolean;
 }
 
 export const ChipCustom = ({
@@ -30,6 +31,7 @@ export const ChipCustom = ({
   setValueActual,
   onClick,
   editable = false,
+  post,
 }: ChipCustoProps) => {
   const [editingValue, setEditingValue] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
@@ -57,10 +59,11 @@ export const ChipCustom = ({
             placeholder={placeholder}
             onClick={onClick}
             bg={bg}
+            post={post}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
           />
-          {isFocused && (
+          {isFocused && !post && (
             <StyledChipButtonDel onClick={() => console.log("Delete")}>
               x
             </StyledChipButtonDel>
