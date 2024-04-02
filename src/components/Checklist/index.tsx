@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import { api } from "../../services/api";
 import { ChipCustom } from "../ChipCustom";
 import { useEffect, useState } from "react";
@@ -145,18 +145,34 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
         )}
       </div>
       {checklist.map((checklist: Checklist) => (
-        <ChipCustom
+        <Tooltip
           key={checklist.id}
-          name={checklist.name}
-          id={String(checklist.id)}
-          value={checklist.name}
-          number={checklist.order}
-          bg={checklist.bg}
-          setValueActual={setValueActual}
-          subtmitData={updateChecklistInputKeyDown}
-          onClick={() => handleChipClick(checklist.id)}
-          editable={editingChipId === checklist.id}
-        />
+          title={
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span>Início:</span>
+              <span>Término:</span>
+              <span>Equipe:</span>
+              <span>Medição:</span>
+            </div>
+          }
+          arrow
+          placement="top"
+        >
+          <div>
+            <ChipCustom
+              key={checklist.id}
+              name={checklist.name}
+              id={String(checklist.id)}
+              value={checklist.name}
+              number={checklist.order}
+              bg={checklist.bg}
+              setValueActual={setValueActual}
+              subtmitData={updateChecklistInputKeyDown}
+              onClick={() => handleChipClick(checklist.id)}
+              editable={editingChipId === checklist.id}
+            />
+          </div>
+        </Tooltip>
       ))}
     </div>
   );
