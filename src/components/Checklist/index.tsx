@@ -6,8 +6,9 @@ import { useEffect, useState } from "react";
 interface Checklist {
   id: number;
   name: string;
-  color: string;
+  bg: string;
   order: number;
+  status: number;
 }
 
 interface ChecklistComponentProps {
@@ -16,7 +17,12 @@ interface ChecklistComponentProps {
   localId?: number;
 }
 
-const checklistColors = ["#FF9800"];
+const STATUS_COLORS: { [key: number]: string } = {
+  1: "#FF9800",
+  2: "#4CAF50",
+  3: "#2196F3",
+  4: "#512DA8",
+};
 
 export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
   getChecklistEndpoint,
@@ -32,9 +38,9 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
       try {
         const response = await api.get(`areas/${localId}/checklist`);
         setChecklist(
-          response.data.map((checklist: Checklist, index: number) => ({
+          response.data.map((checklist: Checklist) => ({
             ...checklist,
-            color: checklistColors[index % checklistColors.length],
+            bg: STATUS_COLORS[checklist.status],
           }))
         );
         console.log(response);
@@ -66,7 +72,10 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
           console.log(response);
           const newChecklist: Checklist = {
             ...response.data,
-            color: checklistColors[checklist.length % checklistColors.length],
+            color:
+              STATUS_COLORS[
+                checklist.length % Object.keys(STATUS_COLORS).length
+              ],
           };
           setChecklist((prevChecklist) => [...prevChecklist, newChecklist]);
           setValueActual("");
@@ -142,7 +151,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
           id={String(checklist.id)}
           value={checklist.name}
           number={checklist.order}
-          bg={checklist.color}
+          bg={checklist.bg}
           setValueActual={setValueActual}
           subtmitData={updateChecklistInputKeyDown}
           onClick={() => handleChipClick(checklist.id)}
