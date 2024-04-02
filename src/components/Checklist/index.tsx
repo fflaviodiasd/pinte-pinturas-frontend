@@ -65,7 +65,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
 
       if (valueActual.trim() !== "") {
         try {
-          const response = await api.post(`areas/${localId}/checklist`, {
+          const response = await api.post(`/areas/${localId}/checklist/`, {
             name: valueActual,
             order: checklist.length + 1,
           });
