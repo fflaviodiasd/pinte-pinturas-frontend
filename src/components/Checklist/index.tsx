@@ -8,7 +8,7 @@ interface Checklist {
   name: string;
   bg: string;
   order: number;
-  status: number;
+  status: string;
 }
 
 interface ChecklistComponentProps {
@@ -17,11 +17,12 @@ interface ChecklistComponentProps {
   localId?: number;
 }
 
-const STATUS_COLORS: { [key: number]: string } = {
-  1: "#FF9800",
-  2: "#4CAF50",
-  3: "#2196F3",
-  4: "#512DA8",
+const STATUS_COLORS: { [key: string]: string } = {
+  "NÃO LIBERADA": "#F44336",
+  LIBERADA: "#FF9800",
+  INICIADA: "#4CAF50",
+  FINALIZADA: "#2196F3",
+  ENTREGUE: "#512DA8",
 };
 
 export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
