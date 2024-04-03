@@ -197,6 +197,7 @@ const Locations = () => {
       <ChecklistDrawer
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
+        selectedLocalIds={selectedLocalIds}
       />
     </>
   );
