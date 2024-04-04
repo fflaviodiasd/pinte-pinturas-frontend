@@ -33,6 +33,10 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
   const [isInputVisible, setIsInputVisible] = useState(false);
   const [valueActual, setValueActual] = useState<string>("");
   const [editingChipId, setEditingChipId] = useState<number | null>(null);
+  const [tooltipData, setTooltipData] = useState<any>(null);
+  const [tooltipChecklistId, setTooltipChecklistId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchChecklist = async () => {
@@ -52,6 +56,23 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
 
     fetchChecklist();
   }, [getChecklistEndpoint, localId, valueActual]);
+
+  useEffect(() => {
+    const fetchTooltipData = async () => {
+      try {
+        if (tooltipChecklistId) {
+          const response = await api.get(
+            `/checklists/${tooltipChecklistId}/history_tooltip/`
+          );
+          setTooltipData(response.data);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar tooltip data:", error);
+      }
+    };
+
+    fetchTooltipData();
+  }, [tooltipChecklistId]);
 
   const handleAddChecklistClick = () => {
     setIsInputVisible(true);
@@ -150,14 +171,15 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
           key={checklist.id}
           title={
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span>Início:</span>
-              <span>Término:</span>
-              <span>Equipe:</span>
-              <span>Medição:</span>
+              <span>Início: {tooltipData?.started}</span>
+              <span>Término: {tooltipData?.finished}</span>
+              <span>Equipe: {tooltipData?.team}</span>
+              <span>Medição: {tooltipData?.measurement}</span>
             </div>
           }
           arrow
           placement="top"
+          onMouseEnter={() => setTooltipChecklistId(checklist.id)}
         >
           <div>
             <ChipCustom
