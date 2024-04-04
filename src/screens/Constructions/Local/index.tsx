@@ -6,7 +6,7 @@ import {
   type MRT_TableOptions,
   useMaterialReactTable,
 } from "material-react-table";
-import { Box, Button, Checkbox } from "@mui/material";
+import { Box, Button, Checkbox, Tooltip } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useConstructions } from "../../../hooks/useConstructions";
@@ -19,6 +19,7 @@ import { SnackbarDeleteIcon } from "../../../components/Snackbar/DeleteIcon";
 import { ChecklistIcon } from "../../../components/Snackbar/ChecklistIcon";
 import { ChecklistDrawer } from "../../../components/Checklist/ChecklistDrawer";
 import { StatusPanel } from "../../../components/StatusPanel";
+import { Info } from "@mui/icons-material";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -71,6 +72,19 @@ const Locations = () => {
             accessorKey: "checklist",
             header: "Checklist",
             enableEditing: false,
+            Cell: ({ cell }: any) => (
+              <div
+                style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                }}
+              >
+                <Tooltip title="Tooltip">
+                  <Info fontSize="small" style={{ color: "#C5C7C8" }} />
+                </Tooltip>
+                {cell.row.original.checklist}
+              </div>
+            ),
           },
         ];
 
