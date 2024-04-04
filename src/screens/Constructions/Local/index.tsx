@@ -70,6 +70,7 @@ const Locations = () => {
           {
             accessorKey: "checklist",
             header: "Checklist",
+            enableEditing: false,
           },
         ];
 
