@@ -347,6 +347,7 @@ export const useConstructions = () => {
         return {
           id: result.id,
           code: result.code,
+          checklist: result.checklist_count,
           ...levelNames,
         };
       });
