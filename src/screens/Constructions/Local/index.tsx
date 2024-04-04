@@ -50,7 +50,7 @@ const Locations = () => {
     const fetchLevel = async () => {
       try {
         const response = await api.get(`constructions/${id}/level_area/`);
-        const level = response.data.results;
+        const level = response.data;
         const newDynamicColumns = [
           {
             accessorKey: "id",

@@ -33,7 +33,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
       try {
         const response = await api.get(`constructions/${levelId}/level_area`);
         setLevel(
-          response.data.results.map((level: Level, index: number) => ({
+          response.data.map((level: Level, index: number) => ({
             ...level,
             color: levelColors[index % levelColors.length],
           }))
