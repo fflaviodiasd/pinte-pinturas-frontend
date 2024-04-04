@@ -18,6 +18,7 @@ import SnackbarComponent from "../../../components/Snackbar";
 import { SnackbarDeleteIcon } from "../../../components/Snackbar/DeleteIcon";
 import { ChecklistIcon } from "../../../components/Snackbar/ChecklistIcon";
 import { ChecklistDrawer } from "../../../components/Checklist/ChecklistDrawer";
+import { StatusPanel } from "../../../components/StatusPanel";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -178,6 +179,9 @@ const Locations = () => {
     ),
     renderTopToolbarCustomActions: ({ table }) => (
       <div>
+        <div style={{ display: "flex", justifyContent: "right" }}>
+          <StatusPanel />
+        </div>
         <LevelComponent />
         <Button
           variant="contained"
