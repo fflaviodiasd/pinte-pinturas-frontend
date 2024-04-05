@@ -4,9 +4,11 @@ import {
   StyledChipButtonDel,
   StyledChipDiv,
   StyledChipLabelNumber,
-} from "./style";
+} from "./styles";
+import { api } from "../../../services/api";
+import { errorMessage, successMessage } from "../../Messages";
 
-interface ChipCustoProps {
+interface ChipCustomLevelProps {
   name: string;
   id: string;
   placeholder?: string;
@@ -18,9 +20,10 @@ interface ChipCustoProps {
   onClick?: () => void;
   editable?: boolean;
   post?: boolean;
+  chipId?: number | null;
 }
 
-export const ChipCustom = ({
+export const ChipCustomLevel = ({
   name,
   id,
   value,
@@ -32,7 +35,8 @@ export const ChipCustom = ({
   onClick,
   editable = false,
   post,
-}: ChipCustoProps) => {
+  chipId,
+}: ChipCustomLevelProps) => {
   const [editingValue, setEditingValue] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -43,6 +47,17 @@ export const ChipCustom = ({
   useEffect(() => {
     setValueActual(editingValue);
   }, [editingValue, setValueActual]);
+
+  const handleChipDeleteLevel = async () => {
+    try {
+      const response = await api.delete(`level_area/${chipId}/`);
+      console.log(response);
+      successMessage("Nível deletado com sucesso!");
+    } catch (error) {
+      errorMessage("Erro ao deletar nível!");
+      console.error("Erro ao deletar nivel:", error);
+    }
+  };
 
   return (
     <StyledChipDiv onClick={onClick}>
@@ -63,11 +78,9 @@ export const ChipCustom = ({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
           />
-          {isFocused && !post && (
-            <StyledChipButtonDel onClick={() => console.log("Delete")}>
-              x
-            </StyledChipButtonDel>
-          )}
+          <StyledChipButtonDel onClick={handleChipDeleteLevel}>
+            x
+          </StyledChipButtonDel>
         </div>
       ) : (
         <StyledChip tabIndex={0} value={value} bg={bg} />

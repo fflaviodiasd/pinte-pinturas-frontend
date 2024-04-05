@@ -1,9 +1,9 @@
 import { Button } from "@mui/material";
 import { api } from "../../services/api";
 import { useParams } from "react-router-dom";
-import { ChipCustom } from "../ChipCustom";
 import { StyledGridLevel } from "./style";
 import { useEffect, useState } from "react";
+import { ChipCustomLevel } from "../ChipCustom/ChipCustomLevel";
 
 interface Level {
   id: number;
@@ -24,14 +24,14 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
 }) => {
   const [level, setLevel] = useState<Level[]>([]);
   const [isInputVisible, setIsInputVisible] = useState(false);
-  const { id: levelId } = useParams();
+  const { id } = useParams();
   const [valueActual, setValueActual] = useState<string>("");
   const [editingChipId, setEditingChipId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchLevel = async () => {
       try {
-        const response = await api.get(`constructions/${levelId}/level_area`);
+        const response = await api.get(`constructions/${id}/level_area`);
         setLevel(
           response.data.map((level: Level, index: number) => ({
             ...level,
@@ -45,7 +45,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
     };
 
     fetchLevel();
-  }, [getLevelEndpoint, levelId, valueActual]);
+  }, [getLevelEndpoint, id, valueActual]);
 
   const handleAddLevelClick = () => {
     setIsInputVisible(true);
@@ -60,13 +60,10 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
 
       if (valueActual.trim() !== "") {
         try {
-          const response = await api.post(
-            `constructions/${levelId}/level_area/`,
-            {
-              name: valueActual,
-              order: level.length + 1,
-            }
-          );
+          const response = await api.post(`constructions/${id}/level_area/`, {
+            name: valueActual,
+            order: level.length + 1,
+          });
           console.log(response);
           const newLevel: Level = {
             ...response.data,
@@ -104,7 +101,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
   };
 
   const handleChipClick = (chipId: number) => {
-    setEditingChipId(chipId); // Definir o chip clicado como o chip em edição
+    setEditingChipId(chipId);
   };
 
   return (
@@ -127,7 +124,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
           +
         </Button>
         {isInputVisible && (
-          <ChipCustom
+          <ChipCustomLevel
             name={"adicionar"}
             id={"adicionar"}
             bg={"black"}
@@ -142,7 +139,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
       </div>
       <StyledGridLevel>
         {level.map((level: Level) => (
-          <ChipCustom
+          <ChipCustomLevel
             key={level.id}
             name={level.name}
             id={String(level.id)}
@@ -153,6 +150,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
             subtmitData={updateLevelInputKeyDown}
             onClick={() => handleChipClick(level.id)}
             editable={editingChipId === level.id}
+            chipId={editingChipId}
           />
         ))}
       </StyledGridLevel>

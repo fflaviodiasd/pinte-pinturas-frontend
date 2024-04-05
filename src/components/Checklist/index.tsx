@@ -1,7 +1,7 @@
 import { Button, Tooltip } from "@mui/material";
 import { api } from "../../services/api";
-import { ChipCustom } from "../ChipCustom";
 import { useEffect, useState } from "react";
+import { ChipCustomChecklist } from "../ChipCustom/ChipCustomChecklist";
 
 interface Checklist {
   id: number;
@@ -153,7 +153,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
           +
         </Button>
         {isInputVisible && (
-          <ChipCustom
+          <ChipCustomChecklist
             name={"adicionar"}
             id={"adicionar"}
             bg={"black"}
@@ -182,7 +182,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
           onMouseEnter={() => setTooltipChecklistId(checklist.id)}
         >
           <div>
-            <ChipCustom
+            <ChipCustomChecklist
               key={checklist.id}
               name={checklist.name}
               id={String(checklist.id)}
@@ -193,6 +193,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
               subtmitData={updateChecklistInputKeyDown}
               onClick={() => handleChipClick(checklist.id)}
               editable={editingChipId === checklist.id}
+              chipId={editingChipId}
             />
           </div>
         </Tooltip>
