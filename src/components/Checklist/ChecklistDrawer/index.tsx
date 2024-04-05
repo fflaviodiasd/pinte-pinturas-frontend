@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { api } from "../../../services/api";
+import { errorMessage, successMessage } from "../../Messages";
 
 interface Checklist {
   name: string;
@@ -57,9 +58,9 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
           );
         })
       );
-      // ...
+      successMessage("Checklist copiado com sucesso!");
     } catch (error: any) {
-      // ...
+      errorMessage("Erro ao copiar checklist!");
     }
   };
 
