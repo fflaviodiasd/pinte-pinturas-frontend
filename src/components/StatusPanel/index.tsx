@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 
 export const StatusPanel = () => {
   return (
-    <Box sx={{ display: "flex", gap: "1rem" }}>
+    <Box sx={{ display: "flex", gap: "1rem", padding: "1rem" }}>
       <div style={{ display: "flex", alignItems: "center" }}>
         Não Liberado
         <div
