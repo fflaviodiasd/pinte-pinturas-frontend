@@ -2,6 +2,7 @@ import { Button, Tooltip } from "@mui/material";
 import { api } from "../../services/api";
 import { useEffect, useState } from "react";
 import { ChipCustomChecklist } from "../ChipCustom/ChipCustomChecklist";
+import { StyledGridChecklist } from "./styles";
 
 interface Checklist {
   id: number;
@@ -142,16 +143,17 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
         gap: "1rem",
       }}
     >
-      <h2>Checklists</h2>
       <div style={{ display: "flex", gap: "10px" }}>
-        <Button
-          onClick={handleAddChecklistClick}
-          variant="contained"
-          color="primary"
-          style={{ marginRight: "0.5rem", padding: "0", maxWidth: "30px" }}
-        >
-          +
-        </Button>
+        <Tooltip title="Novo Checklist">
+          <Button
+            onClick={handleAddChecklistClick}
+            variant="contained"
+            color="primary"
+            style={{ marginRight: "0.5rem", padding: "0", maxWidth: "30px" }}
+          >
+            +
+          </Button>
+        </Tooltip>
         {isInputVisible && (
           <ChipCustomChecklist
             name={"adicionar"}
@@ -166,38 +168,40 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
           />
         )}
       </div>
-      {checklist.map((checklist: Checklist) => (
-        <Tooltip
-          key={checklist.id}
-          title={
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span>Início: {tooltipData?.started}</span>
-              <span>Término: {tooltipData?.finished}</span>
-              <span>Equipe: {tooltipData?.team}</span>
-              <span>Medição: {tooltipData?.measurement}</span>
+      <StyledGridChecklist>
+        {checklist.map((checklist: Checklist) => (
+          <Tooltip
+            key={checklist.id}
+            title={
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span>Início: {tooltipData?.started}</span>
+                <span>Término: {tooltipData?.finished}</span>
+                <span>Equipe: {tooltipData?.team}</span>
+                <span>Medição: {tooltipData?.measurement}</span>
+              </div>
+            }
+            arrow
+            placement="top"
+            onMouseEnter={() => setTooltipChecklistId(checklist.id)}
+          >
+            <div>
+              <ChipCustomChecklist
+                key={checklist.id}
+                name={checklist.name}
+                id={String(checklist.id)}
+                value={checklist.name}
+                number={checklist.order}
+                bg={checklist.bg}
+                setValueActual={setValueActual}
+                subtmitData={updateChecklistInputKeyDown}
+                onClick={() => handleChipClick(checklist.id)}
+                editable={editingChipId === checklist.id}
+                chipId={editingChipId}
+              />
             </div>
-          }
-          arrow
-          placement="top"
-          onMouseEnter={() => setTooltipChecklistId(checklist.id)}
-        >
-          <div>
-            <ChipCustomChecklist
-              key={checklist.id}
-              name={checklist.name}
-              id={String(checklist.id)}
-              value={checklist.name}
-              number={checklist.order}
-              bg={checklist.bg}
-              setValueActual={setValueActual}
-              subtmitData={updateChecklistInputKeyDown}
-              onClick={() => handleChipClick(checklist.id)}
-              editable={editingChipId === checklist.id}
-              chipId={editingChipId}
-            />
-          </div>
-        </Tooltip>
-      ))}
+          </Tooltip>
+        ))}
+      </StyledGridChecklist>
     </div>
   );
 };

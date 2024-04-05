@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { api } from "../../services/api";
 import { useParams } from "react-router-dom";
-import { StyledGridLevel } from "./style";
+import { StyledGridLevel } from "./styles";
 import { useEffect, useState } from "react";
 import { ChipCustomLevel } from "../ChipCustom/ChipCustomLevel";
 
