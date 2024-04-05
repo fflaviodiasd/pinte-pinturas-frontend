@@ -197,6 +197,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
                 onClick={() => handleChipClick(checklist.id)}
                 editable={editingChipId === checklist.id}
                 chipId={editingChipId}
+                hideOrdinal={true}
               />
             </div>
           </Tooltip>

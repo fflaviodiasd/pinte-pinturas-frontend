@@ -21,6 +21,7 @@ interface ChipCustomChecklistProps {
   editable?: boolean;
   post?: boolean;
   chipId?: number | null;
+  hideOrdinal?: boolean;
 }
 
 export const ChipCustomChecklist = ({
@@ -36,6 +37,7 @@ export const ChipCustomChecklist = ({
   editable = false,
   post,
   chipId,
+  hideOrdinal = false,
 }: ChipCustomChecklistProps) => {
   const [editingValue, setEditingValue] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
@@ -87,6 +89,9 @@ export const ChipCustomChecklist = ({
       )}
       {number && (
         <StyledChipLabelNumber bg={bg}>{number}º</StyledChipLabelNumber>
+      )}
+      {number && hideOrdinal && (
+        <StyledChipLabelNumber bg={bg}>{number}</StyledChipLabelNumber>
       )}
     </StyledChipDiv>
   );

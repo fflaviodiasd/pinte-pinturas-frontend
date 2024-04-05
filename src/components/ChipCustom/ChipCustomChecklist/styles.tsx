@@ -12,20 +12,25 @@ export const StyledChip = styled.input<Props>`
   background-color: ${(props) => props.bg};
   border-radius: 4px;
   padding: 5px 10px;
-  border: 1px solid #252525;
-  color: ${(props) => (props.bg === "black" ? "white" : "black")};
+  border: 1px solid white;
+  border-radius: 1rem;
+  color: ${(props) => (props.bg === "black" ? "white" : "#FFFFFF")};
   padding-left: ${(props) => (props.post ? "5px" : "35px")};
   &::placeholder {
     color: #858484;
   }
+  font-family: "Open Sans";
+  font-weight: 400;
+  line-height: 1rem;
 `;
 
 export const StyledChipLabelNumber = styled.label<Props>`
-  color: ${(props) => (props.bg === "black" ? "black" : "white")};
+  color: ${(props) => (props.bg === "black" ? "black" : "#2E3132")};
+  font-weight: bold;
   position: absolute;
-  background-color: ${(props) => (props.bg === "black" ? "white" : "black")};
+  background-color: ${(props) => (props.bg === "black" ? "white" : "#EBF4FA")};
   border-radius: 50%;
-  padding: 2px;
+  padding: 3px;
   top: 2px;
   left: 5px;
   display: flex;
