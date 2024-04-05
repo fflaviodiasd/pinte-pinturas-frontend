@@ -335,14 +335,21 @@ export const useConstructions = () => {
   const [listConstructionsLocations, setListConstructionsLocations] = useState<
     any[]
   >([]);
-  const getAllConstructionsLocations = async () => {
+  const getAllConstructionsLocations = async (
+    dynamicColumns: MRT_ColumnDef<any>[]
+  ) => {
     setLoading(true);
     try {
       const { data } = await api.get(`/constructions/${id}/areas/`);
       const constructionLocalList = data.areas.map((result: any) => {
         const levelNames: Record<string, string> = {};
-        result.levels.forEach((level: any, index: number) => {
-          levelNames[`nivel_${index}`] = level.name;
+        result.levels.forEach((level: any) => {
+          const matchingColumn = dynamicColumns.find(
+            (column) => column.accessorKey === `nivel_${level.level.id}`
+          );
+          if (matchingColumn) {
+            levelNames[`nivel_${level.level.id}`] = level.name;
+          }
         });
         return {
           id: result.id,

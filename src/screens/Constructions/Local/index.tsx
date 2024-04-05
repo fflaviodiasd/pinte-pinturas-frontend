@@ -43,8 +43,8 @@ const Locations = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
-    getAllConstructionsLocations();
-  }, []);
+    getAllConstructionsLocations(dynamicColumns);
+  }, [dynamicColumns]);
 
   useEffect(() => {
     const fetchLevel = async () => {
@@ -90,7 +90,7 @@ const Locations = () => {
 
         level.forEach((level: any, index: any) => {
           newDynamicColumns.push({
-            accessorKey: `nivel_${index}`,
+            accessorKey: `nivel_${level.id}`,
             header: level.name,
           });
         });
