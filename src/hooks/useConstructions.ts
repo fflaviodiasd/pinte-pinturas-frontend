@@ -5,7 +5,13 @@ import { api } from "../services/api";
 import { Construction } from "../types";
 import { UserContext } from "../contexts/UserContext";
 import { MRT_ColumnDef } from "material-react-table";
-
+type ConstructionPackage = {
+  id: number;
+  name: string;
+  discipline: string;
+  package_value: string;
+  package_workmanship: string;
+};
 export const useConstructions = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -22,6 +28,8 @@ export const useConstructions = () => {
     areas: [],
     teamName: "",
   });
+
+
 
   const getConstruction = async (id: string) => {
     setLoading(true);
@@ -341,6 +349,7 @@ export const useConstructions = () => {
   };
 
   const [listConstructions, setListConstructions] = useState<any[]>([]);
+
   const getAllConstructions = async () => {
     setLoading(true);
     try {
@@ -362,6 +371,63 @@ export const useConstructions = () => {
       setLoading(false);
     }
   };
+
+const [listConstructionPackages, setListConstructionPackages] = useState<ConstructionPackage[]>([]);
+
+  const getAllConstructionPackages = async () => {
+    if (!id) {
+      console.error('ID da construção não foi fornecido');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/constructions/${id}/packages/`);
+      setListConstructionPackages(data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Erro ao obter pacotes de construção:', error);
+      setLoading(false);
+    }
+  };
+
+  const disableConstructionPackage = async (packageId: number) => {
+    setLoading(true);
+    try {
+      await api.delete(`/packages/${packageId}`);
+    } catch (error) {
+      throw error; 
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addConstructionPackage = async (newPackage: any) => {
+    setLoading(true);
+    try {
+      const response = await api.post(`/constructions/${id}/packages/`, newPackage);
+      setListConstructionPackages(prevPackages => [...prevPackages, response.data]);
+      successMessage('Pacote adicionado com sucesso!');
+    } catch (error) {
+      errorMessage('Erro ao adicionar o pacote!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const getAllDisciplines = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/disciplines/`);
+      setLoading(false);
+      return data
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }
+  
 
   return {
     loading,
@@ -390,5 +456,10 @@ export const useConstructions = () => {
     getAllConstructionsTeamMembers,
     getAllConstructionsLocations,
     addConstructionLocal,
+    listConstructionPackages,
+    getAllConstructionPackages,
+    disableConstructionPackage,
+    addConstructionPackage,
+    getAllDisciplines
   };
 };
