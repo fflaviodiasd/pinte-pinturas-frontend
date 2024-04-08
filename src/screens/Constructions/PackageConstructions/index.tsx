@@ -24,7 +24,7 @@ interface DropdownOption {
   id: any;
   name: any;
   label: string;
-  value: any; // ou um tipo mais específico, se você sabe o que o valor deve ser
+  value: any; 
 }
 
 
@@ -81,12 +81,11 @@ export const PackageConstructions = () => {
   };
   fetchDisciplines();
 
-}, []); // Array de dependências vazio para chamar apenas na montagem
+}, []); 
 
 
   useEffect(() => {
     console.log('disciplineOptions atualizado:', disciplineOptions);
-    // Esse log vai confirmar se o estado foi atualizado corretamente após a chamada da API.
   }, [disciplineOptions]);
 
   
@@ -107,7 +106,6 @@ export const PackageConstructions = () => {
   //   row, // A linha sendo editada
   //   values, // Os valores editados
   // }) => {
-  //   // Aqui, você precisa ajustar para atualizar o pacote com a API ou estado local
   //   console.log('Salvando edição', values);
   //   // Supondo uma função de atualização async genérica 'updateConstructionPackage'
   //   // await updateConstructionPackage(row.original.id, values);
@@ -125,21 +123,17 @@ export const PackageConstructions = () => {
       return;
     }
   
-    // Aqui você chama a API para atualizar o pacote, e então atualiza o estado da aplicação com os novos dados.
     try {
       console.log('Salvando edições para o pacote:', values);
   
-      // Substitua isso pela sua chamada de API real para atualizar o pacote.
-      // A função abaixo deve ser a função que você escreve para fazer a chamada de API.
       // const updatedPackage = await updateConstructionPackage(row.original.id, values);
   
-      // Atualiza a lista de pacotes no estado
       // setListConstructionPackages(prevPackages =>
       //   prevPackages.map(pkg => (pkg.id === row.original.id ? { ...pkg, ...updatedPackage } : pkg))
       // );
   
       successMessage('Pacote atualizado com sucesso.');
-      exitEditingMode(); // Sai do modo de edição
+      exitEditingMode(); 
     } catch (error) {
       errorMessage('Erro ao atualizar o pacote.');
       console.error('Erro ao salvar as edições:', error);
@@ -151,18 +145,15 @@ export const PackageConstructions = () => {
     values,
     table,
   }) => {
-    // Extrai 'discipline.name' e 'id', e captura o restante em 'restOfValues'
     const { 'discipline.name': disciplineName, id, ...restOfValues } = values;
   
-    // Prepara o novo objeto de valores sem o 'id' e com 'discipline' ajustado
     const adjustedValues = {
       ...restOfValues,
-      discipline: disciplineName, // Atribui o valor correto para 'discipline'
+      discipline: disciplineName, 
     };
   
     console.log('Adjusted values for API:', adjustedValues);
   
-    // Faz a chamada para adicionar o pacote com os valores ajustados
     await addConstructionPackage(adjustedValues);
     getAllConstructionPackages();
   };
@@ -213,7 +204,7 @@ export const PackageConstructions = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Ordem",
-        enableEditing: true, // habilita edição
+        enableEditing: true, 
         muiEditTextFieldProps: {
           required: true,
           type: "number",
@@ -225,7 +216,7 @@ export const PackageConstructions = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Nome do Pacote",
-        enableEditing: true, // habilita edição
+        enableEditing: true, 
         muiEditTextFieldProps: {
           required: true,
         },
@@ -235,7 +226,7 @@ export const PackageConstructions = () => {
         header: "Disciplina",
         enableEditing: true,
         editVariant: 'select',
-        editSelectOptions: disciplineOptions, // Carregado assincronamente
+        editSelectOptions: disciplineOptions, 
         muiEditSelectFieldProps: {
           required: true,
         }
@@ -245,7 +236,7 @@ export const PackageConstructions = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Valor do Pacote",
-        enableEditing: true, // habilita edição
+        enableEditing: true,
         muiEditTextFieldProps: {
           required: true,
         },
@@ -255,13 +246,13 @@ export const PackageConstructions = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Pacote M.O",
-        enableEditing: true, // habilita edição
+        enableEditing: true,
         muiEditTextFieldProps: {
           required: true,
         },
       },
     
-    ], [disciplineOptions]); // Atualiza quando disciplineOptions mudar
+    ], [disciplineOptions]); 
 
   const table = useMaterialReactTable({
     columns,
@@ -269,12 +260,11 @@ export const PackageConstructions = () => {
     enableColumnFilterModes: true,
     onCreatingRowSave: handleCreatePackages,
     onEditingRowSave: handleEditPackages,
-    enableEditing: true, // Habilita a edição globalmente
-    editDisplayMode: 'row', // Define o modo de edição para linha
-    createDisplayMode: 'row', // Define o modo de criação para linha
+    enableEditing: true, 
+    editDisplayMode: 'row', 
+    createDisplayMode: 'row', 
     state: {
-      // ...outros estados
-      isSaving, // Adiciona o estado de salvamento aqui
+      isSaving, 
     },
     renderRowActions: 
     ({ row }) => (
@@ -299,7 +289,7 @@ export const PackageConstructions = () => {
     initialState: { showColumnFilters: true },
     renderDetailPanel: ({ row }) => (
       <Box sx={{ padding: '1rem' }}>
-        {/* <ServiceStepTable order={row.original.id} /> */}
+        <ServiceStepTable order={row.original.id} />
       </Box>
     ),
     renderTopToolbar: ({ table }) => (

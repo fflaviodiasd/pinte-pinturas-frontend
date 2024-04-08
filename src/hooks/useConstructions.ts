@@ -415,6 +415,20 @@ const [listConstructionPackages, setListConstructionPackages] = useState<Constru
     }
   };
 
+const getAllPackageStepsById = async (packageId: number) => {
+  setLoading(true);
+  try {
+    const { data } = await api.get(`/packages/${packageId}/steps/`);
+    setLoading(false);
+    return data; 
+  } catch (error) {
+    console.error('Erro ao obter etapas do pacote:', error);
+    setLoading(false);
+    throw error; 
+  }
+};
+
+
 
   const getAllDisciplines = async () => {
     setLoading(true);
@@ -427,6 +441,48 @@ const [listConstructionPackages, setListConstructionPackages] = useState<Constru
       setLoading(false);
     }
   }
+  
+  const addPackageStep = async (packageId:any, stepData:any) => {
+    setLoading(true);
+    try {
+      const response = await api.post(`/packages/${packageId}/steps/`, stepData);
+      successMessage('Etapa adicionada com sucesso!');
+      return response.data; 
+    } catch (error) {
+      console.error('Erro ao adicionar etapa:', error);
+      errorMessage('Não foi possível adicionar a etapa!');
+      throw error; 
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deletePackageStep = async (stepId:any) => {
+    setLoading(true);
+    try {
+      await api.delete(`/step_packages/${stepId}/`);
+      successMessage('Etapa removida com sucesso!');
+    } catch (error) {
+      console.error('Erro ao remover etapa:', error);
+      errorMessage('Não foi possível remover a etapa!');
+      throw error; 
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAllUnits = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/units/`);
+      setLoading(false);
+      return data; // Retorna os dados obtidos
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      return []; // Retorna um array vazio em caso de erro
+    }
+  };
   
 
   return {
@@ -460,6 +516,10 @@ const [listConstructionPackages, setListConstructionPackages] = useState<Constru
     getAllConstructionPackages,
     disableConstructionPackage,
     addConstructionPackage,
-    getAllDisciplines
+    getAllDisciplines,
+    getAllPackageStepsById,
+    addPackageStep,
+    deletePackageStep,
+    getAllUnits
   };
 };
