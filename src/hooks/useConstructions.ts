@@ -238,11 +238,7 @@ export const useConstructions = () => {
         area_ids: areaIds,
       };
 
-      await Promise.all(
-        areaIds.map(async (areaId) => {
-          await api.delete(`/areas/${areaId}/`, { data: requestBody });
-        })
-      );
+      await api.delete(`/areas/bulk/`, { data: requestBody });
       getAllConstructions();
       successMessage("Local apagado com sucesso!");
       setLoading(false);
