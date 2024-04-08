@@ -234,9 +234,13 @@ export const useConstructions = () => {
   const disableConstructionLocal = async (areaIds: number[]) => {
     setLoading(true);
     try {
+      const requestBody = {
+        area_ids: areaIds,
+      };
+
       await Promise.all(
         areaIds.map(async (areaId) => {
-          await api.delete(`/areas/${areaId}/`);
+          await api.delete(`/areas/${areaId}/`, { data: requestBody });
         })
       );
       getAllConstructions();
