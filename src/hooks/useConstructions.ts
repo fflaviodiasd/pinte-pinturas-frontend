@@ -246,9 +246,18 @@ export const useConstructions = () => {
       getAllConstructions();
       successMessage("Local apagado com sucesso!");
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      errorMessage("Não foi possível apagar local!");
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data.detail ===
+          "Não é possível deletar algumas áreas porque existem checklists associados a elas."
+      ) {
+        errorMessage("Não é possível remover um local que tenha checklist!");
+      } else {
+        errorMessage("Não foi possível apagar local!");
+      }
       setLoading(false);
     }
   };
