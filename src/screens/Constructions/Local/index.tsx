@@ -53,20 +53,8 @@ const Locations = () => {
         const level = response.data;
         const newDynamicColumns = [
           {
-            accessorKey: "id",
-            header: "ID",
-            enableEditing: false,
-            size: 80,
-          },
-          {
             accessorKey: "code",
             header: "ID",
-            enableEditing: true,
-            size: 80,
-          },
-          {
-            accessorKey: "micro",
-            header: "Micro",
           },
           {
             accessorKey: "checklist",
@@ -79,7 +67,7 @@ const Locations = () => {
                   gap: "0.5rem",
                 }}
               >
-                <Tooltip title="Tooltip">
+                <Tooltip title="Checklists">
                   <Info fontSize="small" style={{ color: "#C5C7C8" }} />
                 </Tooltip>
                 {cell.row.original.checklist}
