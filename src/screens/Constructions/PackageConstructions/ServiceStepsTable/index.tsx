@@ -148,11 +148,11 @@ const tableInstance = useMaterialReactTable({
   renderRowActions: ({ row, table }) => (
     <Box sx={{ display: 'flex', gap: '1rem' }}>
       {/* Botão para editar */}
-      <Tooltip title="Editar">
+      {/* <Tooltip title="Editar">
         <IconButton onClick={() => handleEdit(row.original)} sx={{ color: "#C5C7C8" }}>
           <Edit />
         </IconButton>
-      </Tooltip>
+      </Tooltip> */}
       {/* Botão para excluir */}
       <Tooltip title="Excluir">
         <IconButton onClick={() => handleDeleteStep(row.original.id)} color="error">

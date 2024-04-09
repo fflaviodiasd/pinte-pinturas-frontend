@@ -9,13 +9,15 @@ import { useConstructions } from "../../../../hooks/useConstructions";
 
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { Delete, Edit, Add } from '@mui/icons-material';
+import { get } from 'http';
 
 const ServiceStepTable = ({ order }: any) => {
-  const [serviceSteps, setServiceSteps] = useState([]); 
+  const [serviceSteps, setServiceSteps] = useState([]);
+  const [serviceInfo, setServiceInfo] = useState({});
   const [unitOptions, setUnitOptions] = useState([]);
   console.log('order:', order)
 
-  const { getAllServiceStepsById, addServiceStep, deleteServiceStep, getAllUnits  } = useConstructions(); 
+  const { getAllServiceStepsById, addServiceStep, getServiceById ,deleteServiceStep, getAllUnits  } = useConstructions(); 
 
 
   const fetchUnits = async () => {
@@ -28,11 +30,14 @@ const ServiceStepTable = ({ order }: any) => {
 
     fetchUnits();
   }, []);
+
   const fetchPackageSteps = async () => {
     try {
       const steps = await getAllServiceStepsById(order);
-      console.log('services:', steps);
+      const info = await getServiceById(order);
+      console.log('info:', info);
       setServiceSteps(steps); 
+      setServiceInfo(info);
     } catch (error) {
       console.error('Erro ao buscar etapas do pacote:', error);
     }
@@ -50,7 +55,11 @@ const ServiceStepTable = ({ order }: any) => {
     table,
   }) => {
     try {
-      console.log('values:', values);
+      const updatedValues = {
+        ...values,
+        order: serviceInfo.order, // Aqui você adiciona o 'order' ao objeto
+      };
+      console.log('updated values:', updatedValues);
       await addServiceStep(order, values); 
       // setPackageSteps((prevSteps) => [...prevSteps, values]); 
       // table.exitCreatingMode(); // Sai do modo de criação
@@ -108,13 +117,13 @@ const columns = useMemo<MRT_ColumnDef<any>[]>(() => [
     header: "Nome da Etapa",
     enableEditing: true,
   },
-  {
-    accessorKey: "order",
-    enableColumnFilterModes: true,
-    filterFn: "startsWith",
-    header: "Ordem",
-    enableEditing: false,
-  },
+  // {
+  //   accessorKey: "order",
+  //   enableColumnFilterModes: true,
+  //   filterFn: "startsWith",
+  //   header: "Ordem",
+  //   enableEditing: false,
+  // },
   
   {
     accessorKey: "price_service",

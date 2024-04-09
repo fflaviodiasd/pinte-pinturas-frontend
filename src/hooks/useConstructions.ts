@@ -426,6 +426,19 @@ export const useConstructions = () => {
     }
   };
 
+  const getServiceById = async (serviceId: number) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/services/${serviceId}/`);
+      setLoading(false);
+      return data; 
+    } catch (error) {
+      console.error('Erro ao obter info do serviço:', error);
+      setLoading(false);
+      throw error; 
+    }
+  };
+
   const addConstructionService = async (newService: any) => {
     setLoading(true);
     try {
@@ -624,7 +637,8 @@ const getAllPackageStepsById = async (packageId: number) => {
     addConstructionService,
     getAllServiceStepsById,
     addServiceStep,
-    deleteServiceStep
+    deleteServiceStep,
+    getServiceById
 
   };
 };
