@@ -109,7 +109,7 @@ export const ConstructionsTeams = () => {
   const table = useMaterialReactTable({
     columns,
     data: listConstructionsTeams,
-    enableExpandAll: false,
+    enableExpandAll: true,
     muiExpandButtonProps: ({ row, table }) => ({
       onClick: () => table.setExpanded({ [row.id]: !row.getIsExpanded() }),
       sx: {
