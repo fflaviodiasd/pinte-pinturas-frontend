@@ -10,6 +10,7 @@ interface Checklist {
   bg: string;
   order: number;
   status: string;
+  package?: any;
 }
 
 interface ChecklistComponentProps {
@@ -198,6 +199,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
                 editable={editingChipId === checklist.id}
                 chipId={editingChipId}
                 hideOrdinal={true}
+                checklistPackage={checklist.package.id}
               />
             </div>
           </Tooltip>
