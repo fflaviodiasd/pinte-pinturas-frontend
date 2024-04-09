@@ -413,6 +413,19 @@ export const useConstructions = () => {
     }
   };
 
+  const getAllServiceStepsById = async (serviceId: number) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/services/${serviceId}/steps/`);
+      setLoading(false);
+      return data; 
+    } catch (error) {
+      console.error('Erro ao obter etapas do serviço:', error);
+      setLoading(false);
+      throw error; 
+    }
+  };
+
   const addConstructionService = async (newService: any) => {
     setLoading(true);
     try {
@@ -425,6 +438,36 @@ export const useConstructions = () => {
       setLoading(false);
     }
   };
+
+  const addServiceStep = async (stepId:any, stepData:any) => {
+    setLoading(true);
+    try {
+      const response = await api.post(`/services/${stepId}/steps/`, stepData);
+      successMessage('Etapa adicionada com sucesso!');
+      return response.data; 
+    } catch (error) {
+      console.error('Erro ao adicionar etapa:', error);
+      errorMessage('Não foi possível adicionar a etapa!');
+      throw error; 
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteServiceStep = async (stepId:any) => {
+    setLoading(true);
+    try {
+      await api.delete(`/step_services/${stepId}/`);
+      successMessage('Etapa removida com sucesso!');
+    } catch (error) {
+      console.error('Erro ao remover etapa:', error);
+      errorMessage('Não foi possível remover a etapa!');
+      throw error; 
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
 const [listConstructionPackages, setListConstructionPackages] = useState<ConstructionPackage[]>([]);
 
@@ -578,7 +621,10 @@ const getAllPackageStepsById = async (packageId: number) => {
     listConstructionServices,
     getAllConstructionServices,
     disableConstructionService,
-    addConstructionService
+    addConstructionService,
+    getAllServiceStepsById,
+    addServiceStep,
+    deleteServiceStep
 
   };
 };

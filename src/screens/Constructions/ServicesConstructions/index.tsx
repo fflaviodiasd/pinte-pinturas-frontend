@@ -325,13 +325,13 @@ export const ServicesConstructions = () => {
         >
           <Delete />
         </IconButton>
-        <IconButton
+        {/* <IconButton
           aria-label="Editar"
           onClick={() => handleEditPackages(row.original.id)}
           sx={{ color: "#C5C7C8" }} 
         >
           <Edit />
-        </IconButton>
+        </IconButton> */}
       </div>
     ),
 

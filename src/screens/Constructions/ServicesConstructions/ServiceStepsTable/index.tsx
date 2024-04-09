@@ -11,25 +11,16 @@ import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { Delete, Edit, Add } from '@mui/icons-material';
 
 const ServiceStepTable = ({ order }: any) => {
-  const [packageSteps, setPackageSteps] = useState([]); 
+  const [serviceSteps, setServiceSteps] = useState([]); 
   const [unitOptions, setUnitOptions] = useState([]);
+  console.log('order:', order)
 
-  const { getAllPackageStepsById, addPackageStep, deletePackageStep, getAllUnits  } = useConstructions(); 
-  const serviceOptions = [
-    { label: '1', value: 1 },
-    { label: '2', value: 2 },
-    { label: '3', value: 3 },
-  ];
-  
-  const stepOptions = [
-    { label: '1', value: 1 },
-    { label: '2', value: 2 },
-    { label: '3', value: 3 },
-  ];
-  
+  const { getAllServiceStepsById, addServiceStep, deleteServiceStep, getAllUnits  } = useConstructions(); 
+
+
   const fetchUnits = async () => {
     const units = await getAllUnits();
-    const options = units.results.map(unit => ({ label: unit.name, value: unit.id }));
+    const options = units.results.map((unit: { name: any; id: any; }) => ({ label: unit.name, value: unit.id }));
     setUnitOptions(options);
   };
 
@@ -39,8 +30,9 @@ const ServiceStepTable = ({ order }: any) => {
   }, []);
   const fetchPackageSteps = async () => {
     try {
-      const steps = await getAllPackageStepsById(order);
-      setPackageSteps(steps); 
+      const steps = await getAllServiceStepsById(order);
+      console.log('services:', steps);
+      setServiceSteps(steps); 
     } catch (error) {
       console.error('Erro ao buscar etapas do pacote:', error);
     }
@@ -58,7 +50,8 @@ const ServiceStepTable = ({ order }: any) => {
     table,
   }) => {
     try {
-      await addPackageStep(order, values); 
+      console.log('values:', values);
+      await addServiceStep(order, values); 
       // setPackageSteps((prevSteps) => [...prevSteps, values]); 
       // table.exitCreatingMode(); // Sai do modo de criação
     } catch (error) {
@@ -71,7 +64,7 @@ const ServiceStepTable = ({ order }: any) => {
   const handleDeleteStep = async (stepId:number)=> {
     if (window.confirm('Tem certeza que deseja remover esta etapa?')) {
       try {
-        await deletePackageStep(stepId);
+        await deleteServiceStep(stepId);
         fetchPackageSteps();
       } catch (error) {
       }
@@ -79,68 +72,111 @@ const ServiceStepTable = ({ order }: any) => {
   };
 
 
-  const parseCurrency = (value:any) => {
-    return parseFloat(value.replace('R$', '').replace(/\./g, '').replace(',', '.'));
-  };
-  const priceStrings = packageSteps.map(step => step.total_price);
-  const workmanshipStrings = packageSteps.map(step => step.total_workmanship);
+  // const parseCurrency = (value:any) => {
+  //   return parseFloat(value.replace('R$', '').replace(/\./g, '').replace(',', '.'));
+  // };
+  // const priceStrings = serviceSteps.map(step => step.total_price);
+  // const workmanshipStrings = serviceSteps.map(step => step.total_workmanship);
   
-  const prices = priceStrings.map(parseCurrency);
-  const workmanships = workmanshipStrings.map(parseCurrency);
+  // const prices = priceStrings.map(parseCurrency);
+  // const workmanships = workmanshipStrings.map(parseCurrency);
   
 
   
   
-  const formatCurrency = (value:any) => {
-    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  };
-    const totalServicePrice = formatCurrency(prices.reduce((sum, value) => sum + value, 0));
-    const totalWorkmanship = formatCurrency(workmanships.reduce((sum, value) => sum + value, 0));
+  // const formatCurrency = (value:any) => {
+  //   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  // };
+  //   const totalServicePrice = formatCurrency(prices.reduce((sum, value) => sum + value, 0));
+  //   const totalWorkmanship = formatCurrency(workmanships.reduce((sum, value) => sum + value, 0));
   
-  console.log('Total Preço Total/Serviço:', formatCurrency(totalServicePrice));
-  console.log('Total Mão-de-Obra:', formatCurrency(totalWorkmanship));
+  // console.log('Total Preço Total/Serviço:', formatCurrency(totalServicePrice));
+  // console.log('Total Mão-de-Obra:', formatCurrency(totalWorkmanship));
 
 const columns = useMemo<MRT_ColumnDef<any>[]>(() => [
+  // {
+  //   accessorFn: (row) => row.service.name,
+  //   id: 'service',
+  //   header: 'Serviço',
+  //   editVariant: 'select', 
+  //   editSelectOptions: serviceOptions, 
+  // },
   {
-    accessorFn: (row) => row.service.name,
-    id: 'service',
-    header: 'Serviço',
-    editVariant: 'select', 
-    editSelectOptions: serviceOptions, 
+    accessorKey: "name",
+    enableColumnFilterModes: true,
+    filterFn: "startsWith",
+    header: "Nome da Etapa",
+    enableEditing: true,
   },
   {
-    accessorFn: (row) => row.step_service.name,
-    id: 'step_service',
-    header: 'Etapa',
-    editVariant: 'select', 
-    editSelectOptions: stepOptions, 
+    accessorKey: "order",
+    enableColumnFilterModes: true,
+    filterFn: "startsWith",
+    header: "Ordem",
+    enableEditing: false,
+  },
+  
+  {
+    accessorKey: "price_service",
+    enableColumnFilterModes: true,
+    filterFn: "startsWith",
+    header: "Preço/m²",
+    enableEditing: true,
   },
   {
-    accessorKey: 'amount',
-    header: 'QTD',
+    accessorKey: "compensation",
+    enableColumnFilterModes: true,
+    filterFn: "startsWith",
+    header: "Comp. %",
+    enableEditing: false,
   },
   {
-    accessorKey: 'unit',
-    header: 'Unidade',
-    editVariant: 'select',
-    editSelectOptions: unitOptions, 
+    accessorKey: "price_workmanship",
+    enableColumnFilterModes: true,
+    filterFn: "startsWith",
+    header: "Mão-de-Obra/m²",
+    enableEditing: true,
   },
   {
-    accessorKey: 'total_price',
-    header: 'Preço Total/Serviço',
-    Footer: () => <span>{totalServicePrice}</span>,
+    accessorKey: "cost",
+    enableColumnFilterModes: true,
+    filterFn: "startsWith",
+    header: "Custo %",
+    enableEditing: false,
   },
-  {
-    accessorKey: 'total_workmanship',
-    header: 'Total Mão-de-Obra',
-    footer: totalWorkmanship,
-  },
-], [unitOptions, totalServicePrice, totalWorkmanship, packageSteps]);
+  // {
+  //   accessorKey: "id",
+  //   id: 'step_service',
+  //   header: 'Etapa',
+  //   editVariant: 'select', 
+  //   editSelectOptions: stepOptions, 
+  // },
+  // {
+  //   accessorKey: 'amount',
+  //   header: 'QTD',
+  // },
+  // {
+  //   accessorKey: 'unit',
+  //   header: 'Unidade',
+  //   editVariant: 'select',
+  //   editSelectOptions: unitOptions, 
+  // },
+  // {
+  //   accessorKey: 'total_price',
+  //   header: 'Preço Total/Serviço',
+  //   Footer: () => <span>{totalServicePrice}</span>,
+  // },
+  // {
+  //   accessorKey: 'total_workmanship',
+  //   header: 'Total Mão-de-Obra',
+  //   footer: totalWorkmanship,
+  // },
+], [unitOptions, serviceSteps]);
 
 
 const tableInstance = useMaterialReactTable({
   columns,
-  data: packageSteps,
+  data: serviceSteps,
   onCreatingRowSave: handleAddNewStep,
   enableRowActions: true, 
   enableEditing: true, 
@@ -148,11 +184,11 @@ const tableInstance = useMaterialReactTable({
   renderRowActions: ({ row, table }) => (
     <Box sx={{ display: 'flex', gap: '1rem' }}>
       {/* Botão para editar */}
-      <Tooltip title="Editar">
+      {/* <Tooltip title="Editar">
         <IconButton onClick={() => handleEdit(row.original)} sx={{ color: "#C5C7C8" }}>
           <Edit />
         </IconButton>
-      </Tooltip>
+      </Tooltip> */}
       {/* Botão para excluir */}
       <Tooltip title="Excluir">
         <IconButton onClick={() => handleDeleteStep(row.original.id)} color="error">
