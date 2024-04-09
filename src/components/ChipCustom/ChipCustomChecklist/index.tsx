@@ -4,9 +4,11 @@ import {
   StyledChipButtonDel,
   StyledChipDiv,
   StyledChipLabelNumber,
-} from "./style";
+} from "./styles";
+import { api } from "../../../services/api";
+import { errorMessage, successMessage } from "../../Messages";
 
-interface ChipCustoProps {
+interface ChipCustomChecklistProps {
   name: string;
   id: string;
   placeholder?: string;
@@ -18,9 +20,11 @@ interface ChipCustoProps {
   onClick?: () => void;
   editable?: boolean;
   post?: boolean;
+  chipId?: number | null;
+  hideOrdinal?: boolean;
 }
 
-export const ChipCustom = ({
+export const ChipCustomChecklist = ({
   name,
   id,
   value,
@@ -32,7 +36,9 @@ export const ChipCustom = ({
   onClick,
   editable = false,
   post,
-}: ChipCustoProps) => {
+  chipId,
+  hideOrdinal = false,
+}: ChipCustomChecklistProps) => {
   const [editingValue, setEditingValue] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -43,6 +49,17 @@ export const ChipCustom = ({
   useEffect(() => {
     setValueActual(editingValue);
   }, [editingValue, setValueActual]);
+
+  const handleChipDeleteChecklist = async () => {
+    try {
+      const response = await api.delete(`checklists/${chipId}/`);
+      console.log(response);
+      successMessage("Checklist deletado com sucesso!");
+    } catch (error) {
+      errorMessage("Erro ao deletar checklist!");
+      console.error("Erro ao deletar checklist:", error);
+    }
+  };
 
   return (
     <StyledChipDiv onClick={onClick}>
@@ -63,17 +80,18 @@ export const ChipCustom = ({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
           />
-          {isFocused && !post && (
-            <StyledChipButtonDel onClick={() => console.log("Delete")}>
-              x
-            </StyledChipButtonDel>
-          )}
+          <StyledChipButtonDel onClick={handleChipDeleteChecklist}>
+            x
+          </StyledChipButtonDel>
         </div>
       ) : (
         <StyledChip tabIndex={0} value={value} bg={bg} />
       )}
       {number && (
         <StyledChipLabelNumber bg={bg}>{number}º</StyledChipLabelNumber>
+      )}
+      {number && hideOrdinal && (
+        <StyledChipLabelNumber bg={bg}>{number}</StyledChipLabelNumber>
       )}
     </StyledChipDiv>
   );

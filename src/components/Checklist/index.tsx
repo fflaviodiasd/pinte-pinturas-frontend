@@ -1,49 +1,52 @@
-import React, { useState, useEffect } from "react";
-import { Button, Chip, TextField } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import { api } from "../../services/api";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ChipCustomChecklist } from "../ChipCustom/ChipCustomChecklist";
+import { StyledGridChecklist } from "./styles";
 
 interface Checklist {
   id: number;
   name: string;
-  color: string;
+  bg: string;
+  order: number;
+  status: string;
 }
 
 interface ChecklistComponentProps {
-  localId: number;
   getChecklistEndpoint?: string;
   postChecklistEndpoint?: string;
+  localId?: number;
 }
 
-const checklistColors = [
-  "#4CAF50",
-  "#512DA8",
-  "#2196F3",
-  "#F44336",
-  "#FF9800",
-  "#424242",
-  "#BDBDBD",
-  "#616161",
-];
+const STATUS_COLORS: { [key: string]: string } = {
+  "NÃO LIBERADA": "#F44336",
+  LIBERADA: "#FF9800",
+  INICIADA: "#4CAF50",
+  FINALIZADA: "#2196F3",
+  ENTREGUE: "#512DA8",
+};
 
 export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
-  localId,
   getChecklistEndpoint,
-  postChecklistEndpoint,
+  localId,
 }) => {
   const [checklist, setChecklist] = useState<Checklist[]>([]);
   const [isInputVisible, setIsInputVisible] = useState(false);
-  const [newChecklistName, setNewChecklistName] = useState("");
-  const { id } = useParams();
+  const [valueActual, setValueActual] = useState<string>("");
+  const [editingChipId, setEditingChipId] = useState<number | null>(null);
+  const [tooltipData, setTooltipData] = useState<any>(null);
+  const [tooltipChecklistId, setTooltipChecklistId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
-    const fetchLevel = async () => {
+    const fetchChecklist = async () => {
       try {
-        const response = await api.get(`/areas/${localId}/checklist/`);
+        const response = await api.get(`areas/${localId}/checklist`);
         setChecklist(
-          response.data.map((checklist: Checklist, index: number) => ({
+          response.data.map((checklist: Checklist) => ({
             ...checklist,
-            color: checklistColors[index % checklistColors.length],
+            bg: STATUS_COLORS[checklist.status],
           }))
         );
         console.log(response);
@@ -52,11 +55,29 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
       }
     };
 
-    fetchLevel();
-  }, [localId, getChecklistEndpoint]);
+    fetchChecklist();
+  }, [getChecklistEndpoint, localId, valueActual]);
+
+  useEffect(() => {
+    const fetchTooltipData = async () => {
+      try {
+        if (tooltipChecklistId) {
+          const response = await api.get(
+            `/checklists/${tooltipChecklistId}/history_tooltip/`
+          );
+          setTooltipData(response.data);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar tooltip data:", error);
+      }
+    };
+
+    fetchTooltipData();
+  }, [tooltipChecklistId]);
 
   const handleAddChecklistClick = () => {
     setIsInputVisible(true);
+    setValueActual("");
   };
 
   const handleChecklistInputKeyDown = async (
@@ -64,19 +85,23 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
   ) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      if (newChecklistName.trim() !== "") {
+
+      if (valueActual.trim() !== "") {
         try {
           const response = await api.post(`/areas/${localId}/checklist/`, {
-            name: `${checklist.length + 1}  - ${newChecklistName}`,
-            order: `${checklist.length + 1}`,
+            name: valueActual,
+            order: checklist.length + 1,
           });
           console.log(response);
           const newChecklist: Checklist = {
             ...response.data,
-            color: checklistColors[checklist.length % checklistColors.length],
+            color:
+              STATUS_COLORS[
+                checklist.length % Object.keys(STATUS_COLORS).length
+              ],
           };
           setChecklist((prevChecklist) => [...prevChecklist, newChecklist]);
-          setNewChecklistName("");
+          setValueActual("");
         } catch (error) {
           console.error("Erro ao criar um novo checklist:", error);
         }
@@ -85,42 +110,99 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
     }
   };
 
+  const updateChecklistInputKeyDown = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+
+      if (valueActual.trim() !== "") {
+        try {
+          const response = await api.put(`/checklists/${editingChipId}/`, {
+            name: valueActual,
+          });
+          console.log(response);
+          setValueActual("");
+          setEditingChipId(null);
+        } catch (error) {
+          console.error("Erro ao editar o checklist:", error);
+        }
+      }
+    }
+  };
+
+  const handleChipClick = (chipId: number) => {
+    setEditingChipId(chipId);
+  };
+
   return (
-    <div>
-      <h2>Checklists</h2>
-      <div>
-        <Button
-          onClick={handleAddChecklistClick}
-          variant="contained"
-          color="primary"
-          style={{ marginRight: "0.5rem" }}
-        >
-          +
-        </Button>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "1rem",
+      }}
+    >
+      <div style={{ display: "flex", gap: "10px" }}>
+        <Tooltip title="Novo Checklist">
+          <Button
+            onClick={handleAddChecklistClick}
+            variant="contained"
+            color="primary"
+            style={{ marginRight: "0.5rem", padding: "0", maxWidth: "30px" }}
+          >
+            +
+          </Button>
+        </Tooltip>
         {isInputVisible && (
-          <TextField
-            type="text"
-            value={newChecklistName}
-            onChange={(e) => setNewChecklistName(e.target.value)}
-            onKeyDown={handleChecklistInputKeyDown}
-            placeholder="Digite o nome do checklist e pressione Enter..."
+          <ChipCustomChecklist
+            name={"adicionar"}
+            id={"adicionar"}
+            bg={"black"}
+            placeholder={"Digite o nome do checklist e pressione Enter..."}
+            subtmitData={handleChecklistInputKeyDown}
+            setValueActual={setValueActual}
+            value={valueActual}
+            editable={true}
+            post={true}
           />
         )}
       </div>
-      <div style={{ marginTop: "1rem" }}>
-        {checklist.map((checklist) => (
-          <Chip
+      <StyledGridChecklist>
+        {checklist.map((checklist: Checklist) => (
+          <Tooltip
             key={checklist.id}
-            label={checklist.name}
-            style={{
-              marginRight: "0.5rem",
-              backgroundColor: checklist.color,
-              color: checklist.color === "black" ? "white" : "black",
-              fontWeight: "bold",
-            }}
-          />
+            title={
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span>Início: {tooltipData?.started}</span>
+                <span>Término: {tooltipData?.finished}</span>
+                <span>Equipe: {tooltipData?.team}</span>
+                <span>Medição: {tooltipData?.measurement}</span>
+              </div>
+            }
+            arrow
+            placement="top"
+            onMouseEnter={() => setTooltipChecklistId(checklist.id)}
+          >
+            <div>
+              <ChipCustomChecklist
+                key={checklist.id}
+                name={checklist.name}
+                id={String(checklist.id)}
+                value={checklist.name}
+                number={checklist.order}
+                bg={checklist.bg}
+                setValueActual={setValueActual}
+                subtmitData={updateChecklistInputKeyDown}
+                onClick={() => handleChipClick(checklist.id)}
+                editable={editingChipId === checklist.id}
+                chipId={editingChipId}
+                hideOrdinal={true}
+              />
+            </div>
+          </Tooltip>
         ))}
-      </div>
+      </StyledGridChecklist>
     </div>
   );
 };

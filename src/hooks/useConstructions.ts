@@ -231,6 +231,33 @@ export const useConstructions = () => {
     }
   };
 
+  const disableConstructionLocal = async (areaIds: number[]) => {
+    setLoading(true);
+    try {
+      const requestBody = {
+        area_ids: areaIds,
+      };
+
+      await api.delete(`/areas/bulk/`, { data: requestBody });
+      getAllConstructions();
+      successMessage("Local apagado com sucesso!");
+      setLoading(false);
+    } catch (error: any) {
+      console.log(error);
+      if (
+        error.response &&
+        error.response.status === 400 &&
+        error.response.data.detail ===
+          "Não é possível deletar algumas áreas porque existem checklists associados a elas."
+      ) {
+        errorMessage("Não é possível remover um local que tenha checklist!");
+      } else {
+        errorMessage("Não foi possível apagar local!");
+      }
+      setLoading(false);
+    }
+  };
+
   const disableConstruction = async (constructionId: number) => {
     setLoading(true);
     try {
@@ -317,18 +344,26 @@ export const useConstructions = () => {
   const [listConstructionsLocations, setListConstructionsLocations] = useState<
     any[]
   >([]);
-  const getAllConstructionsLocations = async () => {
+  const getAllConstructionsLocations = async (
+    dynamicColumns: MRT_ColumnDef<any>[]
+  ) => {
     setLoading(true);
     try {
       const { data } = await api.get(`/constructions/${id}/areas/`);
       const constructionLocalList = data.areas.map((result: any) => {
         const levelNames: Record<string, string> = {};
-        result.levels.forEach((level: any, index: number) => {
-          levelNames[`nivel_${index}`] = level.name;
+        result.levels.forEach((level: any) => {
+          const matchingColumn = dynamicColumns.find(
+            (column) => column.accessorKey === `nivel_${level.level.id}`
+          );
+          if (matchingColumn) {
+            levelNames[`nivel_${level.level.id}`] = level.name;
+          }
         });
         return {
           id: result.id,
           code: result.code,
+          checklist: result.checklist_count,
           ...levelNames,
         };
       });
@@ -382,6 +417,7 @@ export const useConstructions = () => {
     disableConstruction,
     disableConstructionMaterial,
     disableConstructionTeam,
+    disableConstructionLocal,
     getAllConstructions,
     listConstructionsLocations,
     listConstructionsTeams,

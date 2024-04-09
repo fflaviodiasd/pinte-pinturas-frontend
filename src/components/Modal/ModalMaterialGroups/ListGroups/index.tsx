@@ -53,7 +53,6 @@ const MaterialsGroups = () => {
     table,
   }) => {
     await addMaterialGroups(values);
-    table.setEditingRow(null); //exit editing mode
   };
 
   //UPDATE action
