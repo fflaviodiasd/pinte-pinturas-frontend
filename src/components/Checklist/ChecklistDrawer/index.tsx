@@ -9,10 +9,11 @@ import {
   TextField,
   Tooltip,
   Typography,
+  InputAdornment,
 } from "@mui/material";
 import { api } from "../../../services/api";
 import { errorMessage, successMessage } from "../../Messages";
-import { Info } from "@mui/icons-material";
+import { Info, Search } from "@mui/icons-material";
 
 interface Checklist {
   name: string;
@@ -27,6 +28,7 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
   const [areas, setAreas] = useState<Area[]>([]);
   const [selectedChecklists, setSelectedChecklists] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [errorMessageVisible, setErrorMessageVisible] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,29 +44,33 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
   }, []);
 
   const handleCopy = async () => {
-    try {
-      await Promise.all(
-        selectedLocalIds.map(async (localId: any) => {
-          const response = await api.get(`/areas/${localId}/checklist`);
-          const existingChecklists = response.data;
-          const lastOrder =
-            existingChecklists.length > 0
-              ? existingChecklists[existingChecklists.length - 1].order
-              : 0;
+    if (selectedChecklists.length === 0) {
+      setErrorMessageVisible(true);
+    } else {
+      try {
+        await Promise.all(
+          selectedLocalIds.map(async (localId: any) => {
+            const response = await api.get(`/areas/${localId}/checklist`);
+            const existingChecklists = response.data;
+            const lastOrder =
+              existingChecklists.length > 0
+                ? existingChecklists[existingChecklists.length - 1].order
+                : 0;
 
-          await Promise.all(
-            selectedChecklists.map(async (checklistName, index) => {
-              await api.post(`/areas/${localId}/checklist/`, {
-                name: checklistName,
-                order: lastOrder + index + 1,
-              });
-            })
-          );
-        })
-      );
-      successMessage("Checklist copiado com sucesso!");
-    } catch (error: any) {
-      errorMessage("Erro ao copiar checklist!");
+            await Promise.all(
+              selectedChecklists.map(async (checklistName, index) => {
+                await api.post(`/areas/${localId}/checklist/`, {
+                  name: checklistName,
+                  order: lastOrder + index + 1,
+                });
+              })
+            );
+          })
+        );
+        successMessage("Checklist copiado com sucesso!");
+      } catch (error: any) {
+        errorMessage("Erro ao copiar checklist!");
+      }
     }
   };
 
@@ -82,7 +88,7 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
     <Drawer anchor="right" open={open} onClose={onClose}>
       <div
         style={{
-          width: 300,
+          width: 320,
           height: "100%",
           display: "flex",
           flexDirection: "column",
@@ -119,14 +125,38 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
               </Tooltip>
             </div>
           </div>
-          <div>
+          <div style={{ paddingTop: "0.5rem" }}>
             <TextField
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder={"Pesquisar"}
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
             />
           </div>
+
+          {errorMessageVisible && (
+            <span
+              style={{
+                color: "#B71C1C",
+                fontFamily: "Open Sans",
+                fontWeight: 400,
+                fontSize: "0.75rem",
+                display: "flex",
+                marginTop: "0.5rem",
+              }}
+            >
+              É necessário selecionar, pelo menos um checklist para copiar para
+              os locais selecionados.
+            </span>
+          )}
 
           <List>
             {areas.map((area, areaIndex) => (
