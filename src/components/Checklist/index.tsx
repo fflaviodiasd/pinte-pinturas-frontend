@@ -3,6 +3,7 @@ import { api } from "../../services/api";
 import { useEffect, useState } from "react";
 import { ChipCustomChecklist } from "../ChipCustom/ChipCustomChecklist";
 import { StyledGridChecklist } from "./styles";
+import LaunchIcon from "@mui/icons-material/Launch";
 
 interface Checklist {
   id: number;
@@ -179,6 +180,19 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
                 <span>Término: {tooltipData?.finished}</span>
                 <span>Equipe: {tooltipData?.team}</span>
                 <span>Medição: {tooltipData?.measurement}</span>
+                <button
+                  style={{
+                    backgroundColor: "#0076BE",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: "0.5rem",
+                    cursor: "pointer",
+                    border: "none",
+                  }}
+                >
+                  <LaunchIcon style={{ color: "white" }} />
+                </button>
               </div>
             }
             arrow
