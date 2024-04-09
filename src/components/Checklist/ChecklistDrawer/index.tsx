@@ -6,10 +6,13 @@ import {
   List,
   ListItem,
   ListItemText,
+  TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { api } from "../../../services/api";
 import { errorMessage, successMessage } from "../../Messages";
+import { Info } from "@mui/icons-material";
 
 interface Checklist {
   name: string;
@@ -23,6 +26,7 @@ interface Area {
 export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
   const [areas, setAreas] = useState<Area[]>([]);
   const [selectedChecklists, setSelectedChecklists] = useState<string[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,36 +89,72 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
         }}
       >
         <div style={{ margin: "1rem", flexGrow: 1, overflowY: "auto" }}>
-          <span
+          <div
             style={{
-              fontFamily: "Open Sans",
-              fontWeight: 600,
-              fontSize: "1.125rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            Copiar Checklists
-          </span>
+            <div>
+              <span
+                style={{
+                  fontFamily: "Open Sans",
+                  fontWeight: 600,
+                  fontSize: "1.125rem",
+                }}
+              >
+                Copiar Checklists
+              </span>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Tooltip title="Selecione o(s) checklist(s) que deseja copiar para os locais selecionados na tabela (um novo checklist será criado, com o status inicial de 'Não Liberado' e mantendo apenas o mesmo nome.">
+                <Info fontSize="small" style={{ color: "#C5C7C8" }} />
+              </Tooltip>
+            </div>
+          </div>
+          <div>
+            <TextField
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder={"Pesquisar"}
+            />
+          </div>
+
           <List>
             {areas.map((area, areaIndex) => (
               <React.Fragment key={areaIndex}>
                 <ListItem disablePadding>
                   <ListItemText primary={area.name} />
                 </ListItem>
-                {area.checklists.map((checklist, checklistIndex) => (
-                  <ListItem
-                    key={`${areaIndex}-${checklistIndex}`}
-                    button
-                    onClick={() => handleToggleChecklist(checklist.name)}
-                  >
-                    <Checkbox
-                      edge="start"
-                      checked={selectedChecklists.includes(checklist.name)}
-                      tabIndex={-1}
-                      disableRipple
-                    />
-                    <ListItemText primary={checklist.name} />
-                  </ListItem>
-                ))}
+                {area.checklists
+                  .filter((checklist) =>
+                    checklist.name
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                  )
+                  .map((checklist, checklistIndex) => (
+                    <ListItem
+                      key={`${areaIndex}-${checklistIndex}`}
+                      button
+                      onClick={() => handleToggleChecklist(checklist.name)}
+                    >
+                      <Checkbox
+                        edge="start"
+                        checked={selectedChecklists.includes(checklist.name)}
+                        tabIndex={-1}
+                        disableRipple
+                      />
+                      <ListItemText primary={checklist.name} />
+                    </ListItem>
+                  ))}
               </React.Fragment>
             ))}
           </List>
