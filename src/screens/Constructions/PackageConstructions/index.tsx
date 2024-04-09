@@ -236,21 +236,24 @@ export const PackageConstructions = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Valor do Pacote",
-        enableEditing: true,
-        muiEditTextFieldProps: {
-          required: true,
-        },
+        enableEditing: false,
+  
       },
       {
         accessorKey: "package_workmanship",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Pacote M.O",
-        enableEditing: true,
-        muiEditTextFieldProps: {
-          required: true,
-        },
+        enableEditing: false,
       },
+      {
+        accessorKey: "workmanship_total",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "M.O/Total",
+        enableEditing: false,
+      },
+    
     
     ], [disciplineOptions]); 
 
