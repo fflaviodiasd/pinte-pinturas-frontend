@@ -60,7 +60,7 @@ const ServiceStepTable = ({ order }: any) => {
         order: serviceInfo.order, // Aqui você adiciona o 'order' ao objeto
       };
       console.log('updated values:', updatedValues);
-      await addServiceStep(order, values); 
+      await addServiceStep(order, updatedValues); 
       // setPackageSteps((prevSteps) => [...prevSteps, values]); 
       // table.exitCreatingMode(); // Sai do modo de criação
     } catch (error) {
@@ -81,26 +81,33 @@ const ServiceStepTable = ({ order }: any) => {
   };
 
 
-  // const parseCurrency = (value:any) => {
-  //   return parseFloat(value.replace('R$', '').replace(/\./g, '').replace(',', '.'));
-  // };
-  // const priceStrings = serviceSteps.map(step => step.total_price);
-  // const workmanshipStrings = serviceSteps.map(step => step.total_workmanship);
+  const parseCurrency = (value:any) => {
+    return parseFloat(value.replace('R$', '').replace(/\./g, '').replace(',', '.'));
+  };
+  const priceStrings = serviceSteps.map(step => step.price_service);
+  const workmanshipStrings = serviceSteps.map(step => step.price_workmanship);
   
-  // const prices = priceStrings.map(parseCurrency);
-  // const workmanships = workmanshipStrings.map(parseCurrency);
+  
+  const prices = priceStrings.map(parseCurrency);
+  const workmanships = workmanshipStrings.map(parseCurrency);
+  const compensation = serviceSteps.map(step => step.compensation);
+  const cost = serviceSteps.map(step => step.cost);
   
 
   
   
-  // const formatCurrency = (value:any) => {
-  //   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  // };
-  //   const totalServicePrice = formatCurrency(prices.reduce((sum, value) => sum + value, 0));
-  //   const totalWorkmanship = formatCurrency(workmanships.reduce((sum, value) => sum + value, 0));
+  const formatCurrency = (value:any) => {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  };
+    const totalServicePrice = formatCurrency(prices.reduce((sum, value) => sum + value, 0));
+    const totalWorkmanship = formatCurrency(workmanships.reduce((sum, value) => sum + value, 0));
+    const totalCompensation = (compensation.reduce((sum, value) => sum + value, 0));
+    const totalCost = (cost.reduce((sum, value) => sum + value, 0));
   
-  // console.log('Total Preço Total/Serviço:', formatCurrency(totalServicePrice));
-  // console.log('Total Mão-de-Obra:', formatCurrency(totalWorkmanship));
+  console.log('Total Preço Total/Serviço:', formatCurrency(totalServicePrice));
+  console.log('Total Mão-de-Obra:', formatCurrency(totalWorkmanship));
+  console.log('Total Compensação:', (totalCompensation));
+  console.log('Total Custo:', (totalCost));
 
 const columns = useMemo<MRT_ColumnDef<any>[]>(() => [
   // {
@@ -131,6 +138,7 @@ const columns = useMemo<MRT_ColumnDef<any>[]>(() => [
     filterFn: "startsWith",
     header: "Preço/m²",
     enableEditing: true,
+    footer: totalServicePrice,
   },
   {
     accessorKey: "compensation",
@@ -138,6 +146,7 @@ const columns = useMemo<MRT_ColumnDef<any>[]>(() => [
     filterFn: "startsWith",
     header: "Comp. %",
     enableEditing: false,
+    footer: `${totalCompensation}%`,
   },
   {
     accessorKey: "price_workmanship",
@@ -145,6 +154,7 @@ const columns = useMemo<MRT_ColumnDef<any>[]>(() => [
     filterFn: "startsWith",
     header: "Mão-de-Obra/m²",
     enableEditing: true,
+    footer: totalWorkmanship,
   },
   {
     accessorKey: "cost",
@@ -152,6 +162,7 @@ const columns = useMemo<MRT_ColumnDef<any>[]>(() => [
     filterFn: "startsWith",
     header: "Custo %",
     enableEditing: false,
+    footer: `${totalCost}%`,
   },
   // {
   //   accessorKey: "id",
