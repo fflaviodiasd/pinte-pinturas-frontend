@@ -113,7 +113,11 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
         gap: "1rem",
       }}
     >
-      <h2>Níveis</h2>
+      <span
+        style={{ fontFamily: "Open Sans", fontWeight: 600, color: "#2E3132" }}
+      >
+        Níveis:
+      </span>
       <div style={{ display: "flex", gap: "10px" }}>
         <Button
           onClick={handleAddLevelClick}
