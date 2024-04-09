@@ -21,6 +21,7 @@ import { ChecklistDrawer } from "../../../components/Checklist/ChecklistDrawer";
 import { StatusPanel } from "../../../components/StatusPanel";
 import { Info } from "@mui/icons-material";
 import { useStyles } from "./styles";
+import { GoPackage } from "react-icons/go";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -183,22 +184,43 @@ const Locations = () => {
     ),
     renderTopToolbarCustomActions: ({ table }) => (
       <div>
-        <Typography className={classes.underlinedTitle}>
-          <span className={classes.underlinedBorder}>Gerenc</span>
-          iamento
-        </Typography>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography className={classes.underlinedTitle}>
+            <span className={classes.underlinedBorder}>Gerenc</span>
+            iamento
+          </Typography>
+          <div>
+            <Button
+              variant="contained"
+              onClick={() => {
+                table.setCreatingRow(true);
+              }}
+              style={{
+                marginRight: "0.5rem",
+                textTransform: "capitalize",
+                fontFamily: "Open Sans",
+                fontWeight: 600,
+              }}
+            >
+              Adicionar Linha
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                textTransform: "capitalize",
+                fontFamily: "Open Sans",
+                fontWeight: 600,
+              }}
+            >
+              <GoPackage style={{ marginRight: "0.5rem" }} />
+              Pacotes
+            </Button>
+          </div>
+        </div>
         <div style={{ display: "flex", justifyContent: "right" }}>
           <StatusPanel />
         </div>
         <LevelComponent />
-        <Button
-          variant="contained"
-          onClick={() => {
-            table.setCreatingRow(true);
-          }}
-        >
-          Adicionar Linha
-        </Button>
       </div>
     ),
   });
