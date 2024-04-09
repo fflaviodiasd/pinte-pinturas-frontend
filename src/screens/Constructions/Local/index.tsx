@@ -6,7 +6,7 @@ import {
   type MRT_TableOptions,
   useMaterialReactTable,
 } from "material-react-table";
-import { Box, Button, Checkbox, Tooltip } from "@mui/material";
+import { Box, Button, Checkbox, Tooltip, Typography } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useConstructions } from "../../../hooks/useConstructions";
@@ -20,6 +20,7 @@ import { ChecklistIcon } from "../../../components/Snackbar/ChecklistIcon";
 import { ChecklistDrawer } from "../../../components/Checklist/ChecklistDrawer";
 import { StatusPanel } from "../../../components/StatusPanel";
 import { Info } from "@mui/icons-material";
+import { useStyles } from "./styles";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -39,8 +40,8 @@ const Locations = () => {
   } = useConstructions();
 
   const [selectedLocalIds, setSelectedLocalIds] = useState<number[]>([]);
-
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { classes } = useStyles();
 
   useEffect(() => {
     getAllConstructionsLocations(dynamicColumns);
@@ -182,6 +183,10 @@ const Locations = () => {
     ),
     renderTopToolbarCustomActions: ({ table }) => (
       <div>
+        <Typography className={classes.underlinedTitle}>
+          <span className={classes.underlinedBorder}>Gerenc</span>
+          iamento
+        </Typography>
         <div style={{ display: "flex", justifyContent: "right" }}>
           <StatusPanel />
         </div>
