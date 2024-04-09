@@ -413,7 +413,7 @@ export const useConstructions = () => {
     }
   };
 
-  const getAllServiceStepsById = async (serviceId: number) => {
+  const getAllServiceStepsById = async (serviceId: any) => {
     setLoading(true);
     try {
       const { data } = await api.get(`/services/${serviceId}/steps/`);
