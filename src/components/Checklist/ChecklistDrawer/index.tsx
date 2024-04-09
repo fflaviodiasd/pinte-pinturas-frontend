@@ -192,7 +192,7 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "space-evenly",
             paddingBottom: "1rem",
           }}
         >
