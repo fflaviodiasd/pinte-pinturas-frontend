@@ -5,6 +5,7 @@ import { api } from "../services/api";
 import { Construction } from "../types";
 import { UserContext } from "../contexts/UserContext";
 import { MRT_ColumnDef } from "material-react-table";
+
 type ConstructionPackage = {
   id: number;
   name: string;
@@ -12,6 +13,16 @@ type ConstructionPackage = {
   package_value: string;
   package_workmanship: string;
 };
+
+type ConstructionService = {
+  id: number;
+  name: string;
+  discipline: string;
+  package_value: string;
+  package_workmanship: string;
+};
+
+
 export const useConstructions = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -372,6 +383,49 @@ export const useConstructions = () => {
     }
   };
 
+  const [listConstructionServices, setListConstructionServices] = useState<ConstructionService[]>([]);
+
+  const getAllConstructionServices = async () => {
+    if (!id) {
+      console.error('ID da construção não foi fornecido');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/constructions/${id}/services/`);
+      setListConstructionServices(data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Erro ao obter serviços de construção:', error);
+      setLoading(false);
+    }
+  };
+
+  const disableConstructionService = async (packageId: number) => {
+    setLoading(true);
+    try {
+      await api.delete(`/services/${packageId}`);
+    } catch (error) {
+      throw error; 
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addConstructionService = async (newService: any) => {
+    setLoading(true);
+    try {
+      const response = await api.post(`/constructions/${id}/services/`, newService);
+      setListConstructionServices(prevServices => [...prevServices, response.data]);
+      successMessage('Serviço adicionado com sucesso!');
+    } catch (error) {
+      errorMessage('Erro ao adicionar o serviço!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 const [listConstructionPackages, setListConstructionPackages] = useState<ConstructionPackage[]>([]);
 
   const getAllConstructionPackages = async () => {
@@ -520,6 +574,11 @@ const getAllPackageStepsById = async (packageId: number) => {
     getAllPackageStepsById,
     addPackageStep,
     deletePackageStep,
-    getAllUnits
+    getAllUnits,
+    listConstructionServices,
+    getAllConstructionServices,
+    disableConstructionService,
+    addConstructionService
+
   };
 };

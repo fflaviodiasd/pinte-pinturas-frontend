@@ -3,162 +3,342 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
+  type MRT_TableOptions,
   MRT_ToggleDensePaddingButton,
   MRT_ToggleFullScreenButton,
   MRT_ToggleFiltersButton,
   MRT_ShowHideColumnsButton,
-  MRT_Localization,
 } from "material-react-table";
 
 import { Box, Grid, Tooltip, useTheme, Typography} from "@mui/material";
 import { useStyles } from "./styles";
-import { useNavigate } from "react-router-dom";
-import { TablePagination } from "../../../components/Table/Pagination";
+import { useParams, useNavigate } from "react-router-dom";
 import { useConstructions } from "../../../hooks/useConstructions";
-import { ModalRegisterConstructionMaterial } from "../../../components/Modal/ModalRegisterConstructionMaterial";
-import { ModalRegisterConstructionServices } from "../../../components/Modal/ModalRegisterConstructionServices";
+import { ModalRegisterConstructionPackages } from "../../../components/Modal/ModalRegisterConstructionPackages";
 import { Add, Launch, Edit, Delete, Info } from "@mui/icons-material";
-import { Navbar } from "../../../components/Navbar";
-import { TitleScreen } from "../../../components/TitleScreen";
-import Breadcrumb from "../../../components/Breadcrumb";
-import { Button } from "../../../components/Button";
+
 import { IconButton } from "@mui/material";
 import ServiceStepTable from "./ServiceStepsTable";
+import { errorMessage, successMessage } from "../../../components/Messages";
+interface DropdownOption {
+  id: any;
+  name: any;
+  label: string;
+  value: any; 
+}
+
+
+
 export const ServicesConstructions = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
   const {
-    listConstructionsMaterials,
-    getAllConstructionsMaterials,
-    disableConstructionMaterial,
+    listConstructionServices,
+    getAllConstructionServices,
+    disableConstructionService,
+    addConstructionService,
+    getAllUnits,
+
   } = useConstructions();
   const theme = useTheme();
 
-  const [selectedConstructionMaterialId, setselectedConstructionMaterialId] =
-    useState<number>(0);
-  const [selectedServiceMaterialId, setSelectedServiceMaterialId] = useState<number>(0);
-  const [listServiceConstructions, setListServiceConstructions] = useState<any[]>([]);
-  const [modalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<"edit" | "register">("register");
+  const [selectedPackageConstructionId, setSelectedPackageConstructionId] = useState<number>(0);
+  const [disciplineOptions, setDisciplineOptions] = useState<DropdownOption[]>([]);
+  const [unitOptions, setUnitOptions] = useState<DropdownOption[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const [dynamicColumns, setDynamicColumns] = useState<MRT_ColumnDef<any>[]>(
+    []
+  );
+  const { id } = useParams();
+  // console.log('construction id pac: ', selectedPackageConstructionId)
 
 
-    console.log('listConstructionsMaterials', listConstructionsMaterials);
-  // const handleDisable = () => {
-  //   disableConstructionMaterial(selectedConstructionMaterialId);
-  //   setIsModalOpen(false);
+  useEffect(() => {
+    if (id) {
+      getAllConstructionServices();
+    }
+  }, [id]);
+  useEffect(() => {
+
+  const fetchUnits = async () => {
+    try {
+      const data = await getAllUnits();
+      if (data && Array.isArray(data.results)) {
+        const options: DropdownOption[] = data.results.map((d: { name: any; }) => ({
+          label: d.name,
+          value: d.name,
+        }));
+        setUnitOptions(options);
+      
+      } else {
+        console.error("Formato inesperado da resposta:", data);
+        setUnitOptions([]);
+      }
+    } catch (error) {
+      errorMessage("Não foi possível carregar medidas!");
+      setUnitOptions([]);
+    }
+  };
+  fetchUnits();
+
+}, []); 
+
+
+  useEffect(() => {
+    console.log('unitOpstions atualizado:', unitOptions);
+  }, [unitOptions]);
+
+  
+
+  const handleDisable = async (packageId: number) => {
+    try {
+      await disableConstructionService(packageId);
+      successMessage("Serviço apagado com sucesso!");
+      getAllConstructionServices(); 
+
+    } catch (error) {
+      errorMessage("Não foi possível apagar serviço!");
+    }
+  };
+
+  // const handleEditPackages: MRT_TableOptions<any>["onEditingRowSave"] = async ({
+  //   exitEditingMode, // Função para sair do modo de edição
+  //   row, // A linha sendo editada
+  //   values, // Os valores editados
+  // }) => {
+  //   console.log('Salvando edição', values);
+  //   // Supondo uma função de atualização async genérica 'updateConstructionPackage'
+  //   // await updateConstructionPackage(row.original.id, values);
+  //   getAllConstructionPackages();
+  //   exitEditingMode(); // Sai do modo de edição após a atualização
   // };
 
-  const handleDisable = (id: number) => {
-    disableConstructionMaterial(id);
+  const handleEditPackages: MRT_TableOptions<any>['onEditingRowSave'] = async ({
+    exitEditingMode,
+    row,
+    values,
+  }) => {
+    if (!row?.original?.id) {
+      errorMessage('Não foi possível identificar o pacote para atualização.');
+      return;
+    }
+  
+    try {
+      console.log('Salvando edições para o pacote:', values);
+  
+      // const updatedPackage = await updateConstructionPackage(row.original.id, values);
+  
+      // setListConstructionPackages(prevPackages =>
+      //   prevPackages.map(pkg => (pkg.id === row.original.id ? { ...pkg, ...updatedPackage } : pkg))
+      // );
+  
+      successMessage('Pacote atualizado com sucesso.');
+      exitEditingMode(); 
+    } catch (error) {
+      errorMessage('Erro ao atualizar o pacote.');
+      console.error('Erro ao salvar as edições:', error);
+    }
   };
-
-  const handleClose = () => {
-    setIsModalOpen(false);
+  
+  
+  const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
+    values,
+    table,
+  }) => {
+    const { 'unit.name': unitName, id, ...restOfValues } = values;
+  
+    const adjustedValues = {
+      ...restOfValues,
+      unit: unitName, 
+    };
+  
+    console.log('Adjusted values for API:', adjustedValues);
+  
+    await addConstructionService(adjustedValues);
+    getAllConstructionServices();
   };
+  
 
   const baseBackgroundColor =
     theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
-    const mockedServicesData = [
-      { order: '01', name: 'Tratamento Selador', scope: 'Parede', unit: 'm²', amount: 2 },
-      { order: '02', name: 'Tratamento Selador e 1ª Demão Massa', scope: 'Parede de bloco de Gesso', unit: 'm²', amount: 4 },
-      { order: '03', name: 'Pintura Interna Paredes Massa Corrida', scope: 'Parede', unit: 'm²', amount: 5 },
-      {order: '12', name: 'Parade', scope: "Gesso", unit: "m²", amount: 2},
-      {order: '04', name: 'Revestimento Cerâmico', scope: "Pisos", unit: "m²", amount: 20},
-      {order: '05', name: 'Instalação de Portas', scope: "Acabamento", unit: "m²", amount: 10}
-    ];
-
-  // useEffect(() => {
-  //   getAllConstructionsMaterials();
-  // }, []);
-  useEffect(() => {
-    // getAllConstructionsMaterials(); 
-    setListServiceConstructions(mockedServicesData); 
-  }, []);
+ 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
-      {
-        id: "actions",
-        header: "",
-        columnDefType: "display",
-        Cell: ({ cell }) => (
-          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+      // {
+      //   id: "actions",
+      //   header: "",
+      //   columnDefType: "display",
+      //   Cell: ({ cell }) => (
+      //     <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
         
-            <IconButton
-              aria-label="Excluir"
-              onClick={() => handleDisable(cell.row.original.id)}
-              sx={{ color: "#C5C7C8" }} 
-            >
-              <Delete />
-            </IconButton>
-            <IconButton
-              aria-label="Editar"
-              onClick={() => {
-                setSelectedServiceMaterialId(cell.row.original.id);
-                setIsModalOpen(true);
-                setModalMode("edit");
-              }}
-              sx={{ color: "#C5C7C8" }} 
-            >
-              <Edit />
-            </IconButton>
-          </div>
-        ),
+      //       <IconButton
+      //         aria-label="Excluir"
+      //         onClick={() => handleDisable(cell.row.original.id)}
+      //         sx={{ color: "#C5C7C8" }} 
+      //       >
+      //         <Delete />
+      //       </IconButton>
+      //       <IconButton
+      //         aria-label="Editar"
+      //         onClick={() => {
+      //           setSelectedPackageConstructionId(cell.row.original.id);
+      //         }}
+      //         sx={{ color: "#C5C7C8" }} 
+      //       >
+      //         <Edit />
+      //       </IconButton>
+      //     </div>
+      //   ),
+      // },
+      {
+        accessorKey: "id",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "ID",
+        enableEditing: false,
+
       },
       {
         accessorKey: "order",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Ordem",
+        enableEditing: true, 
+        muiEditTextFieldProps: {
+          required: true,
+          type: "number",
+
+        },
       },
       {
         accessorKey: "name",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Nome do Serviço",
+        enableEditing: true, 
+        muiEditTextFieldProps: {
+          required: true,
+        },
       },
       {
         accessorKey: "scope",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Escopo",
+        enableEditing: true, 
+        muiEditTextFieldProps: {
+          required: true,
+        },
+      },
+      // {
+      //   accessorKey: "unit.name",
+      //   enableColumnFilterModes: false,
+      //   filterFn: "startsWith",
+      //   header: "Medida",
+      //   enableEditing: true, 
+      //   muiEditTextFieldProps: {
+      //     required: true,
+      //   },
+      // },
+
+         {
+        accessorKey: "unit.name",
+        header: "Medida",
+        enableEditing: true,
+        editVariant: 'select',
+        editSelectOptions: unitOptions, 
+        muiEditSelectFieldProps: {
+          required: true,
+        }
       },
       {
-        accessorKey: "unit",
+        accessorKey: "step_services_amount",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Medida",
+        header: "Etapas",
+        enableEditing: false, 
       },
+   
       {
         accessorKey: "amount",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Etapa",
-        Cell: ({ cell }) => (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  {cell.getValue() as React.ReactNode}
-
-            <Tooltip title="Informações adicionais sobre a data de validade">
-              <IconButton size="small">
-                <Info sx={{ color: '#C5C7C8' }} /> 
-              </IconButton>
-            </Tooltip>
-          </div>
-        ),
+        header: "Quantidade",
+        enableEditing: true, 
+        muiEditTextFieldProps: {
+          required: true,
+        },
       },
-    ],
-    []
-  );
+      {
+        accessorKey: "unit_price",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "Preço Unitário",
+        enableEditing: false,
+      },
+      {
+        accessorKey: "total_price",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "Preço Total",
+        enableEditing: false,
+      },
+      {
+        accessorKey: "price_workmanship",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "Preço M.O",
+        enableEditing: false,
+      },
+      {
+        accessorKey: "total_workmanship",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "Preço Total M.O",
+        enableEditing: false,
+      },
+  
+    
+    ], [unitOptions]); 
 
   const table = useMaterialReactTable({
     columns,
-    data: mockedServicesData,
+    data: listConstructionServices,
     enableColumnFilterModes: true,
-    
+    onCreatingRowSave: handleCreatePackages,
+    onEditingRowSave: handleEditPackages,
+    enableEditing: true, 
+    editDisplayMode: 'row', 
+    createDisplayMode: 'row', 
+    state: {
+      isSaving, 
+    },
+    renderRowActions: 
+    ({ row }) => (
+      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+        <IconButton
+          aria-label="Excluir"
+          onClick={() => handleDisable(row.original.id)}
+          sx={{ color: "#C5C7C8" }} 
+        >
+          <Delete />
+        </IconButton>
+        <IconButton
+          aria-label="Editar"
+          onClick={() => handleEditPackages(row.original.id)}
+          sx={{ color: "#C5C7C8" }} 
+        >
+          <Edit />
+        </IconButton>
+      </div>
+    ),
+
     initialState: { showColumnFilters: true },
     renderDetailPanel: ({ row }) => (
       <Box sx={{ padding: '1rem' }}>
-        <ServiceStepTable order={row.original.order} />
+        <ServiceStepTable order={row.original.id} />
       </Box>
     ),
     renderTopToolbar: ({ table }) => (
@@ -202,12 +382,12 @@ export const ServicesConstructions = () => {
     border: '1px solid #0076be',
     borderRadius: '4px',
   }} />
-         <Tooltip title="Adicionar Serviço">
+         <Tooltip title="Adicionar Pacote">
   <IconButton
-    onClick={() => {
-      setIsModalOpen(true);
-      setModalMode('register');
-    }}
+   onClick={() => {
+    table.setCreatingRow(true);
+    console.log('options:', unitOptions);
+  }}
     sx={{
       color: '#0076be',
       border: '1px solid #0076be',
@@ -254,32 +434,11 @@ export const ServicesConstructions = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        {/* <Box
-          sx={{ display: "flex", justifyContent: "right", marginRight: "1rem" }}
-        >
-          <Button
-            label={
-              <Tooltip title="Adicionar Material">
-                <Add />
-              </Tooltip>
-            }
-            color="secondary"
-            onClick={() => {
-              setIsModalOpen(true);
-              setModalMode("register");
-            }}
-          />
-        </Box> */}
+      <Grid item xs={8} lg={12} >
 
-        <MaterialReactTable table={table}  />
-        <ModalRegisterConstructionServices
-          modalOpen={modalOpen}
-          handleClose={handleClose}
-          mode={modalMode}
-          selectedConstructionMaterialId={selectedConstructionMaterialId}
-          // handleDisable={handleDisable}
-        />
+    <Box style={{ padding: 10, margin: 10 }}>
+        <MaterialReactTable table={table} />
+      </Box>
       </Grid>
     </Grid>
   );

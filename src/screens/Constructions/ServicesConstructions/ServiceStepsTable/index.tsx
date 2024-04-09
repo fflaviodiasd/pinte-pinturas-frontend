@@ -1,115 +1,168 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useState } from 'react';
 import {
-    MaterialReactTable,
-    useMaterialReactTable,
-    type MRT_ColumnDef,
-    MRT_ToggleDensePaddingButton,
-    MRT_ToggleFullScreenButton,
-    MRT_ToggleFiltersButton,
-    MRT_ShowHideColumnsButton,
-    MRT_Localization,
-  } from "material-react-table";
+  MaterialReactTable,
+  useMaterialReactTable,
+  type MRT_ColumnDef,
+  type MRT_TableOptions,
+} from "material-react-table";
+import { useConstructions } from "../../../../hooks/useConstructions";
 
-  import { Box, IconButton,Tooltip, Typography} from '@mui/material';
+import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { Delete, Edit, Add } from '@mui/icons-material';
+
+const ServiceStepTable = ({ order }: any) => {
+  const [packageSteps, setPackageSteps] = useState([]); 
+  const [unitOptions, setUnitOptions] = useState([]);
+
+  const { getAllPackageStepsById, addPackageStep, deletePackageStep, getAllUnits  } = useConstructions(); 
+  const serviceOptions = [
+    { label: '1', value: 1 },
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+  ];
   
-const mockDetailsData = {
-    '01': {
-        idService: '01',
-        results: [
-          { order: '01', name: 'Etapa 1', price_service: 'R$ 999,99', price_workmanship: 'R$ 50,00' },
-          { order: '02', name: 'Etapa 2', price_service: 'R$ 899,99', price_workmanship: 'R$ 40,00' },
-          { order: '03', name: 'Etapa 3', price_service: 'R$ 799,99', price_workmanship: 'R$ 30,00' },
-        ],
-      },
-      '02': {
-        idService: '02',
-        results: [
-          { order: '01', name: 'Preparação', price_service: 'R$ 500,00', price_workmanship: 'R$ 25,00' },
-          { order: '02', name: 'Pintura', price_service: 'R$ 600,00', price_workmanship: 'R$ 35,00' },
-          { order: '03', name: 'Acabamento', price_service: 'R$ 700,00', price_workmanship: 'R$ 45,00' },
-        ],
-      },
-      '03': {
-        idService: '03',
-        results: [
-          { order: '01', name: 'Demarcação', price_service: 'R$ 200,00', price_workmanship: 'R$ 20,00' },
-          { order: '02', name: 'Escavação', price_service: 'R$ 300,00', price_workmanship: 'R$ 30,00' },
-          { order: '03', name: 'Fundações', price_service: 'R$ 400,00', price_workmanship: 'R$ 40,00' },
-        ],
-      },
-};
+  const stepOptions = [
+    { label: '1', value: 1 },
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+  ];
+  
+  const fetchUnits = async () => {
+    const units = await getAllUnits();
+    const options = units.results.map(unit => ({ label: unit.name, value: unit.id }));
+    setUnitOptions(options);
+  };
 
-const ServiceStepTable = ({ order }:any) => {
-const data = mockDetailsData[order as keyof typeof mockDetailsData]?.results || [];
+  useEffect(() => {
 
-const calculateTotalServicePrice = (data:any) =>
-data.reduce((sum:any, current:any) => sum + parseFloat(current.price_service.replace('R$', '').replace(',', '.')), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-const totalServicePrice = calculateTotalServicePrice(data);
+    fetchUnits();
+  }, []);
+  const fetchPackageSteps = async () => {
+    try {
+      const steps = await getAllPackageStepsById(order);
+      setPackageSteps(steps); 
+    } catch (error) {
+      console.error('Erro ao buscar etapas do pacote:', error);
+    }
+  };
 
-const calculateTotalWorkmanship = (data:any) =>
-data.reduce((sum:any, current:any) => sum + parseFloat(current.price_workmanship.replace('R$', '').replace(',', '.')), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-const totalWorkamanship = calculateTotalWorkmanship(data);
-const columns = useMemo<MRT_ColumnDef<any>[]>(
-    () => [
-        {
-            id: 'actions',
-            header: '',
-            columnDefType: 'display',
-            Cell: ({ row }) => (
-              <Box sx={{ display: 'flex', gap: '1rem' }}>
-                  <Tooltip title="Excluir">
-                  <IconButton aria-label="Excluir" onClick={() => handleDelete(row.original)}               sx={{ color: "#C5C7C8" }} 
->
-                    <Delete />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Editar">
-                  <IconButton aria-label="Editar" onClick={() => handleEdit(row.original)}               sx={{ color: "#C5C7C8" }} 
->
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-              
-              </Box>
-            ),
-          },
+  useEffect(() => {
 
+    if (order) {
+      fetchPackageSteps();
+    }
+  }, []);
 
-        {
-        accessorKey: 'order',
-        header: 'Ordem da Etapa',
-      },
-      {
-        accessorKey: 'name',
-        header: 'Nome da Etapa',
-      },
-      {
-        accessorKey: 'price_service',
-        header: 'Preço/Serviço',
-        footer: totalServicePrice.toString(),
-      },
-      {
-        accessorKey: 'price_workmanship',
-        header: 'Mão-de-Obra',
-        footer: totalWorkamanship.toString(),
+  const handleAddNewStep: MRT_TableOptions<any>['onCreatingRowSave'] = async ({
+    values,
+    table,
+  }) => {
+    try {
+      await addPackageStep(order, values); 
+      // setPackageSteps((prevSteps) => [...prevSteps, values]); 
+      // table.exitCreatingMode(); // Sai do modo de criação
+    } catch (error) {
+      console.error('Erro ao adicionar nova etapa:', error);
+    }
+    fetchPackageSteps(); 
+
+  };
+
+  const handleDeleteStep = async (stepId:number)=> {
+    if (window.confirm('Tem certeza que deseja remover esta etapa?')) {
+      try {
+        await deletePackageStep(stepId);
+        fetchPackageSteps();
+      } catch (error) {
       }
-    ],
-    [],
-  );
+    }
+  };
 
-  const tableInstance = useMaterialReactTable({
-    columns,
-    data,
-    autoResetExpanded: false,
-    autoResetPageIndex: false,
-    muiTableFooterProps: {
-        sx: {
-          backgroundColor: 'red', // Substitua pela cor que você deseja
-        }
-      },
-    renderTopToolbar: () => (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: 2 }}>
+
+  const parseCurrency = (value:any) => {
+    return parseFloat(value.replace('R$', '').replace(/\./g, '').replace(',', '.'));
+  };
+  const priceStrings = packageSteps.map(step => step.total_price);
+  const workmanshipStrings = packageSteps.map(step => step.total_workmanship);
+  
+  const prices = priceStrings.map(parseCurrency);
+  const workmanships = workmanshipStrings.map(parseCurrency);
+  
+
+  
+  
+  const formatCurrency = (value:any) => {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  };
+    const totalServicePrice = formatCurrency(prices.reduce((sum, value) => sum + value, 0));
+    const totalWorkmanship = formatCurrency(workmanships.reduce((sum, value) => sum + value, 0));
+  
+  console.log('Total Preço Total/Serviço:', formatCurrency(totalServicePrice));
+  console.log('Total Mão-de-Obra:', formatCurrency(totalWorkmanship));
+
+const columns = useMemo<MRT_ColumnDef<any>[]>(() => [
+  {
+    accessorFn: (row) => row.service.name,
+    id: 'service',
+    header: 'Serviço',
+    editVariant: 'select', 
+    editSelectOptions: serviceOptions, 
+  },
+  {
+    accessorFn: (row) => row.step_service.name,
+    id: 'step_service',
+    header: 'Etapa',
+    editVariant: 'select', 
+    editSelectOptions: stepOptions, 
+  },
+  {
+    accessorKey: 'amount',
+    header: 'QTD',
+  },
+  {
+    accessorKey: 'unit',
+    header: 'Unidade',
+    editVariant: 'select',
+    editSelectOptions: unitOptions, 
+  },
+  {
+    accessorKey: 'total_price',
+    header: 'Preço Total/Serviço',
+    Footer: () => <span>{totalServicePrice}</span>,
+  },
+  {
+    accessorKey: 'total_workmanship',
+    header: 'Total Mão-de-Obra',
+    footer: totalWorkmanship,
+  },
+], [unitOptions, totalServicePrice, totalWorkmanship, packageSteps]);
+
+
+const tableInstance = useMaterialReactTable({
+  columns,
+  data: packageSteps,
+  onCreatingRowSave: handleAddNewStep,
+  enableRowActions: true, 
+  enableEditing: true, 
+  createDisplayMode: 'row', 
+  renderRowActions: ({ row, table }) => (
+    <Box sx={{ display: 'flex', gap: '1rem' }}>
+      {/* Botão para editar */}
+      <Tooltip title="Editar">
+        <IconButton onClick={() => handleEdit(row.original)} sx={{ color: "#C5C7C8" }}>
+          <Edit />
+        </IconButton>
+      </Tooltip>
+      {/* Botão para excluir */}
+      <Tooltip title="Excluir">
+        <IconButton onClick={() => handleDeleteStep(row.original.id)} color="error">
+          <Delete />
+        </IconButton>
+      </Tooltip>
+    </Box>
+  ),
+  renderTopToolbar: ({ table }) => (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
             <Typography component="div" fontWeight={500}>
               Etapas do serviço
@@ -118,8 +171,8 @@ const columns = useMemo<MRT_ColumnDef<any>[]>(
           </Box>
           <Tooltip title="Adicionar Etapa">
             <IconButton
-              onClick={() => console.log('Adicionar Etapa')}
-              sx={{
+            onClick={() => table.setCreatingRow(true)}
+            sx={{
                 color: '#0076be',
                 border: '1px solid #0076be',
                 borderRadius: '4px',
@@ -134,17 +187,13 @@ const columns = useMemo<MRT_ColumnDef<any>[]>(
             </IconButton>
           </Tooltip>
         </Box>
-      ),
-    
-  });
+  ),
+});
 
   const handleEdit = (rowData:any) => {
     console.log('Editar', rowData);
   };
 
-  const handleDelete = (rowData:any) => {
-    console.log('Excluir', rowData);
-  };
 
   return <MaterialReactTable table={tableInstance} />;
 };
