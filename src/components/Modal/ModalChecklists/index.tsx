@@ -9,8 +9,8 @@ import {
   Typography,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import AccordionComponent from "../../Accordion";
 import { Search } from "@mui/icons-material";
+import AccordionChecklists from "./AccordionChecklists";
 
 type ModalChecklistsProps = {
   modalOpen: boolean;
@@ -51,7 +51,7 @@ export const ModalChecklists = ({
             }}
           />
         </div>
-        <AccordionComponent
+        <AccordionChecklists
           accordionTitle={
             <div style={{ display: "flex", alignItems: "center" }}>
               <div
@@ -67,7 +67,7 @@ export const ModalChecklists = ({
             </div>
           }
         />
-        <AccordionComponent
+        <AccordionChecklists
           accordionTitle={
             <div style={{ display: "flex", alignItems: "center" }}>
               <div
@@ -83,7 +83,7 @@ export const ModalChecklists = ({
             </div>
           }
         />
-        <AccordionComponent
+        <AccordionChecklists
           accordionTitle={
             <div style={{ display: "flex", alignItems: "center" }}>
               <div
@@ -99,7 +99,7 @@ export const ModalChecklists = ({
             </div>
           }
         />
-        <AccordionComponent
+        <AccordionChecklists
           accordionTitle={
             <div style={{ display: "flex", alignItems: "center" }}>
               <div
@@ -115,7 +115,7 @@ export const ModalChecklists = ({
             </div>
           }
         />
-        <AccordionComponent
+        <AccordionChecklists
           accordionTitle={
             <div style={{ display: "flex", alignItems: "center" }}>
               <div

@@ -3,8 +3,9 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Chip from "@mui/material/Chip";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { FormChecklists } from "../FormChecklists";
 
-export default function AccordionComponent({ accordionTitle }: any) {
+export default function AccordionChecklists({ accordionTitle }: any) {
   return (
     <div>
       <Accordion>
@@ -116,6 +117,7 @@ export default function AccordionComponent({ accordionTitle }: any) {
               </tr>
             </tbody>
           </table>
+          <FormChecklists />
         </AccordionDetails>
       </Accordion>
     </div>
