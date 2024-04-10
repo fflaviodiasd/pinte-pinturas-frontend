@@ -9,12 +9,16 @@ import { TitleScreen } from "../../components/TitleScreen";
 import Breadcrumb from "../../components/Breadcrumb";
 import { useConstructions } from "../../hooks/useConstructions";
 import { useParams } from "react-router-dom";
+import { ServicesConstructions } from "./ServicesConstructions";
+import { PackageConstructions } from "./PackageConstructions";
 
 export const Constructions = () => {
   const { id: constructionId } = useParams();
   const [indexDisplay, setIndexDisplay] = useState(0);
   const [selectedConstructionName, setSelectedConstructionName] = useState("");
   const { constructionData, getConstruction } = useConstructions();
+
+  console.log('cId',constructionId);
 
   useEffect(() => {
     if (constructionId) {
@@ -41,6 +45,12 @@ export const Constructions = () => {
     }
     if (indexDisplay === 2) {
       return <ListLocal />;
+    }
+    if (indexDisplay === 3) {
+      return <ServicesConstructions />
+    }
+    if (indexDisplay === 4) {
+      return <PackageConstructions />
     }
   };
 
@@ -77,6 +87,19 @@ export const Constructions = () => {
           text="Locais"
           isActive={indexDisplay === 2}
           onClick={() => handleChangeContent(2)}
+        />
+
+        <HeaderButton
+          text="Serviços"
+          isActive={indexDisplay === 3}
+          onClick={() => handleChangeContent(3)}
+        />
+
+        
+        <HeaderButton
+          text="Pacotes"
+          isActive={indexDisplay === 4}
+          onClick={() => handleChangeContent(4)}
         />
       </Box>
 
