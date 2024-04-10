@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ChipCustomChecklist } from "../ChipCustom/ChipCustomChecklist";
 import { StyledGridChecklist } from "./styles";
 import LaunchIcon from "@mui/icons-material/Launch";
+import { ModalChecklists } from "../Modal/ModalChecklists";
 
 interface Checklist {
   id: number;
@@ -40,6 +41,11 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
   const [tooltipChecklistId, setTooltipChecklistId] = useState<number | null>(
     null
   );
+  const [modalOpen, setIsModalOpen] = useState(false);
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     const fetchChecklist = async () => {
@@ -191,7 +197,12 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
                     border: "none",
                   }}
                 >
-                  <LaunchIcon style={{ color: "white" }} />
+                  <LaunchIcon
+                    style={{ color: "white" }}
+                    onClick={() => {
+                      setIsModalOpen(true);
+                    }}
+                  />
                 </button>
               </div>
             }
@@ -219,6 +230,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
           </Tooltip>
         ))}
       </StyledGridChecklist>
+      <ModalChecklists modalOpen={modalOpen} handleClose={handleClose} />
     </div>
   );
 };
