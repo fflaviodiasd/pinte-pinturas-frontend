@@ -3,6 +3,8 @@ import { api } from "../../services/api";
 import { useEffect, useState } from "react";
 import { ChipCustomChecklist } from "../ChipCustom/ChipCustomChecklist";
 import { StyledGridChecklist } from "./styles";
+import LaunchIcon from "@mui/icons-material/Launch";
+import { ModalChecklists } from "../Modal/ModalChecklists";
 
 interface Checklist {
   id: number;
@@ -10,6 +12,7 @@ interface Checklist {
   bg: string;
   order: number;
   status: string;
+  package?: any;
 }
 
 interface ChecklistComponentProps {
@@ -38,6 +41,11 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
   const [tooltipChecklistId, setTooltipChecklistId] = useState<number | null>(
     null
   );
+  const [modalOpen, setIsModalOpen] = useState(false);
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     const fetchChecklist = async () => {
@@ -178,6 +186,24 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
                 <span>Término: {tooltipData?.finished}</span>
                 <span>Equipe: {tooltipData?.team}</span>
                 <span>Medição: {tooltipData?.measurement}</span>
+                <button
+                  style={{
+                    backgroundColor: "#0076BE",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: "0.5rem",
+                    cursor: "pointer",
+                    border: "none",
+                  }}
+                >
+                  <LaunchIcon
+                    style={{ color: "white" }}
+                    onClick={() => {
+                      setIsModalOpen(true);
+                    }}
+                  />
+                </button>
               </div>
             }
             arrow
@@ -198,11 +224,13 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
                 editable={editingChipId === checklist.id}
                 chipId={editingChipId}
                 hideOrdinal={true}
+                checklistPackage={checklist.package.id}
               />
             </div>
           </Tooltip>
         ))}
       </StyledGridChecklist>
+      <ModalChecklists modalOpen={modalOpen} handleClose={handleClose} />
     </div>
   );
 };

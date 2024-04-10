@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import {
   StyledChip,
   StyledChipButtonDel,
+  StyledChipChecklistPackage,
   StyledChipDiv,
   StyledChipLabelNumber,
 } from "./styles";
 import { api } from "../../../services/api";
 import { errorMessage, successMessage } from "../../Messages";
+import { GoPackage } from "react-icons/go";
 
 interface ChipCustomChecklistProps {
   name: string;
@@ -22,6 +24,7 @@ interface ChipCustomChecklistProps {
   post?: boolean;
   chipId?: number | null;
   hideOrdinal?: boolean;
+  checklistPackage?: any;
 }
 
 export const ChipCustomChecklist = ({
@@ -38,6 +41,7 @@ export const ChipCustomChecklist = ({
   post,
   chipId,
   hideOrdinal = false,
+  checklistPackage,
 }: ChipCustomChecklistProps) => {
   const [editingValue, setEditingValue] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
@@ -85,7 +89,14 @@ export const ChipCustomChecklist = ({
           </StyledChipButtonDel>
         </div>
       ) : (
-        <StyledChip tabIndex={0} value={value} bg={bg} />
+        <div>
+          <StyledChip tabIndex={0} value={value} bg={bg} />
+          {checklistPackage !== null && (
+            <StyledChipChecklistPackage>
+              <GoPackage color="white" />
+            </StyledChipChecklistPackage>
+          )}
+        </div>
       )}
       {number && (
         <StyledChipLabelNumber bg={bg}>{number}º</StyledChipLabelNumber>

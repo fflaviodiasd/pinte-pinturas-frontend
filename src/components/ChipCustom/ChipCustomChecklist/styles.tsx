@@ -56,3 +56,15 @@ export const StyledChipButtonDel = styled.button`
   border: none;
   cursor: pointer;
 `;
+
+export const StyledChipChecklistPackage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 6px;
+  right: 15px;
+  width: 15px;
+  height: 15px;
+  border: none;
+`;

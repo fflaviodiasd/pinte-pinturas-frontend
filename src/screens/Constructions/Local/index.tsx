@@ -6,7 +6,7 @@ import {
   type MRT_TableOptions,
   useMaterialReactTable,
 } from "material-react-table";
-import { Box, Button, Checkbox, Tooltip } from "@mui/material";
+import { Box, Button, Checkbox, Tooltip, Typography } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useConstructions } from "../../../hooks/useConstructions";
@@ -20,6 +20,8 @@ import { ChecklistIcon } from "../../../components/Snackbar/ChecklistIcon";
 import { ChecklistDrawer } from "../../../components/Checklist/ChecklistDrawer";
 import { StatusPanel } from "../../../components/StatusPanel";
 import { Info } from "@mui/icons-material";
+import { useStyles } from "./styles";
+import { GoPackage } from "react-icons/go";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -39,8 +41,8 @@ const Locations = () => {
   } = useConstructions();
 
   const [selectedLocalIds, setSelectedLocalIds] = useState<number[]>([]);
-
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { classes } = useStyles();
 
   useEffect(() => {
     getAllConstructionsLocations(dynamicColumns);
@@ -182,18 +184,43 @@ const Locations = () => {
     ),
     renderTopToolbarCustomActions: ({ table }) => (
       <div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography className={classes.underlinedTitle}>
+            <span className={classes.underlinedBorder}>Gerenc</span>
+            iamento
+          </Typography>
+          <div>
+            <Button
+              variant="contained"
+              onClick={() => {
+                table.setCreatingRow(true);
+              }}
+              style={{
+                marginRight: "0.5rem",
+                textTransform: "capitalize",
+                fontFamily: "Open Sans",
+                fontWeight: 600,
+              }}
+            >
+              Adicionar Linha
+            </Button>
+            <Button
+              variant="contained"
+              style={{
+                textTransform: "capitalize",
+                fontFamily: "Open Sans",
+                fontWeight: 600,
+              }}
+            >
+              <GoPackage style={{ marginRight: "0.5rem" }} />
+              Pacotes
+            </Button>
+          </div>
+        </div>
         <div style={{ display: "flex", justifyContent: "right" }}>
           <StatusPanel />
         </div>
         <LevelComponent />
-        <Button
-          variant="contained"
-          onClick={() => {
-            table.setCreatingRow(true);
-          }}
-        >
-          Adicionar Linha
-        </Button>
       </div>
     ),
   });
