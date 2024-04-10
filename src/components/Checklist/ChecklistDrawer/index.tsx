@@ -69,7 +69,18 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
         );
         successMessage("Checklist copiado com sucesso!");
       } catch (error: any) {
-        errorMessage("Erro ao copiar checklist!");
+        if (
+          error.response &&
+          error.response.status === 400 &&
+          error.response.data.detail ===
+            "Já existe um checklist com este nome nesta área."
+        ) {
+          errorMessage(
+            "Não é possível copiar checklists com nomes idênticos na mesma área."
+          );
+        } else {
+          errorMessage("Não foi possível copiar checklists!");
+        }
       }
     }
   };
