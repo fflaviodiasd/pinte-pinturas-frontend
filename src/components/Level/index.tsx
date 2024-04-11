@@ -138,6 +138,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
             value={valueActual}
             editable={true}
             post={true}
+            onCreateLevel={() => setIsInputVisible(false)}
           />
         )}
       </div>
