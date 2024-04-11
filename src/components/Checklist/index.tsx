@@ -173,6 +173,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
             value={valueActual}
             editable={true}
             post={true}
+            onCreateChecklist={() => setIsInputVisible(false)}
           />
         )}
       </div>
@@ -224,7 +225,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
                 editable={editingChipId === checklist.id}
                 chipId={editingChipId}
                 hideOrdinal={true}
-                checklistPackage={checklist.package.id}
+                checklistPackage={checklist.package?.id}
               />
             </div>
           </Tooltip>

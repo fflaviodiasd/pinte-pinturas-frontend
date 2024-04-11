@@ -25,6 +25,7 @@ interface ChipCustomChecklistProps {
   chipId?: number | null;
   hideOrdinal?: boolean;
   checklistPackage?: any;
+  onCreateChecklist?: () => void;
 }
 
 export const ChipCustomChecklist = ({
@@ -42,6 +43,7 @@ export const ChipCustomChecklist = ({
   chipId,
   hideOrdinal = false,
   checklistPackage,
+  onCreateChecklist,
 }: ChipCustomChecklistProps) => {
   const [editingValue, setEditingValue] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
@@ -55,13 +57,17 @@ export const ChipCustomChecklist = ({
   }, [editingValue, setValueActual]);
 
   const handleChipDeleteChecklist = async () => {
-    try {
-      const response = await api.delete(`checklists/${chipId}/`);
-      console.log(response);
-      successMessage("Checklist deletado com sucesso!");
-    } catch (error) {
-      errorMessage("Erro ao deletar checklist!");
-      console.error("Erro ao deletar checklist:", error);
+    if (onCreateChecklist) {
+      onCreateChecklist();
+    } else {
+      try {
+        const response = await api.delete(`checklists/${chipId}/`);
+        console.log(response);
+        successMessage("Checklist deletado com sucesso!");
+      } catch (error) {
+        errorMessage("Erro ao deletar checklist!");
+        console.error("Erro ao deletar checklist:", error);
+      }
     }
   };
 
