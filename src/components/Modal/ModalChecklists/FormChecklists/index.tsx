@@ -1,8 +1,12 @@
 import { Box, DialogContent, TextField } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { SelectComponent } from "../../../Select";
+import { useParams } from "react-router-dom";
+import { SelectChecklists } from "../SelectChecklists";
 
 export const FormChecklists = () => {
+  const { id } = useParams();
+
   const handleSubmit = async () => {
     console.log("submit");
   };
@@ -30,10 +34,10 @@ export const FormChecklists = () => {
                 }}
               >
                 <div style={{ display: "flex", gap: "1rem" }}>
-                  <SelectComponent
+                  <SelectChecklists
                     name="team"
                     label="Equipe"
-                    endpoint={`endpoint`}
+                    endpoint={`/constructions/${id}/teams/`}
                     optionKey="id"
                     optionValueKey="id"
                     optionLabelKey="name"
@@ -41,15 +45,15 @@ export const FormChecklists = () => {
                   <SelectComponent
                     name="measurement"
                     label="Medição"
-                    endpoint={`endpoint`}
+                    endpoint={`/constructions/${id}/measurements/`}
                     optionKey="id"
                     optionValueKey="id"
                     optionLabelKey="name"
                   />
-                  <SelectComponent
+                  <SelectChecklists
                     name="package"
                     label="Pacote"
-                    endpoint={`endpoint`}
+                    endpoint={`/constructions/${id}/packages/`}
                     optionKey="id"
                     optionValueKey="id"
                     optionLabelKey="name"
