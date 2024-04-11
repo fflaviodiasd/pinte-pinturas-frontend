@@ -129,7 +129,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
           <ChipCustomLevel
             name={"adicionar"}
             id={"adicionar"}
-            bg={"black"}
+            bg={"#B9EAFF"}
             placeholder={"Nome do nível"}
             subtmitData={handleLevelInputKeyDown}
             setValueActual={setValueActual}

@@ -79,7 +79,7 @@ export const ChipCustomLevel = ({
             onKeyDown={subtmitData}
             placeholder={placeholder}
             onClick={onClick}
-            bg={bg}
+            bg={"#DEF4FF"}
             post={post}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
