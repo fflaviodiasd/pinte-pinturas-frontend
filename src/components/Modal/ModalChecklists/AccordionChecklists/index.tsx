@@ -14,7 +14,7 @@ export default function AccordionChecklists({ localId }: any) {
     const fetchData = async () => {
       try {
         const response = await api.get(`areas/${localId}/checklist`);
-        const data = response.data;
+        const data = response.data.checklists;
         setChecklistName(data);
       } catch (error) {
         console.error("Erro ao buscar dados do backend:", error);
@@ -157,7 +157,7 @@ export default function AccordionChecklists({ localId }: any) {
                 </tr>
               </tbody>
             </table>
-            <FormChecklists />
+            <FormChecklists checklistId={item.id} />
           </AccordionDetails>
         </Accordion>
       ))}

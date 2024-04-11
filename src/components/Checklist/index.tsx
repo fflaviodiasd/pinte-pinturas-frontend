@@ -52,7 +52,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
       try {
         const response = await api.get(`areas/${localId}/checklist`);
         setChecklist(
-          response.data.map((checklist: Checklist) => ({
+          response.data.checklists.map((checklist: Checklist) => ({
             ...checklist,
             bg: STATUS_COLORS[checklist.status],
           }))

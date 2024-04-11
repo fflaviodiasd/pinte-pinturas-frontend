@@ -1,14 +1,16 @@
-import { Box, DialogContent, TextField } from "@mui/material";
+import { Box, Button, DialogContent, TextField } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { SelectComponent } from "../../../Select";
 import { useParams } from "react-router-dom";
 import { SelectChecklists } from "../SelectChecklists";
+import { useConstructions } from "../../../../hooks/useConstructions";
 
-export const FormChecklists = () => {
+export const FormChecklists = ({ checklistId }: any) => {
   const { id } = useParams();
+  const { updateChecklist } = useConstructions();
 
-  const handleSubmit = async () => {
-    console.log("submit");
+  const handleSubmit = async (values: any) => {
+    await updateChecklist(values, checklistId);
   };
 
   return (
@@ -82,6 +84,24 @@ export const FormChecklists = () => {
                       />
                     )}
                   </Field>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "right",
+                  }}
+                >
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    style={{
+                      textTransform: "capitalize",
+                      fontFamily: "Open Sans",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Salvar
+                  </Button>
                 </div>
               </DialogContent>
             </Form>

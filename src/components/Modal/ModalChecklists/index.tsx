@@ -61,11 +61,6 @@ export const ModalChecklists = ({
               Fechar
             </Typography>
           </Button>
-          <Button type="submit" variant="contained">
-            <Typography style={{ textTransform: "capitalize" }}>
-              Salvar
-            </Typography>
-          </Button>
         </DialogActions>
       </div>
     </Dialog>
