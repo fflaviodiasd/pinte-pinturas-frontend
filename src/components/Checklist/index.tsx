@@ -230,7 +230,11 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
           </Tooltip>
         ))}
       </StyledGridChecklist>
-      <ModalChecklists modalOpen={modalOpen} handleClose={handleClose} />
+      <ModalChecklists
+        modalOpen={modalOpen}
+        handleClose={handleClose}
+        localId={localId}
+      />
     </div>
   );
 };

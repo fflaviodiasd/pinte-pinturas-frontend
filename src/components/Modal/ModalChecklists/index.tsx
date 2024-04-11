@@ -16,11 +16,13 @@ type ModalChecklistsProps = {
   modalOpen: boolean;
   handleClose: () => void;
   handleDisable?: () => void;
+  localId?: any;
 };
 
 export const ModalChecklists = ({
   modalOpen,
   handleClose,
+  localId,
 }: ModalChecklistsProps) => {
   return (
     <Dialog
@@ -51,86 +53,8 @@ export const ModalChecklists = ({
             }}
           />
         </div>
-        <AccordionChecklists
-          accordionTitle={
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#F44336",
-                  marginLeft: "5px",
-                }}
-              />
-              1 | Nome Teste
-            </div>
-          }
-        />
-        <AccordionChecklists
-          accordionTitle={
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#F44336",
-                  marginLeft: "5px",
-                }}
-              />
-              1 | Nome Teste
-            </div>
-          }
-        />
-        <AccordionChecklists
-          accordionTitle={
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#F44336",
-                  marginLeft: "5px",
-                }}
-              />
-              1 | Nome Teste
-            </div>
-          }
-        />
-        <AccordionChecklists
-          accordionTitle={
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#F44336",
-                  marginLeft: "5px",
-                }}
-              />
-              1 | Nome Teste
-            </div>
-          }
-        />
-        <AccordionChecklists
-          accordionTitle={
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#F44336",
-                  marginLeft: "5px",
-                }}
-              />
-              1 | Nome Teste
-            </div>
-          }
-        />
+
+        <AccordionChecklists localId={localId} />
         <DialogActions>
           <Button onClick={handleClose}>
             <Typography style={{ textTransform: "capitalize" }}>
