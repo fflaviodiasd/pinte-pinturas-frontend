@@ -35,7 +35,7 @@ export const ModalChecklists = ({
         <span
           style={{ fontFamily: "Open Sans", fontWeight: 600, fontSize: "1rem" }}
         >
-          Local - L0000 | Nome Teste
+          Local | ID: {localId}
         </span>
         <div style={{ paddingTop: "0.5rem" }}>
           <TextField
