@@ -18,7 +18,7 @@ export const Constructions = () => {
   const [selectedConstructionName, setSelectedConstructionName] = useState("");
   const { constructionData, getConstruction } = useConstructions();
 
-  console.log('cId',constructionId);
+  console.log("cId", constructionId);
 
   useEffect(() => {
     if (constructionId) {
@@ -47,10 +47,10 @@ export const Constructions = () => {
       return <ListLocal />;
     }
     if (indexDisplay === 3) {
-      return <ServicesConstructions />
+      return <ServicesConstructions />;
     }
     if (indexDisplay === 4) {
-      return <PackageConstructions />
+      return <PackageConstructions />;
     }
   };
 
@@ -95,7 +95,6 @@ export const Constructions = () => {
           onClick={() => handleChangeContent(3)}
         />
 
-        
         <HeaderButton
           text="Pacotes"
           isActive={indexDisplay === 4}
