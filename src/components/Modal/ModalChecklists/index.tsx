@@ -1,4 +1,4 @@
-import { ReactElement, forwardRef } from "react";
+import { ReactElement, forwardRef, useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -11,6 +11,7 @@ import {
 import { TransitionProps } from "@mui/material/transitions";
 import { Search } from "@mui/icons-material";
 import AccordionChecklists from "./AccordionChecklists";
+import { api } from "../../../services/api";
 
 type ModalChecklistsProps = {
   modalOpen: boolean;
@@ -24,6 +25,22 @@ export const ModalChecklists = ({
   handleClose,
   localId,
 }: ModalChecklistsProps) => {
+  const [area, setArea] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`areas/${localId}/checklist`);
+        const data = response.data.area;
+        setArea(data);
+      } catch (error) {
+        console.error("Erro ao buscar dados do backend:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Dialog
       open={modalOpen}
@@ -35,7 +52,7 @@ export const ModalChecklists = ({
         <span
           style={{ fontFamily: "Open Sans", fontWeight: 600, fontSize: "1rem" }}
         >
-          Local | ID: {localId}
+          {area}
         </span>
         <div style={{ paddingTop: "0.5rem" }}>
           <TextField

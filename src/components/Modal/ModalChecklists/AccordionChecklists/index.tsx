@@ -9,6 +9,8 @@ import { api } from "../../../../services/api";
 
 export default function AccordionChecklists({ localId }: any) {
   const [checklistName, setChecklistName] = useState([]);
+  const [checklistHistory, setChecklistHistory] = useState([]);
+  const [area, setArea] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,6 +18,21 @@ export default function AccordionChecklists({ localId }: any) {
         const response = await api.get(`areas/${localId}/checklist`);
         const data = response.data.checklists;
         setChecklistName(data);
+        setArea(response.data.area);
+      } catch (error) {
+        console.error("Erro ao buscar dados do backend:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`checklists/id/histories`);
+        const data = response.data;
+        setChecklistHistory(data);
       } catch (error) {
         console.error("Erro ao buscar dados do backend:", error);
       }
@@ -67,94 +84,30 @@ export default function AccordionChecklists({ localId }: any) {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <Chip
-                      label="Liberado"
-                      style={{
-                        backgroundColor: "#FF9800",
-                        color: "#FFFFFF",
-                        fontFamily: "Open Sans",
-                        fontWeight: 600,
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <span>DD/MM/YYYY</span>
-                  </td>
-                  <td>
-                    <span>DD/MM/YYYY - 00:00:00 </span>
-                  </td>
-                  <td>
-                    <span>Teste</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <Chip
-                      label="Iniciado"
-                      style={{
-                        backgroundColor: "#4CAF50",
-                        color: "#FFFFFF",
-                        fontFamily: "Open Sans",
-                        fontWeight: 600,
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <span>-</span>
-                  </td>
-                  <td>
-                    <span>-</span>
-                  </td>
-                  <td>
-                    <span>-</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <Chip
-                      label="Finalizado"
-                      style={{
-                        backgroundColor: "#2196F3",
-                        color: "#FFFFFF",
-                        fontFamily: "Open Sans",
-                        fontWeight: 600,
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <span>-</span>
-                  </td>
-                  <td>
-                    <span>-</span>
-                  </td>
-                  <td>
-                    <span>-</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <Chip
-                      label="Entregue"
-                      style={{
-                        backgroundColor: "#673AB7",
-                        color: "#FFFFFF",
-                        fontFamily: "Open Sans",
-                        fontWeight: 600,
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <span>-</span>
-                  </td>
-                  <td>
-                    <span>-</span>
-                  </td>
-                  <td>
-                    <span>-</span>
-                  </td>
-                </tr>
+                {checklistHistory.map((item: any, index: number) => (
+                  <tr key={item.histories.id}>
+                    <td>
+                      <Chip
+                        label={item.status}
+                        style={{
+                          backgroundColor: STATUS_COLORS[item.status],
+                          color: "#FFFFFF",
+                          fontFamily: "Open Sans",
+                          fontWeight: 600,
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <span>{item.histories.written_date}</span>
+                    </td>
+                    <td>
+                      <span>{item.histories.marking_action_date}</span>
+                    </td>
+                    <td>
+                      <span>{item.histories.responsible_action}</span>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
             <FormChecklists checklistId={item.id} />
