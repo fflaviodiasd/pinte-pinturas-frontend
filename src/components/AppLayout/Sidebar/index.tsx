@@ -1,4 +1,4 @@
-import { useState, ReactElement, Fragment, useContext } from "react";
+import { useState, ReactElement, Fragment } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
@@ -11,27 +11,19 @@ import {
   Collapse,
   Link,
 } from "@mui/material";
+import { ExpandLess, ExpandMore, Menu } from "@mui/icons-material";
 
-import {
-  Business,
-  Badge,
-  ExpandLess,
-  ExpandMore,
-  Menu,
-  Logout,
-} from "@mui/icons-material";
+import { KEY_SIDEBAR } from "../../../utils/consts";
 
-import ClientsIcon from "../../../assets/images/clients.svg";
-import EmployeesIcon from "../../../assets/images/employees.svg";
-import ConstructionsIcon from "../../../assets/images/constructions.svg";
-import MaterialsIcon from "../../../assets/images/materials.svg";
-
-import logoImage from "../../../assets/images/logo.png";
+import { LogoutButton } from "./LogoutButton";
 
 import { Drawer, DrawerHeader } from "./styles";
-import { UserContext } from "../../../contexts/UserContext";
-import { BackgroundAvatar } from "../../Avatar";
-import AccountMenu from "../../AccountMenu";
+
+import ConstructionsIcon from "../../../assets/images/constructions.svg";
+import EmployeesIcon from "../../../assets/images/employees.svg";
+import MaterialsIcon from "../../../assets/images/materials.svg";
+import ClientsIcon from "../../../assets/images/clients.svg";
+import logoImage from "../../../assets/images/logo.png";
 
 interface NavItem {
   text: string;
@@ -44,12 +36,21 @@ export const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [openSidebar, setOpenSidebar] = useState(false);
+  const isSideBarOpen = () => {
+    const storageIsSideBarOpen = localStorage.getItem(KEY_SIDEBAR);
+    if (storageIsSideBarOpen) {
+      return Boolean(JSON.parse(storageIsSideBarOpen));
+    }
+    return false;
+  };
+
+  const [openSidebar, setOpenSidebar] = useState(isSideBarOpen());
   const [openClientsItemMenu, setOpenClientsItemMenu] = useState(false);
   const [openEmployeesItemMenu, setOpenEmployeesItemMenu] = useState(false);
 
   const handleDrawer = () => {
     setOpenSidebar(!openSidebar);
+    localStorage.setItem(KEY_SIDEBAR, String(!openSidebar));
     if (openSidebar) {
       setOpenClientsItemMenu(false);
       setOpenEmployeesItemMenu(false);
@@ -140,7 +141,6 @@ export const Sidebar = () => {
           </Box>
         </div>
 
-        {/* Drawer */}
         <DrawerHeader
           style={{
             display: "flex",
@@ -158,127 +158,134 @@ export const Sidebar = () => {
           </IconButton>
         </DrawerHeader>
 
-        <List>
-          {navItems.map((navItem) => {
-            const { path, subItems } = navItem;
-            const isActive = location.pathname.includes(path);
-            const isOpen =
-              path === "/clientes"
-                ? openClientsItemMenu
-                : openEmployeesItemMenu;
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            flex: 1,
+          }}
+        >
+          <List>
+            {navItems.map((navItem) => {
+              const { path, subItems } = navItem;
+              const isActive = location.pathname.includes(path);
+              const isOpen =
+                path === "/clientes"
+                  ? openClientsItemMenu
+                  : openEmployeesItemMenu;
 
-            return (
-              <Fragment key={navItem.text}>
-                {/* IsActive */}
-                <ListItem
-                  disablePadding
-                  sx={{
-                    display: "block",
-                    backgroundColor: isActive ? "#DEF4FF" : "",
-                  }}
-                >
-                  {/* Navigation */}
-                  <ListItemButton
+              return (
+                <Fragment key={navItem.text}>
+                  {/* IsActive */}
+                  <ListItem
+                    disablePadding
                     sx={{
-                      minHeight: 48,
-                      justifyContent: openSidebar ? "initial" : "center",
-                      px: 2.5,
-                    }}
-                    onClick={() => {
-                      if (subItems) {
-                        if (path === "/clientes") {
-                          handleClientsList();
-                        } else if (path === "/colaboradores") {
-                          handleEmployeesList();
-                        }
-                        setOpenSidebar(true);
-                      } else {
-                        navigate(`${path}`);
-                      }
+                      display: "block",
+                      backgroundColor: isActive ? "#DEF4FF" : "",
                     }}
                   >
-                    {/* Icons */}
-                    <ListItemIcon
+                    {/* Navigation */}
+                    <ListItemButton
                       sx={{
-                        minWidth: 0,
-                        mr: openSidebar ? 3 : "auto",
-                        justifyContent: "center",
-                        color: isActive ? "#0076BE" : "#2E3132",
+                        minHeight: 48,
+                        justifyContent: openSidebar ? "initial" : "center",
+                        px: 2.5,
+                      }}
+                      onClick={() => {
+                        if (subItems) {
+                          if (path === "/clientes") {
+                            handleClientsList();
+                          } else if (path === "/colaboradores") {
+                            handleEmployeesList();
+                          }
+                          setOpenSidebar(true);
+                        } else {
+                          navigate(`${path}`);
+                        }
                       }}
                     >
-                      {navItem.icon}
-                    </ListItemIcon>
+                      {/* Icons */}
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: openSidebar ? 3 : "auto",
+                          justifyContent: "center",
+                          color: isActive ? "#0076BE" : "#2E3132",
+                        }}
+                      >
+                        {navItem.icon}
+                      </ListItemIcon>
 
-                    {/* Text */}
-                    <ListItemText
-                      primary={navItem.text}
-                      sx={{
-                        opacity: openSidebar ? 1 : 0,
-                        fontFamily: "Open Sans",
-                        fontWeight: "600",
-                        fontSize: "1rem",
-                        lineHeight: "1.625rem",
-                        color: isActive ? "#0076BE" : "#2E3132",
-                        letterSpacing: "2px",
-                      }}
-                    />
-                    {subItems && openSidebar && returnedIcon(isOpen)}
-                  </ListItemButton>
-                </ListItem>
+                      {/* Text */}
+                      <ListItemText
+                        primary={navItem.text}
+                        sx={{
+                          opacity: openSidebar ? 1 : 0,
+                          fontFamily: "Open Sans",
+                          fontWeight: "600",
+                          fontSize: "1rem",
+                          lineHeight: "1.625rem",
+                          color: isActive ? "#0076BE" : "#2E3132",
+                          letterSpacing: "2px",
+                        }}
+                      />
+                      {subItems && openSidebar && returnedIcon(isOpen)}
+                    </ListItemButton>
+                  </ListItem>
 
-                {/* Collapse */}
-                {subItems && (
-                  <Collapse in={isOpen} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                      {subItems.map((subItem) => (
-                        <ListItem
-                          key={subItem.text}
-                          sx={{
-                            backgroundColor: location.pathname.includes(
-                              subItem.path
-                            )
-                              ? "#0076BE"
-                              : "#EBF4FA",
-                          }}
-                        >
-                          <Link
-                            underline="none"
-                            sx={{ pl: 4, cursor: "pointer" }}
-                            onClick={() => {
-                              navigate(subItem.path);
-                              if (subItem.path.includes("cadastrar")) {
-                                history.go(0);
-                              }
+                  {/* Collapse */}
+                  {subItems && (
+                    <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        {subItems.map((subItem) => (
+                          <ListItem
+                            key={subItem.text}
+                            sx={{
+                              backgroundColor: location.pathname.includes(
+                                subItem.path
+                              )
+                                ? "#0076BE"
+                                : "#EBF4FA",
                             }}
                           >
-                            <ListItemText
-                              primary={subItem.text}
-                              sx={{
-                                fontFamily: "Open Sans",
-                                fontSize: "1rem",
-                                color: location.pathname.includes(subItem.path)
-                                  ? "#FFFFFF"
-                                  : "#2E3132",
-                                fontWeight: 600,
-                                lineHeight: "1.625rem",
+                            <Link
+                              underline="none"
+                              sx={{ pl: 4, cursor: "pointer" }}
+                              onClick={() => {
+                                navigate(subItem.path);
+                                if (subItem.path.includes("cadastrar")) {
+                                  history.go(0);
+                                }
                               }}
-                            />
-                          </Link>
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Collapse>
-                )}
-              </Fragment>
-            );
-          })}
-        </List>
+                            >
+                              <ListItemText
+                                primary={subItem.text}
+                                sx={{
+                                  fontFamily: "Open Sans",
+                                  fontSize: "1rem",
+                                  color: location.pathname.includes(
+                                    subItem.path
+                                  )
+                                    ? "#FFFFFF"
+                                    : "#2E3132",
+                                  fontWeight: 600,
+                                  lineHeight: "1.625rem",
+                                }}
+                              />
+                            </Link>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Collapse>
+                  )}
+                </Fragment>
+              );
+            })}
+          </List>
 
-        {/* Logout Button */}
-
-        <Box sx={{ marginTop: "100%" }}>
-          <AccountMenu />
-        </Box>
+          <LogoutButton />
+        </div>
       </Drawer>
     </Box>
   );
