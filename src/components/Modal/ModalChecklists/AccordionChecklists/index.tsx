@@ -6,10 +6,10 @@ import Chip from "@mui/material/Chip";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { FormChecklists } from "../FormChecklists";
 import { api } from "../../../../services/api";
+import { HistoryInfo } from "../HistoryInfo";
 
 export default function AccordionChecklists({ localId }: any) {
   const [checklistName, setChecklistName] = useState([]);
-  const [checklistHistory, setChecklistHistory] = useState([]);
   const [area, setArea] = useState("");
 
   useEffect(() => {
@@ -19,20 +19,6 @@ export default function AccordionChecklists({ localId }: any) {
         const data = response.data.checklists;
         setChecklistName(data);
         setArea(response.data.area);
-      } catch (error) {
-        console.error("Erro ao buscar dados do backend:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await api.get(`checklists/id/histories`);
-        const data = response.data;
-        setChecklistHistory(data);
       } catch (error) {
         console.error("Erro ao buscar dados do backend:", error);
       }
@@ -83,32 +69,7 @@ export default function AccordionChecklists({ localId }: any) {
                   <th>Atualização</th>
                 </tr>
               </thead>
-              <tbody>
-                {checklistHistory.map((item: any, index: number) => (
-                  <tr key={item.histories.id}>
-                    <td>
-                      <Chip
-                        label={item.status}
-                        style={{
-                          backgroundColor: STATUS_COLORS[item.status],
-                          color: "#FFFFFF",
-                          fontFamily: "Open Sans",
-                          fontWeight: 600,
-                        }}
-                      />
-                    </td>
-                    <td>
-                      <span>{item.histories.written_date}</span>
-                    </td>
-                    <td>
-                      <span>{item.histories.marking_action_date}</span>
-                    </td>
-                    <td>
-                      <span>{item.histories.responsible_action}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+              <HistoryInfo checklistId={item.id} />
             </table>
             <FormChecklists checklistId={item.id} />
           </AccordionDetails>
