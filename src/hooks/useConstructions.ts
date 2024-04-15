@@ -72,6 +72,25 @@ export const useConstructions = () => {
     }
   };
 
+  const getChecklists = async (checklistId: any) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/checklists/${checklistId}/`);
+      setConstructionData({
+        ...constructionData,
+        team: data.team,
+        measurement: data.measurement,
+        package: data.package,
+        number: data.order,
+        checklistName: data.name,
+      });
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const addConstructionLocal = async (
     values: any,
     dynamicColumns: MRT_ColumnDef<any>[]
@@ -671,6 +690,7 @@ export const useConstructions = () => {
     listConstructionsTeamMembers,
     getConstruction,
     getConstructionTeamMember,
+    getChecklists,
     addConstruction,
     addConstructionMaterial,
     addConstructionTeam,

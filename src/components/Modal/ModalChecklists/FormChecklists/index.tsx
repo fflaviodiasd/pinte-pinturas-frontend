@@ -4,27 +4,30 @@ import { SelectComponent } from "../../../Select";
 import { useParams } from "react-router-dom";
 import { SelectChecklists } from "../SelectChecklists";
 import { useConstructions } from "../../../../hooks/useConstructions";
+import { useEffect } from "react";
 
 export const FormChecklists = ({ checklistId }: any) => {
   const { id } = useParams();
-  const { updateChecklist } = useConstructions();
+  const { updateChecklist, getChecklists, constructionData } =
+    useConstructions();
 
   const handleSubmit = async (values: any) => {
     await updateChecklist(values, checklistId);
   };
 
+  useEffect(() => {
+    if (checklistId) {
+      getChecklists(checklistId);
+    }
+  }, [checklistId]);
+
   return (
     <div>
       <Box>
         <Formik
-          initialValues={{
-            team: "",
-            measurement: "",
-            package: "",
-            number: "",
-            checklistName: "",
-          }}
+          initialValues={constructionData}
           onSubmit={handleSubmit}
+          enableReinitialize={true}
         >
           {() => (
             <Form>
@@ -63,24 +66,30 @@ export const FormChecklists = ({ checklistId }: any) => {
                 </div>
                 <div style={{ display: "flex", gap: "1rem" }}>
                   <Field name="number">
-                    {({ field }: any) => (
+                    {({ field, form }: any) => (
                       <TextField
                         {...field}
                         label="Nº"
                         variant="outlined"
                         size="small"
                         fullWidth
+                        InputLabelProps={{
+                          shrink: !!form.values.number,
+                        }}
                       />
                     )}
                   </Field>
                   <Field name="checklistName">
-                    {({ field }: any) => (
+                    {({ field, form }: any) => (
                       <TextField
                         {...field}
                         label="Nome do Checklist"
                         variant="outlined"
                         size="small"
                         fullWidth
+                        InputLabelProps={{
+                          shrink: !!form.values.checklistName,
+                        }}
                       />
                     )}
                   </Field>
