@@ -22,7 +22,6 @@ type ConstructionService = {
   package_workmanship: string;
 };
 
-
 export const useConstructions = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -39,8 +38,6 @@ export const useConstructions = () => {
     areas: [],
     teamName: "",
   });
-
-
 
   const getConstruction = async (id: string) => {
     setLoading(true);
@@ -76,41 +73,42 @@ export const useConstructions = () => {
   };
 
   const addConstructionLocal = async (
-    values: any,
-    dynamicColumns: MRT_ColumnDef<any>[]
+    dynamicColumns: MRT_ColumnDef<any>[],
+    list: any[]
   ) => {
     try {
-      if (dynamicColumns && dynamicColumns.length > 0) {
-        const levels = dynamicColumns
-          .filter(
-            (column) =>
-              column.accessorKey && column.accessorKey.startsWith("nivel_")
-          )
-          .map((column) => {
-            const name =
-              values && values[column.accessorKey as keyof typeof values];
-            return {
-              level: {
-                name: column.header,
-              },
-              name: name || "",
-            };
-          });
-        const requestData = {
-          areas: [
-            {
-              code: values && values.code,
-              levels: levels,
-            },
-          ],
-        };
-        console.log(requestData);
-        await api.post(`constructions/${id}/areas/`, requestData);
-        successMessage("Área adicionada com sucesso!");
-        setLoading(false);
-      } else {
-        errorMessage("Não foi possível adicionar área!");
-      }
+      const newList = list.map((item: any) => {
+        console.log(item);
+
+        if (dynamicColumns && dynamicColumns.length > 0) {
+          const levels = dynamicColumns
+            .filter(
+              (column) =>
+                column.accessorKey && column.accessorKey.startsWith("nivel_")
+            )
+            .map((column) => {
+              const name =
+                item && item[column.accessorKey as keyof typeof item];
+              return {
+                level: {
+                  name: column.header,
+                },
+                name: name || "",
+              };
+            });
+          return {
+            code: item && item.code,
+            levels: levels,
+          };
+        } else {
+          errorMessage("Não foi possível adicionar área!");
+        }
+      });
+      console.log({ areas: newList });
+
+      await api.post(`constructions/${id}/areas/`, { areas: newList });
+      successMessage("Área adicionada com sucesso!");
+      setLoading(false);
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível adicionar área!");
@@ -386,6 +384,7 @@ export const useConstructions = () => {
           ...levelNames,
         };
       });
+
       setListConstructionsLocations(constructionLocalList);
       setLoading(false);
     } catch (error) {
@@ -418,11 +417,13 @@ export const useConstructions = () => {
     }
   };
 
-  const [listConstructionServices, setListConstructionServices] = useState<ConstructionService[]>([]);
+  const [listConstructionServices, setListConstructionServices] = useState<
+    ConstructionService[]
+  >([]);
 
   const getAllConstructionServices = async () => {
     if (!id) {
-      console.error('ID da construção não foi fornecido');
+      console.error("ID da construção não foi fornecido");
       return;
     }
 
@@ -432,7 +433,7 @@ export const useConstructions = () => {
       setListConstructionServices(data);
       setLoading(false);
     } catch (error) {
-      console.error('Erro ao obter serviços de construção:', error);
+      console.error("Erro ao obter serviços de construção:", error);
       setLoading(false);
     }
   };
@@ -442,7 +443,7 @@ export const useConstructions = () => {
     try {
       await api.delete(`/services/${packageId}`);
     } catch (error) {
-      throw error; 
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -453,11 +454,11 @@ export const useConstructions = () => {
     try {
       const { data } = await api.get(`/services/${serviceId}/steps/`);
       setLoading(false);
-      return data; 
+      return data;
     } catch (error) {
-      console.error('Erro ao obter etapas do serviço:', error);
+      console.error("Erro ao obter etapas do serviço:", error);
       setLoading(false);
-      throw error; 
+      throw error;
     }
   };
 
@@ -466,62 +467,69 @@ export const useConstructions = () => {
     try {
       const { data } = await api.get(`/services/${serviceId}/`);
       setLoading(false);
-      return data; 
+      return data;
     } catch (error) {
-      console.error('Erro ao obter info do serviço:', error);
+      console.error("Erro ao obter info do serviço:", error);
       setLoading(false);
-      throw error; 
+      throw error;
     }
   };
 
   const addConstructionService = async (newService: any) => {
     setLoading(true);
     try {
-      const response = await api.post(`/constructions/${id}/services/`, newService);
-      setListConstructionServices(prevServices => [...prevServices, response.data]);
-      successMessage('Serviço adicionado com sucesso!');
+      const response = await api.post(
+        `/constructions/${id}/services/`,
+        newService
+      );
+      setListConstructionServices((prevServices) => [
+        ...prevServices,
+        response.data,
+      ]);
+      successMessage("Serviço adicionado com sucesso!");
     } catch (error) {
-      errorMessage('Erro ao adicionar o serviço!');
+      errorMessage("Erro ao adicionar o serviço!");
     } finally {
       setLoading(false);
     }
   };
 
-  const addServiceStep = async (stepId:any, stepData:any) => {
+  const addServiceStep = async (stepId: any, stepData: any) => {
     setLoading(true);
     try {
       const response = await api.post(`/services/${stepId}/steps/`, stepData);
-      successMessage('Etapa adicionada com sucesso!');
-      return response.data; 
+      successMessage("Etapa adicionada com sucesso!");
+      return response.data;
     } catch (error) {
-      console.error('Erro ao adicionar etapa:', error);
-      errorMessage('Não foi possível adicionar a etapa!');
-      throw error; 
+      console.error("Erro ao adicionar etapa:", error);
+      errorMessage("Não foi possível adicionar a etapa!");
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  const deleteServiceStep = async (stepId:any) => {
+  const deleteServiceStep = async (stepId: any) => {
     setLoading(true);
     try {
       await api.delete(`/step_services/${stepId}/`);
-      successMessage('Etapa removida com sucesso!');
+      successMessage("Etapa removida com sucesso!");
     } catch (error) {
-      console.error('Erro ao remover etapa:', error);
-      errorMessage('Não foi possível remover a etapa!');
-      throw error; 
+      console.error("Erro ao remover etapa:", error);
+      errorMessage("Não foi possível remover a etapa!");
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
-
-const [listConstructionPackages, setListConstructionPackages] = useState<ConstructionPackage[]>([]);
+  const [listConstructionPackages, setListConstructionPackages] = useState<
+    ConstructionPackage[]
+  >([]);
 
   const getAllConstructionPackages = async () => {
     if (!id) {
-      console.error('ID da construção não foi fornecido');
+      console.error("ID da construção não foi fornecido");
       return;
     }
 
@@ -531,7 +539,7 @@ const [listConstructionPackages, setListConstructionPackages] = useState<Constru
       setListConstructionPackages(data);
       setLoading(false);
     } catch (error) {
-      console.error('Erro ao obter pacotes de construção:', error);
+      console.error("Erro ao obter pacotes de construção:", error);
       setLoading(false);
     }
   };
@@ -541,7 +549,7 @@ const [listConstructionPackages, setListConstructionPackages] = useState<Constru
     try {
       await api.delete(`/packages/${packageId}`);
     } catch (error) {
-      throw error; 
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -550,67 +558,74 @@ const [listConstructionPackages, setListConstructionPackages] = useState<Constru
   const addConstructionPackage = async (newPackage: any) => {
     setLoading(true);
     try {
-      const response = await api.post(`/constructions/${id}/packages/`, newPackage);
-      setListConstructionPackages(prevPackages => [...prevPackages, response.data]);
-      successMessage('Pacote adicionado com sucesso!');
+      const response = await api.post(
+        `/constructions/${id}/packages/`,
+        newPackage
+      );
+      setListConstructionPackages((prevPackages) => [
+        ...prevPackages,
+        response.data,
+      ]);
+      successMessage("Pacote adicionado com sucesso!");
     } catch (error) {
-      errorMessage('Erro ao adicionar o pacote!');
+      errorMessage("Erro ao adicionar o pacote!");
     } finally {
       setLoading(false);
     }
   };
 
-const getAllPackageStepsById = async (packageId: number) => {
-  setLoading(true);
-  try {
-    const { data } = await api.get(`/packages/${packageId}/steps/`);
-    setLoading(false);
-    return data; 
-  } catch (error) {
-    console.error('Erro ao obter etapas do pacote:', error);
-    setLoading(false);
-    throw error; 
-  }
-};
-
-
+  const getAllPackageStepsById = async (packageId: number) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/packages/${packageId}/steps/`);
+      setLoading(false);
+      return data;
+    } catch (error) {
+      console.error("Erro ao obter etapas do pacote:", error);
+      setLoading(false);
+      throw error;
+    }
+  };
 
   const getAllDisciplines = async () => {
     setLoading(true);
     try {
       const { data } = await api.get(`/disciplines/`);
       setLoading(false);
-      return data
+      return data;
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
-  }
-  
-  const addPackageStep = async (packageId:any, stepData:any) => {
+  };
+
+  const addPackageStep = async (packageId: any, stepData: any) => {
     setLoading(true);
     try {
-      const response = await api.post(`/packages/${packageId}/steps/`, stepData);
-      successMessage('Etapa adicionada com sucesso!');
-      return response.data; 
+      const response = await api.post(
+        `/packages/${packageId}/steps/`,
+        stepData
+      );
+      successMessage("Etapa adicionada com sucesso!");
+      return response.data;
     } catch (error) {
-      console.error('Erro ao adicionar etapa:', error);
-      errorMessage('Não foi possível adicionar a etapa!');
-      throw error; 
+      console.error("Erro ao adicionar etapa:", error);
+      errorMessage("Não foi possível adicionar a etapa!");
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  const deletePackageStep = async (stepId:any) => {
+  const deletePackageStep = async (stepId: any) => {
     setLoading(true);
     try {
       await api.delete(`/step_packages/${stepId}/`);
-      successMessage('Etapa removida com sucesso!');
+      successMessage("Etapa removida com sucesso!");
     } catch (error) {
-      console.error('Erro ao remover etapa:', error);
-      errorMessage('Não foi possível remover a etapa!');
-      throw error; 
+      console.error("Erro ao remover etapa:", error);
+      errorMessage("Não foi possível remover a etapa!");
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -628,7 +643,6 @@ const getAllPackageStepsById = async (packageId: number) => {
       return []; // Retorna um array vazio em caso de erro
     }
   };
-  
 
   return {
     loading,
@@ -674,7 +688,7 @@ const getAllPackageStepsById = async (packageId: number) => {
     getAllServiceStepsById,
     addServiceStep,
     deleteServiceStep,
-    getServiceById
-
+    getServiceById,
+    setListConstructionsLocations,
   };
 };

@@ -38,6 +38,7 @@ const Locations = () => {
     getAllConstructionsLocations,
     addConstructionLocal,
     disableConstructionLocal,
+    setListConstructionsLocations,
   } = useConstructions();
 
   const [selectedLocalIds, setSelectedLocalIds] = useState<number[]>([]);
@@ -93,11 +94,8 @@ const Locations = () => {
     fetchLevel();
   }, []);
 
-  const handleCreateLocal: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
-    values,
-    table,
-  }) => {
-    await addConstructionLocal(values, dynamicColumns);
+  const handleCreateLocal = async () => {
+    await addConstructionLocal(dynamicColumns, listConstructionsLocations);
   };
 
   const handleDeleteSnackbar = () => {
@@ -153,12 +151,11 @@ const Locations = () => {
         transition: "transform 0.2s",
       },
     }),
-    renderDetailPanel: ({ row }) => (
-      <ChecklistComponent localId={row.original.id} />
-    ),
+    renderDetailPanel: ({ row }) =>
+      row.original ? <ChecklistComponent localId={row.original.id} /> : null,
     getRowId: (row) => row.id,
     onCreatingRowCancel: () => setValidationErrors({}),
-    onCreatingRowSave: handleCreateLocal,
+    // onCreatingRowSave: handleCreateLocal,
     renderRowActions: ({ row }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
         <Checkbox
@@ -192,9 +189,12 @@ const Locations = () => {
           <div>
             <Button
               variant="contained"
-              onClick={() => {
-                table.setCreatingRow(true);
-              }}
+              onClick={() =>
+                setListConstructionsLocations([
+                  ...listConstructionsLocations,
+                  {},
+                ])
+              }
               style={{
                 marginRight: "0.5rem",
                 textTransform: "capitalize",
@@ -203,6 +203,18 @@ const Locations = () => {
               }}
             >
               Adicionar Linha
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleCreateLocal}
+              style={{
+                marginRight: "0.5rem",
+                textTransform: "capitalize",
+                fontFamily: "Open Sans",
+                fontWeight: 600,
+              }}
+            >
+              Salvar
             </Button>
             <Button
               variant="contained"
