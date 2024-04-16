@@ -22,6 +22,7 @@ import { StatusPanel } from "../../../components/StatusPanel";
 import { Info } from "@mui/icons-material";
 import { useStyles } from "./styles";
 import { GoPackage } from "react-icons/go";
+import { ModalPackages } from "../../../components/Modal/ModalPackages";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -43,6 +44,11 @@ const Locations = () => {
   const [selectedLocalIds, setSelectedLocalIds] = useState<number[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { classes } = useStyles();
+  const [modalOpen, setIsModalOpen] = useState(false);
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     getAllConstructionsLocations(dynamicColumns);
@@ -211,6 +217,9 @@ const Locations = () => {
                 fontFamily: "Open Sans",
                 fontWeight: 600,
               }}
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
             >
               <GoPackage style={{ marginRight: "0.5rem" }} />
               Pacotes
@@ -233,6 +242,7 @@ const Locations = () => {
         onClose={() => setIsDrawerOpen(false)}
         selectedLocalIds={selectedLocalIds}
       />
+      <ModalPackages modalOpen={modalOpen} handleClose={handleClose} />
     </>
   );
 };
