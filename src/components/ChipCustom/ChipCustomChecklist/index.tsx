@@ -47,7 +47,7 @@ export const ChipCustomChecklist = ({
 }: ChipCustomChecklistProps) => {
   const [editingValue, setEditingValue] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
-
+  const [valueEdit, setValueEdit] = useState<any>(number);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEditingValue(event.target.value);
   };
@@ -105,10 +105,24 @@ export const ChipCustomChecklist = ({
         </div>
       )}
       {number && (
-        <StyledChipLabelNumber bg={bg}>{number}º</StyledChipLabelNumber>
+        <StyledChipLabelNumber
+          type="text"
+          value={`${valueEdit}°`}
+          bg={bg}
+          onChange={(e: any) => setValueEdit(e.target.value)}
+        >
+          {/* {number}º */}
+        </StyledChipLabelNumber>
       )}
       {number && hideOrdinal && (
-        <StyledChipLabelNumber bg={bg}>{number}</StyledChipLabelNumber>
+        <StyledChipLabelNumber
+          type="text"
+          bg={bg}
+          value={valueEdit}
+          onChange={(e: any) => setValueEdit(e.target.value)}
+        >
+          {/* {number} */}
+        </StyledChipLabelNumber>
       )}
     </StyledChipDiv>
   );
