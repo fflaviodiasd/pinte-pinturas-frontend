@@ -115,7 +115,15 @@ export const ListConstructions = () => {
       {
         accessorKey: "percentageCompleted",
         enableColumnFilterModes: false,
-        filterFn: "startsWith",
+        filterFn: "betweenInclusive",
+        muiFilterSliderProps: {
+          marks: true,
+          max: 100,
+          min: 0,
+          step: 1,
+          valueLabelDisplay: "auto",
+        },
+        filterVariant: "range-slider",
         header: "Execução",
         Cell: ({ cell }) => (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
