@@ -143,7 +143,8 @@ export const ListConstructions = () => {
     columns,
     data: listConstructions,
     enableColumnFilterModes: true,
-    initialState: { showColumnFilters: true },
+  
+    initialState: { showColumnFilters: true, density: 'compact'},
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;
