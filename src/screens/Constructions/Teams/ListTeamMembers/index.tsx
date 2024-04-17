@@ -4,16 +4,13 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Box, Chip, Grid, TextField, useTheme } from "@mui/material";
-import { useStyles } from "./styles";
-import { useNavigate } from "react-router-dom";
+import { Box, Chip, Grid, useTheme } from "@mui/material";
+
 import { BackgroundAvatar } from "../../../../components/Avatar";
 import { useConstructions } from "../../../../hooks/useConstructions";
 import { FormTeamMembers } from "../FormTeamMembers";
 
 export const ListTeamMembers = ({ teamId }: any) => {
-  const { classes } = useStyles();
-  const navigate = useNavigate();
   const { listConstructionsTeamMembers, getAllConstructionsTeamMembers } =
     useConstructions();
   const theme = useTheme();
@@ -34,6 +31,8 @@ export const ListTeamMembers = ({ teamId }: any) => {
       getAllConstructionsTeamMembers(teamId);
     }
   }, [teamId]);
+
+  console.log("listConstructionsTeamMembers", listConstructionsTeamMembers);
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -110,7 +109,7 @@ export const ListTeamMembers = ({ teamId }: any) => {
       elevation: 0,
     },
     muiTableBodyProps: {
-      sx: (theme) => ({
+      sx: () => ({
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",

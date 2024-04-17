@@ -9,14 +9,13 @@ import { TitleScreen } from "../../../components/TitleScreen";
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { EditIcon } from "../../../components/EditIcon";
-import { TablePagination } from "../../../components/Table/Pagination";
+
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { Navbar } from "../../../components/Navbar";
 import Breadcrumb from "../../../components/Breadcrumb";
 
 export const ListConstructions = () => {
-  const { classes } = useStyles();
   const navigate = useNavigate();
   const { listConstructions, getAllConstructions } = useConstructions();
   const theme = useTheme();
@@ -45,7 +44,9 @@ export const ListConstructions = () => {
             }}
           >
             <EditIcon
-              onClick={() => navigate(`/obras/${cell.row.original.id}`)}
+              onClick={() =>
+                navigate(`/obras/${cell.row.original.id}/materiais`)
+              }
               label="Editar"
             />
           </div>

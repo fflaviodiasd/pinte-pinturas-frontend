@@ -11,7 +11,7 @@ interface Option {
   office: string;
 }
 
-export default function AutocompleteCategories({ endpoint, onSelect }: any) {
+export function AutocompleteCategories({ endpoint, onSelect }: any) {
   const [options, setOptions] = useState<Option[]>([]);
 
   const fetchData = async () => {

@@ -10,7 +10,7 @@ import {
   MRT_ShowHideColumnsButton,
 } from "material-react-table";
 
-import { Box, Grid, Tooltip, useTheme, Typography} from "@mui/material";
+import { Box, Grid, Tooltip, useTheme, Typography } from "@mui/material";
 import { useStyles } from "./styles";
 import { useParams, useNavigate } from "react-router-dom";
 import { useConstructions } from "../../../hooks/useConstructions";
@@ -24,10 +24,8 @@ interface DropdownOption {
   id: any;
   name: any;
   label: string;
-  value: any; 
+  value: any;
 }
-
-
 
 export const ServicesConstructions = () => {
   const { classes } = useStyles();
@@ -38,12 +36,14 @@ export const ServicesConstructions = () => {
     disableConstructionService,
     addConstructionService,
     getAllUnits,
-
   } = useConstructions();
   const theme = useTheme();
 
-  const [selectedPackageConstructionId, setSelectedPackageConstructionId] = useState<number>(0);
-  const [disciplineOptions, setDisciplineOptions] = useState<DropdownOption[]>([]);
+  const [selectedPackageConstructionId, setSelectedPackageConstructionId] =
+    useState<number>(0);
+  const [disciplineOptions, setDisciplineOptions] = useState<DropdownOption[]>(
+    []
+  );
   const [unitOptions, setUnitOptions] = useState<DropdownOption[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -53,51 +53,41 @@ export const ServicesConstructions = () => {
   const { id } = useParams();
   // console.log('construction id pac: ', selectedPackageConstructionId)
 
-
   useEffect(() => {
     if (id) {
       getAllConstructionServices();
     }
   }, [id]);
-  
-  useEffect(() => {
 
-  const fetchUnits = async () => {
-    try {
-      const data = await getAllUnits();
-      if (data && Array.isArray(data.results)) {
-        const options: DropdownOption[] = data.results.map((d: { name: any; }) => ({
-          label: d.name,
-          value: d.name,
-        }));
-        setUnitOptions(options);
-      
-      } else {
-        console.error("Formato inesperado da resposta:", data);
+  useEffect(() => {
+    const fetchUnits = async () => {
+      try {
+        const data = await getAllUnits();
+        if (data && Array.isArray(data.results)) {
+          const options: DropdownOption[] = data.results.map(
+            (d: { name: any }) => ({
+              label: d.name,
+              value: d.name,
+            })
+          );
+          setUnitOptions(options);
+        } else {
+          console.error("Formato inesperado da resposta:", data);
+          setUnitOptions([]);
+        }
+      } catch (error) {
+        errorMessage("Não foi possível carregar medidas!");
         setUnitOptions([]);
       }
-    } catch (error) {
-      errorMessage("Não foi possível carregar medidas!");
-      setUnitOptions([]);
-    }
-  };
-  fetchUnits();
-
-}, []); 
-
-
-  useEffect(() => {
-    console.log('unitOpstions atualizado:', unitOptions);
-  }, [unitOptions]);
-
-  
+    };
+    fetchUnits();
+  }, []);
 
   const handleDisable = async (packageId: number) => {
     try {
       await disableConstructionService(packageId);
       successMessage("Serviço apagado com sucesso!");
-      getAllConstructionServices(); 
-
+      getAllConstructionServices();
     } catch (error) {
       errorMessage("Não foi possível apagar serviço!");
     }
@@ -115,56 +105,51 @@ export const ServicesConstructions = () => {
   //   exitEditingMode(); // Sai do modo de edição após a atualização
   // };
 
-  const handleEditPackages: MRT_TableOptions<any>['onEditingRowSave'] = async ({
+  const handleEditPackages: MRT_TableOptions<any>["onEditingRowSave"] = async ({
     exitEditingMode,
     row,
     values,
   }) => {
     if (!row?.original?.id) {
-      errorMessage('Não foi possível identificar o pacote para atualização.');
+      errorMessage("Não foi possível identificar o pacote para atualização.");
       return;
     }
-  
+
     try {
-      console.log('Salvando edições para o pacote:', values);
-  
+      console.log("Salvando edições para o pacote:", values);
+
       // const updatedPackage = await updateConstructionPackage(row.original.id, values);
-  
+
       // setListConstructionPackages(prevPackages =>
       //   prevPackages.map(pkg => (pkg.id === row.original.id ? { ...pkg, ...updatedPackage } : pkg))
       // );
-  
-      successMessage('Pacote atualizado com sucesso.');
-      exitEditingMode(); 
+
+      successMessage("Pacote atualizado com sucesso.");
+      exitEditingMode();
     } catch (error) {
-      errorMessage('Erro ao atualizar o pacote.');
-      console.error('Erro ao salvar as edições:', error);
+      errorMessage("Erro ao atualizar o pacote.");
+      console.error("Erro ao salvar as edições:", error);
     }
   };
-  
-  
-  const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
-    values,
-    table,
-  }) => {
-    const { 'unit.name': unitName, id, ...restOfValues } = values;
-  
-    const adjustedValues = {
-      ...restOfValues,
-      unit: unitName, 
+
+  const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] =
+    async ({ values, table }) => {
+      const { "unit.name": unitName, id, ...restOfValues } = values;
+
+      const adjustedValues = {
+        ...restOfValues,
+        unit: unitName,
+      };
+
+      console.log("Adjusted values for API:", adjustedValues);
+
+      await addConstructionService(adjustedValues);
+      getAllConstructionServices();
     };
-  
-    console.log('Adjusted values for API:', adjustedValues);
-  
-    await addConstructionService(adjustedValues);
-    getAllConstructionServices();
-  };
-  
 
   const baseBackgroundColor =
     theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
- 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       // {
@@ -173,11 +158,11 @@ export const ServicesConstructions = () => {
       //   columnDefType: "display",
       //   Cell: ({ cell }) => (
       //     <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-        
+
       //       <IconButton
       //         aria-label="Excluir"
       //         onClick={() => handleDisable(cell.row.original.id)}
-      //         sx={{ color: "#C5C7C8" }} 
+      //         sx={{ color: "#C5C7C8" }}
       //       >
       //         <Delete />
       //       </IconButton>
@@ -186,7 +171,7 @@ export const ServicesConstructions = () => {
       //         onClick={() => {
       //           setSelectedPackageConstructionId(cell.row.original.id);
       //         }}
-      //         sx={{ color: "#C5C7C8" }} 
+      //         sx={{ color: "#C5C7C8" }}
       //       >
       //         <Edit />
       //       </IconButton>
@@ -199,18 +184,16 @@ export const ServicesConstructions = () => {
         filterFn: "startsWith",
         header: "ID",
         enableEditing: false,
-
       },
       {
         accessorKey: "order",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Ordem",
-        enableEditing: true, 
+        enableEditing: true,
         muiEditTextFieldProps: {
           required: true,
           type: "number",
-
         },
       },
       {
@@ -218,7 +201,7 @@ export const ServicesConstructions = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Nome do Serviço",
-        enableEditing: true, 
+        enableEditing: true,
         muiEditTextFieldProps: {
           required: true,
         },
@@ -228,7 +211,7 @@ export const ServicesConstructions = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Escopo",
-        enableEditing: true, 
+        enableEditing: true,
         muiEditTextFieldProps: {
           required: true,
         },
@@ -238,36 +221,36 @@ export const ServicesConstructions = () => {
       //   enableColumnFilterModes: false,
       //   filterFn: "startsWith",
       //   header: "Medida",
-      //   enableEditing: true, 
+      //   enableEditing: true,
       //   muiEditTextFieldProps: {
       //     required: true,
       //   },
       // },
 
-         {
+      {
         accessorKey: "unit.name",
         header: "Unidade",
         enableEditing: true,
-        editVariant: 'select',
-        editSelectOptions: unitOptions, 
+        editVariant: "select",
+        editSelectOptions: unitOptions,
         muiEditSelectFieldProps: {
           required: true,
-        }
+        },
       },
       {
         accessorKey: "step_services_amount",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Etapas",
-        enableEditing: false, 
+        enableEditing: false,
       },
-   
+
       {
         accessorKey: "amount",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Quantidade",
-        enableEditing: true, 
+        enableEditing: true,
         muiEditTextFieldProps: {
           required: true,
         },
@@ -300,9 +283,9 @@ export const ServicesConstructions = () => {
         header: "Preço Total M.O",
         enableEditing: false,
       },
-  
-    
-    ], [unitOptions]); 
+    ],
+    [unitOptions]
+  );
 
   const table = useMaterialReactTable({
     columns,
@@ -310,19 +293,18 @@ export const ServicesConstructions = () => {
     enableColumnFilterModes: true,
     onCreatingRowSave: handleCreatePackages,
     onEditingRowSave: handleEditPackages,
-    enableEditing: true, 
-    editDisplayMode: 'row', 
-    createDisplayMode: 'row', 
+    enableEditing: true,
+    editDisplayMode: "row",
+    createDisplayMode: "row",
     state: {
-      isSaving, 
+      isSaving,
     },
-    renderRowActions: 
-    ({ row }) => (
+    renderRowActions: ({ row }) => (
       <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
         <IconButton
           aria-label="Excluir"
           onClick={() => handleDisable(row.original.id)}
-          sx={{ color: "#C5C7C8" }} 
+          sx={{ color: "#C5C7C8" }}
         >
           <Delete />
         </IconButton>
@@ -338,70 +320,89 @@ export const ServicesConstructions = () => {
 
     initialState: { showColumnFilters: true },
     renderDetailPanel: ({ row }) => (
-      <Box sx={{ padding: '1rem' }}>
+      <Box sx={{ padding: "1rem" }}>
         <ServiceStepTable order={row.original.id} />
       </Box>
     ),
     renderTopToolbar: ({ table }) => (
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', padding: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "1rem",
+          padding: 2,
+        }}
+      >
         <Box
-  sx={{
-    position: 'relative',
-    '&::after': {
-      content: '""',
-      display: 'block',
-      width: '30%', 
-      height: '3px',
-      backgroundColor: '#1976d2', 
-      position: 'absolute',
-      bottom: 0,
-    }
-  }}
->
-  <Typography variant="h5" component="div" gutterBottom>
-    Serviços Cadastrados
-  </Typography>
-</Box>
-        <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <MRT_ToggleFiltersButton table={table} sx={{
-    color: '#0076be',
-    border: '1px solid #0076be',
-    borderRadius: '4px', 
-  }} />
-          <MRT_ShowHideColumnsButton table={table} sx={{
-    color: '#0076be',
-    border: '1px solid #0076be',
-    borderRadius: '4px', 
-  }} />
-          <MRT_ToggleDensePaddingButton table={table} sx={{
-    color: '#0076be',
-    border: '1px solid #0076be',
-    borderRadius: '4px', 
-  }}/>
-          <MRT_ToggleFullScreenButton table={table} sx={{
-    color: '#0076be',
-    border: '1px solid #0076be',
-    borderRadius: '4px',
-  }} />
-         <Tooltip title="Adicionar Pacote">
-  <IconButton
-   onClick={() => {
-    table.setCreatingRow(true);
-    console.log('options:', unitOptions);
-  }}
-    sx={{
-      color: '#0076be',
-      border: '1px solid #0076be',
-      borderRadius: '4px', 
-      "&:hover": { 
-        backgroundColor: 'rgba(0, 118, 190, 0.04)', 
-      },
-    }}
-  >
-    <Add />
-  </IconButton>
-</Tooltip>
-
+          sx={{
+            position: "relative",
+            "&::after": {
+              content: '""',
+              display: "block",
+              width: "30%",
+              height: "3px",
+              backgroundColor: "#1976d2",
+              position: "absolute",
+              bottom: 0,
+            },
+          }}
+        >
+          <Typography variant="h5" component="div" gutterBottom>
+            Serviços Cadastrados
+          </Typography>
+        </Box>
+        <Box sx={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+          <MRT_ToggleFiltersButton
+            table={table}
+            sx={{
+              color: "#0076be",
+              border: "1px solid #0076be",
+              borderRadius: "4px",
+            }}
+          />
+          <MRT_ShowHideColumnsButton
+            table={table}
+            sx={{
+              color: "#0076be",
+              border: "1px solid #0076be",
+              borderRadius: "4px",
+            }}
+          />
+          <MRT_ToggleDensePaddingButton
+            table={table}
+            sx={{
+              color: "#0076be",
+              border: "1px solid #0076be",
+              borderRadius: "4px",
+            }}
+          />
+          <MRT_ToggleFullScreenButton
+            table={table}
+            sx={{
+              color: "#0076be",
+              border: "1px solid #0076be",
+              borderRadius: "4px",
+            }}
+          />
+          <Tooltip title="Adicionar Pacote">
+            <IconButton
+              onClick={() => {
+                table.setCreatingRow(true);
+                console.log("options:", unitOptions);
+              }}
+              sx={{
+                color: "#0076be",
+                border: "1px solid #0076be",
+                borderRadius: "4px",
+                "&:hover": {
+                  backgroundColor: "rgba(0, 118, 190, 0.04)",
+                },
+              }}
+            >
+              <Add />
+            </IconButton>
+          </Tooltip>
         </Box>
       </Box>
     ),
@@ -428,18 +429,17 @@ export const ServicesConstructions = () => {
       baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
     }),
-    
+
     enablePagination: false,
     enableBottomToolbar: false,
   });
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={8} lg={12} >
-
-    <Box style={{ padding: 10, margin: 10 }}>
-        <MaterialReactTable table={table} />
-      </Box>
+      <Grid item xs={8} lg={12}>
+        <Box style={{ padding: 10, margin: 10 }}>
+          <MaterialReactTable table={table} />
+        </Box>
       </Grid>
     </Grid>
   );

@@ -1,9 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-  type MRT_ColumnDef,
-} from "material-react-table";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   FormControlLabel,
@@ -11,17 +7,25 @@ import {
   Switch,
   Tooltip,
   Typography,
-  useTheme,
 } from "@mui/material";
-import { useConstructions } from "../../../hooks/useConstructions";
-import { ListTeamMembers } from "./ListTeamMembers";
 import { Add, Delete } from "@mui/icons-material";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+  type MRT_ColumnDef,
+} from "material-react-table";
+
+import { ModalDisable } from "../../../components/Table/ModalDisable";
 import { Button } from "../../../components/Button";
+
+import { useConstructions } from "../../../hooks/useConstructions";
+
+import { ListTeamMembers } from "./ListTeamMembers";
 import { FormCreateTeam } from "./FormCreateTeam";
 import { useStyles } from "./styles";
-import { ModalDisable } from "../../../components/Table/ModalDisable";
 
-export const ConstructionsTeams = () => {
+export const Teams = () => {
+  const { classes } = useStyles();
   const {
     listConstructionsTeams,
     getAllConstructionsTeams,
@@ -42,8 +46,6 @@ export const ConstructionsTeams = () => {
     disableConstructionTeam(selectedTeamId);
     setIsModalOpen(false);
   };
-
-  const { classes } = useStyles();
 
   useEffect(() => {
     getAllConstructionsTeams();
@@ -121,7 +123,7 @@ export const ConstructionsTeams = () => {
       elevation: 0,
     },
     muiTableBodyProps: {
-      sx: (theme) => ({
+      sx: () => ({
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",

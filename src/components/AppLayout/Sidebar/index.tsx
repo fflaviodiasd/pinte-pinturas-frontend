@@ -68,7 +68,7 @@ export const Sidebar = () => {
   const navItems: NavItem[] = [
     {
       text: "Clientes",
-      path: "/clientes",
+      path: "clientes",
       icon: <img src={ClientsIcon} alt="Clientes" />,
       subItems: [
         { text: "• Cadastro", path: "/clientes/cadastrar" },
@@ -77,7 +77,7 @@ export const Sidebar = () => {
     },
     {
       text: "Funcionários",
-      path: "/colaboradores",
+      path: "colaboradores",
       icon: <img src={EmployeesIcon} alt="Funcionários" />,
       subItems: [
         { text: "• Cadastro", path: "/colaboradores/cadastrar" },
@@ -86,12 +86,12 @@ export const Sidebar = () => {
     },
     {
       text: "Obras",
-      path: "/obras",
+      path: "obras",
       icon: <img src={ConstructionsIcon} alt="Obras" />,
     },
     {
       text: "Materiais",
-      path: "/materiais",
+      path: "materiais",
       icon: <img src={MaterialsIcon} alt="Materiais" />,
     },
   ];
@@ -101,6 +101,17 @@ export const Sidebar = () => {
       return <ExpandLess />;
     }
     return <ExpandMore />;
+  };
+
+  const verifyPathname = (pathname: string) => {
+    return location.pathname
+      .split("/")
+      .filter((item) => {
+        if (item) {
+          return item;
+        }
+      })[0]
+      .includes(pathname);
   };
 
   return (
@@ -169,7 +180,8 @@ export const Sidebar = () => {
           <List>
             {navItems.map((navItem) => {
               const { path, subItems } = navItem;
-              const isActive = location.pathname.includes(path);
+              const isActive = verifyPathname(path);
+
               const isOpen =
                 path === "/clientes"
                   ? openClientsItemMenu
