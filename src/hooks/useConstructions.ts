@@ -150,6 +150,20 @@ export const useConstructions = () => {
     }
   };
 
+  const addCompaniesConstruction = async (companies_pk: any, constructionData: any) => {
+    setLoading(true);
+    try {
+          await api.post(`companies/${companies_pk}/constructions/`, constructionData);
+      successMessage("Obra adicionada com sucesso!");
+      setLoading(false);
+      navigate("/obras");
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível adicionar obra!");
+      setLoading(false);
+    }
+  };
+
   const addConstructionTeam = async (constructionData: any) => {
     setLoading(true);
     try {
@@ -318,6 +332,7 @@ export const useConstructions = () => {
   const [listConstructionsTeams, setListConstructionsTeams] = useState<any[]>(
     []
   );
+
   const getAllConstructionsTeams = async () => {
     setLoading(true);
     try {
@@ -629,6 +644,50 @@ const getAllPackageStepsById = async (packageId: number) => {
     }
   };
   
+  const [listConstructionsMeasurements, setListConstructionsMeasurements] =  useState<any[]>([]);
+
+
+  const getAllConstructionsMeasurements = async () => {
+    if (!id) {
+      console.error('ID da construção não foi fornecido');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/constructions/${id}/measurements/`);
+      console.log('data:', data);
+      setListConstructionsMeasurements(data.results);
+      setLoading(false);
+    } catch (error) {
+      console.error('Erro ao obter serviços de construção:', error);
+      setLoading(false);
+    }
+  };
+
+  const disableConstructionMeasurements = async (measurementId: number) => {
+    setLoading(true);
+    try {
+      await api.delete(`/measurements/${measurementId}`);
+    } catch (error) {
+      throw error; 
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addConstructionMeasurements = async (newmeasurement: any) => {
+    setLoading(true);
+    try {
+      const response = await api.post(`/constructions/${id}/measurements/`, newmeasurement);
+      setListConstructionPackages(prevMeasurement => [...prevMeasurement, response.data]);
+      successMessage('Pacote adicionado com sucesso!');
+    } catch (error) {
+      errorMessage('Erro ao adicionar o pacote!');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return {
     loading,
@@ -674,7 +733,11 @@ const getAllPackageStepsById = async (packageId: number) => {
     getAllServiceStepsById,
     addServiceStep,
     deleteServiceStep,
-    getServiceById
-
+    getServiceById,
+    addCompaniesConstruction,
+    listConstructionsMeasurements,
+    getAllConstructionsMeasurements,
+    disableConstructionMeasurements,
+    addConstructionMeasurements
   };
 };

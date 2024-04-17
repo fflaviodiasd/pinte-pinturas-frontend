@@ -14,6 +14,7 @@ import { ListMaterials } from "../screens/Materials/ListMaterials";
 
 import { ListConstructions } from "../screens/Constructions/ListConstructions";
 import { Constructions } from "../screens/Constructions";
+import { FormConstructionsMultiStep } from "../screens/Constructions/FormConstructionsMultiStep";
 
 import { Settings } from "../screens/Settings";
 
@@ -43,7 +44,11 @@ export const AppRoutes = () => {
             path="/colaboradores/listagem"
             element={<ListCollaborators />}
           />
-
+          <Route
+            path="/obras/cadastrar"
+            element={<FormConstructionsMultiStep />}
+          />
+          
           <Route path="/obras" element={<ListConstructions />} />
 
           <Route path="/obras/:id" element={<Constructions />} />

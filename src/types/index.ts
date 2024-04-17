@@ -73,3 +73,27 @@ export type Construction = {
   teamName: string;
   teamMembers: any[];
 };
+
+export type Customer = {
+  id: number;
+  user: number;
+  company: number;
+  deleted: boolean;
+  corporateName: string;
+  cnpj: string;
+  municipalRegistration: string;
+  responsible: string;
+  avatar: string | null;
+  fantasyName: string;
+  publicPlace: string | null;
+  cep: string | null;
+  neighborhood: string | null;
+  complement: string | null;
+  number: string | null;
+  state: string | null;
+  county: string | null;
+  stateRegistration: string;
+  email: string;
+  phoneNumber: string;
+  construction: any[];  
+};

@@ -14,6 +14,21 @@ import { BackgroundAvatar } from "../../../components/Avatar";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { Navbar } from "../../../components/Navbar";
 import Breadcrumb from "../../../components/Breadcrumb";
+import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
+import { styled } from '@mui/material/styles';
+
+const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  height: 15,
+  borderRadius: 10,
+  [`&.${linearProgressClasses.colorPrimary}`]: {
+    backgroundColor: theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+  },
+  [`& .${linearProgressClasses.bar}`]: {
+    borderRadius: 5,
+    backgroundColor: theme.palette.mode === 'light' ? '#455a64' : '#455a64',
+  },
+}));
+
 
 export const ListConstructions = () => {
   const { classes } = useStyles();
@@ -102,7 +117,16 @@ export const ListConstructions = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Execução",
-      },
+        Cell: ({ cell }) => (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ flexGrow: 1, marginRight: '8px' }}>
+              <BorderLinearProgress variant="determinate" value={cell.row.original.percentageCompleted} />
+            </div>
+            <span style={{ whiteSpace: 'nowrap' }}>{cell.row.original.percentageCompleted.toFixed(2)}%</span>
+          </div>
+        ),
+      }
+      
     ],
     []
   );

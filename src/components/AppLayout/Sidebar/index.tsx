@@ -87,6 +87,10 @@ export const Sidebar = () => {
       text: "Obras",
       path: "/obras",
       icon: <img src={ConstructionsIcon} alt="Obras" />,
+      subItems: [
+        { text: "• Cadastro", path: "/obras/cadastrar" },
+        { text: "• Listagem", path: "/obras" },
+      ],
     },
     {
       text: "Materiais",
