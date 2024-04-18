@@ -97,3 +97,16 @@ export type Customer = {
   phoneNumber: string;
   construction: any[];  
 };
+
+export type Company = {
+  customer: number | undefined;
+  deleted: boolean;
+  corporate_name: string;
+  fantasy_name: string;
+  cnpj: string;
+  public_place: string;
+  number: string;
+  neighborhood: string;
+  city: string;
+  cep: string;
+};

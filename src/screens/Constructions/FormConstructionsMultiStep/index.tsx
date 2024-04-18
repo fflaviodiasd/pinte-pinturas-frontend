@@ -18,8 +18,8 @@ import {
 import { Field, Form, Formik, FormikConfig, FormikValues } from "formik";
 import { InputMask } from "../../../components/InputMask";
 import { useStyles, IOSSwitch } from "./styles";
-import { useCostumers } from "../../../hooks/useCustomers";
-import { useClients } from "../../../hooks/useClients";
+// import { useCostumers } from "../../../hooks/useCustomers";
+import { useCompanies } from "../../../hooks/useCompanies";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useParams } from "react-router-dom";
@@ -45,8 +45,9 @@ export function FormConstructionsMultiStep() {
   const { id: clientId } = useParams();
   const isEditScreen = clientId;
   const { classes } = useStyles();
-  const { constructionData } = useCostumers();
-  const { getAllClients, listClients } = useClients();
+  const { constructData } = useCompanies();
+  // const { getAllClients, listClients } = useClients();
+  const { getAllCompanyCustomers, listCompanyCustomers } = useCompanies();
   const { addConstruction, addCompaniesConstruction } = useConstructions();
   const [selectedClientId, setSelectedClientId] = useState(''); // Estado para guardar o ID do cliente selecionado
   const [selectedClient, setSelectedClient] = useState(''); // Estado para guardar o cliente selecionado
@@ -64,16 +65,20 @@ export function FormConstructionsMultiStep() {
   const onSubmit = async (values:any) => {
     console.log("values", values);
     console.log("selectedClientId", selectedClientId);
-    await addCompaniesConstruction(selectedClientId, values);
+    const valuesToSend = {
+      ...values,
+      customer: selectedClientId,
+    };
+    await addCompaniesConstruction(valuesToSend);
   };
 
   useEffect(() => {
-    getAllClients();
+    getAllCompanyCustomers();
   }, []);
 
   useEffect(() => {
-    console.log("listClients updated:", listClients);
-  }, [listClients]);
+    console.log("listCompanies updated:", listCompanyCustomers);
+  }, [listCompanyCustomers]);
 
   // useEffect(() => {
   //   if (clientId) {
@@ -88,7 +93,7 @@ export function FormConstructionsMultiStep() {
     >
       <CardContent>
         <FormikStepper
-          initialValues={constructionData}
+          initialValues={constructData}
           onSubmit={async (values) => {
             console.log("values", values);
             onSubmit(values);
@@ -111,21 +116,22 @@ export function FormConstructionsMultiStep() {
                   </Grid>
                   <Grid item xs={12} lg={5}>
                   <Field
-                    name="client"
+                    name="customer"
                     label="Cliente"
                     as={Select}
                     variant="outlined"
                     size="small"
                     fullWidth
-                    onChange={(event) => {
+                    onChange={(event:any) => {
                       const { value } = event.target;
+                      console.log("value", value);
                       // setFieldValue('client', value); // Atualiza o valor no Formik
                       setSelectedClientId(value); // Atualiza o estado com o ID do cliente
                     }}                  >
                     
-                        {listClients.map((client) => (
+                        {listCompanyCustomers.map((client) => (
                           <MenuItem key={client.id} value={client.id}>
-                            {client.tradingName}
+                            {client.name}
                           </MenuItem>
                         ))}
                       </Field>
@@ -133,7 +139,7 @@ export function FormConstructionsMultiStep() {
                   <Grid item xs={12} lg={2}>
                     <Field
                       as={TextField}
-                      name="phoneNumber"
+                      name="phone"
                       label="Telefone"
                       variant="outlined"
                       size="small"
@@ -201,7 +207,7 @@ export function FormConstructionsMultiStep() {
                 <Grid item xs={12} lg={3}>
                     <Field
                       as={TextField}
-                      name="municipalRegistration"
+                      name="municipal_registration"
                       label="Inscrição Municipal"
                       variant="outlined"
                       size="small"
@@ -212,7 +218,7 @@ export function FormConstructionsMultiStep() {
                   <Grid item xs={12} lg={3}>
                     <Field
                       as={TextField}
-                      name="stateRegistration"
+                      name="state_registration"
                       label="Inscrição Estadual"
                       variant="outlined"
                       size="small"
@@ -222,7 +228,7 @@ export function FormConstructionsMultiStep() {
                   <Grid item xs={12} lg={3}>
                 <Field
                   name="isActive"
-                  component={FormikSwitch} // Usando o adaptador FormikSwitch
+                  component={FormikSwitch} 
                 />
               </Grid>
                 </Grid>
@@ -283,7 +289,7 @@ export function FormConstructionsMultiStep() {
                   <Grid item xs={12} lg={6}>
                     <Field
                       as={TextField}
-                      name="publicPlace"
+                      name="public_place"
                       label="Logradouro"
                       variant="outlined"
                       size="small"

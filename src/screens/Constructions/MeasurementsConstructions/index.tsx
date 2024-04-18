@@ -59,7 +59,7 @@ export const MeasurementsConstructions = () => {
   const handleDisable = async (measurementId: number) => {
     try {
        await disableConstructionMeasurements(measurementId);
-      successMessage("Medição apagada com sucesso!");
+      // successMessage("Medição apagada com sucesso!");
       getAllConstructionsMeasurements();
     } catch (error) {
       errorMessage("Não foi possível apagar medição!");

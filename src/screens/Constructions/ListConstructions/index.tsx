@@ -44,6 +44,7 @@ export const ListConstructions = () => {
 
   useEffect(() => {
     getAllConstructions();
+    console.log(listConstructions, 'listConstructions')
   }, []);
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -101,7 +102,7 @@ export const ListConstructions = () => {
         ),
       },
       {
-        accessorKey: "client",
+        accessorKey: "customer",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Cliente",

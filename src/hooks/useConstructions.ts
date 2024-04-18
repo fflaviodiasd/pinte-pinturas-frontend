@@ -150,10 +150,12 @@ export const useConstructions = () => {
     }
   };
 
-  const addCompaniesConstruction = async (companies_pk: any, constructionData: any) => {
+  const addCompaniesConstruction = async (constructionData: any) => {
     setLoading(true);
+    console.log('constructionData:', constructionData);
+    console.log('userInfo', user)
     try {
-          await api.post(`companies/${companies_pk}/constructions/`, constructionData);
+      await api.post(`companies/${user.company}/constructions/`, constructionData);
       successMessage("Obra adicionada com sucesso!");
       setLoading(false);
       navigate("/obras");
@@ -421,7 +423,7 @@ export const useConstructions = () => {
         id: result.id,
         active: result.active,
         name: result.corporate_name,
-        client: "",
+        customer: result.customer,
         responsible: result.supervisor,
         percentageCompleted: result.execution,
       }));
@@ -668,7 +670,13 @@ const getAllPackageStepsById = async (packageId: number) => {
   const disableConstructionMeasurements = async (measurementId: number) => {
     setLoading(true);
     try {
-      await api.delete(`/measurements/${measurementId}`);
+      const response = await api.delete(`/measurements/${measurementId}`);
+      if (response.status === 204) {
+        successMessage('Medição apagada com sucesso!');
+      } else {
+        console.log('Erro ao apagar medição!', response.data.detail);
+        errorMessage('Erro ao apagar! ' + response.data.detail);
+      }
     } catch (error) {
       throw error; 
     } finally {
