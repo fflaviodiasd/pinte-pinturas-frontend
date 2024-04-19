@@ -4,8 +4,7 @@ import styled from "styled-components";
 export const Button = styled.div`
   display: flex;
   align-items: center;
-  margin: 1rem;
-  cursor: pointer;
+  padding: 0 1rem 0 1rem;
 `;
 
 type ButtonTextContainerProps = {
@@ -30,4 +29,5 @@ export const ButtonTextContainer = styled.div<ButtonTextContainerProps>`
   color: ${({ isactive }) => (isactive ? "#FFF" : "#0076BE")};
   font-weight: bold;
   background-color: ${({ isactive }) => (isactive ? "#0076BE" : "none")};
+  cursor: pointer;
 `;

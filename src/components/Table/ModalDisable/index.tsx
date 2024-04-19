@@ -4,27 +4,27 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Slide,
   Typography,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import { useStyles } from "./styles";
 import { Warning } from "@mui/icons-material";
+
+import { useStyles } from "./styles";
 
 type ModalDisableProps = {
   modalOpen: boolean;
-  handleClose: () => void;
+  handleCloseModal: () => void;
   handleDisable: () => void;
-  selectedDisableName?: string;
+  selectedTeamName?: string;
 };
 
 export const ModalDisable = ({
   modalOpen,
-  handleClose,
+  handleCloseModal,
   handleDisable,
-  selectedDisableName,
+  selectedTeamName,
 }: ModalDisableProps) => {
   const { classes } = useStyles();
 
@@ -33,7 +33,7 @@ export const ModalDisable = ({
       open={modalOpen}
       TransitionComponent={Transition}
       keepMounted
-      onClose={handleClose}
+      onClose={handleCloseModal}
     >
       <DialogTitle className={classes.successTitle}>
         <Warning className={classes.warningTitleIcon} />
@@ -42,11 +42,11 @@ export const ModalDisable = ({
       <DialogContent>
         <Typography className={classes.successTitleMessage}>
           Tem certeza que deseja apagar
-          <div style={{ fontWeight: 600 }}>{selectedDisableName}?</div>
+          <div style={{ fontWeight: 600 }}>{selectedTeamName}?</div>
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>
+        <Button onClick={handleCloseModal}>
           <Typography style={{ textTransform: "capitalize" }}>
             Cancelar
           </Typography>
@@ -63,7 +63,7 @@ export const ModalDisable = ({
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
-    children: ReactElement<any, any>;
+    children: ReactElement;
   },
   ref: React.Ref<unknown>
 ) {

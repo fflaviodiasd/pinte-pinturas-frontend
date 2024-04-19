@@ -1,146 +1,88 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  FormControlLabel,
-  Grid,
-  Switch,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import { Add, Delete } from "@mui/icons-material";
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-  type MRT_ColumnDef,
-} from "material-react-table";
+import { useEffect, useState } from "react";
+import { Box, Grid, Tooltip, Typography, TextField } from "@mui/material";
+import { Add } from "@mui/icons-material";
+
+import { Field, Form, Formik } from "formik";
+
+import { useTeams } from "../../../hooks/useTeams";
 
 import { ModalDisable } from "../../../components/Table/ModalDisable";
 import { Button } from "../../../components/Button";
 
-import { useConstructions } from "../../../hooks/useConstructions";
+import { TableTeams } from "./Tables/TableTeams";
 
-import { ListTeamMembers } from "./ListTeamMembers";
-import { FormCreateTeam } from "./FormCreateTeam";
 import { useStyles } from "./styles";
+
+type SelectedTeam = {
+  id: number;
+  name: string;
+};
 
 export const Teams = () => {
   const { classes } = useStyles();
-  const {
-    listConstructionsTeams,
-    getAllConstructionsTeams,
-    disableConstructionTeam,
-  } = useConstructions();
-  const [showCreateTeamRow, setShowCreateTeamRow] = useState(false);
+  const { disableTeam, addTeam, listTeams, getAllTeams } = useTeams();
 
-  const [selectedTeamId, setselectedTeamId] = useState<number>(0);
-  const [selectedTeamName, setselectedTeamName] = useState<string>("");
+  const [selectedTeam, setSelectedTeam] = useState<SelectedTeam>({
+    id: 0,
+    name: "",
+  });
 
+  const [showAddTeamInput, setShowAddTeamInput] = useState(false);
   const [modalOpen, setIsModalOpen] = useState(false);
 
-  const handleClose = () => {
+  useEffect(() => {
+    getAllTeams();
+  }, []);
+
+  const handleOpenModal = (selectedTeam: SelectedTeam) => {
+    setSelectedTeam(selectedTeam);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
   const handleDisable = () => {
-    disableConstructionTeam(selectedTeamId);
+    disableTeam(selectedTeam.id);
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    getAllConstructionsTeams();
-  }, []);
-
-  const handleCreateTeamClick = () => {
-    setShowCreateTeamRow(true);
+  const handleAddTeam = (name: string) => {
+    addTeam(name);
   };
 
-  const columns = useMemo<MRT_ColumnDef<any>[]>(
-    () => [
-      {
-        id: "edit",
-        header: "",
-        columnDefType: "display",
-        Cell: ({ cell }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <Delete
-              sx={{ cursor: "pointer", color: "#C5C7C8" }}
-              onClick={() => {
-                setselectedTeamId(cell.row.original.id!);
-                setselectedTeamName(cell.row.original.teams);
-
-                setIsModalOpen(true);
-              }}
-            />
-          </div>
-        ),
-      },
-      {
-        header: "Ativa",
-        accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
-        id: "active",
-        filterVariant: "checkbox",
-        Cell: ({ cell }) => {
-          const isActive = cell.getValue() === "true";
-          const status = isActive ? "Ativa" : "Inativa";
-          return (
-            <FormControlLabel
-              control={<Switch checked={isActive} />}
-              label={status}
-            />
-          );
-        },
-      },
-      {
-        accessorKey: "teams",
-        header: "Equipes",
-      },
-      {
-        accessorKey: "collaborators",
-        header: "QTD. Colaboradores",
-      },
-    ],
-    []
-  );
-
-  const table = useMaterialReactTable({
-    columns,
-    data: listConstructionsTeams,
-    enableExpandAll: true,
-    muiExpandButtonProps: ({ row, table }) => ({
-      onClick: () => table.setExpanded({ [row.id]: !row.getIsExpanded() }),
-      sx: {
-        transform: row.getIsExpanded() ? "rotate(180deg)" : "rotate(-90deg)",
-        transition: "transform 0.2s",
-      },
-    }),
-    muiTablePaperProps: {
-      elevation: 0,
-    },
-    muiTableBodyProps: {
-      sx: () => ({
-        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
-          {
-            backgroundColor: "#FAFAFA",
-          },
-      }),
-    },
-
-    renderDetailPanel: ({ row }) =>
-      row.original.teams ? <ListTeamMembers teamId={row.original.id} /> : null,
-  });
+  const handleShowAddTeamInput = () => {
+    setShowAddTeamInput(true);
+  };
 
   return (
-    <Grid container spacing={2}>
+    <Grid container>
       <Grid item xs={12} lg={12}>
-        {showCreateTeamRow && (
+        {showAddTeamInput && (
           <div style={{ padding: "1.5rem" }}>
-            <FormCreateTeam />
+            <div>
+              <Formik
+                initialValues={{ name: "" }}
+                onSubmit={(values) => {
+                  handleAddTeam(values.name);
+                }}
+                enableReinitialize={true}
+              >
+                <Form>
+                  <div style={{ display: "flex", gap: "1rem" }}>
+                    <Field
+                      as={TextField}
+                      name="name"
+                      label="Nome da Equipe"
+                      variant="outlined"
+                      fullWidth
+                    />
+                    <Button label="Salvar" color="primary" />
+                  </div>
+                </Form>
+              </Formik>
+            </div>
           </div>
         )}
 
@@ -159,16 +101,17 @@ export const Teams = () => {
               </Tooltip>
             }
             color="secondary"
-            onClick={handleCreateTeamClick}
+            onClick={handleShowAddTeamInput}
           />
         </Box>
 
-        <MaterialReactTable table={table} />
+        <TableTeams listTeams={listTeams} handleOpenModal={handleOpenModal} />
+
         <ModalDisable
           modalOpen={modalOpen}
-          handleClose={handleClose}
           handleDisable={handleDisable}
-          selectedDisableName={selectedTeamName}
+          handleCloseModal={handleCloseModal}
+          selectedTeamName={selectedTeam.name}
         />
       </Grid>
     </Grid>

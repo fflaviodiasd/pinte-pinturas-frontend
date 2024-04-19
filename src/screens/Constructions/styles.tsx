@@ -1,7 +1,13 @@
 import { makeStyles } from "tss-react/mui";
+import styled from "styled-components";
 
 export const useStyles = makeStyles()((theme) => {
   return {
+    tabsContainer: {
+      display: "flex",
+      backgroundColor: "#eff1f3",
+      paddingTop: "1rem",
+    },
     tabButton: {
       margin: "1rem",
       height: "100%",
@@ -17,3 +23,10 @@ export const useStyles = makeStyles()((theme) => {
     },
   };
 });
+
+export const TabsContainer = styled.div`
+  display: flex;
+  background-color: #eff1f3;
+  padding-top: 1rem;
+  padding-left: 16px;
+`;

@@ -12,8 +12,8 @@ export const HeaderButton = ({
   text,
 }: HeaderButtonProps) => {
   return (
-    <Button onClick={onClick}>
-      <ButtonTextContainer isactive={isActive}>
+    <Button>
+      <ButtonTextContainer isactive={isActive} onClick={onClick}>
         <ButtonText>{text}</ButtonText>
       </ButtonTextContainer>
     </Button>

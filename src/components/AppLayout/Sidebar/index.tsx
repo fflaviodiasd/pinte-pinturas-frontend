@@ -67,11 +67,6 @@ export const Sidebar = () => {
     // setOpenClientsItemMenu(false);
   };
 
-  useEffect(() => {
-    console.log("openClientsItemMenu", openClientsItemMenu);
-    console.log("openEmployeesItemMenu", openEmployeesItemMenu);
-  }, [openClientsItemMenu, openEmployeesItemMenu]);
-
   const navItems: NavItem[] = [
     {
       text: "Clientes",

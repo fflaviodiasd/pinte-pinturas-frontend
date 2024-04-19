@@ -10,6 +10,7 @@ interface ButtonProps {
 
 export const Button = ({ label, color, ...props }: ButtonProps) => {
   const { classes } = useStyles();
+
   return (
     <MuiButton
       type="submit"

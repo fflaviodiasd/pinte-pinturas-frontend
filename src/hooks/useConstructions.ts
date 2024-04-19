@@ -1,4 +1,7 @@
-import { useContext, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-useless-catch */
+
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
 import { api } from "../services/api";
@@ -22,13 +25,30 @@ type ConstructionService = {
   package_workmanship: string;
 };
 
+type ConstructionData = {
+  id: number;
+  name: string;
+  responsible: string;
+  status: string;
+  percentageCompleted: number;
+  type: string;
+  areas: string[];
+  teamName: string;
+  corporateName: string;
+  team: string;
+  measurement: string;
+  package: string;
+  number: string;
+  checklistName: string;
+};
+
 export const useConstructions = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { user } = useContext(UserContext);
 
   const [loading, setLoading] = useState(true);
-  const [constructionData, setConstructionData] = useState<any>({
+  const [constructionData, setConstructionData] = useState<ConstructionData>({
     id: 0,
     name: "",
     responsible: "",
@@ -37,6 +57,12 @@ export const useConstructions = () => {
     type: "",
     areas: [],
     teamName: "",
+    corporateName: "",
+    team: "",
+    measurement: "",
+    package: "",
+    number: "",
+    checklistName: "",
   });
 
   const getConstruction = async (id: string) => {
@@ -238,25 +264,6 @@ export const useConstructions = () => {
     }
   };
 
-  const updateConstructionTeamMember = async (
-    constructionData: any,
-    teamId: any
-  ) => {
-    setLoading(true);
-    try {
-      await api.patch(`teams/${teamId}/`, {
-        name: constructionData.teamName,
-        team_members: constructionData.teamMembers,
-      });
-      successMessage("Equipe atualizada com sucesso!");
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      errorMessage("Não foi possível atualizar equipe!");
-      setLoading(false);
-    }
-  };
-
   const disableConstructionMaterial = async (materialId: number) => {
     setLoading(true);
     try {
@@ -267,20 +274,6 @@ export const useConstructions = () => {
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível apagar material da obra!");
-      setLoading(false);
-    }
-  };
-
-  const disableConstructionTeam = async (teamId: number) => {
-    setLoading(true);
-    try {
-      await api.delete(`teams/${teamId}`);
-      getAllConstructionsTeams();
-      successMessage("Equipe apagada com sucesso!");
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      errorMessage("Não foi possível apagar equipe!");
       setLoading(false);
     }
   };
@@ -350,44 +343,24 @@ export const useConstructions = () => {
     }
   };
 
-  const [listConstructionsTeams, setListConstructionsTeams] = useState<any[]>(
-    []
-  );
-  const getAllConstructionsTeams = async () => {
-    setLoading(true);
-    try {
-      const { data } = await api.get(`constructions/${id}/teams`);
-      const constructionTeamsList = data.map((result: any) => ({
-        id: result.id,
-        active: result.active,
-        teams: result.name,
-        collaborators: result.member_count,
-      }));
-      console.log(data);
-      setListConstructionsTeams(constructionTeamsList);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
+  type TeamMember = {
+    id: number;
+    active: boolean;
+    avatar: string;
+    name: string;
+    office: string;
+    profile: string;
+    cell_phone: string;
   };
 
-  const [listConstructionsTeamMembers, setListConstructionsTeamMembers] =
-    useState<any[]>([]);
-  const getAllConstructionsTeamMembers = async (teamId: any) => {
+  const [listTeamMembers, setListTeamMembers] = useState<TeamMember[]>([]);
+  const getAllTeamMembers = async (teamId: number) => {
     setLoading(true);
     try {
       const { data } = await api.get(`teams/${teamId}`);
-      const constructionTeamMembersList = data.members.map((result: any) => ({
-        id: result.id,
-        active: result.active,
-        avatar: result.avatar,
-        name: result.name,
-        role: result.office,
-        profile: result.profile,
-        cellPhone: result.cell_phone,
-      }));
-      setListConstructionsTeamMembers(constructionTeamMembersList);
+      const teamMembers: TeamMember[] = data.members;
+
+      setListTeamMembers(teamMembers);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -395,9 +368,29 @@ export const useConstructions = () => {
     }
   };
 
-  const [listConstructionsLocations, setListConstructionsLocations] = useState<
-    any[]
-  >([]);
+  const updateTeamMembers = async (
+    membersIds: number[],
+    teamName: string,
+    teamId: number
+  ) => {
+    console.log(membersIds, teamName, teamId);
+    setLoading(true);
+    try {
+      await api.patch(`teams/${teamId}/`, {
+        name: teamName,
+        team_members: membersIds,
+      });
+      successMessage("Equipe atualizada com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível atualizar equipe!");
+      setLoading(false);
+    }
+  };
+
+  const [listConstructionsLocations, setListConstructionsLocations] =
+    useState<any>([]);
   const getAllConstructionsLocations = async (
     dynamicColumns: MRT_ColumnDef<any>[]
   ) => {
@@ -687,7 +680,8 @@ export const useConstructions = () => {
     setConstructionData,
     listConstructions,
     listConstructionsMaterials,
-    listConstructionsTeamMembers,
+    listTeamMembers,
+    setListTeamMembers,
     getConstruction,
     getConstructionTeamMember,
     getChecklists,
@@ -696,18 +690,15 @@ export const useConstructions = () => {
     addConstructionTeam,
     updateConstruction,
     updateConstructionMaterial,
-    updateConstructionTeamMember,
+    updateTeamMembers,
     updateChecklist,
     disableConstruction,
     disableConstructionMaterial,
-    disableConstructionTeam,
     disableConstructionLocal,
     getAllConstructions,
     listConstructionsLocations,
-    listConstructionsTeams,
-    getAllConstructionsTeams,
     getAllConstructionsMaterials,
-    getAllConstructionsTeamMembers,
+    getAllTeamMembers,
     getAllConstructionsLocations,
     addConstructionLocal,
     listConstructionPackages,

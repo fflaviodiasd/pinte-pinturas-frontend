@@ -1,37 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useMemo } from "react";
+import { Chip } from "@mui/material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Chip, Grid, useTheme } from "@mui/material";
-//import { useStyles } from "./styles";
-//import { useNavigate } from "react-router-dom";
-import { BackgroundAvatar } from "../../../components/Avatar";
-import { useClients } from "../../../hooks/useClients";
-import { TablePagination } from "../../../components/Table/Pagination";
 
-export const ListClientsEmployees = () => {
-  //const { classes } = useStyles();
-  //const navigate = useNavigate();
-  const {
-    listClientsEmployees,
-    getAllClientsEmployees,
-    pagination,
-    handleChangePagination,
-  } = useClients();
-  const theme = useTheme();
+import { BackgroundAvatar } from "../../../../components/Avatar";
+import { TeamMember } from "../../../../hooks/useTeams";
 
-  const [selectedClientEmployeeId, setselectedClientEmployeeId] =
-    useState<number>(0);
+type TableMembersProps = {
+  listTeamMembers: TeamMember[];
+};
 
-  const baseBackgroundColor =
-    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
-
-  useEffect(() => {
-    getAllClientsEmployees();
-  }, []);
-
+export const TableMembers = ({ listTeamMembers }: TableMembersProps) => {
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
@@ -48,10 +31,10 @@ export const ListClientsEmployees = () => {
       },
 
       {
-        accessorKey: "fullName",
+        accessorKey: "name",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Nome Completo",
+        header: "Nome",
         Cell: ({ cell }) => (
           <div
             style={{
@@ -61,18 +44,12 @@ export const ListClientsEmployees = () => {
               alignItems: "center",
             }}
           >
-            {cell.row.original.fullName && (
-              <BackgroundAvatar avatarName={cell.row.original.fullName} />
+            {cell.row.original.name && (
+              <BackgroundAvatar avatarName={cell.row.original.name} />
             )}
-            {cell.row.original.fullName}
+            {cell.row.original.name}
           </div>
         ),
-      },
-      {
-        accessorKey: "cell_phone",
-        enableColumnFilterModes: false,
-        filterFn: "startsWith",
-        header: "Celular",
       },
       {
         accessorKey: "role",
@@ -86,13 +63,19 @@ export const ListClientsEmployees = () => {
         filterFn: "startsWith",
         header: "Perfil",
       },
+      {
+        accessorKey: "cell_phone",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "Celular",
+      },
     ],
     []
   );
 
   const table = useMaterialReactTable({
     columns,
-    data: listClientsEmployees,
+    data: listTeamMembers,
     enableColumnFilterModes: true,
     initialState: { showColumnFilters: true },
     filterFns: {
@@ -107,7 +90,7 @@ export const ListClientsEmployees = () => {
       elevation: 0,
     },
     muiTableBodyProps: {
-      sx: (theme) => ({
+      sx: () => ({
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",
@@ -115,25 +98,12 @@ export const ListClientsEmployees = () => {
       }),
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
+      baseBackgroundColor: "#FFFFFF",
       draggingBorderColor: theme.palette.secondary.main,
     }),
     enablePagination: false,
     enableBottomToolbar: false,
   });
 
-  return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <MaterialReactTable table={table} />
-        {Boolean(listClientsEmployees.length) && (
-          <TablePagination
-            count={pagination.pageQuantity}
-            page={pagination.currentPage}
-            onChange={handleChangePagination}
-          />
-        )}
-      </Grid>
-    </Grid>
-  );
+  return <MaterialReactTable table={table} />;
 };

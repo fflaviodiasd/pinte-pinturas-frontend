@@ -1,16 +1,21 @@
-import { useState, useEffect } from "react";
-import { Box, Grid } from "@mui/material";
-import { HeaderButton } from "../../components/Screen/HeaderButton";
-import { Teams } from "./Teams";
-import { ListConstructionsMaterials } from "./Materials";
-import { ListLocal } from "./Local";
-import { Navbar } from "../../components/Navbar";
+import { useEffect } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Grid } from "@mui/material";
+
+import { useConstructions } from "../../hooks/useConstructions";
+
 import { TitleScreen } from "../../components/TitleScreen";
 import Breadcrumb from "../../components/Breadcrumb";
-import { useConstructions } from "../../hooks/useConstructions";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Navbar } from "../../components/Navbar";
+import { Tab } from "../../components/Tab";
+
 import { ServicesConstructions } from "./ServicesConstructions";
 import { PackageConstructions } from "./PackageConstructions";
+import { ListConstructionsMaterials } from "./Materials";
+import { ListLocal } from "./Local";
+import { Teams } from "./Teams";
+
+import { TabsContainer } from "./styles";
 
 export const Constructions = () => {
   const location = useLocation();
@@ -19,19 +24,11 @@ export const Constructions = () => {
 
   const { constructionData, getConstruction } = useConstructions();
 
-  const [selectedConstructionName, setSelectedConstructionName] = useState("");
-
   useEffect(() => {
     if (constructionId) {
       getConstruction(constructionId);
     }
   }, [constructionId]);
-
-  useEffect(() => {
-    if (constructionData && constructionData.corporateName) {
-      setSelectedConstructionName(constructionData.corporateName);
-    }
-  }, [constructionData]);
 
   const displayContent = () => {
     switch (true) {
@@ -50,51 +47,49 @@ export const Constructions = () => {
 
   return (
     <Grid container sx={{ display: "flex", flexDirection: "column" }}>
-      <div>
-        <Navbar
-          title={<TitleScreen title={selectedConstructionName} />}
-          showBreadcrumb={true}
-          breadcrumb={
-            <Breadcrumb
-              breadcrumbPath1={"Obras"}
-              breadcrumbPath2={"Edição"}
-              hrefBreadcrumbPath1={"/obras"}
-            />
-          }
-        />
-      </div>
+      <Navbar
+        title={<TitleScreen title={constructionData.corporateName} />}
+        showBreadcrumb={true}
+        breadcrumb={
+          <Breadcrumb
+            breadcrumbPath1={"Obras"}
+            breadcrumbPath2={"Edição"}
+            hrefBreadcrumbPath1={"/obras"}
+          />
+        }
+      />
 
-      <Box sx={{ display: "flex", backgroundColor: "#eff1f3" }}>
-        <HeaderButton
+      <TabsContainer>
+        <Tab
           text="Materiais"
           isActive={location.pathname.includes("materiais")}
           onClick={() => navigate(`/obras/${constructionId}/materiais`)}
         />
 
-        <HeaderButton
+        <Tab
           text="Equipes"
           isActive={location.pathname.includes("equipes")}
           onClick={() => navigate(`/obras/${constructionId}/equipes`)}
         />
 
-        <HeaderButton
+        <Tab
           text="Locais"
           isActive={location.pathname.includes("locais")}
           onClick={() => navigate(`/obras/${constructionId}/locais`)}
         />
 
-        <HeaderButton
+        <Tab
           text="Serviços"
           isActive={location.pathname.includes("servicos")}
           onClick={() => navigate(`/obras/${constructionId}/servicos`)}
         />
 
-        <HeaderButton
+        <Tab
           text="Pacotes"
           isActive={location.pathname.includes("pacotes")}
           onClick={() => navigate(`/obras/${constructionId}/pacotes`)}
         />
-      </Box>
+      </TabsContainer>
 
       {displayContent()}
     </Grid>
