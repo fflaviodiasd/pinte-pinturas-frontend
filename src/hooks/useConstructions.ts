@@ -181,6 +181,19 @@ export const useConstructions = () => {
     }
   };
 
+  const addDisciplinePackage = async () => {
+    setLoading(true);
+    try {
+      await api.post("/packages/checklist_bulk/", {});
+      successMessage("Pacote associado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Erro ao associar pacote!");
+      setLoading(false);
+    }
+  };
+
   const updateConstructionMaterial = async (
     constructionData: Construction,
     selectedConstructionMaterialId: number
@@ -694,6 +707,7 @@ export const useConstructions = () => {
     addConstruction,
     addConstructionMaterial,
     addConstructionTeam,
+    addDisciplinePackage,
     updateConstruction,
     updateConstructionMaterial,
     updateConstructionTeamMember,
