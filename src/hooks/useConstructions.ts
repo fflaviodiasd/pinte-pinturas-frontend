@@ -37,6 +37,9 @@ export const useConstructions = () => {
     type: "",
     areas: [],
     teamName: "",
+    team: "",
+    measurement: "",
+    package: "",
   });
 
   const getConstruction = async (id: string) => {
@@ -78,9 +81,9 @@ export const useConstructions = () => {
       const { data } = await api.get(`/checklists/${checklistId}/`);
       setConstructionData({
         ...constructionData,
-        team: data.team,
-        measurement: data.measurement,
-        package: data.package,
+        team: data.team.id,
+        measurement: data.measurement.id,
+        package: data.package.id,
         number: data.order,
         checklistName: data.name,
       });
