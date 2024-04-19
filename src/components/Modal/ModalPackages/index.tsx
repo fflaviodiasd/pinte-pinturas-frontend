@@ -27,6 +27,7 @@ type ModalPackagesProps = {
 };
 
 interface Checklist {
+  id: any;
   name: string;
 }
 
@@ -62,16 +63,17 @@ export const ModalPackages = ({
 
   const handleSubmit = async () => {
     console.log("ID do pacote selecionado ao submeter:", selectedPackageId);
-    await addDisciplinePackage();
+    console.log("ID dos checklists selecionados:", selectedChecklists);
+    await addDisciplinePackage(selectedPackageId, selectedChecklists);
   };
 
-  const handleToggleChecklist = (checklistName: string) => {
-    if (selectedChecklists.includes(checklistName)) {
+  const handleToggleChecklist = (checklistId: any) => {
+    if (selectedChecklists.includes(checklistId)) {
       setSelectedChecklists(
-        selectedChecklists.filter((name) => name !== checklistName)
+        selectedChecklists.filter((id) => id !== checklistId)
       );
     } else {
-      setSelectedChecklists([...selectedChecklists, checklistName]);
+      setSelectedChecklists([...selectedChecklists, checklistId]);
     }
   };
 
@@ -210,11 +212,11 @@ export const ModalPackages = ({
                     <ListItem
                       key={`${areaIndex}-${checklistIndex}`}
                       button
-                      onClick={() => handleToggleChecklist(checklist.name)}
+                      onClick={() => handleToggleChecklist(checklist.id)}
                     >
                       <Checkbox
                         edge="start"
-                        checked={selectedChecklists.includes(checklist.name)}
+                        checked={selectedChecklists.includes(checklist.id)}
                         tabIndex={-1}
                         disableRipple
                       />

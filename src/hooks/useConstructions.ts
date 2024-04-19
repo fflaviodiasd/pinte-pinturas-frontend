@@ -184,10 +184,17 @@ export const useConstructions = () => {
     }
   };
 
-  const addDisciplinePackage = async () => {
+  const addDisciplinePackage = async (
+    selectedPackageId: any,
+    selectedChecklists: any
+  ) => {
     setLoading(true);
     try {
-      await api.post("/packages/checklist_bulk/", {});
+      const response = await api.post("/packages/checklist_bulk/", {
+        package_id: selectedPackageId,
+        checklist_ids: selectedChecklists,
+      });
+      console.log("Pacote associado!", response);
       successMessage("Pacote associado com sucesso!");
       setLoading(false);
     } catch (error) {
