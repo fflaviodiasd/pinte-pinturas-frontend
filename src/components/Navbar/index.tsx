@@ -3,7 +3,7 @@ import { useStyles } from "./styles";
 import { ReactElement } from "react";
 
 type NavbarProps = {
-  title: ReactElement;
+  title: string;
   button?: ReactElement;
   showBreadcrumb?: boolean;
   breadcrumb?: ReactElement;

@@ -5,7 +5,7 @@ import {
   type MRT_ColumnDef,
 } from "material-react-table";
 import { Grid, Paper, useTheme } from "@mui/material";
-import { TitleScreen } from "../../../components/TitleScreen";
+
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { TablePagination } from "../../../components/Table/Pagination";
@@ -141,7 +141,7 @@ export const ListMaterials = () => {
   return (
     <Grid container spacing={2}>
       <Navbar
-        title={<TitleScreen title="Materiais" />}
+        title="Materiais"
         button={
           <div style={{ display: "flex", gap: "1rem" }}>
             <ModalMaterialGroups />

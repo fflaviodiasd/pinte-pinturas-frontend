@@ -46,9 +46,13 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
   const [options, setOptions] = useState<Option[]>([]);
   const [selectedMembers, setSelectedMembers] = useState<Option[]>([]);
 
-  useEffect(() => {
-    console.log("options", options);
-  }, []);
+  const currentMembersIds = listTeamMembers.map(
+    (selectedMember) => selectedMember.id
+  );
+
+  const currentOptions = options.filter(
+    (option) => !currentMembersIds.includes(option.id)
+  );
 
   const getOptionsTeamMembers = async () => {
     try {
@@ -72,19 +76,9 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
     }
   }, [teamId]);
 
-  useEffect(() => {
-    const newMembersIds = selectedMembers.map(
-      (selectedMember) => selectedMember.id
-    );
-
-    const currentOptions = options.filter(
-      (option) => !newMembersIds.includes(option.id)
-    );
-    setOptions(currentOptions);
-  }, [selectedMembers, options]);
-
   const handleUpdateTeamMembers = ({ teamName }: FormUpdateTeamMembers) => {
     updateTeamMembers(selectedMembers, teamName, teamId);
+    setSelectedMembers([]);
   };
 
   const returnedOptions = (option: Option) => {
@@ -115,7 +109,7 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
 
                   <Autocomplete
                     id="grouped-demo"
-                    options={options.sort((a, b) =>
+                    options={currentOptions.sort((a, b) =>
                       a.name.localeCompare(b.name)
                     )}
                     groupBy={(option) => option.name.charAt(0).toUpperCase()}
@@ -129,6 +123,8 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
                     )}
                     multiple
                     fullWidth
+                    filterSelectedOptions
+                    value={selectedMembers}
                   />
 
                   <Button label="Salvar" color="primary" />

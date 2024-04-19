@@ -4,9 +4,8 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Button, Chip, Grid, Paper, useTheme } from "@mui/material";
-import { TitleScreen } from "../../../components/TitleScreen";
-import { useStyles } from "./styles";
+import { Chip, Grid, useTheme } from "@mui/material";
+
 import { useNavigate } from "react-router-dom";
 import { EditIcon } from "../../../components/EditIcon";
 
@@ -143,7 +142,7 @@ export const ListConstructions = () => {
   return (
     <Grid container spacing={2}>
       <Navbar
-        title={<TitleScreen title="Obras" />}
+        title="Obras"
         showBreadcrumb={true}
         breadcrumb={
           <Breadcrumb breadcrumbPath1={"Obras"} breadcrumbPath2={"Listagem"} />

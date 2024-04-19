@@ -1,10 +1,10 @@
 import { Grid } from "@mui/material";
-import { TitleScreen } from "../../components/TitleScreen";
+import { Navbar } from "../../components/Navbar";
 
 export const Settings = () => {
   return (
     <Grid container spacing={2}>
-      <TitleScreen title="Configurações" />
+      <Navbar title="Configurações" />
     </Grid>
   );
 };

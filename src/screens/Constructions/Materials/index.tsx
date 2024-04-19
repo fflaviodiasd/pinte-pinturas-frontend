@@ -5,20 +5,13 @@ import {
   type MRT_ColumnDef,
 } from "material-react-table";
 import { Box, Grid, Tooltip, useTheme } from "@mui/material";
-import { useStyles } from "./styles";
-import { useNavigate } from "react-router-dom";
-import { TablePagination } from "../../../components/Table/Pagination";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { ModalRegisterConstructionMaterial } from "../../../components/Modal/ModalRegisterConstructionMaterial";
 import { Add, Launch } from "@mui/icons-material";
-import { Navbar } from "../../../components/Navbar";
-import { TitleScreen } from "../../../components/TitleScreen";
-import Breadcrumb from "../../../components/Breadcrumb";
+
 import { Button } from "../../../components/Button";
 
 export const ListConstructionsMaterials = () => {
-  const { classes } = useStyles();
-  const navigate = useNavigate();
   const {
     listConstructionsMaterials,
     getAllConstructionsMaterials,

@@ -4,7 +4,6 @@ import { Grid } from "@mui/material";
 
 import { useConstructions } from "../../hooks/useConstructions";
 
-import { TitleScreen } from "../../components/TitleScreen";
 import Breadcrumb from "../../components/Breadcrumb";
 import { Navbar } from "../../components/Navbar";
 import { Tab } from "../../components/Tab";
@@ -48,7 +47,7 @@ export const Constructions = () => {
   return (
     <Grid container sx={{ display: "flex", flexDirection: "column" }}>
       <Navbar
-        title={<TitleScreen title={constructionData.corporateName} />}
+        title={constructionData.corporateName}
         showBreadcrumb={true}
         breadcrumb={
           <Breadcrumb

@@ -11,7 +11,7 @@ import {
 import { TransitionProps } from "@mui/material/transitions";
 import { Warning } from "@mui/icons-material";
 
-import { useStyles } from "./styles";
+import { SelectedTeamName, useStyles } from "./styles";
 
 type ModalDisableProps = {
   modalOpen: boolean;
@@ -42,7 +42,8 @@ export const ModalDisable = ({
       <DialogContent>
         <Typography className={classes.successTitleMessage}>
           Tem certeza que deseja apagar
-          <div style={{ fontWeight: 600 }}>{selectedTeamName}?</div>
+          <br />
+          <SelectedTeamName>{selectedTeamName}?</SelectedTeamName>
         </Typography>
       </DialogContent>
       <DialogActions>
