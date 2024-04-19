@@ -52,7 +52,7 @@ export const TableMembers = ({ listTeamMembers }: TableMembersProps) => {
         ),
       },
       {
-        accessorKey: "role",
+        accessorKey: "office",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Cargo",

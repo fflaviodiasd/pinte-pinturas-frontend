@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { api } from "../services/api";
@@ -23,27 +22,42 @@ export type TeamMember = {
   cell_phone: string;
 };
 
+type Option = {
+  id: number;
+  firstLetter: string;
+  active: boolean;
+  name: string;
+  office: string;
+  cell_phone: string;
+  profile: string;
+};
+
 export const useTeams = () => {
   const { id } = useParams();
+
+  const [teamData, setTeamData] = useState({
+    id: 0,
+    teamName: "",
+  });
 
   const [loading, setLoading] = useState(false);
   const [listTeams, setListTeams] = useState<Team[]>([]);
 
-  // const getTeam = async (teamId: any) => {
-  //   setLoading(true);
-  //   try {
-  //     const { data } = await api.get(`teams/${teamId}/`);
-  //     setConstructionData({
-  //       ...constructionData,
-  //       id: data.id,
-  //       teamName: data.name,
-  //     });
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.log(error);
-  //     setLoading(false);
-  //   }
-  // };
+  const getTeam = async (teamId: number) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`teams/${teamId}/`);
+      setTeamData({
+        id: data.id,
+        teamName: data.name,
+      });
+      console.log("lista", data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const addTeam = async (name: string) => {
     setLoading(true);
@@ -116,29 +130,68 @@ export const useTeams = () => {
   };
 
   const [listTeamMembers, setListTeamMembers] = useState<TeamMember[]>([]);
+
+  const updateTeamMembers = async (
+    selectedMembers: Option[],
+    teamName: string,
+    teamId: number
+  ) => {
+    const currentMembersIds = listTeamMembers.map((member) => member.id);
+    const newMembersIds = selectedMembers.map(
+      (selectedMember) => selectedMember.id
+    );
+
+    const membersIds = currentMembersIds.concat(newMembersIds);
+
+    setLoading(true);
+    try {
+      await api.patch(`teams/${teamId}/`, {
+        name: teamName,
+        team_members: membersIds,
+      });
+      const newMembers = selectedMembers.map((member) => ({
+        active: member.active,
+        avatar: "",
+        cell_phone: member.cell_phone,
+        id: member.id,
+        name: member.name,
+        profile: member.profile,
+        office: member.office,
+      }));
+      setListTeamMembers((prevState) => prevState.concat(newMembers));
+      successMessage("Equipe atualizada com sucesso!");
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível atualizar equipe!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getAllTeamMembers = async (teamId: number) => {
     setLoading(true);
     try {
       const { data } = await api.get(`teams/${teamId}`);
       const teamMembers: TeamMember[] = data.members;
-
       setListTeamMembers(teamMembers);
-      setLoading(false);
     } catch (error) {
       console.log(error);
+    } finally {
       setLoading(false);
     }
   };
 
   return {
     loading,
+    teamData,
     listTeams,
-    // getTeam,
+    getTeam,
     addTeam,
     updateTeam,
     disableTeam,
     getAllTeams,
     listTeamMembers,
+    updateTeamMembers,
     getAllTeamMembers,
   };
 };

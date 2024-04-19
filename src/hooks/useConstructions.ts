@@ -82,22 +82,6 @@ export const useConstructions = () => {
     }
   };
 
-  const getConstructionTeamMember = async (teamId: any) => {
-    setLoading(true);
-    try {
-      const { data } = await api.get(`teams/${teamId}/`);
-      setConstructionData({
-        ...constructionData,
-        id: data.id,
-        teamName: data.name,
-      });
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
-
   const getChecklists = async (checklistId: any) => {
     setLoading(true);
     try {
@@ -339,52 +323,6 @@ export const useConstructions = () => {
       setLoading(false);
     } catch (error) {
       console.log(error);
-      setLoading(false);
-    }
-  };
-
-  type TeamMember = {
-    id: number;
-    active: boolean;
-    avatar: string;
-    name: string;
-    office: string;
-    profile: string;
-    cell_phone: string;
-  };
-
-  const [listTeamMembers, setListTeamMembers] = useState<TeamMember[]>([]);
-  const getAllTeamMembers = async (teamId: number) => {
-    setLoading(true);
-    try {
-      const { data } = await api.get(`teams/${teamId}`);
-      const teamMembers: TeamMember[] = data.members;
-
-      setListTeamMembers(teamMembers);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
-
-  const updateTeamMembers = async (
-    membersIds: number[],
-    teamName: string,
-    teamId: number
-  ) => {
-    console.log(membersIds, teamName, teamId);
-    setLoading(true);
-    try {
-      await api.patch(`teams/${teamId}/`, {
-        name: teamName,
-        team_members: membersIds,
-      });
-      successMessage("Equipe atualizada com sucesso!");
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      errorMessage("Não foi possível atualizar equipe!");
       setLoading(false);
     }
   };
@@ -680,17 +618,13 @@ export const useConstructions = () => {
     setConstructionData,
     listConstructions,
     listConstructionsMaterials,
-    listTeamMembers,
-    setListTeamMembers,
     getConstruction,
-    getConstructionTeamMember,
     getChecklists,
     addConstruction,
     addConstructionMaterial,
     addConstructionTeam,
     updateConstruction,
     updateConstructionMaterial,
-    updateTeamMembers,
     updateChecklist,
     disableConstruction,
     disableConstructionMaterial,
@@ -698,7 +632,6 @@ export const useConstructions = () => {
     getAllConstructions,
     listConstructionsLocations,
     getAllConstructionsMaterials,
-    getAllTeamMembers,
     getAllConstructionsLocations,
     addConstructionLocal,
     listConstructionPackages,
