@@ -8,7 +8,7 @@ import {
 
 import { Grid, Paper, useTheme } from "@mui/material";
 import { useClients } from "../../../hooks/useClients";
-import { TitleScreen } from "../../../components/TitleScreen";
+
 import { useStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { EditIcon } from "../../../components/EditIcon";
@@ -164,7 +164,7 @@ export const ListClients = () => {
 
   return (
     <Grid container spacing={2}>
-      <Navbar title={<TitleScreen title="Clientes" />} />
+      <Navbar title="Clientes" />
 
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />

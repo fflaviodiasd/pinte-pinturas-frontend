@@ -1,137 +1,162 @@
-import { useEffect, useMemo, useState } from "react";
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-  type MRT_ColumnDef,
-} from "material-react-table";
-import { Box, Chip, Grid, TextField, useTheme } from "@mui/material";
-import { useStyles } from "./styles";
-import { useNavigate } from "react-router-dom";
-import { BackgroundAvatar } from "../../../../components/Avatar";
-import { useConstructions } from "../../../../hooks/useConstructions";
-import { FormTeamMembers } from "../FormTeamMembers";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useEffect, useState } from "react";
+import { Grid, TextField, Autocomplete } from "@mui/material";
+import { Field, Form, Formik } from "formik";
 
-export const ListTeamMembers = ({ teamId }: any) => {
-  const { classes } = useStyles();
-  const navigate = useNavigate();
-  const { listConstructionsTeamMembers, getAllConstructionsTeamMembers } =
-    useConstructions();
-  const theme = useTheme();
+import { useTeams } from "../../../../hooks/useTeams";
+import { api } from "../../../../services/api";
 
-  const [selectedTeamMembersId, setselectedTeamMembersId] = useState<number>(0);
+import { Button } from "../../../../components/Button";
+import { TableMembers } from "../Tables/TableMembers";
 
-  const [modalOpen, setIsModalOpen] = useState(false);
+import { GroupHeader, GroupItems } from "./styles";
 
-  const handleClose = () => {
-    setIsModalOpen(false);
-  };
+type ListTeamMembers = {
+  teamId: number;
+};
 
-  const baseBackgroundColor =
-    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
+type Option = {
+  id: number;
+  firstLetter: string;
+  active: boolean;
+  name: string;
+  office: string;
+  profile: string;
+  cell_phone: string;
+};
+
+type FormUpdateTeamMembers = {
+  teamName: string;
+};
+
+export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
+  const {
+    listTeamMembers,
+    getTeam,
+    updateTeamMembers,
+    getAllTeamMembers,
+    teamData,
+  } = useTeams();
 
   useEffect(() => {
     if (teamId) {
-      getAllConstructionsTeamMembers(teamId);
+      getAllTeamMembers(teamId);
     }
   }, [teamId]);
 
-  const columns = useMemo<MRT_ColumnDef<any>[]>(
-    () => [
-      {
-        header: "Status",
-        accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
-        id: "active",
-        filterVariant: "checkbox",
-        Cell: ({ cell }) => {
-          const status = cell.getValue() === "true" ? "Ativo" : "Inativo";
-          const chipColor = status === "Ativo" ? "success" : "error";
-          return <Chip label={status} color={chipColor} />;
-        },
-        size: 170,
-      },
+  const [options, setOptions] = useState<Option[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<Option[]>([]);
 
-      {
-        accessorKey: "name",
-        enableColumnFilterModes: false,
-        filterFn: "startsWith",
-        header: "Nome",
-        Cell: ({ cell }) => (
-          <div
-            style={{
-              display: "flex",
-              gap: "0.5rem",
-
-              alignItems: "center",
-            }}
-          >
-            {cell.row.original.name && (
-              <BackgroundAvatar avatarName={cell.row.original.name} />
-            )}
-            {cell.row.original.name}
-          </div>
-        ),
-      },
-      {
-        accessorKey: "role",
-        enableColumnFilterModes: false,
-        filterFn: "startsWith",
-        header: "Cargo",
-      },
-      {
-        accessorKey: "profile",
-        enableColumnFilterModes: false,
-        filterFn: "startsWith",
-        header: "Perfil",
-      },
-      {
-        accessorKey: "cellPhone",
-        enableColumnFilterModes: false,
-        filterFn: "startsWith",
-        header: "Celular",
-      },
-    ],
-    []
+  const currentMembersIds = listTeamMembers.map(
+    (selectedMember) => selectedMember.id
   );
 
-  const table = useMaterialReactTable({
-    columns,
-    data: listConstructionsTeamMembers,
-    enableColumnFilterModes: true,
-    initialState: { showColumnFilters: true },
-    filterFns: {
-      customFilterFn: (row, id, filterValue) => {
-        return row.getValue(id) === filterValue;
-      },
-    },
-    localization: {
-      filterCustomFilterFn: "Custom Filter Fn",
-    } as any,
-    muiTablePaperProps: {
-      elevation: 0,
-    },
-    muiTableBodyProps: {
-      sx: (theme) => ({
-        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
-          {
-            backgroundColor: "#FAFAFA",
-          },
-      }),
-    },
-    mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
-      draggingBorderColor: theme.palette.secondary.main,
-    }),
-    enablePagination: false,
-    enableBottomToolbar: false,
-  });
+  const currentOptions = options.filter(
+    (option) => !currentMembersIds.includes(option.id)
+  );
+
+  const getOptionsTeamMembers = async () => {
+    try {
+      const { data } = await api.get<Option[]>(
+        `teams/${teamId}/select_members`
+      );
+
+      setOptions(data);
+    } catch (error) {
+      console.error("Erro ao buscar dados:", error);
+    }
+  };
+
+  useEffect(() => {
+    getOptionsTeamMembers();
+  }, []);
+
+  useEffect(() => {
+    if (teamId) {
+      getTeam(teamId);
+    }
+  }, [teamId]);
+
+  const handleUpdateTeamMembers = ({ teamName }: FormUpdateTeamMembers) => {
+    updateTeamMembers(selectedMembers, teamName, teamId);
+    setSelectedMembers([]);
+  };
+
+  const returnedOptions = (option: Option) => {
+    return `${option.active ? "Ativo" : "Inativo"} - ${option.name} - ${
+      option.office
+    }`;
+  };
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} lg={12}>
-        <Box style={{ padding: "1rem" }}>
-          <FormTeamMembers teamId={teamId} />
-        </Box>
-        <MaterialReactTable table={table} />
+        <Formik
+          initialValues={{ teamName: teamData.teamName }}
+          onSubmit={(values) => handleUpdateTeamMembers(values)}
+          enableReinitialize={true}
+        >
+          <Form>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "1rem",
+                }}
+              >
+                <Field
+                  as={TextField}
+                  name="teamName"
+                  label="Nome da Equipe"
+                  variant="outlined"
+                  sx={{ width: "50%" }}
+                />
+
+                <Autocomplete
+                  id="grouped-demo"
+                  value={selectedMembers}
+                  options={currentOptions.sort((a, b) =>
+                    a.name.localeCompare(b.name)
+                  )}
+                  groupBy={(option) => option.name.charAt(0).toUpperCase()}
+                  getOptionLabel={(option) => returnedOptions(option)}
+                  onChange={(_, newValue) => setSelectedMembers(newValue)}
+                  multiple
+                  fullWidth
+                  filterSelectedOptions
+                  renderGroup={(params) => {
+                    return (
+                      <li>
+                        <GroupHeader>{params.group}</GroupHeader>
+                        <GroupItems>{params.children}</GroupItems>
+                      </li>
+                    );
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Adicionar colaborador por nome, matricula ou perfil"
+                    />
+                  )}
+                />
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <Button label="Salvar" color="primary" />
+              </div>
+            </div>
+          </Form>
+        </Formik>
+
+        <TableMembers listTeamMembers={listTeamMembers} />
       </Grid>
     </Grid>
   );

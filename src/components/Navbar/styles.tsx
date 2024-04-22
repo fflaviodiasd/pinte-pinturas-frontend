@@ -15,8 +15,10 @@ export const useStyles = makeStyles()((theme) => {
       alignItems: "center",
     },
     pageSubtitle: {
-      color: "#252525",
-      fontSize: 20,
+      color: "#2E3132",
+      fontSize: 26,
+      fontWeight: 600,
+      fontFamily: "Open Sans",
       margin: theme.spacing(1),
     },
     paper: {

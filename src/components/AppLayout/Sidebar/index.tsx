@@ -1,4 +1,4 @@
-import { useState, ReactElement, Fragment } from "react";
+import { useState, ReactElement, Fragment, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
@@ -59,16 +59,18 @@ export const Sidebar = () => {
 
   const handleClientsList = () => {
     setOpenClientsItemMenu(!openClientsItemMenu);
+    // setOpenEmployeesItemMenu(false);
   };
 
   const handleEmployeesList = () => {
     setOpenEmployeesItemMenu(!openEmployeesItemMenu);
+    // setOpenClientsItemMenu(false);
   };
 
   const navItems: NavItem[] = [
     {
       text: "Clientes",
-      path: "/clientes",
+      path: "clientes",
       icon: <img src={ClientsIcon} alt="Clientes" />,
       subItems: [
         { text: "• Cadastro", path: "/clientes/cadastrar" },
@@ -77,7 +79,7 @@ export const Sidebar = () => {
     },
     {
       text: "Funcionários",
-      path: "/colaboradores",
+      path: "colaboradores",
       icon: <img src={EmployeesIcon} alt="Funcionários" />,
       subItems: [
         { text: "• Cadastro", path: "/colaboradores/cadastrar" },
@@ -86,12 +88,12 @@ export const Sidebar = () => {
     },
     {
       text: "Obras",
-      path: "/obras",
+      path: "obras",
       icon: <img src={ConstructionsIcon} alt="Obras" />,
     },
     {
       text: "Materiais",
-      path: "/materiais",
+      path: "materiais",
       icon: <img src={MaterialsIcon} alt="Materiais" />,
     },
   ];
@@ -103,15 +105,28 @@ export const Sidebar = () => {
     return <ExpandMore />;
   };
 
+  const verifyPathname = (pathname: string) => {
+    if (location.pathname) {
+      return location.pathname
+        .split("/")
+        .filter((item) => {
+          if (item) {
+            return item;
+          }
+        })[0]
+        ?.includes(pathname);
+    }
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <Drawer variant="permanent" open={openSidebar}>
         {/* Container Logo */}
         <div
           style={{
-            display: openSidebar ? "flex" : "none",
+            display: "flex",
             justifyContent: "center",
-            height: 140,
+            height: 80,
           }}
         >
           <Box
@@ -125,10 +140,12 @@ export const Sidebar = () => {
             <img
               src={logoImage}
               alt="Logo"
-              style={{ height: "30%", width: "50%" }}
+              style={{ height: 45, width: 45, cursor: "pointer" }}
+              onClick={() => navigate("/")}
             />
             <div
               style={{
+                display: openSidebar ? "flex" : "none",
                 color: "#0076BE",
                 fontFamily: "Open Sans",
                 fontWeight: "600",
@@ -169,9 +186,11 @@ export const Sidebar = () => {
           <List>
             {navItems.map((navItem) => {
               const { path, subItems } = navItem;
-              const isActive = location.pathname.includes(path);
+
+              const isActive = verifyPathname(path);
+
               const isOpen =
-                path === "/clientes"
+                path === "clientes"
                   ? openClientsItemMenu
                   : openEmployeesItemMenu;
 
@@ -193,12 +212,11 @@ export const Sidebar = () => {
                         px: 2.5,
                       }}
                       onClick={() => {
-                        if (subItems) {
-                          if (path === "/clientes") {
-                            handleClientsList();
-                          } else if (path === "/colaboradores") {
-                            handleEmployeesList();
-                          }
+                        if (path === "clientes") {
+                          handleClientsList();
+                          setOpenSidebar(true);
+                        } else if (path === "colaboradores") {
+                          handleEmployeesList();
                           setOpenSidebar(true);
                         } else {
                           navigate(`${path}`);
@@ -252,12 +270,7 @@ export const Sidebar = () => {
                             <Link
                               underline="none"
                               sx={{ pl: 4, cursor: "pointer" }}
-                              onClick={() => {
-                                navigate(subItem.path);
-                                if (subItem.path.includes("cadastrar")) {
-                                  history.go(0);
-                                }
-                              }}
+                              onClick={() => navigate(subItem.path)}
                             >
                               <ListItemText
                                 primary={subItem.text}
