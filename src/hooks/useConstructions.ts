@@ -360,22 +360,34 @@ export const useConstructions = () => {
     }
   };
 
-  const [listConstructions, setListConstructions] = useState<any[]>([]);
+  type ConstructionItem = {
+    id: number;
+    active: boolean;
+    corporateName: string;
+    customer: string;
+    supervisor: string;
+    execution: number;
+  };
 
+  const [listConstructions, setListConstructions] = useState<
+    ConstructionItem[]
+  >([]);
   const getAllConstructions = async () => {
     setLoading(true);
     try {
       const { data } = await api.get(
         `/companies/${user.company}/constructions/`
       );
-      const constructionList = data.map((result: any) => ({
-        id: result.id,
-        active: result.active,
-        name: result.corporate_name,
-        client: "",
-        responsible: result.supervisor,
-        percentageCompleted: result.execution,
-      }));
+      const constructionList: ConstructionItem[] = data.map(
+        (construction: any) => ({
+          id: construction.id,
+          active: construction.active,
+          corporateName: construction.corporate_name,
+          customer: construction.customer.name || "",
+          supervisor: construction.supervisor.name || "",
+          execution: construction.execution,
+        })
+      );
       setListConstructions(constructionList);
       setLoading(false);
     } catch (error) {

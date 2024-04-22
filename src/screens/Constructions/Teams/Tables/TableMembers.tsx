@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo } from "react";
-import { Chip } from "@mui/material";
+import { Chip, Typography } from "@mui/material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -9,12 +9,15 @@ import {
 
 import { BackgroundAvatar } from "../../../../components/Avatar";
 import { TeamMember } from "../../../../hooks/useTeams";
+import { useStyles } from "./styles";
 
 type TableMembersProps = {
   listTeamMembers: TeamMember[];
 };
 
 export const TableMembers = ({ listTeamMembers }: TableMembersProps) => {
+  const { classes } = useStyles();
+
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
@@ -77,6 +80,10 @@ export const TableMembers = ({ listTeamMembers }: TableMembersProps) => {
     columns,
     data: listTeamMembers,
     enableColumnFilterModes: true,
+    enablePagination: false,
+    enableTableFooter: false,
+    enableBottomToolbar: false,
+    enableTopToolbar: false,
     initialState: { showColumnFilters: true },
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
@@ -93,17 +100,42 @@ export const TableMembers = ({ listTeamMembers }: TableMembersProps) => {
       sx: () => ({
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
+            backgroundColor: "#FFF",
+          },
+        '& tr:nth-of-type(even):not([data-selected="true"]):not([data-pinned="true"]) > td':
+          {
             backgroundColor: "#FAFAFA",
           },
       }),
     },
-    mrtTheme: (theme) => ({
-      baseBackgroundColor: "#FFFFFF",
-      draggingBorderColor: theme.palette.secondary.main,
-    }),
-    enablePagination: false,
-    enableBottomToolbar: false,
+
+    // muiTableBodyRowProps: ({ row }) => {
+    //   const isEven = Number(row.id) % 2 === 0;
+    //   return {
+    //     sx: {
+    //       backgroundColor: isEven ? "#FFF" : "#FAFAFA",
+    //     },
+    //   };
+    // },
   });
 
-  return <MaterialReactTable table={table} />;
+  return (
+    <>
+      <div className={classes.tableTitleContainer}>
+        <Typography className={classes.tableTitle}>
+          Colaboradores Selecionados
+        </Typography>
+
+        <div className={classes.line} />
+      </div>
+
+      {listTeamMembers.length ? (
+        <MaterialReactTable table={table} />
+      ) : (
+        <Typography className={classes.noDataText}>
+          Nenhum colaborador adicionado.
+        </Typography>
+      )}
+    </>
+  );
 };

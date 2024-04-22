@@ -51,9 +51,9 @@ export const Constructions = () => {
         showBreadcrumb={true}
         breadcrumb={
           <Breadcrumb
-            breadcrumbPath1={"Obras"}
-            breadcrumbPath2={"Edição"}
-            hrefBreadcrumbPath1={"/obras"}
+            breadcrumbPath1="Obras"
+            breadcrumbPath2="Edição"
+            hrefBreadcrumbPath1="/obras"
           />
         }
       />

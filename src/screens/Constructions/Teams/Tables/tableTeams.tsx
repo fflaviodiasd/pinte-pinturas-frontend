@@ -26,32 +26,8 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        id: "id",
-        header: "",
-        columnDefType: "display",
-        Cell: ({ cell }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <Delete
-              sx={{ cursor: "pointer", color: "#C5C7C8" }}
-              onClick={() => {
-                const selectedTeam = {
-                  id: cell.row.original.id,
-                  name: cell.row.original.name,
-                };
-
-                handleOpenModal(selectedTeam);
-              }}
-            />
-          </div>
-        ),
-      },
-      {
         header: "Ativa",
+        size: 10,
         accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
         id: "active",
         filterVariant: "checkbox",
@@ -69,10 +45,38 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
       {
         accessorKey: "name",
         header: "Equipes",
+        size: 200,
       },
       {
         accessorKey: "member_count",
         header: "QTD. Colaboradores",
+        size: 100,
+      },
+      {
+        id: "id",
+        header: "",
+        size: 100,
+        columnDefType: "display",
+        Cell: ({ cell }) => (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+          >
+            <Delete
+              sx={{ cursor: "pointer", color: "#C5C7C8" }}
+              onClick={() => {
+                const selectedTeam = {
+                  id: cell.row.original.id,
+                  name: cell.row.original.name,
+                };
+
+                handleOpenModal(selectedTeam);
+              }}
+            />
+          </div>
+        ),
       },
     ],
     []
@@ -83,6 +87,7 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
     data: listTeams,
     enableExpandAll: true,
     autoResetAll: true,
+    enablePagination: false,
     muiExpandButtonProps: ({ row, table }) => ({
       onClick: () => table.setExpanded({ [row.id]: !row.getIsExpanded() }),
       sx: {
@@ -97,11 +102,14 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
       sx: () => ({
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
+            backgroundColor: "#FFF",
+          },
+        '& tr:nth-of-type(even):not([data-selected="true"]):not([data-pinned="true"]) > td':
+          {
             backgroundColor: "#FAFAFA",
           },
       }),
     },
-
     renderDetailPanel: ({ row }) => (
       <ListTeamMembers teamId={Number(row.original.id)} />
     ),

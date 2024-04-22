@@ -1,15 +1,9 @@
-import * as React from "react";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
-import Link from "@mui/material/Link";
-import Stack from "@mui/material/Stack";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { Box } from "@mui/material";
-import { useStyles } from "./styles";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Breadcrumbs, Link, Stack, Box } from "@mui/material";
 
-function handleClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
-  event.preventDefault();
-  console.info("You clicked a breadcrumb.");
-}
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+
+import { useStyles } from "./styles";
 
 export default function Breadcrumb({
   breadcrumbPath1,
@@ -47,6 +41,7 @@ export default function Breadcrumb({
         <Breadcrumbs
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"
+          style={{ fontFamily: "Open Sans", fontWeight: 600 }}
         >
           {breadcrumbs}
         </Breadcrumbs>

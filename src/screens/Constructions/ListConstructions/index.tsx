@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Chip, Grid, useTheme } from "@mui/material";
+import { Chip, Grid } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
 import { EditIcon } from "../../../components/EditIcon";
@@ -13,17 +13,11 @@ import { BackgroundAvatar } from "../../../components/Avatar";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { Navbar } from "../../../components/Navbar";
 import Breadcrumb from "../../../components/Breadcrumb";
+import { numberToPercentage } from "../../../utils";
 
 export const ListConstructions = () => {
   const navigate = useNavigate();
   const { listConstructions, getAllConstructions } = useConstructions();
-  const theme = useTheme();
-
-  const [selectedConstructionId, setselectedConstructionId] =
-    useState<number>(0);
-
-  const baseBackgroundColor =
-    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
     getAllConstructions();
@@ -55,6 +49,7 @@ export const ListConstructions = () => {
         header: "Status",
         accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
         id: "active",
+        accessorKey: "active",
         filterVariant: "checkbox",
         Cell: ({ cell }) => {
           const status = cell.getValue() === "true" ? "Ativo" : "Inativo";
@@ -63,12 +58,11 @@ export const ListConstructions = () => {
         },
         size: 170,
       },
-
       {
-        accessorKey: "name",
+        accessorKey: "corporateName",
+        header: "Nome da Obra",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Nome da Obra",
         Cell: ({ cell }) => (
           <div
             style={{
@@ -78,30 +72,32 @@ export const ListConstructions = () => {
               alignItems: "center",
             }}
           >
-            {cell.row.original.name && (
-              <BackgroundAvatar avatarName={cell.row.original.name} />
+            {cell.row.original.corporateName && (
+              <BackgroundAvatar avatarName={cell.row.original.corporateName} />
             )}
-            {cell.row.original.name}
+            {cell.row.original.corporateName}
           </div>
         ),
       },
       {
-        accessorKey: "client",
+        accessorKey: "customer",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Cliente",
       },
       {
-        accessorKey: "responsible",
+        accessorKey: "supervisor",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Encarregado",
       },
       {
-        accessorKey: "percentageCompleted",
+        accessorKey: "execution",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Execução",
+        Cell: ({ cell }) =>
+          numberToPercentage(Number(cell.row.original.execution)),
       },
     ],
     []
@@ -132,7 +128,7 @@ export const ListConstructions = () => {
       }),
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
+      baseBackgroundColor: "#FFFFFF",
       draggingBorderColor: theme.palette.secondary.main,
     }),
     enablePagination: false,
@@ -145,7 +141,7 @@ export const ListConstructions = () => {
         title="Obras"
         showBreadcrumb={true}
         breadcrumb={
-          <Breadcrumb breadcrumbPath1={"Obras"} breadcrumbPath2={"Listagem"} />
+          <Breadcrumb breadcrumbPath1="Obras" breadcrumbPath2="Listagem" />
         }
       />
       <Grid item xs={12} lg={12}>

@@ -32,3 +32,7 @@ export const returnedPhraseToModalDelete = (location: Location) => {
       return "item";
   }
 };
+
+export const numberToPercentage = (number: number) => {
+  return number.toFixed(2) + "%";
+};

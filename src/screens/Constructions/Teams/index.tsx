@@ -50,6 +50,7 @@ export const Teams = () => {
 
   const handleAddTeam = (name: string) => {
     addTeam(name);
+    setShowAddTeamInput(false);
   };
 
   const handleShowAddTeamInput = () => {
@@ -57,7 +58,10 @@ export const Teams = () => {
   };
 
   return (
-    <Grid container>
+    <Grid
+      container
+      // style={{ padding: 16, backgroundColor: "#eff1f3" }}
+    >
       <Grid item xs={12} lg={12}>
         {showAddTeamInput && (
           <div style={{ padding: "1.5rem" }}>

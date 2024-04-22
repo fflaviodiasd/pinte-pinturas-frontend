@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
-import { Box, Grid, TextField, Autocomplete } from "@mui/material";
+import { Grid, TextField, Autocomplete } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 
 import { useTeams } from "../../../../hooks/useTeams";
 import { api } from "../../../../services/api";
 
-import { TableMembers } from "../Tables/TableMembers";
 import { Button } from "../../../../components/Button";
+import { TableMembers } from "../Tables/TableMembers";
+
+import { GroupHeader, GroupItems } from "./styles";
 
 type ListTeamMembers = {
   teamId: number;
@@ -90,49 +92,69 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} lg={12}>
-        <Box style={{ padding: "1rem" }}>
-          <div>
-            <Formik
-              initialValues={{ teamName: teamData.teamName }}
-              onSubmit={(values) => handleUpdateTeamMembers(values)}
-              enableReinitialize={true}
+        <Formik
+          initialValues={{ teamName: teamData.teamName }}
+          onSubmit={(values) => handleUpdateTeamMembers(values)}
+          enableReinitialize={true}
+        >
+          <Form>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
             >
-              <Form>
-                <div style={{ display: "flex", gap: "1rem" }}>
-                  <Field
-                    as={TextField}
-                    name="teamName"
-                    label="Nome da Equipe"
-                    variant="outlined"
-                    sx={{ width: "50%" }}
-                  />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "1rem",
+                }}
+              >
+                <Field
+                  as={TextField}
+                  name="teamName"
+                  label="Nome da Equipe"
+                  variant="outlined"
+                  sx={{ width: "50%" }}
+                />
 
-                  <Autocomplete
-                    id="grouped-demo"
-                    options={currentOptions.sort((a, b) =>
-                      a.name.localeCompare(b.name)
-                    )}
-                    groupBy={(option) => option.name.charAt(0).toUpperCase()}
-                    getOptionLabel={(option) => returnedOptions(option)}
-                    onChange={(_, newValue) => setSelectedMembers(newValue)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Adicionar colaborador por nome, matricula ou perfil"
-                      />
-                    )}
-                    multiple
-                    fullWidth
-                    filterSelectedOptions
-                    value={selectedMembers}
-                  />
+                <Autocomplete
+                  id="grouped-demo"
+                  value={selectedMembers}
+                  options={currentOptions.sort((a, b) =>
+                    a.name.localeCompare(b.name)
+                  )}
+                  groupBy={(option) => option.name.charAt(0).toUpperCase()}
+                  getOptionLabel={(option) => returnedOptions(option)}
+                  onChange={(_, newValue) => setSelectedMembers(newValue)}
+                  multiple
+                  fullWidth
+                  filterSelectedOptions
+                  renderGroup={(params) => {
+                    return (
+                      <li>
+                        <GroupHeader>{params.group}</GroupHeader>
+                        <GroupItems>{params.children}</GroupItems>
+                      </li>
+                    );
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Adicionar colaborador por nome, matricula ou perfil"
+                    />
+                  )}
+                />
+              </div>
 
-                  <Button label="Salvar" color="primary" />
-                </div>
-              </Form>
-            </Formik>
-          </div>
-        </Box>
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <Button label="Salvar" color="primary" />
+              </div>
+            </div>
+          </Form>
+        </Formik>
 
         <TableMembers listTeamMembers={listTeamMembers} />
       </Grid>

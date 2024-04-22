@@ -1,4 +1,5 @@
 import { makeStyles } from "tss-react/mui";
+import styled from "styled-components";
 
 export const useStyles = makeStyles()((theme) => {
   return {
@@ -16,3 +17,20 @@ export const useStyles = makeStyles()((theme) => {
     },
   };
 });
+
+export const GroupHeader = styled.div`
+  position: sticky;
+  top: -8px;
+  padding: 4px 10px;
+  color: #0076be;
+  background-color: #def4ff;
+  font-family: "Open Sans";
+  font-weight: 600;
+`;
+
+export const GroupItems = styled.ul`
+  padding: 0;
+  color: #2e3132;
+  font-family: "Open Sans";
+  font-weight: 600;
+`;
