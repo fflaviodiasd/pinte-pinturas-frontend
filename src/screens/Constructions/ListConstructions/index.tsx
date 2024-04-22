@@ -14,6 +14,24 @@ import { BackgroundAvatar } from "../../../components/Avatar";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { Navbar } from "../../../components/Navbar";
 import Breadcrumb from "../../../components/Breadcrumb";
+import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
+import { styled } from '@mui/material/styles';
+
+interface responsible {
+  name: string | null;
+}
+const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  height: 15,
+  borderRadius: 10,
+  [`&.${linearProgressClasses.colorPrimary}`]: {
+    backgroundColor: theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+  },
+  [`& .${linearProgressClasses.bar}`]: {
+    borderRadius: 5,
+    backgroundColor: theme.palette.mode === 'light' ? '#455a64' : '#455a64',
+  },
+}));
+
 
 export const ListConstructions = () => {
   const { classes } = useStyles();
@@ -29,6 +47,7 @@ export const ListConstructions = () => {
 
   useEffect(() => {
     getAllConstructions();
+    console.log(listConstructions, 'listConstructions')
   }, []);
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -86,23 +105,51 @@ export const ListConstructions = () => {
         ),
       },
       {
-        accessorKey: "client",
+        accessorKey: "customer.name",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Cliente",
       },
       {
-        accessorKey: "responsible",
+        accessorKey: "responsible.name",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Encarregado",
       },
+      // {
+      //   accessorKey: "responsible",
+      //   header: "Encarregado",
+      //   Cell: ({ cell }) => {
+      //     const responsible = cell.row.original.responsible; 
+      //     if (responsible && typeof responsible === 'object' && responsible.name) {
+      //       return responsible.name;
+      //     }
+      //     return 'Não definido';
+      //   },
+      // },      
       {
         accessorKey: "percentageCompleted",
         enableColumnFilterModes: false,
-        filterFn: "startsWith",
+        filterFn: "betweenInclusive",
+        muiFilterSliderProps: {
+          marks: true,
+          max: 100,
+          min: 0,
+          step: 1,
+          valueLabelDisplay: "auto",
+        },
+        filterVariant: "range-slider",
         header: "Execução",
-      },
+        Cell: ({ cell }) => (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ flexGrow: 1, marginRight: '8px' }}>
+              <BorderLinearProgress variant="determinate" value={cell.row.original.percentageCompleted} />
+            </div>
+            <span style={{ whiteSpace: 'nowrap' }}>{cell.row.original.percentageCompleted.toFixed(2)}%</span>
+          </div>
+        ),
+      }
+      
     ],
     []
   );
@@ -111,7 +158,8 @@ export const ListConstructions = () => {
     columns,
     data: listConstructions,
     enableColumnFilterModes: true,
-    initialState: { showColumnFilters: true },
+  
+    initialState: { showColumnFilters: true, density: 'compact'},
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;

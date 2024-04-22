@@ -47,15 +47,30 @@ export const Sidebar = () => {
   const [openSidebar, setOpenSidebar] = useState(false);
   const [openClientsItemMenu, setOpenClientsItemMenu] = useState(false);
   const [openEmployeesItemMenu, setOpenEmployeesItemMenu] = useState(false);
+  const [openItemMenus, setOpenItemMenus] = useState<{ [key: string]: boolean }>({});
+
+  // const handleDrawer = () => {
+  //   setOpenSidebar(!openSidebar);
+  //   if (openSidebar) {
+  //     setOpenClientsItemMenu(false);
+  //     setOpenEmployeesItemMenu(false);
+  //   }
+  // };
 
   const handleDrawer = () => {
     setOpenSidebar(!openSidebar);
     if (openSidebar) {
-      setOpenClientsItemMenu(false);
-      setOpenEmployeesItemMenu(false);
+      setOpenItemMenus({});
     }
   };
 
+
+  const handleToggleSubmenu = (path: string) => {
+    setOpenItemMenus((prevOpenItemMenus) => ({
+      ...prevOpenItemMenus,
+      [path]: !prevOpenItemMenus[path],
+    }));
+  };
   const handleClientsList = () => {
     setOpenClientsItemMenu(!openClientsItemMenu);
   };
@@ -87,6 +102,10 @@ export const Sidebar = () => {
       text: "Obras",
       path: "/obras",
       icon: <img src={ConstructionsIcon} alt="Obras" />,
+      subItems: [
+        { text: "• Cadastro", path: "/obras/cadastrar" },
+        { text: "• Listagem", path: "/obras" },
+      ],
     },
     {
       text: "Materiais",
@@ -162,10 +181,11 @@ export const Sidebar = () => {
           {navItems.map((navItem) => {
             const { path, subItems } = navItem;
             const isActive = location.pathname.includes(path);
-            const isOpen =
-              path === "/clientes"
-                ? openClientsItemMenu
-                : openEmployeesItemMenu;
+            const isOpen = openItemMenus[path];
+            // const isOpen =
+            //   path === "/clientes"
+            //     ? openClientsItemMenu
+            //     : openEmployeesItemMenu;
 
             return (
               <Fragment key={navItem.text}>
@@ -186,11 +206,7 @@ export const Sidebar = () => {
                     }}
                     onClick={() => {
                       if (subItems) {
-                        if (path === "/clientes") {
-                          handleClientsList();
-                        } else if (path === "/colaboradores") {
-                          handleEmployeesList();
-                        }
+                        handleToggleSubmenu(path); 
                         setOpenSidebar(true);
                       } else {
                         navigate(`${path}`);
