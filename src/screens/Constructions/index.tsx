@@ -12,6 +12,8 @@ import { useParams } from "react-router-dom";
 import { ServicesConstructions } from "./ServicesConstructions";
 import { PackageConstructions } from "./PackageConstructions";
 import { MeasurementsConstructions } from "./MeasurementsConstructions";
+import { SupervisorConstructions } from "./SupervisorConstructions";
+import { CustomerSupervisorConstructions } from "./CustomerSupervisorConstructions";
 
 export const Constructions = () => {
   const { id: constructionId } = useParams();
@@ -59,6 +61,14 @@ export const Constructions = () => {
       return < MeasurementsConstructions />
     }
 
+    if (indexDisplay === 6) {
+      return < SupervisorConstructions />
+    }
+
+    if (indexDisplay === 7) {
+      return < CustomerSupervisorConstructions />
+    }
+
   };
 
   return (
@@ -96,6 +106,8 @@ export const Constructions = () => {
           onClick={() => handleChangeContent(2)}
         />
 
+       
+
         <HeaderButton
           text="Serviços"
           isActive={indexDisplay === 3}
@@ -113,6 +125,18 @@ export const Constructions = () => {
           text="Medição"
           isActive={indexDisplay === 5}
           onClick={() => handleChangeContent(5)}
+        />
+
+        <HeaderButton
+          text="Encarregados"
+          isActive={indexDisplay === 6}
+          onClick={() => handleChangeContent(6)}
+        />
+
+        <HeaderButton
+          text="Encarregados do Cliente"
+          isActive={indexDisplay === 7}
+          onClick={() => handleChangeContent(7)}
         />
       </Box>
 

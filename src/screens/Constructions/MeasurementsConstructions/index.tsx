@@ -18,6 +18,7 @@ import { Add, Launch, Edit, Delete, Info } from "@mui/icons-material";
 
 import { IconButton } from "@mui/material";
 import { errorMessage, successMessage } from "../../../components/Messages";
+import { UserContext } from "../../../contexts/UserContext";
 interface DropdownOption {
   id: any;
   name: any;
@@ -41,19 +42,31 @@ export const MeasurementsConstructions = () => {
 
   const [disciplineOptions, setDisciplineOptions] = useState<DropdownOption[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [filteredMeasurements, setFilteredMeasurements] = useState([]);
 
   const { id } = useParams();
-  // console.log('construction id pac: ', selectedPackageConstructionId)
+      // console.log('construction id pac: ', selectedPackageConstructionId)
+      console.log('listConstructionsMeasurements: ', listConstructionsMeasurements)
 
 
   useEffect(() => {
     if (id) {
       getAllConstructionsMeasurements();
     }
-    console.log('id:', id);
-    console.log('listConstructionsMeasurements:', listConstructionsMeasurements);
+ 
   }, [id]);
 
+  useEffect(() => {
+    // Certifique-se de que listConstructionsMeasurements é uma lista antes de filtrar
+    if (listConstructionsMeasurements && listConstructionsMeasurements.length > 0) {
+      // Filtrar as medições onde o id da construção corresponde ao id dos parâmetros da URL
+      const filteredData = listConstructionsMeasurements.filter(
+        (measurement) => measurement.construction.id.toString() === id
+      );
+      setFilteredMeasurements(filteredData);
+    }
+  }, [listConstructionsMeasurements, id]);
+  
 
 
   const handleDisable = async (measurementId: number) => {
@@ -78,32 +91,32 @@ export const MeasurementsConstructions = () => {
   //   exitEditingMode(); // Sai do modo de edição após a atualização
   // };
 
-  const handleEditPackages: MRT_TableOptions<any>['onEditingRowSave'] = async ({
-    exitEditingMode,
-    row,
-    values,
-  }) => {
-    if (!row?.original?.id) {
-      errorMessage('Não foi possível identificar o pacote para atualização.');
-      return;
-    }
+  // const handleEditPackages: MRT_TableOptions<any>['onEditingRowSave'] = async ({
+  //   exitEditingMode,
+  //   row,
+  //   values,
+  // }) => {
+  //   if (!row?.original?.id) {
+  //     errorMessage('Não foi possível identificar o pacote para atualização.');
+  //     return;
+  //   }
   
-    try {
-      console.log('Salvando edições para o pacote:', values);
+  //   try {
+  //     console.log('Salvando edições para o pacote:', values);
   
-      // const updatedPackage = await updateConstructionPackage(row.original.id, values);
+  //     // const updatedPackage = await updateConstructionPackage(row.original.id, values);
   
-      // setListConstructionPackages(prevPackages =>
-      //   prevPackages.map(pkg => (pkg.id === row.original.id ? { ...pkg, ...updatedPackage } : pkg))
-      // );
+  //     // setListConstructionPackages(prevPackages =>
+  //     //   prevPackages.map(pkg => (pkg.id === row.original.id ? { ...pkg, ...updatedPackage } : pkg))
+  //     // );
   
-      successMessage('Pacote atualizado com sucesso.');
-      exitEditingMode(); 
-    } catch (error) {
-      errorMessage('Erro ao atualizar o pacote.');
-      console.error('Erro ao salvar as edições:', error);
-    }
-  };
+  //     successMessage('Pacote atualizado com sucesso.');
+  //     exitEditingMode(); 
+  //   } catch (error) {
+  //     errorMessage('Erro ao atualizar o pacote.');
+  //     console.error('Erro ao salvar as edições:', error);
+  //   }
+  // };
   
   
   const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
@@ -142,10 +155,10 @@ export const MeasurementsConstructions = () => {
 
   const table = useMaterialReactTable({
     columns,
-    data: listConstructionsMeasurements,
+    data: filteredMeasurements,
     enableColumnFilterModes: true,
     onCreatingRowSave: handleCreatePackages,
-    onEditingRowSave: handleEditPackages,
+    // onEditingRowSave: handleEditPackages,
     enableEditing: true, 
     // editDisplayMode: 'row', 
     createDisplayMode: 'row', 

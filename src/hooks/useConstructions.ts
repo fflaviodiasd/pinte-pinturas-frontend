@@ -40,6 +40,8 @@ export const useConstructions = () => {
     teamName: "",
   });
 
+  const [constructInfoData, setConstructInfoData] = useState<any>({})
+  const [companiesSupervisorList, setCompaniesSupervisor] = useState<any>([])
 
 
   const getConstruction = async (id: string) => {
@@ -52,12 +54,27 @@ export const useConstructions = () => {
         name: data.name,
         corporateName: data.corporate_name,
       });
+      setConstructInfoData(data);
       setLoading(false);
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
   };
+
+  const getCompaniesSupervisorList = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`companies/${user.company}/construction_supervisor`);
+      setCompaniesSupervisor(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }
+
+
 
   const getConstructionTeamMember = async (teamId: any) => {
     setLoading(true);
@@ -658,7 +675,7 @@ const getAllPackageStepsById = async (packageId: number) => {
     setLoading(true);
     try {
       const { data } = await api.get(`/constructions/${id}/measurements/`);
-      console.log('data:', data);
+      // console.log('data:', data);
       setListConstructionsMeasurements(data.results);
       setLoading(false);
     } catch (error) {
@@ -696,6 +713,73 @@ const getAllPackageStepsById = async (packageId: number) => {
       setLoading(false);
     }
   };
+
+  const updatePrimaryResponsible = async (responsiblePrimary: number) => {
+    setLoading(true);
+    console.log(new Date().toISOString())
+    try {
+      await api.patch(`constructions/${id}/`, { 
+        responsible_primary: responsiblePrimary,
+        inclusion_date: new Date().toISOString()
+      });
+      
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+
+  const updateCustomerPrimaryResponsible = async (responsiblePrimary: number) => {
+    setLoading(true);
+    console.log(new Date().toISOString())
+    try {
+      await api.patch(`constructions/${id}/`, { 
+        responsible_primary: responsiblePrimary,
+        inclusion_date: new Date().toISOString()
+      });
+      
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+
+
+  const updateCustomerResponsible = async (responsibleCustomer: number) => {
+    setLoading(true);
+    console.log(new Date().toISOString())
+    try {
+      await api.patch(`constructions/${id}/`, { 
+        responsible_customer_primary: responsibleCustomer,
+        inclusion_date: new Date().toISOString()
+      });
+      
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+
+  const removePrimaryResponsible = async () => {
+    setLoading(true);
+    try {
+      await api.patch(`constructions/${id}/`, { 
+        responsible_primary: null
+      });
+
+      // successMessage("Supervisor removido com sucesso!"); 
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      errorMessage("Não foi possível remover o supervisor!");
+      setLoading(false);
+    }
+  };
+  
+  
 
   return {
     loading,
@@ -746,6 +830,12 @@ const getAllPackageStepsById = async (packageId: number) => {
     listConstructionsMeasurements,
     getAllConstructionsMeasurements,
     disableConstructionMeasurements,
-    addConstructionMeasurements
+    addConstructionMeasurements,
+    constructInfoData,
+    getCompaniesSupervisorList,
+    companiesSupervisorList,
+    updatePrimaryResponsible,
+    removePrimaryResponsible,
+    updateCustomerResponsible
   };
 };

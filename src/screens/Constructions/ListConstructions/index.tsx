@@ -17,6 +17,9 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import { styled } from '@mui/material/styles';
 
+interface responsible {
+  name: string | null;
+}
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 15,
   borderRadius: 10,
@@ -102,17 +105,28 @@ export const ListConstructions = () => {
         ),
       },
       {
-        accessorKey: "customer",
+        accessorKey: "customer.name",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Cliente",
       },
       {
-        accessorKey: "responsible",
+        accessorKey: "responsible.name",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Encarregado",
       },
+      // {
+      //   accessorKey: "responsible",
+      //   header: "Encarregado",
+      //   Cell: ({ cell }) => {
+      //     const responsible = cell.row.original.responsible; 
+      //     if (responsible && typeof responsible === 'object' && responsible.name) {
+      //       return responsible.name;
+      //     }
+      //     return 'Não definido';
+      //   },
+      // },      
       {
         accessorKey: "percentageCompleted",
         enableColumnFilterModes: false,
