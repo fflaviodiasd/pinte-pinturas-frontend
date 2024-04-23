@@ -13,7 +13,7 @@ import { PackageConstructions } from "./PackageConstructions";
 import { ListConstructionsMaterials } from "./Materials";
 import { MeasurementsConstructions } from "./MeasurementsConstructions";
 import { SupervisorConstructions } from "./SupervisorConstructions";
-import { CustomerSupervisorConstructions } from "./CustomerSupervisorConstructions";
+import { CustomerSupervisor } from "./CustomerSupervisor";
 
 import { ListLocal } from "./Local";
 import { Teams } from "./Teams";
@@ -49,23 +49,12 @@ export const Constructions = () => {
         return <MeasurementsConstructions />;
       case location.pathname.includes("supervisores"):
         return <SupervisorConstructions />;
-      case location.pathname.includes("cliente-supervisores"):
-        return <CustomerSupervisorConstructions />;
+      case location.pathname.includes("encarregados-cliente"):
+        return <CustomerSupervisor />;
       default:
         return <ListConstructionsMaterials />;
     }
 
-    // if (indexDisplay === 5) {
-    //   return < MeasurementsConstructions />
-    // }
-
-    // if (indexDisplay === 6) {
-    //   return < SupervisorConstructions />
-    // }
-
-    // if (indexDisplay === 7) {
-    //   return < CustomerSupervisorConstructions />
-    // }
 
   };
 
@@ -122,15 +111,15 @@ export const Constructions = () => {
         />
  
         <Tab
-          text="Supervisores"
+          text="Encarregados"
           isActive={location.pathname.includes("supervisores")}
           onClick={() => navigate(`/obras/${constructionId}/supervisores`)}
         />
 
         <Tab
-          text="Cliente Supervisores"
-          isActive={location.pathname.includes("cliente-supervisores")}
-          onClick={() => navigate(`/obras/${constructionId}/cliente-supervisores`)}
+          text="Encarregados do Cliente"
+          isActive={location.pathname.includes("encarregados-cliente")}
+          onClick={() => navigate(`/obras/${constructionId}/encarregados-cliente`)}
           />
       </TabsContainer>
 

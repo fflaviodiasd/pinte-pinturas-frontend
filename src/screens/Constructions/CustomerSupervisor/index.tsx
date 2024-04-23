@@ -28,7 +28,7 @@ const getInitials = (name = '') => {
   return name.split(' ').filter((n) => n !== '').map((n) => n[0]).join('');
 };
 
-export const CustomerSupervisorConstructions = () => {
+export const CustomerSupervisor = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
   const {
@@ -37,8 +37,8 @@ export const CustomerSupervisorConstructions = () => {
     getCompaniesSupervisorList,
     companiesSupervisorList,
     updatePrimaryResponsible,
+    updateCustomerPrimaryResponsible,
     removePrimaryResponsible,
-    updateCustomerResponsible
  
 
   } = useConstructions();
@@ -54,12 +54,15 @@ export const CustomerSupervisorConstructions = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [newSupervisor, setNewSupervisor] = useState(null);
   const [oldSupervisor, setOldSupervisor] = useState(null);
+
   useEffect(() => {
     if (id) {
       getConstruction(id).finally(() => setLoading(false)); 
       getCompaniesSupervisorList();
     }
   }, [id]);
+
+  console.log('constructInfoData:', constructInfoData); 
 
   const handleChange = (event:any) => {
     setSelectedSupervisor(event.target.value);
@@ -94,7 +97,8 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
       setIsConfirmModalOpen(true);
     } else {
       try {
-        await updateCustomerResponsible(parseInt(selectedSupervisor));
+        await updateCustomerPrimaryResponsible
+        (parseInt(selectedSupervisor));
         successMessage("Responsável primário atualizado com sucesso!");
         await getConstruction(id);
         handleCloseModal();
@@ -109,7 +113,6 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
 
 
   
-  
 
   const handleUpdateSupervisor = () => {
     const currentSupervisor = constructInfoData.responsible_customer_primary;
@@ -123,7 +126,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
   
 
   const handleConfirmUpdate = async () => {
-    await updateCustomerResponsible(parseInt(selectedSupervisor));
+    await updateCustomerPrimaryResponsible(parseInt(selectedSupervisor));
     setIsConfirmModalOpen(false);
     setOpenModal(false);
     await getConstruction(id);
@@ -144,10 +147,10 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
   };
 
 
-  const responsibleCustomer = constructInfoData.responsible_customer_primary || {};
-  const isResponsiblePrimaryEmpty = !responsibleCustomer.id || !responsibleCustomer.name;
+  const responsibleCustomerPrimary = constructInfoData.responsible_customer_primary || {};
+  const isResponsiblePrimaryEmpty = !responsibleCustomerPrimary.id || !responsibleCustomerPrimary.name;
 
-  const initials = responsibleCustomer.name ? getInitials(responsibleCustomer.name) : '';
+  const initials = responsibleCustomerPrimary.name ? getInitials(responsibleCustomerPrimary.name) : '';
 
 
   return (
@@ -156,7 +159,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
                   <Grid item xs={12} lg={12}>
                   <Grid item xs={12} container justifyContent="space-between" alignItems="center">
                     <Typography variant="h5" component="div" gutterBottom>
-                      Principalxx
+                      Principal
                     </Typography>
                 
                    
@@ -182,7 +185,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
       <Grid item xs={12} lg={12}>
       <Grid item xs={12} container justifyContent="space-between" alignItems="center">
         <Typography variant="h5" component="div" gutterBottom>
-          Principal
+          Principalx
         </Typography>
         <Box>
         <Tooltip title="Alterar encarregado">
@@ -232,7 +235,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
         <Grid item xs>
           <TextField
             label="ID"
-            value={responsibleCustomer.id || ''}
+            value={responsibleCustomerPrimary.id || ''}
             variant="outlined"
             disabled
             fullWidth
@@ -242,7 +245,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
         <Grid item xs>
           <TextField
             label="Nome"
-            value={responsibleCustomer.name || ''}
+            value={responsibleCustomerPrimary.name || ''}
             variant="outlined"
             disabled
             fullWidth
@@ -252,7 +255,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
         <Grid item xs>
           <TextField
             label="Perfil"
-            value={responsibleCustomer.profile || ''}
+            value={responsibleCustomerPrimary.profile || ''}
             variant="outlined"
             disabled
             fullWidth
@@ -262,7 +265,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
         <Grid item xs>
           <TextField
             label="Data de Inclusão"
-            value={responsibleCustomer.inclusion_date || ''}
+            value={responsibleCustomerPrimary.inclusion_date || ''}
             variant="outlined"
             disabled
             fullWidth

@@ -730,8 +730,7 @@ export const useConstructions = () => {
     console.log(new Date().toISOString())
     try {
       await api.patch(`constructions/${id}/`, { 
-        responsible_primary: responsiblePrimary,
-        inclusion_date: new Date().toISOString()
+        responsible_customer_primary: responsiblePrimary,
       });
       
       setLoading(false);
@@ -744,7 +743,7 @@ export const useConstructions = () => {
 
   const updateCustomerResponsible = async (responsibleCustomer: number) => {
     setLoading(true);
-    console.log(new Date().toISOString())
+    console.log('teste', responsibleCustomer)
     try {
       await api.patch(`constructions/${id}/`, { 
         responsible_customer_primary: responsibleCustomer,
