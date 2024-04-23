@@ -42,7 +42,7 @@ export const MeasurementsConstructions = () => {
 
   const [disciplineOptions, setDisciplineOptions] = useState<DropdownOption[]>([]);
   const [isSaving, setIsSaving] = useState(false);
-  const [filteredMeasurements, setFilteredMeasurements] = useState([]);
+  const [filteredMeasurements, setFilteredMeasurements] = useState<any[]>([]);
 
   const { id } = useParams();
       // console.log('construction id pac: ', selectedPackageConstructionId)
@@ -56,16 +56,16 @@ export const MeasurementsConstructions = () => {
  
   }, [id]);
 
-  useEffect(() => {
-    // Certifique-se de que listConstructionsMeasurements é uma lista antes de filtrar
-    if (listConstructionsMeasurements && listConstructionsMeasurements.length > 0) {
-      // Filtrar as medições onde o id da construção corresponde ao id dos parâmetros da URL
-      const filteredData = listConstructionsMeasurements.filter(
-        (measurement) => measurement.construction.id.toString() === id
-      );
-      setFilteredMeasurements(filteredData);
-    }
-  }, [listConstructionsMeasurements, id]);
+
+useEffect(() => {
+  if (listConstructionsMeasurements && listConstructionsMeasurements && listConstructionsMeasurements.length > 0) {
+    const filteredData = listConstructionsMeasurements.filter(
+      (measurement) => measurement.construction.toString() === id
+    );
+    setFilteredMeasurements(filteredData);
+  }
+}, [listConstructionsMeasurements, id]);
+
   
 
 

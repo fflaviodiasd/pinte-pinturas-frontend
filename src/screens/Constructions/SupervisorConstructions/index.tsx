@@ -53,12 +53,15 @@ export const SupervisorConstructions = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [newSupervisor, setNewSupervisor] = useState(null);
   const [oldSupervisor, setOldSupervisor] = useState(null);
+
   useEffect(() => {
     if (id) {
       getConstruction(id).finally(() => setLoading(false)); 
       getCompaniesSupervisorList();
     }
   }, [id]);
+
+  console.log('constructInfoData:', constructInfoData); 
 
   const handleChange = (event:any) => {
     setSelectedSupervisor(event.target.value);

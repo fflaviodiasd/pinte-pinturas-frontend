@@ -156,7 +156,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
                   <Grid item xs={12} lg={12}>
                   <Grid item xs={12} container justifyContent="space-between" alignItems="center">
                     <Typography variant="h5" component="div" gutterBottom>
-                      Principal
+                      Principalxx
                     </Typography>
                 
                    

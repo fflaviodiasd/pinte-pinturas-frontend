@@ -21,6 +21,7 @@ interface ChipCustomLevelProps {
   editable?: boolean;
   post?: boolean;
   chipId?: number | null;
+  onCreateLevel?: () => void;
 }
 
 export const ChipCustomLevel = ({
@@ -35,6 +36,7 @@ export const ChipCustomLevel = ({
   onClick,
   editable = false,
   post,
+  onCreateLevel,
   chipId,
 }: ChipCustomLevelProps) => {
   const [editingValue, setEditingValue] = useState(value);
@@ -49,13 +51,17 @@ export const ChipCustomLevel = ({
   }, [editingValue, setValueActual]);
 
   const handleChipDeleteLevel = async () => {
-    try {
-      const response = await api.delete(`level_area/${chipId}/`);
-      console.log(response);
-      successMessage("Nível deletado com sucesso!");
-    } catch (error) {
-      errorMessage("Erro ao deletar nível!");
-      console.error("Erro ao deletar nivel:", error);
+    if (onCreateLevel) {
+      onCreateLevel();
+    } else {
+      try {
+        const response = await api.delete(`level_area/${chipId}/`);
+        console.log(response);
+        successMessage("Nível deletado com sucesso!");
+      } catch (error) {
+        errorMessage("Erro ao deletar nível!");
+        console.error("Erro ao deletar nivel:", error);
+      }
     }
   };
 
@@ -73,7 +79,7 @@ export const ChipCustomLevel = ({
             onKeyDown={subtmitData}
             placeholder={placeholder}
             onClick={onClick}
-            bg={bg}
+            bg={"#DEF4FF"}
             post={post}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}

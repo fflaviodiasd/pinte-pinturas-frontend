@@ -52,7 +52,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
       try {
         const response = await api.get(`areas/${localId}/checklist`);
         setChecklist(
-          response.data.map((checklist: Checklist) => ({
+          response.data.checklists.map((checklist: Checklist) => ({
             ...checklist,
             bg: STATUS_COLORS[checklist.status],
           }))
@@ -167,12 +167,13 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
             name={"adicionar"}
             id={"adicionar"}
             bg={"black"}
-            placeholder={"Digite o nome do checklist e pressione Enter..."}
+            placeholder={"Nome do checklist"}
             subtmitData={handleChecklistInputKeyDown}
             setValueActual={setValueActual}
             value={valueActual}
             editable={true}
             post={true}
+            onCreateChecklist={() => setIsInputVisible(false)}
           />
         )}
       </div>
@@ -224,13 +225,17 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
                 editable={editingChipId === checklist.id}
                 chipId={editingChipId}
                 hideOrdinal={true}
-                checklistPackage={checklist.package.id}
+                checklistPackage={checklist.package?.id}
               />
             </div>
           </Tooltip>
         ))}
       </StyledGridChecklist>
-      <ModalChecklists modalOpen={modalOpen} handleClose={handleClose} />
+      <ModalChecklists
+        modalOpen={modalOpen}
+        handleClose={handleClose}
+        localId={localId}
+      />
     </div>
   );
 };

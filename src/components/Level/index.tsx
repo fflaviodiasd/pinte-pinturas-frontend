@@ -10,14 +10,13 @@ interface Level {
   name: string;
   color: string;
   order: number;
+  is_last_level?: boolean;
 }
 
 interface LevelComponentProps {
   getLevelEndpoint?: string;
   postLevelEndpoint?: string;
 }
-
-const levelColors = ["black", "#DEF4FF", "#B9EAFF"];
 
 export const LevelComponent: React.FC<LevelComponentProps> = ({
   getLevelEndpoint,
@@ -35,7 +34,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
         setLevel(
           response.data.map((level: Level, index: number) => ({
             ...level,
-            color: levelColors[index % levelColors.length],
+            color: level.is_last_level === true ? "black" : "white",
           }))
         );
         console.log(response);
@@ -67,7 +66,6 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
           console.log(response);
           const newLevel: Level = {
             ...response.data,
-            color: levelColors[level.length % levelColors.length],
           };
           setLevel((prevLevel) => [...prevLevel, newLevel]);
           setValueActual("");
@@ -131,13 +129,14 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
           <ChipCustomLevel
             name={"adicionar"}
             id={"adicionar"}
-            bg={"black"}
-            placeholder={"Digite o nome do nível e pressione Enter..."}
+            bg={"#B9EAFF"}
+            placeholder={"Nome do nível"}
             subtmitData={handleLevelInputKeyDown}
             setValueActual={setValueActual}
             value={valueActual}
             editable={true}
             post={true}
+            onCreateLevel={() => setIsInputVisible(false)}
           />
         )}
       </div>

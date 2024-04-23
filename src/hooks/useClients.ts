@@ -175,7 +175,7 @@ export const useClients = () => {
         id: result.id,
         active: result.active,
         fullName: result.full_name,
-        cellPhone: result.cell_phone,
+        cell_phone: result.cell_phone,
         role: result.office,
         profile: result.profile,
       }));

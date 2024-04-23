@@ -4,9 +4,8 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Chip, Grid, Paper, useTheme } from "@mui/material";
-import { TitleScreen } from "../../../components/TitleScreen";
-import { useStyles } from "./styles";
+import { Chip, Grid, useTheme } from "@mui/material";
+
 import { useNavigate } from "react-router-dom";
 import { EditIcon } from "../../../components/EditIcon";
 import { TablePagination } from "../../../components/Table/Pagination";
@@ -17,7 +16,6 @@ import { useCollaborators } from "../../../hooks/useCollaborators";
 import { Navbar } from "../../../components/Navbar";
 
 export const ListCollaborators = () => {
-  const { classes } = useStyles();
   const navigate = useNavigate();
   const {
     listCollaborators,
@@ -115,7 +113,7 @@ export const ListCollaborators = () => {
         ),
       },
       {
-        accessorKey: "cellPhone",
+        accessorKey: "cell_phone",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Celular",
@@ -164,7 +162,7 @@ export const ListCollaborators = () => {
 
   return (
     <Grid container spacing={2}>
-      <Navbar title={<TitleScreen title="Funcionários" />} />
+      <Navbar title="Funcionários" />
 
       <Grid item xs={12} lg={12}>
         <MaterialReactTable table={table} />
