@@ -24,6 +24,7 @@ import { errorMessage, successMessage } from "../../../components/Messages";
 import { UserContext } from "../../../contexts/UserContext";
 import HistoryTable from "../../../components/HistoryTable";
 import SearchIcon from '@mui/icons-material/Search';
+import  SupervisorDialog  from "../../../components/SupervisorDialog";
 import { get } from "http";
 const getInitials = (name = '') => {
   return name.split(' ').filter((n) => n !== '').map((n) => n[0]).join('');
@@ -40,6 +41,7 @@ export const SupervisorConstructions = () => {
     updateResponsible,
     getHistorySupervisor,
     historySupervisor,
+    updateResponsibleSecondary
   
   } = useConstructions();
 
@@ -54,6 +56,28 @@ export const SupervisorConstructions = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [newSupervisor, setNewSupervisor] = useState(null);
   const [oldSupervisor, setOldSupervisor] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSupervisors, setSelectedSupervisors] = useState([]);
+  const [supervisorsToSelect, setSupervisorsToSelect] = useState(companiesSupervisorList);
+
+ const handleAddSupervisor = (supervisor:any) => {
+    setSelectedSupervisors((prevSelected):any => [...prevSelected, supervisor]);
+    setSupervisorsToSelect((prevSupervisors:any) =>
+      prevSupervisors.filter((s:any) => s.id !== supervisor.id)
+    );
+    console.log('Added supervisor:', supervisor);
+  };
+
+  const handleRemoveSupervisor = (supervisorId:any) => {
+    const removedSupervisor = selectedSupervisors.find((s) => s.id === supervisorId);
+    setSelectedSupervisors((prevSelected) =>
+      prevSelected.filter((s:any) => s.id !== supervisorId)
+    );
+    if (removedSupervisor) {
+      setSupervisorsToSelect((prevSupervisors:any) => [...prevSupervisors, removedSupervisor]);
+    }
+    console.log('Removed supervisor:', supervisorId);
+  };
 
   useEffect(() => {
     if (id) {
@@ -61,7 +85,23 @@ export const SupervisorConstructions = () => {
     }
   }, [id]);
 
+  const handleSecondaryModal = () => {
+    setIsModalOpen(true);
+  }
+  
+  const handleSecondaryClose = () => {
+    setIsModalOpen(false);
+  }
 
+  const updateSecondarySupervisor = (selectedSupervisors:any) => {
+    const dataToSend = selectedSupervisors.map(supervisor => supervisor.id);
+    console.log('Data to send:', dataToSend);
+    updateResponsibleSecondary(dataToSend, false);
+  
+  
+    handleCloseModal();
+  
+  };
   // console.log("companiesSupervisorList", companiesSupervisorList);
 useEffect(() => {
   // console.log("History Supervisor has updated", historySupervisor);
@@ -336,7 +376,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
             color: 'white',
           },
         }}
-        onClick={handleOpenModal}
+        onClick={handleSecondaryModal}
       >
         Adicionar Encarregado
       </Button>
@@ -441,6 +481,15 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
     </Button>
   </DialogActions>
 </Dialog>
+<SupervisorDialog
+        open={isModalOpen}
+        onClose={handleSecondaryClose}
+        companiesSupervisorList={companiesSupervisorList}
+        selectedSupervisors={selectedSupervisors}
+        onAddSupervisor={handleAddSupervisor}
+        onRemoveSupervisor={handleRemoveSupervisor}
+        onSave={updateSecondarySupervisor}
+      />
     </Grid>
 
   );

@@ -59,6 +59,7 @@ export const CustomerSupervisor = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSupervisors, setSelectedSupervisors] = useState([]);
+  const [supervisorsToSelect, setSupervisorsToSelect] = useState(companiesSupervisorList);
 
  const handleAddSupervisor = (supervisor:any) => {
     setSelectedSupervisors((prevSelected):any => [...prevSelected, supervisor]);
@@ -129,8 +130,8 @@ const updateSecondarySupervisor = (selectedSupervisors:any) => {
   console.log('Data to send:', dataToSend);
   updateResponsibleSecondary(dataToSend, true);
 
-  handleCloseModal();
 
+  handleCloseModal();
 
 };
   const handleConfirmAddSupervisor = async () => {
