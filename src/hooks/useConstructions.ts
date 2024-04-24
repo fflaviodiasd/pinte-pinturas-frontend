@@ -730,6 +730,22 @@ export const useConstructions = () => {
     }
   };
 
+  const updateResponsibleSecondary = async (responsibleSecondaryData: any, isCustomer: boolean) => {
+    setLoading(true);
+    const propertyName = isCustomer ? 'responsible_customer_secondary' : 'responsible_secondary';
+    const updateData = { [propertyName]: responsibleSecondaryData };
+  
+    try {
+      await api.patch(`constructions/${id}/`, updateData);
+      setLoading(false);
+   
+    } catch (error) {
+      console.error('Erro ao atualizar/remover responsável:', error);
+      setLoading(false);
+      // errorMessage("Não foi possível atualizar/remover o responsável!");
+    }
+  };
+
   const [historySupervisor, setHistorySupervisor] = useState<any[]>([]);
 
   
@@ -794,7 +810,8 @@ export const useConstructions = () => {
     constructInfoData,
     addCompaniesConstruction,
     getHistorySupervisor,
-    historySupervisor
+    historySupervisor,
+    updateResponsibleSecondary
     
   };
 };

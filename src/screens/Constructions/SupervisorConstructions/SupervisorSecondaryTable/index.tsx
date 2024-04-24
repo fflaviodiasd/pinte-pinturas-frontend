@@ -10,13 +10,27 @@ import {
   MRT_ShowHideColumnsButton,
 } from "material-react-table";
 
-import { Box, Grid, Tooltip, useTheme, Typography} from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  Grid,
+  DialogTitle,
+  DialogContent,
+  Tooltip,
+  useTheme,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  Typography,
+} from '@mui/material';
 import { useStyles } from "./styles";
 import { useParams, useNavigate } from "react-router-dom";
 import { useConstructions } from "../../../../hooks/useConstructions";
 import { Add, Launch, Edit, Delete, Info } from "@mui/icons-material";
 
-import { IconButton } from "@mui/material";
 import { errorMessage, successMessage } from "../../../../components/Messages";
 import { UserContext } from "../../../../contexts/UserContext";
 interface DropdownOption {
@@ -33,28 +47,85 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
   // const navigate = useNavigate();
   const {
   
-    listConstructionsMeasurements,
-    getAllConstructionsMeasurements,
-    disableConstructionMeasurements,
-    addConstructionMeasurements
-
+    getConstruction,
+    getCompaniesSupervisorList,
+    companiesSupervisorList,
+    constructInfoData,
+    updateResponsibleSecondary
   } = useConstructions();
   const theme = useTheme();
 
-  const [disciplineOptions, setDisciplineOptions] = useState<DropdownOption[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [filteredMeasurements, setFilteredMeasurements] = useState<any[]>([]);
   const [secondaryInfoData, setSecondaryInfoData] = useState<any[]>(secondaryInfo);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSupervisors, setSelectedSupervisors] = useState(secondaryInfoData);
+  const [supervisorsToSelect, setSupervisorsToSelect] = useState(companiesSupervisorList);
+  const { id } = useParams();
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+  useEffect(() => {
+    // Inicializa supervisorsToSelect removendo os já selecionados
+    const initialSupervisorsToSelect = companiesSupervisorList.filter(
+      (supervisor) => !selectedSupervisors.find((selected) => selected.id === supervisor.id)
+    );
+    setSupervisorsToSelect(initialSupervisorsToSelect);
+  }, [companiesSupervisorList, selectedSupervisors]);
+
+  const handleAddSupervisor = (supervisor:any) => {
+    setSelectedSupervisors((prevSelected):any => [...prevSelected, supervisor]);
+    setSupervisorsToSelect((prevSupervisors:any) =>
+      prevSupervisors.filter((s:any) => s.id !== supervisor.id)
+    );
+    console.log('Added supervisor:', supervisor);
+  };
+
+  const handleRemoveSupervisor = (supervisorId:any) => {
+    const removedSupervisor = selectedSupervisors.find((s) => s.id === supervisorId);
+    setSelectedSupervisors((prevSelected) =>
+      prevSelected.filter((s:any) => s.id !== supervisorId)
+    );
+    if (removedSupervisor) {
+      setSupervisorsToSelect((prevSupervisors:any) => [...prevSupervisors, removedSupervisor]);
+    }
+    console.log('Removed supervisor:', supervisorId);
+  };
   console.log('secondaryInfoData: ', secondaryInfoData)
 
-  const { id } = useParams();
-      // console.log('construction id pac: ', selectedPackageConstructionId)
+  const handleCancel = () => {
+    // Limpa o estado das variáveis e fecha o modal
+    setSelectedSupervisors(secondaryInfoData);
+    setSupervisorsToSelect(companiesSupervisorList);
+    handleCloseModal();
+  };
 
+  const updateSecondarySupervisor = (selectedSupervisors:any) => {
+    const dataToSend = selectedSupervisors.map(supervisor => supervisor.id);
+    console.log('Data to send:', dataToSend);
+    updateResponsibleSecondary(dataToSend, false);
 
+    handleCloseModal();
 
+ 
+  };
 
-  
+      useEffect(() => {
+        if (id) {
+          getConstruction(id).finally(() => setLoading(false)); 
+          getCompaniesSupervisorList();
+        }
+      }, [id]);
+      
+
+      console.log('companiesSupervisorList:>>>> ', companiesSupervisorList)
+
 
 
   const handleDisable = async (measurementId: number) => {
@@ -68,19 +139,6 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
   };
 
 
-  
-  
-  const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
-    values,
-    table,
-  }) => {
-  
-  
-    console.log('values for API:', values);
-  
-    await addConstructionMeasurements(values);
-    getAllConstructionsMeasurements();
-  };
   
 
   const baseBackgroundColor =
@@ -121,7 +179,6 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
     columns,
     data: secondaryInfoData,
     enableColumnFilterModes: true,
-    onCreatingRowSave: handleCreatePackages,
     // onEditingRowSave: handleEditPackages,
     enableEditing: true, 
     // editDisplayMode: 'row', 
@@ -139,22 +196,12 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
         >
           <Delete />
         </IconButton>
-        {/* <IconButton
-          aria-label="Editar"
-          onClick={() => handleEditPackages(row.original.id)}
-          sx={{ color: "#C5C7C8" }} 
-        >
-          <Edit />
-        </IconButton> */}
+
       </div>
     ),
 
     initialState: { showColumnFilters: true },
-    // renderDetailPanel: ({ row }) => (
-    //   <Box sx={{ padding: '1rem' }}>
-    //     <ServiceStepTable order={row.original.id} />
-    //   </Box>
-    // ),
+
     renderTopToolbar: ({ table }) => (
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem',}}>
         <Box
@@ -196,12 +243,10 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
     border: '1px solid #0076be',
     borderRadius: '4px',
   }} />
-         <Tooltip title="Adicionar Pacote">
+         <Tooltip title="Adicionar um ou mais encarregados">
   <IconButton
-   onClick={() => {
-    table.setCreatingRow(true);
-    console.log('options:', disciplineOptions);
-  }}
+           onClick={handleOpenModal}
+
     sx={{
       color: '#0076be',
       border: '1px solid #0076be',
@@ -251,7 +296,44 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
       <Grid item xs={12} lg={12}>
 
         <MaterialReactTable table={table}/>
-
+        <Dialog open={isModalOpen} onClose={handleCloseModal} fullWidth maxWidth="md">
+        <DialogTitle>Adicionar Encarregados Secundários</DialogTitle>
+        <DialogContent>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 2 }}>
+            <List sx={{ width: '45%', overflow: 'auto' }}>
+              <Typography variant="h6">Selecione Encarregados</Typography>
+              {supervisorsToSelect.map((supervisor:any) => (
+                <ListItem key={supervisor.id}>
+                  <ListItemText primary={supervisor.name} />
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" onClick={() => handleAddSupervisor(supervisor)}>
+                      <Add sx={{      color: '#0076be',
+                      }}/>
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
+            <List sx={{ width: '45%', overflow: 'auto' }}>
+              <Typography variant="h6">Encarregados Selecionados</Typography>
+              {selectedSupervisors.map((supervisor:any) => (
+                <ListItem key={supervisor.id}>
+                  <ListItemText primary={supervisor.name} />
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" onClick={() => handleRemoveSupervisor(supervisor.id)}>
+                      <Delete />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+  <Button onClick={handleCancel}>Cancelar</Button>
+  <Button onClick={() => updateSecondarySupervisor(selectedSupervisors)}>Adicionar</Button>
+</Box>
+        </DialogContent>
+      </Dialog>
       </Grid>
     </Grid>
   );
