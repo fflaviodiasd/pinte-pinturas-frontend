@@ -800,18 +800,18 @@ export const useConstructions = () => {
     addServiceStep,
     deleteServiceStep,
     getServiceById,
-    listConstructionsMeasurements,
-    getAllConstructionsMeasurements,
-    disableConstructionMeasurements,
-    addConstructionMeasurements,
-    updateResponsible,
     getCompaniesSupervisorList,
     companiesSupervisorList,
     constructInfoData,
     addCompaniesConstruction,
+    updateResponsible,
+    updateResponsibleSecondary,
     getHistorySupervisor,
     historySupervisor,
-    updateResponsibleSecondary
-    
+    getAllConstructionsMeasurements,
+    listConstructionsMeasurements,
+    disableConstructionMeasurements,
+    addConstructionMeasurements,
+
   };
 };

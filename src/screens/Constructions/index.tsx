@@ -54,8 +54,6 @@ export const Constructions = () => {
       default:
         return <ListConstructionsMaterials />;
     }
-
-
   };
 
   return (
@@ -122,6 +120,7 @@ export const Constructions = () => {
           onClick={() => navigate(`/obras/${constructionId}/encarregados-cliente`)}
           />
       </TabsContainer>
+
 
       {displayContent()}
     </Grid>
