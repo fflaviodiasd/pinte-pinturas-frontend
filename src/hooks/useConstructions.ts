@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-useless-catch */
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
 import { api } from "../services/api";
@@ -65,6 +65,10 @@ export const useConstructions = () => {
     checklistName: "",
   });
 
+  const [constructInfoData, setConstructInfoData] = useState<any>({})
+  const [companiesSupervisorList, setCompaniesSupervisor] = useState<any>([])
+
+
   const getConstruction = async (id: string) => {
     setLoading(true);
     try {
@@ -75,12 +79,28 @@ export const useConstructions = () => {
         name: data.name,
         corporateName: data.corporate_name,
       });
+      // console.log('constructInfoDataAPI', data)
+      setConstructInfoData(data);
       setLoading(false);
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
   };
+
+  const getCompaniesSupervisorList = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`companies/${user.company}/construction_supervisor`);
+      setCompaniesSupervisor(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }
+
+
 
   const getChecklists = async (checklistId: any) => {
     setLoading(true);
@@ -166,6 +186,22 @@ export const useConstructions = () => {
     setLoading(true);
     try {
       await api.post("constructions/", { name: constructionData.name });
+      successMessage("Obra adicionada com sucesso!");
+      setLoading(false);
+      navigate("/obras");
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível adicionar obra!");
+      setLoading(false);
+    }
+  };
+
+  const addCompaniesConstruction = async (constructionData: any) => {
+    setLoading(true);
+    console.log('constructionData:', constructionData);
+    console.log('userInfo', user)
+    try {
+      await api.post(`companies/${user.company}/constructions/`, constructionData);
       successMessage("Obra adicionada com sucesso!");
       setLoading(false);
       navigate("/obras");
@@ -622,7 +658,108 @@ export const useConstructions = () => {
       return []; // Retorna um array vazio em caso de erro
     }
   };
+  
+  const [listConstructionsMeasurements, setListConstructionsMeasurements] =  useState<any[]>([]);
 
+
+  const getAllConstructionsMeasurements = async () => {
+    if (!id) {
+      console.error('ID da construção não foi fornecido');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/constructions/${id}/measurements/`);
+      console.log('data:', data);
+      setListConstructionsMeasurements(data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Erro ao obter serviços de construção:', error);
+      setLoading(false);
+    }
+  };
+
+  const disableConstructionMeasurements = async (measurementId: number) => {
+    setLoading(true);
+    try {
+      const response = await api.delete(`/measurements/${measurementId}`);
+      if (response.status === 204) {
+        successMessage('Medição apagada com sucesso!');
+      } else {
+        console.log('Erro ao apagar medição!', response.data.detail);
+        errorMessage('Erro ao apagar! ' + response.data.detail);
+      }
+    } catch (error) {
+      throw error; 
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addConstructionMeasurements = async (newmeasurement: any) => {
+    setLoading(true);
+    try {
+      const response = await api.post(`/constructions/${id}/measurements/`, newmeasurement);
+      setListConstructionPackages(prevMeasurement => [...prevMeasurement, response.data]);
+      successMessage('Pacote adicionado com sucesso!');
+    } catch (error) {
+      errorMessage('Erro ao adicionar o pacote!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateResponsible = async (responsibleId: number | null, isCustomer: boolean, isDeleteAction: boolean = false) => {
+    setLoading(true);
+    const propertyName = isCustomer ? 'responsible_customer_primary' : 'responsible_primary';
+    const updateData = { [propertyName]: isDeleteAction ? null : responsibleId };
+  
+    try {
+      await api.patch(`constructions/${id}/`, updateData);
+      setLoading(false);
+      if (isDeleteAction) {
+        // successMessage("Responsável removido com sucesso!");
+      } else {
+        // successMessage("Responsável atualizado com sucesso!");
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar/remover responsável:', error);
+      setLoading(false);
+      // errorMessage("Não foi possível atualizar/remover o responsável!");
+    }
+  };
+
+  const updateResponsibleSecondary = async (responsibleSecondaryData: any, isCustomer: boolean) => {
+    setLoading(true);
+    const propertyName = isCustomer ? 'responsible_customer_secondary' : 'responsible_secondary';
+    const updateData = { [propertyName]: responsibleSecondaryData };
+  
+    try {
+      await api.patch(`constructions/${id}/`, updateData);
+      setLoading(false);
+   
+    } catch (error) {
+      console.error('Erro ao atualizar/remover responsável:', error);
+      setLoading(false);
+      // errorMessage("Não foi possível atualizar/remover o responsável!");
+    }
+  };
+
+  const [historySupervisor, setHistorySupervisor] = useState<any[]>([]);
+
+  
+  const getHistorySupervisor = async (id: number, isCustomer: boolean) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`constructions/${id}/history/?responsible_primary=${!isCustomer}`);
+      setHistorySupervisor(data);
+    } catch (error) {
+      console.error('Failed to fetch history:', error);
+    }
+    setLoading(false);
+  };
+  
   return {
     loading,
     setLoading,
@@ -663,5 +800,18 @@ export const useConstructions = () => {
     addServiceStep,
     deleteServiceStep,
     getServiceById,
+    getCompaniesSupervisorList,
+    companiesSupervisorList,
+    constructInfoData,
+    addCompaniesConstruction,
+    updateResponsible,
+    updateResponsibleSecondary,
+    getHistorySupervisor,
+    historySupervisor,
+    getAllConstructionsMeasurements,
+    listConstructionsMeasurements,
+    disableConstructionMeasurements,
+    addConstructionMeasurements,
+
   };
 };

@@ -11,6 +11,10 @@ import { Tab } from "../../components/Tab";
 import { ServicesConstructions } from "./ServicesConstructions";
 import { PackageConstructions } from "./PackageConstructions";
 import { ListConstructionsMaterials } from "./Materials";
+import { MeasurementsConstructions } from "./MeasurementsConstructions";
+import { SupervisorConstructions } from "./SupervisorConstructions";
+import { CustomerSupervisor } from "./CustomerSupervisor";
+
 import { ListLocal } from "./Local";
 import { Teams } from "./Teams";
 
@@ -38,9 +42,17 @@ export const Constructions = () => {
       case location.pathname.includes("locais"):
         return <ListLocal />;
       case location.pathname.includes("servicos"):
-        return <ServicesConstructions />;
-      default:
+        return <ServicesConstructions />; 
+      case location.pathname.includes("pacotes"):
         return <PackageConstructions />;
+      case location.pathname.includes("medicoes"):
+        return <MeasurementsConstructions />;
+      case location.pathname.includes("supervisores"):
+        return <SupervisorConstructions />;
+      case location.pathname.includes("encarregados-cliente"):
+        return <CustomerSupervisor />;
+      default:
+        return <ListConstructionsMaterials />;
     }
   };
 
@@ -88,7 +100,27 @@ export const Constructions = () => {
           isActive={location.pathname.includes("pacotes")}
           onClick={() => navigate(`/obras/${constructionId}/pacotes`)}
         />
+
+       
+        <Tab
+          text="Medições"
+          isActive={location.pathname.includes("medicoes")}
+          onClick={() => navigate(`/obras/${constructionId}/medicoes`)}
+        />
+ 
+        <Tab
+          text="Encarregados"
+          isActive={location.pathname.includes("supervisores")}
+          onClick={() => navigate(`/obras/${constructionId}/supervisores`)}
+        />
+
+        <Tab
+          text="Encarregados do Cliente"
+          isActive={location.pathname.includes("encarregados-cliente")}
+          onClick={() => navigate(`/obras/${constructionId}/encarregados-cliente`)}
+          />
       </TabsContainer>
+
 
       {displayContent()}
     </Grid>

@@ -14,6 +14,7 @@ import { ListMaterials } from "../screens/Materials/ListMaterials";
 
 import { ListConstructions } from "../screens/Constructions/ListConstructions";
 import { Constructions } from "../screens/Constructions";
+import { FormConstructionsMultiStep } from "../screens/Constructions/FormConstructionsMultiStep";
 
 import { Settings } from "../screens/Settings";
 
@@ -43,7 +44,11 @@ export const AppRoutes = () => {
             path="/colaboradores/listagem"
             element={<ListCollaborators />}
           />
-
+          <Route
+            path="/obras/cadastrar"
+            element={<FormConstructionsMultiStep />}
+          />
+          
           <Route path="/obras" element={<ListConstructions />} />
 
           <Route path="/obras/:id/materiais" element={<Constructions />} />
@@ -51,6 +56,10 @@ export const AppRoutes = () => {
           <Route path="/obras/:id/locais" element={<Constructions />} />
           <Route path="/obras/:id/servicos" element={<Constructions />} />
           <Route path="/obras/:id/pacotes" element={<Constructions />} />
+          <Route path="/obras/:id/medicoes" element={<Constructions />} />
+          <Route path="/obras/:id/supervisores" element={<Constructions />} />
+          <Route path="/obras/:id/encarregados-cliente" element={<Constructions />}
+          />
 
           <Route path="/materiais" element={<ListMaterials />} />
 

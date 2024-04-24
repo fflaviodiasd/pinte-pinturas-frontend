@@ -1,0 +1,341 @@
+import { useEffect, useMemo, useState } from "react";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+  type MRT_ColumnDef,
+  type MRT_TableOptions,
+  MRT_ToggleDensePaddingButton,
+  MRT_ToggleFullScreenButton,
+  MRT_ToggleFiltersButton,
+  MRT_ShowHideColumnsButton,
+} from "material-react-table";
+
+import {
+  Box,
+  Button,
+  Dialog,
+  Grid,
+  DialogTitle,
+  DialogContent,
+  Tooltip,
+  useTheme,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  Typography,
+} from '@mui/material';
+import { useStyles } from "./styles";
+import { useParams, useNavigate } from "react-router-dom";
+import { useConstructions } from "../../../../hooks/useConstructions";
+import { Add, Launch, Edit, Delete, Info } from "@mui/icons-material";
+
+import { errorMessage, successMessage } from "../../../../components/Messages";
+import { UserContext } from "../../../../contexts/UserContext";
+interface DropdownOption {
+  id: any;
+  name: any;
+  label: string;
+  value: any; 
+}
+
+
+export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
+
+  // const { classes } = useStyles();
+  // const navigate = useNavigate();
+  const {
+  
+    getConstruction,
+    getCompaniesSupervisorList,
+    companiesSupervisorList,
+    constructInfoData,
+    updateResponsibleSecondary
+  } = useConstructions();
+  const theme = useTheme();
+
+  const [isSaving, setIsSaving] = useState(false);
+  const [filteredMeasurements, setFilteredMeasurements] = useState<any[]>([]);
+  const [secondaryInfoData, setSecondaryInfoData] = useState<any[]>(secondaryInfo);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSupervisors, setSelectedSupervisors] = useState(secondaryInfoData);
+  const [supervisorsToSelect, setSupervisorsToSelect] = useState(companiesSupervisorList);
+  const { id } = useParams();
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+  useEffect(() => {
+    // Inicializa supervisorsToSelect removendo os já selecionados
+    const initialSupervisorsToSelect = companiesSupervisorList.filter(
+      (supervisor) => !selectedSupervisors.find((selected) => selected.id === supervisor.id)
+    );
+    setSupervisorsToSelect(initialSupervisorsToSelect);
+  }, [companiesSupervisorList, selectedSupervisors]);
+
+  const handleAddSupervisor = (supervisor:any) => {
+    setSelectedSupervisors((prevSelected):any => [...prevSelected, supervisor]);
+    setSupervisorsToSelect((prevSupervisors:any) =>
+      prevSupervisors.filter((s:any) => s.id !== supervisor.id)
+    );
+    console.log('Added supervisor:', supervisor);
+  };
+
+  const handleRemoveSupervisor = (supervisorId:any) => {
+    const removedSupervisor = selectedSupervisors.find((s) => s.id === supervisorId);
+    setSelectedSupervisors((prevSelected) =>
+      prevSelected.filter((s:any) => s.id !== supervisorId)
+    );
+    if (removedSupervisor) {
+      setSupervisorsToSelect((prevSupervisors:any) => [...prevSupervisors, removedSupervisor]);
+    }
+    console.log('Removed supervisor:', supervisorId);
+  };
+  console.log('secondaryInfoData: ', secondaryInfoData)
+
+  const handleCancel = () => {
+    // Limpa o estado das variáveis e fecha o modal
+    setSelectedSupervisors(secondaryInfoData);
+    setSupervisorsToSelect(companiesSupervisorList);
+    handleCloseModal();
+  };
+
+  const updateSecondarySupervisor = (selectedSupervisors:any) => {
+    const dataToSend = selectedSupervisors.map(supervisor => supervisor.id);
+    console.log('Data to send:', dataToSend);
+    updateResponsibleSecondary(dataToSend, true);
+
+    handleCloseModal();
+
+ 
+  };
+
+      useEffect(() => {
+        if (id) {
+          getConstruction(id).finally(() => setLoading(false)); 
+          getCompaniesSupervisorList();
+        }
+      }, [id]);
+      
+
+      console.log('companiesSupervisorList:>>>> ', companiesSupervisorList)
+
+
+
+  const handleDisable = async (measurementId: number) => {
+    try {
+      //  await disableConstructionMeasurements(measurementId);
+      // successMessage("Medição apagada com sucesso!");
+      // getAllConstructionsMeasurements();
+    } catch (error) {
+      errorMessage("Não foi possível apagar medição!");
+    }
+  };
+
+
+  
+
+  const baseBackgroundColor =
+    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
+
+ 
+  const columns = useMemo<MRT_ColumnDef<any>[]>(
+    () => [
+
+      {
+        accessorKey: "name",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "Nome Completo",
+        enableEditing: false, 
+      },
+      {
+        accessorKey: 'office',
+        header: 'Cargo',
+        enableEditing: false,
+      },
+
+       {
+        accessorKey: 'profile',
+        header: 'Perfil',
+        enableEditing: false,
+      },
+      {
+        accessorKey: 'inclusion_date',
+        header: 'Data de Inclusão',
+        enableEditing: false,
+      },
+    
+    
+    ], []); 
+
+  const table = useMaterialReactTable({
+    columns,
+    data: secondaryInfoData,
+    enableColumnFilterModes: true,
+    // onEditingRowSave: handleEditPackages,
+    enableEditing: true, 
+
+    // editDisplayMode: 'row', 
+    createDisplayMode: 'row', 
+    state: {
+      isSaving, 
+    },
+    renderRowActions: 
+    ({ row }) => (
+      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+        <IconButton
+          aria-label="Excluir"
+          onClick={() => handleDisable(row.original.id)}
+          sx={{ color: "#C5C7C8" }} 
+        >
+          <Delete />
+        </IconButton>
+
+      </div>
+    ),
+
+    initialState: { showColumnFilters: false },
+
+    renderTopToolbar: ({ table }) => (
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem',}}>
+        <Box
+  sx={{
+    position: 'relative',
+    '&::after': {
+      content: '""',
+      display: 'block',
+      width: '30%', 
+      height: '3px',
+      backgroundColor: '#1976d2', 
+      position: 'absolute',
+      bottom: 0,
+    }
+  }}
+>
+  <Typography variant="h5" component="div" gutterBottom>
+    Secundários
+  </Typography>
+</Box>
+        <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <MRT_ToggleFiltersButton table={table} sx={{
+    color: '#0076be',
+    border: '1px solid #0076be',
+    borderRadius: '4px', 
+  }} />
+          <MRT_ShowHideColumnsButton table={table} sx={{
+    color: '#0076be',
+    border: '1px solid #0076be',
+    borderRadius: '4px', 
+  }} />
+          <MRT_ToggleDensePaddingButton table={table} sx={{
+    color: '#0076be',
+    border: '1px solid #0076be',
+    borderRadius: '4px', 
+  }}/>
+          <MRT_ToggleFullScreenButton table={table} sx={{
+    color: '#0076be',
+    border: '1px solid #0076be',
+    borderRadius: '4px',
+  }} />
+         <Tooltip title="Adicionar um ou mais encarregados">
+  <IconButton
+           onClick={handleOpenModal}
+
+    sx={{
+      color: '#0076be',
+      border: '1px solid #0076be',
+      borderRadius: '4px', 
+      "&:hover": { 
+        backgroundColor: 'rgba(0, 118, 190, 0.04)', 
+      },
+    }}
+  >
+    <Add />
+  </IconButton>
+</Tooltip>
+
+        </Box>
+      </Box>
+    ),
+    filterFns: {
+      customFilterFn: (row, id, filterValue) => {
+        return row.getValue(id) === filterValue;
+      },
+    },
+    localization: {
+      filterCustomFilterFn: "Custom Filter Fn",
+    } as any,
+    muiTablePaperProps: {
+      elevation: 0,
+    },
+    muiTableBodyProps: {
+      sx: (theme) => ({
+        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
+          {
+            backgroundColor: "#FAFAFA",
+          },
+      }),
+    },
+    mrtTheme: (theme) => ({
+      baseBackgroundColor: baseBackgroundColor,
+      draggingBorderColor: theme.palette.secondary.main,
+    }),
+    
+    enablePagination: false,
+    enableBottomToolbar: false,
+  });
+
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={12} lg={12}>
+
+        <MaterialReactTable table={table}/>
+        <Dialog open={isModalOpen} onClose={handleCloseModal} fullWidth maxWidth="md">
+        <DialogTitle>Adicionar Encarregados Secundários</DialogTitle>
+        <DialogContent>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 2 }}>
+            <List sx={{ width: '45%', overflow: 'auto' }}>
+              <Typography variant="h6">Selecione Encarregados</Typography>
+              {supervisorsToSelect.map((supervisor:any) => (
+                <ListItem key={supervisor.id}>
+                  <ListItemText primary={supervisor.name} />
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" onClick={() => handleAddSupervisor(supervisor)}>
+                      <Add sx={{      color: '#0076be',
+                      }}/>
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
+            <List sx={{ width: '45%', overflow: 'auto' }}>
+              <Typography variant="h6">Encarregados Selecionados</Typography>
+              {selectedSupervisors.map((supervisor:any) => (
+                <ListItem key={supervisor.id}>
+                  <ListItemText primary={supervisor.name} />
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" onClick={() => handleRemoveSupervisor(supervisor.id)}>
+                      <Delete />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+  <Button onClick={handleCancel}>Cancelar</Button>
+  <Button onClick={() => updateSecondarySupervisor(selectedSupervisors)}>Adicionar</Button>
+</Box>
+        </DialogContent>
+      </Dialog>
+      </Grid>
+    </Grid>
+  );
+};

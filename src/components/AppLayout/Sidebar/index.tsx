@@ -47,16 +47,31 @@ export const Sidebar = () => {
   const [openSidebar, setOpenSidebar] = useState(isSideBarOpen());
   const [openClientsItemMenu, setOpenClientsItemMenu] = useState(false);
   const [openEmployeesItemMenu, setOpenEmployeesItemMenu] = useState(false);
+  const [openItemMenus, setOpenItemMenus] = useState<{ [key: string]: boolean }>({});
+
+  // const handleDrawer = () => {
+  //   setOpenSidebar(!openSidebar);
+  //   if (openSidebar) {
+  //     setOpenClientsItemMenu(false);
+  //     setOpenEmployeesItemMenu(false);
+  //   }
+  // };
 
   const handleDrawer = () => {
     setOpenSidebar(!openSidebar);
     localStorage.setItem(KEY_SIDEBAR, String(!openSidebar));
     if (openSidebar) {
-      setOpenClientsItemMenu(false);
-      setOpenEmployeesItemMenu(false);
+      setOpenItemMenus({});
     }
   };
 
+
+  const handleToggleSubmenu = (path: string) => {
+    setOpenItemMenus((prevOpenItemMenus) => ({
+      ...prevOpenItemMenus,
+      [path]: !prevOpenItemMenus[path],
+    }));
+  };
   const handleClientsList = () => {
     setOpenClientsItemMenu(!openClientsItemMenu);
     // setOpenEmployeesItemMenu(false);
@@ -90,6 +105,10 @@ export const Sidebar = () => {
       text: "Obras",
       path: "obras",
       icon: <img src={ConstructionsIcon} alt="Obras" />,
+      subItems: [
+        { text: "• Cadastro", path: "/obras/cadastrar" },
+        { text: "• Listagem", path: "/obras" },
+      ],
     },
     {
       text: "Materiais",
