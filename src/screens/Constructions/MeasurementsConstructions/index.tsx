@@ -79,44 +79,7 @@ useEffect(() => {
     }
   };
 
-  // const handleEditPackages: MRT_TableOptions<any>["onEditingRowSave"] = async ({
-  //   exitEditingMode, // Função para sair do modo de edição
-  //   row, // A linha sendo editada
-  //   values, // Os valores editados
-  // }) => {
-  //   console.log('Salvando edição', values);
-  //   // Supondo uma função de atualização async genérica 'updateConstructionPackage'
-  //   // await updateConstructionPackage(row.original.id, values);
-  //   getAllConstructionPackages();
-  //   exitEditingMode(); // Sai do modo de edição após a atualização
-  // };
 
-  // const handleEditPackages: MRT_TableOptions<any>['onEditingRowSave'] = async ({
-  //   exitEditingMode,
-  //   row,
-  //   values,
-  // }) => {
-  //   if (!row?.original?.id) {
-  //     errorMessage('Não foi possível identificar o pacote para atualização.');
-  //     return;
-  //   }
-  
-  //   try {
-  //     console.log('Salvando edições para o pacote:', values);
-  
-  //     // const updatedPackage = await updateConstructionPackage(row.original.id, values);
-  
-  //     // setListConstructionPackages(prevPackages =>
-  //     //   prevPackages.map(pkg => (pkg.id === row.original.id ? { ...pkg, ...updatedPackage } : pkg))
-  //     // );
-  
-  //     successMessage('Pacote atualizado com sucesso.');
-  //     exitEditingMode(); 
-  //   } catch (error) {
-  //     errorMessage('Erro ao atualizar o pacote.');
-  //     console.error('Erro ao salvar as edições:', error);
-  //   }
-  // };
   
   
   const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] = async ({

@@ -672,7 +672,7 @@ export const useConstructions = () => {
     try {
       const { data } = await api.get(`/constructions/${id}/measurements/`);
       console.log('data:', data);
-      setListConstructionsMeasurements(data.results);
+      setListConstructionsMeasurements(data);
       setLoading(false);
     } catch (error) {
       console.error('Erro ao obter serviços de construção:', error);

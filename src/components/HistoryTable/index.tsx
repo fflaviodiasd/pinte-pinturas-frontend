@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { MaterialReactTable, useMaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 
 const HistoryTable = ({ historyData }:any) => {
-  console.log('historyData>:', historyData)
+  // console.log('historyData>:', historyData)
   const columns = useMemo<MRT_ColumnDef<any>[]>(() => [
     {
       accessorKey: 'name',

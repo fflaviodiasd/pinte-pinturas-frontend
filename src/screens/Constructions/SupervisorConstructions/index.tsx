@@ -22,7 +22,7 @@ import Alert from '@mui/material/Alert';
 import { IconButton } from "@mui/material";
 import { errorMessage, successMessage } from "../../../components/Messages";
 import { UserContext } from "../../../contexts/UserContext";
-import HistoryTable from "./HistoryTable";
+import HistoryTable from "../../../components/HistoryTable";
 import SearchIcon from '@mui/icons-material/Search';
 import { get } from "http";
 const getInitials = (name = '') => {
@@ -57,11 +57,12 @@ export const SupervisorConstructions = () => {
 
   useEffect(() => {
     if (id) {
-      getHistorySupervisor(id, false);
+      getHistorySupervisor(parseInt(id), false);
     }
   }, [id]);
 
 
+  console.log("companiesSupervisorList", companiesSupervisorList);
 useEffect(() => {
   console.log("History Supervisor has updated", historySupervisor);
 }, [historySupervisor]); 
@@ -112,7 +113,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
       try {
         await updateResponsible(parseInt(selectedSupervisor), false, false);
         successMessage("Responsável primário atualizado com sucesso!");
-        await getHistorySupervisor(id, false);
+        await getHistorySupervisor(parseInt(id), false);
         await getConstruction(id);
         handleCloseModal();
       } catch (error) {
@@ -175,10 +176,6 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
   };
 
  
-  const handleAddSupervisor = () => {
-    console.log('Adicionar Encarregado');
-    console.log('companiesSupervisorList:', companiesSupervisorList);
-  };
 
 
   const responsiblePrimary = constructInfoData.responsible_primary || {};
