@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-useless-catch */
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
 import { api } from "../services/api";
@@ -710,70 +710,40 @@ export const useConstructions = () => {
     }
   };
 
-  const updatePrimaryResponsible = async (responsiblePrimary: number) => {
+  const updateResponsible = async (responsibleId: number | null, isCustomer: boolean, isDeleteAction: boolean = false) => {
     setLoading(true);
-    console.log('NUMERO DO SUPERVISOR', responsiblePrimary)
+    const propertyName = isCustomer ? 'responsible_customer_primary' : 'responsible_primary';
+    const updateData = { [propertyName]: isDeleteAction ? null : responsibleId };
+  
     try {
-      await api.patch(`constructions/${id}/`, { 
-        responsible_primary: responsiblePrimary,
-      });
-      
+      await api.patch(`constructions/${id}/`, updateData);
       setLoading(false);
+      if (isDeleteAction) {
+        // successMessage("Responsável removido com sucesso!");
+      } else {
+        // successMessage("Responsável atualizado com sucesso!");
+      }
     } catch (error) {
-      console.error(error);
+      console.error('Erro ao atualizar/remover responsável:', error);
       setLoading(false);
+      // errorMessage("Não foi possível atualizar/remover o responsável!");
     }
   };
 
-  const updateCustomerPrimaryResponsible = async (responsiblePrimary: number) => {
-    setLoading(true);
-    console.log(new Date().toISOString())
-    try {
-      await api.patch(`constructions/${id}/`, { 
-        responsible_customer_primary: responsiblePrimary,
-      });
-      
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  };
+  const [historySupervisor, setHistorySupervisor] = useState<any[]>([]);
 
-
-  const updateCustomerResponsible = async (responsibleCustomer: number) => {
-    setLoading(true);
-    console.log('teste', responsibleCustomer)
-    try {
-      await api.patch(`constructions/${id}/`, { 
-        responsible_customer_primary: responsibleCustomer,
-      });
-      
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  };
-
-  const removePrimaryResponsible = async () => {
+  
+  const getHistorySupervisor = async (id: number, isCustomer: boolean) => {
     setLoading(true);
     try {
-      await api.patch(`constructions/${id}/`, { 
-        responsible_primary: null
-      });
-
-      // successMessage("Supervisor removido com sucesso!"); 
-      setLoading(false);
+      const { data } = await api.get(`constructions/${id}/history/?responsible_primary=${!isCustomer}`);
+      setHistorySupervisor(data);
     } catch (error) {
-      console.error(error);
-      errorMessage("Não foi possível remover o supervisor!");
-      setLoading(false);
+      console.error('Failed to fetch history:', error);
     }
+    setLoading(false);
   };
   
-  
-
   return {
     loading,
     setLoading,
@@ -818,14 +788,13 @@ export const useConstructions = () => {
     getAllConstructionsMeasurements,
     disableConstructionMeasurements,
     addConstructionMeasurements,
-    updatePrimaryResponsible,
-    updateCustomerPrimaryResponsible,
-    updateCustomerResponsible,
-    removePrimaryResponsible,
+    updateResponsible,
     getCompaniesSupervisorList,
     companiesSupervisorList,
     constructInfoData,
     addCompaniesConstruction,
+    getHistorySupervisor,
+    historySupervisor
     
   };
 };

@@ -36,9 +36,8 @@ export const CustomerSupervisor = () => {
     constructInfoData,
     getCompaniesSupervisorList,
     companiesSupervisorList,
-    updatePrimaryResponsible,
-    updateCustomerPrimaryResponsible,
-    removePrimaryResponsible,
+    updateResponsible,
+    
  
 
   } = useConstructions();
@@ -97,8 +96,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
       setIsConfirmModalOpen(true);
     } else {
       try {
-        await updateCustomerPrimaryResponsible
-        (parseInt(selectedSupervisor));
+        await updateResponsible(parseInt(selectedSupervisor), true, false);
         successMessage("Responsável primário atualizado com sucesso!");
         await getConstruction(id);
         handleCloseModal();
@@ -185,7 +183,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
       <Grid item xs={12} lg={12}>
       <Grid item xs={12} container justifyContent="space-between" alignItems="center">
         <Typography variant="h5" component="div" gutterBottom>
-          Principalx
+          Principal
         </Typography>
         <Box>
         <Tooltip title="Alterar encarregado">
@@ -211,6 +209,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
         <Tooltip title="Remover encarregado">
 
           <IconButton
+              onClick={() => updateResponsible(null, true, true)}
             sx={{
               border: '1px solid #D32F2F',
               borderRadius: '8px',

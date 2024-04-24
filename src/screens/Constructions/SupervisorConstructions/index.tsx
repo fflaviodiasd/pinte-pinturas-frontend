@@ -22,8 +22,9 @@ import Alert from '@mui/material/Alert';
 import { IconButton } from "@mui/material";
 import { errorMessage, successMessage } from "../../../components/Messages";
 import { UserContext } from "../../../contexts/UserContext";
-
+import HistoryTable from "./HistoryTable";
 import SearchIcon from '@mui/icons-material/Search';
+import { get } from "http";
 const getInitials = (name = '') => {
   return name.split(' ').filter((n) => n !== '').map((n) => n[0]).join('');
 };
@@ -36,10 +37,10 @@ export const SupervisorConstructions = () => {
     constructInfoData,
     getCompaniesSupervisorList,
     companiesSupervisorList,
-    updatePrimaryResponsible,
-    removePrimaryResponsible,
- 
-
+    updateResponsible,
+    getHistorySupervisor,
+    historySupervisor,
+  
   } = useConstructions();
 
 
@@ -56,12 +57,22 @@ export const SupervisorConstructions = () => {
 
   useEffect(() => {
     if (id) {
+      getHistorySupervisor(id, false);
+    }
+  }, [id]);
+
+
+useEffect(() => {
+  console.log("History Supervisor has updated", historySupervisor);
+}, [historySupervisor]); 
+
+  useEffect(() => {
+    if (id) {
       getConstruction(id).finally(() => setLoading(false)); 
       getCompaniesSupervisorList();
     }
   }, [id]);
 
-  console.log('constructInfoData:', constructInfoData); 
 
   const handleChange = (event:any) => {
     setSelectedSupervisor(event.target.value);
@@ -93,11 +104,15 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
     if (currentSupervisor && currentSupervisor.name && selectedSupervisorName && currentSupervisor.name !== selectedSupervisorName) {
       setOldSupervisor(currentSupervisor.name);
       setNewSupervisor(selectedSupervisorName);
+      await getConstruction(id);
+      await getHistorySupervisor(id, false);
+
       setIsConfirmModalOpen(true);
     } else {
       try {
-        await updatePrimaryResponsible(parseInt(selectedSupervisor));
+        await updateResponsible(parseInt(selectedSupervisor), false, false);
         successMessage("Responsável primário atualizado com sucesso!");
+        await getHistorySupervisor(id, false);
         await getConstruction(id);
         handleCloseModal();
       } catch (error) {
@@ -120,18 +135,38 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
       handleOpenModal(); 
       handleOpenModal(); 
     }
+    
   };
+
+  const handleDeleteSupervisor = async () => {
+    try {
+      await updateResponsible(null, false, true);
+      await getConstruction(id);
+      await getHistorySupervisor(id, false);
+      successMessage("Responsável primário removido com sucesso!");
+    } catch (error) {
+      console.error("Erro ao remover responsável primário:", error);
+      errorMessage("Não foi possível remover o responsável primário!");
+    }
+  }
 
   
 
   const handleConfirmUpdate = async () => {
-    await updatePrimaryResponsible(parseInt(selectedSupervisor));
+    try {
+      await updateResponsible(parseInt(selectedSupervisor), false, false);
+      await getHistorySupervisor(id, false); 
+      await getConstruction(id);
+ 
+      successMessage("Encarregado substituído com sucesso!");
+    } catch (error) {
+      console.error("Erro ao atualizar o responsável:", error);
+      errorMessage("Não foi possível atualizar o responsável primário!");
+    }
     setIsConfirmModalOpen(false);
     setOpenModal(false);
-    await getConstruction(id);
-    successMessage("Encarregado substituído com sucesso!");
   };
-
+  
 
 
   const handleCancelAddSupervisor = () => {
@@ -210,6 +245,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
         <Tooltip title="Remover encarregado">
 
           <IconButton
+          onClick={() => handleDeleteSupervisor()}
             sx={{
               border: '1px solid #D32F2F',
               borderRadius: '8px',
@@ -299,6 +335,15 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
         Adicionar Encarregado
       </Button>
       </Grid>
+
+      <Grid item xs={12} lg={12}>
+      <Grid item xs={12} container justifyContent="space-between" alignItems="center">
+        <Typography variant="h5" component="div" gutterBottom>
+          Histórico
+        </Typography>
+        </Grid>
+        <HistoryTable key={historySupervisor.length} historyData={historySupervisor} />
+       </Grid> 
       <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
         <DialogTitle>Adicionar Encarregado</DialogTitle>
         <DialogContent dividers={true}>
@@ -353,9 +398,9 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
   fullWidth
   PaperProps={{
     style: { 
-      width: 'fit-content', // Ajusta a largura do papel para o conteúdo
-      maxWidth: '400px', // Um valor máximo para garantir que não fique muito largo
-      borderRadius: 8 // Aumentar para um efeito mais "quadrado"
+      width: 'fit-content',
+      maxWidth: '400px', 
+      borderRadius: 8 
     },
   }}
 >
