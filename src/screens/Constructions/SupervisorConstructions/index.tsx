@@ -18,7 +18,7 @@ import { Autorenew, Launch, Edit, Delete, Info } from "@mui/icons-material";
 import AlertTitle from '@mui/material/AlertTitle';
 import WarningIcon from '@mui/icons-material/Warning';
 import Alert from '@mui/material/Alert';
-
+import { SupervisorSecondaryTable } from "./SupervisorSecondaryTable";
 import { IconButton } from "@mui/material";
 import { errorMessage, successMessage } from "../../../components/Messages";
 import { UserContext } from "../../../contexts/UserContext";
@@ -62,9 +62,9 @@ export const SupervisorConstructions = () => {
   }, [id]);
 
 
-  console.log("companiesSupervisorList", companiesSupervisorList);
+  // console.log("companiesSupervisorList", companiesSupervisorList);
 useEffect(() => {
-  console.log("History Supervisor has updated", historySupervisor);
+  // console.log("History Supervisor has updated", historySupervisor);
 }, [historySupervisor]); 
 
   useEffect(() => {
@@ -179,7 +179,11 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
 
 
   const responsiblePrimary = constructInfoData.responsible_primary || {};
+  const responsibleSecondary = constructInfoData.responsible_secondary || [];
+
+
   const isResponsiblePrimaryEmpty = !responsiblePrimary.id || !responsiblePrimary.name;
+  const isResponsibleSecondaryEmpty = responsibleSecondary.length === 0;
 
   const initials = responsiblePrimary.name ? getInitials(responsiblePrimary.name) : '';
 
@@ -308,7 +312,10 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
 
     </Grid>
             )}
+
+            {isResponsibleSecondaryEmpty ? (
     <Grid item xs={12} lg={12}>
+      
       <Grid item xs={12} container justifyContent="space-between" alignItems="center">
         <Typography variant="h5" component="div" gutterBottom>
           Secundários
@@ -316,6 +323,8 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
     
        
       </Grid>
+
+
         <Button
         variant="outlined"
         sx={{
@@ -331,7 +340,11 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
       >
         Adicionar Encarregado
       </Button>
-      </Grid>
+    </Grid>) : (
+      <Grid item xs={12} lg={12}>
+ 
+    <SupervisorSecondaryTable secondaryInfo={responsibleSecondary}/>
+    </Grid>)}
 
       <Grid item xs={12} lg={12}>
       <Grid item xs={12} container justifyContent="space-between" alignItems="center">

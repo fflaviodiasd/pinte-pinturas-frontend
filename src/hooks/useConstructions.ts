@@ -79,7 +79,7 @@ export const useConstructions = () => {
         name: data.name,
         corporateName: data.corporate_name,
       });
-      console.log('constructInfoDataAPI', data)
+      // console.log('constructInfoDataAPI', data)
       setConstructInfoData(data);
       setLoading(false);
     } catch (error) {
