@@ -65,7 +65,7 @@ export const SupervisorConstructions = () => {
     setSupervisorsToSelect((prevSupervisors:any) =>
       prevSupervisors.filter((s:any) => s.id !== supervisor.id)
     );
-    console.log('Added supervisor:', supervisor);
+    console.log('Added supervisor>:', supervisor);
   };
 
   const handleRemoveSupervisor = (supervisorId:any) => {
