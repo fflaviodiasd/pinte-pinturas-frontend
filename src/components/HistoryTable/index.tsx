@@ -32,7 +32,7 @@ const HistoryTable = ({ historyData }:any) => {
     enableEditing: false,
     createDisplayMode: 'row',
     enableColumnFilterModes: true,
-    enablePagination: false,
+    enablePagination: true,
   });
 
   return <MaterialReactTable table={tableInstance} />;

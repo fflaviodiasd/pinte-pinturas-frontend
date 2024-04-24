@@ -109,7 +109,7 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
   const updateSecondarySupervisor = (selectedSupervisors:any) => {
     const dataToSend = selectedSupervisors.map(supervisor => supervisor.id);
     console.log('Data to send:', dataToSend);
-    updateResponsibleSecondary(dataToSend, false);
+    updateResponsibleSecondary(dataToSend, true);
 
     handleCloseModal();
 
