@@ -1,17 +1,18 @@
 import { ReactNode } from "react";
-import { Grid } from "@mui/material";
 
 import { Sidebar } from "./Sidebar";
 
-import { Container } from "./styles";
+import { Container, Content } from "./styles";
 
 type LayoutProps = {
   children: ReactNode;
 };
 
-export const AppLayout = ({ children }: LayoutProps) => (
-  <Container>
-    <Sidebar />
-    <Grid container>{children}</Grid>
-  </Container>
-);
+export const AppLayout = ({ children }: LayoutProps) => {
+  return (
+    <Container>
+      <Sidebar />
+      <Content>{children}</Content>
+    </Container>
+  );
+};

@@ -20,6 +20,7 @@ import { LogoutButton } from "./LogoutButton";
 import { Drawer, DrawerHeader } from "./styles";
 
 import ConstructionsIcon from "../../../assets/images/constructions.svg";
+import MeasurementsIcon from "../../../assets/images/measurements.svg";
 import EmployeesIcon from "../../../assets/images/employees.svg";
 import MaterialsIcon from "../../../assets/images/materials.svg";
 import ClientsIcon from "../../../assets/images/clients.svg";
@@ -47,39 +48,24 @@ export const Sidebar = () => {
   const [openSidebar, setOpenSidebar] = useState(isSideBarOpen());
   const [openClientsItemMenu, setOpenClientsItemMenu] = useState(false);
   const [openEmployeesItemMenu, setOpenEmployeesItemMenu] = useState(false);
-  const [openItemMenus, setOpenItemMenus] = useState<{ [key: string]: boolean }>({});
-
-  // const handleDrawer = () => {
-  //   setOpenSidebar(!openSidebar);
-  //   if (openSidebar) {
-  //     setOpenClientsItemMenu(false);
-  //     setOpenEmployeesItemMenu(false);
-  //   }
-  // };
+  const [openConstructionsItemMenu, setOpenConstructionsItemMenu] =
+    useState(false);
 
   const handleDrawer = () => {
     setOpenSidebar(!openSidebar);
     localStorage.setItem(KEY_SIDEBAR, String(!openSidebar));
-    if (openSidebar) {
-      setOpenItemMenus({});
-    }
   };
 
-
-  const handleToggleSubmenu = (path: string) => {
-    setOpenItemMenus((prevOpenItemMenus) => ({
-      ...prevOpenItemMenus,
-      [path]: !prevOpenItemMenus[path],
-    }));
-  };
   const handleClientsList = () => {
     setOpenClientsItemMenu(!openClientsItemMenu);
-    // setOpenEmployeesItemMenu(false);
   };
 
   const handleEmployeesList = () => {
     setOpenEmployeesItemMenu(!openEmployeesItemMenu);
-    // setOpenClientsItemMenu(false);
+  };
+
+  const handleConstructionsList = () => {
+    setOpenConstructionsItemMenu(!openConstructionsItemMenu);
   };
 
   const navItems: NavItem[] = [
@@ -107,13 +93,18 @@ export const Sidebar = () => {
       icon: <img src={ConstructionsIcon} alt="Obras" />,
       subItems: [
         { text: "• Cadastro", path: "/obras/cadastrar" },
-        { text: "• Listagem", path: "/obras" },
+        { text: "• Listagem", path: "/obras/listagem" },
       ],
     },
     {
       text: "Materiais",
       path: "materiais",
       icon: <img src={MaterialsIcon} alt="Materiais" />,
+    },
+    {
+      text: "Medições",
+      path: "medicoes",
+      icon: <img src={MeasurementsIcon} alt="Medições" />,
     },
   ];
 
@@ -208,10 +199,16 @@ export const Sidebar = () => {
 
               const isActive = verifyPathname(path);
 
-              const isOpen =
-                path === "clientes"
-                  ? openClientsItemMenu
-                  : openEmployeesItemMenu;
+              const isOpen = () => {
+                switch (path) {
+                  case "clientes":
+                    return openClientsItemMenu;
+                  case "colaboradores":
+                    return openEmployeesItemMenu;
+                  default:
+                    return openConstructionsItemMenu;
+                }
+              };
 
               return (
                 <Fragment key={navItem.text}>
@@ -236,6 +233,9 @@ export const Sidebar = () => {
                           setOpenSidebar(true);
                         } else if (path === "colaboradores") {
                           handleEmployeesList();
+                          setOpenSidebar(true);
+                        } else if (path === "obras") {
+                          handleConstructionsList();
                           setOpenSidebar(true);
                         } else {
                           navigate(`${path}`);
@@ -267,13 +267,13 @@ export const Sidebar = () => {
                           letterSpacing: "2px",
                         }}
                       />
-                      {subItems && openSidebar && returnedIcon(isOpen)}
+                      {subItems && openSidebar && returnedIcon(isOpen())}
                     </ListItemButton>
                   </ListItem>
 
                   {/* Collapse */}
                   {subItems && (
-                    <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                    <Collapse in={isOpen()} timeout="auto" unmountOnExit>
                       <List component="div" disablePadding>
                         {subItems.map((subItem) => (
                           <ListItem
