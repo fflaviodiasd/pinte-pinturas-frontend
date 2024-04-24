@@ -1,17 +1,12 @@
 import { Grid } from "@mui/material";
 
+import { useStyles } from "./styles";
+
 export function MeasurementsServices() {
+  const { classes } = useStyles();
+
   return (
-    <Grid
-      item
-      lg={12}
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        padding: 16,
-        backgroundColor: "#EEE",
-      }}
-    >
+    <Grid item lg={12} className={classes.content}>
       <Grid item lg={6}>
         Gráfico serviços
       </Grid>
