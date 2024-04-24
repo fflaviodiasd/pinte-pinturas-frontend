@@ -18,12 +18,14 @@ import { Autorenew, Launch, Edit, Delete, Info } from "@mui/icons-material";
 import AlertTitle from '@mui/material/AlertTitle';
 import WarningIcon from '@mui/icons-material/Warning';
 import Alert from '@mui/material/Alert';
-
+import { SupervisorSecondaryTable } from "./SupervisorSecondaryTable";
 import { IconButton } from "@mui/material";
 import { errorMessage, successMessage } from "../../../components/Messages";
 import { UserContext } from "../../../contexts/UserContext";
-
+import HistoryTable from "../../../components/HistoryTable";
 import SearchIcon from '@mui/icons-material/Search';
+import  SupervisorDialog  from "../../../components/SupervisorDialog";
+import { get } from "http";
 const getInitials = (name = '') => {
   return name.split(' ').filter((n) => n !== '').map((n) => n[0]).join('');
 };
@@ -36,10 +38,11 @@ export const SupervisorConstructions = () => {
     constructInfoData,
     getCompaniesSupervisorList,
     companiesSupervisorList,
-    updatePrimaryResponsible,
-    removePrimaryResponsible,
- 
-
+    updateResponsible,
+    getHistorySupervisor,
+    historySupervisor,
+    updateResponsibleSecondary
+  
   } = useConstructions();
 
 
@@ -53,12 +56,64 @@ export const SupervisorConstructions = () => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [newSupervisor, setNewSupervisor] = useState(null);
   const [oldSupervisor, setOldSupervisor] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSupervisors, setSelectedSupervisors] = useState([]);
+  const [supervisorsToSelect, setSupervisorsToSelect] = useState(companiesSupervisorList);
+
+ const handleAddSupervisor = (supervisor:any) => {
+    setSelectedSupervisors((prevSelected):any => [...prevSelected, supervisor]);
+    setSupervisorsToSelect((prevSupervisors:any) =>
+      prevSupervisors.filter((s:any) => s.id !== supervisor.id)
+    );
+    console.log('Added supervisor:', supervisor);
+  };
+
+  const handleRemoveSupervisor = (supervisorId:any) => {
+    const removedSupervisor = selectedSupervisors.find((s) => s.id === supervisorId);
+    setSelectedSupervisors((prevSelected) =>
+      prevSelected.filter((s:any) => s.id !== supervisorId)
+    );
+    if (removedSupervisor) {
+      setSupervisorsToSelect((prevSupervisors:any) => [...prevSupervisors, removedSupervisor]);
+    }
+    console.log('Removed supervisor:', supervisorId);
+  };
+
+  useEffect(() => {
+    if (id) {
+      getHistorySupervisor(parseInt(id), false);
+    }
+  }, [id]);
+
+  const handleSecondaryModal = () => {
+    setIsModalOpen(true);
+  }
+  
+  const handleSecondaryClose = () => {
+    setIsModalOpen(false);
+  }
+
+  const updateSecondarySupervisor = (selectedSupervisors:any) => {
+    const dataToSend = selectedSupervisors.map(supervisor => supervisor.id);
+    console.log('Data to send:', dataToSend);
+    updateResponsibleSecondary(dataToSend, false);
+  
+  
+    handleCloseModal();
+  
+  };
+  // console.log("companiesSupervisorList", companiesSupervisorList);
+useEffect(() => {
+  // console.log("History Supervisor has updated", historySupervisor);
+}, [historySupervisor]); 
+
   useEffect(() => {
     if (id) {
       getConstruction(id).finally(() => setLoading(false)); 
       getCompaniesSupervisorList();
     }
   }, [id]);
+
 
   const handleChange = (event:any) => {
     setSelectedSupervisor(event.target.value);
@@ -90,11 +145,15 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
     if (currentSupervisor && currentSupervisor.name && selectedSupervisorName && currentSupervisor.name !== selectedSupervisorName) {
       setOldSupervisor(currentSupervisor.name);
       setNewSupervisor(selectedSupervisorName);
+      await getConstruction(id);
+      await getHistorySupervisor(id, false);
+
       setIsConfirmModalOpen(true);
     } else {
       try {
-        await updatePrimaryResponsible(parseInt(selectedSupervisor));
+        await updateResponsible(parseInt(selectedSupervisor), false, false);
         successMessage("Responsável primário atualizado com sucesso!");
+        await getHistorySupervisor(parseInt(id), false);
         await getConstruction(id);
         handleCloseModal();
       } catch (error) {
@@ -117,18 +176,38 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
       handleOpenModal(); 
       handleOpenModal(); 
     }
+    
   };
+
+  const handleDeleteSupervisor = async () => {
+    try {
+      await updateResponsible(null, false, true);
+      await getConstruction(id);
+      await getHistorySupervisor(id, false);
+      successMessage("Responsável primário removido com sucesso!");
+    } catch (error) {
+      console.error("Erro ao remover responsável primário:", error);
+      errorMessage("Não foi possível remover o responsável primário!");
+    }
+  }
 
   
 
   const handleConfirmUpdate = async () => {
-    await updatePrimaryResponsible(parseInt(selectedSupervisor));
+    try {
+      await updateResponsible(parseInt(selectedSupervisor), false, false);
+      await getHistorySupervisor(id, false); 
+      await getConstruction(id);
+ 
+      successMessage("Encarregado substituído com sucesso!");
+    } catch (error) {
+      console.error("Erro ao atualizar o responsável:", error);
+      errorMessage("Não foi possível atualizar o responsável primário!");
+    }
     setIsConfirmModalOpen(false);
     setOpenModal(false);
-    await getConstruction(id);
-    successMessage("Encarregado substituído com sucesso!");
   };
-
+  
 
 
   const handleCancelAddSupervisor = () => {
@@ -137,14 +216,14 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
   };
 
  
-  const handleAddSupervisor = () => {
-    console.log('Adicionar Encarregado');
-    console.log('companiesSupervisorList:', companiesSupervisorList);
-  };
 
 
   const responsiblePrimary = constructInfoData.responsible_primary || {};
+  const responsibleSecondary = constructInfoData.responsible_secondary || [];
+
+
   const isResponsiblePrimaryEmpty = !responsiblePrimary.id || !responsiblePrimary.name;
+  const isResponsibleSecondaryEmpty = responsibleSecondary.length === 0;
 
   const initials = responsiblePrimary.name ? getInitials(responsiblePrimary.name) : '';
 
@@ -207,6 +286,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
         <Tooltip title="Remover encarregado">
 
           <IconButton
+          onClick={() => handleDeleteSupervisor()}
             sx={{
               border: '1px solid #D32F2F',
               borderRadius: '8px',
@@ -272,7 +352,10 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
 
     </Grid>
             )}
+
+            {isResponsibleSecondaryEmpty ? (
     <Grid item xs={12} lg={12}>
+      
       <Grid item xs={12} container justifyContent="space-between" alignItems="center">
         <Typography variant="h5" component="div" gutterBottom>
           Secundários
@@ -280,6 +363,8 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
     
        
       </Grid>
+
+
         <Button
         variant="outlined"
         sx={{
@@ -291,11 +376,24 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
             color: 'white',
           },
         }}
-        onClick={handleOpenModal}
+        onClick={handleSecondaryModal}
       >
         Adicionar Encarregado
       </Button>
-      </Grid>
+    </Grid>) : (
+      <Grid item xs={12} lg={12}>
+ 
+    <SupervisorSecondaryTable secondaryInfo={responsibleSecondary}/>
+    </Grid>)}
+
+      <Grid item xs={12} lg={12}>
+      <Grid item xs={12} container justifyContent="space-between" alignItems="center">
+        <Typography variant="h5" component="div" gutterBottom>
+          Histórico
+        </Typography>
+        </Grid>
+        <HistoryTable key={historySupervisor.length} historyData={historySupervisor} />
+       </Grid> 
       <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
         <DialogTitle>Adicionar Encarregado</DialogTitle>
         <DialogContent dividers={true}>
@@ -350,9 +448,9 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
   fullWidth
   PaperProps={{
     style: { 
-      width: 'fit-content', // Ajusta a largura do papel para o conteúdo
-      maxWidth: '400px', // Um valor máximo para garantir que não fique muito largo
-      borderRadius: 8 // Aumentar para um efeito mais "quadrado"
+      width: 'fit-content',
+      maxWidth: '400px', 
+      borderRadius: 8 
     },
   }}
 >
@@ -383,6 +481,15 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
     </Button>
   </DialogActions>
 </Dialog>
+<SupervisorDialog
+        open={isModalOpen}
+        onClose={handleSecondaryClose}
+        companiesSupervisorList={companiesSupervisorList}
+        selectedSupervisors={selectedSupervisors}
+        onAddSupervisor={handleAddSupervisor}
+        onRemoveSupervisor={handleRemoveSupervisor}
+        onSave={updateSecondarySupervisor}
+      />
     </Grid>
 
   );

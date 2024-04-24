@@ -1,4 +1,4 @@
-import { ReactElement, forwardRef } from "react";
+import { ReactElement, forwardRef, useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -9,19 +9,38 @@ import {
   Typography,
 } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import AccordionComponent from "../../Accordion";
 import { Search } from "@mui/icons-material";
+import AccordionChecklists from "./AccordionChecklists";
+import { api } from "../../../services/api";
 
 type ModalChecklistsProps = {
   modalOpen: boolean;
   handleClose: () => void;
   handleDisable?: () => void;
+  localId?: any;
 };
 
 export const ModalChecklists = ({
   modalOpen,
   handleClose,
+  localId,
 }: ModalChecklistsProps) => {
+  const [area, setArea] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get(`areas/${localId}/checklist`);
+        const data = response.data.area;
+        setArea(data);
+      } catch (error) {
+        console.error("Erro ao buscar dados do backend:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Dialog
       open={modalOpen}
@@ -33,7 +52,7 @@ export const ModalChecklists = ({
         <span
           style={{ fontFamily: "Open Sans", fontWeight: 600, fontSize: "1rem" }}
         >
-          Local - L0000 | Nome Teste
+          {area}
         </span>
         <div style={{ paddingTop: "0.5rem" }}>
           <TextField
@@ -51,95 +70,12 @@ export const ModalChecklists = ({
             }}
           />
         </div>
-        <AccordionComponent
-          accordionTitle={
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#F44336",
-                  marginLeft: "5px",
-                }}
-              />
-              1 | Nome Teste
-            </div>
-          }
-        />
-        <AccordionComponent
-          accordionTitle={
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#F44336",
-                  marginLeft: "5px",
-                }}
-              />
-              1 | Nome Teste
-            </div>
-          }
-        />
-        <AccordionComponent
-          accordionTitle={
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#F44336",
-                  marginLeft: "5px",
-                }}
-              />
-              1 | Nome Teste
-            </div>
-          }
-        />
-        <AccordionComponent
-          accordionTitle={
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#F44336",
-                  marginLeft: "5px",
-                }}
-              />
-              1 | Nome Teste
-            </div>
-          }
-        />
-        <AccordionComponent
-          accordionTitle={
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div
-                style={{
-                  width: "10px",
-                  height: "10px",
-                  borderRadius: "50%",
-                  backgroundColor: "#F44336",
-                  marginLeft: "5px",
-                }}
-              />
-              1 | Nome Teste
-            </div>
-          }
-        />
+
+        <AccordionChecklists localId={localId} />
         <DialogActions>
           <Button onClick={handleClose}>
             <Typography style={{ textTransform: "capitalize" }}>
               Fechar
-            </Typography>
-          </Button>
-          <Button type="submit" variant="contained">
-            <Typography style={{ textTransform: "capitalize" }}>
-              Salvar
             </Typography>
           </Button>
         </DialogActions>

@@ -15,7 +15,7 @@ export type Collaborator = {
   status: boolean;
   role: string;
   profile: string;
-  cellPhone: string;
+  cell_phone: string;
   phoneNumber: string;
   cpf: string;
   dateOfBirth: null;

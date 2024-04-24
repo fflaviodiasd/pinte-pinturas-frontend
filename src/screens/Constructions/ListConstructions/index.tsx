@@ -1,21 +1,21 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Button, Chip, Grid, Paper, useTheme } from "@mui/material";
-import { TitleScreen } from "../../../components/TitleScreen";
-import { useStyles } from "./styles";
+import { Chip, Grid } from "@mui/material";
+
 import { useNavigate } from "react-router-dom";
 import { EditIcon } from "../../../components/EditIcon";
-import { TablePagination } from "../../../components/Table/Pagination";
+
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { Navbar } from "../../../components/Navbar";
 import Breadcrumb from "../../../components/Breadcrumb";
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import { styled } from '@mui/material/styles';
+import { numberToPercentage } from "../../../utils";
 
 interface responsible {
   name: string | null;
@@ -34,16 +34,8 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 
 
 export const ListConstructions = () => {
-  const { classes } = useStyles();
   const navigate = useNavigate();
   const { listConstructions, getAllConstructions } = useConstructions();
-  const theme = useTheme();
-
-  const [selectedConstructionId, setselectedConstructionId] =
-    useState<number>(0);
-
-  const baseBackgroundColor =
-    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
     getAllConstructions();
@@ -64,7 +56,9 @@ export const ListConstructions = () => {
             }}
           >
             <EditIcon
-              onClick={() => navigate(`/obras/${cell.row.original.id}`)}
+              onClick={() =>
+                navigate(`/obras/${cell.row.original.id}/materiais`)
+              }
               label="Editar"
             />
           </div>
@@ -74,6 +68,7 @@ export const ListConstructions = () => {
         header: "Status",
         accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
         id: "active",
+        accessorKey: "active",
         filterVariant: "checkbox",
         Cell: ({ cell }) => {
           const status = cell.getValue() === "true" ? "Ativo" : "Inativo";
@@ -82,12 +77,11 @@ export const ListConstructions = () => {
         },
         size: 170,
       },
-
       {
-        accessorKey: "name",
+        accessorKey: "corporateName",
+        header: "Nome da Obra",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Nome da Obra",
         Cell: ({ cell }) => (
           <div
             style={{
@@ -97,21 +91,21 @@ export const ListConstructions = () => {
               alignItems: "center",
             }}
           >
-            {cell.row.original.name && (
-              <BackgroundAvatar avatarName={cell.row.original.name} />
+            {cell.row.original.corporateName && (
+              <BackgroundAvatar avatarName={cell.row.original.corporateName} />
             )}
-            {cell.row.original.name}
+            {cell.row.original.corporateName}
           </div>
         ),
       },
       {
-        accessorKey: "customer.name",
+        accessorKey: "customer",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Cliente",
       },
       {
-        accessorKey: "responsible.name",
+        accessorKey: "supervisor",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Encarregado",
@@ -128,7 +122,7 @@ export const ListConstructions = () => {
       //   },
       // },      
       {
-        accessorKey: "percentageCompleted",
+        accessorKey: "execution",
         enableColumnFilterModes: false,
         filterFn: "betweenInclusive",
         muiFilterSliderProps: {
@@ -143,9 +137,9 @@ export const ListConstructions = () => {
         Cell: ({ cell }) => (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ flexGrow: 1, marginRight: '8px' }}>
-              <BorderLinearProgress variant="determinate" value={cell.row.original.percentageCompleted} />
+              <BorderLinearProgress variant="determinate" value={cell.row.original.execution} />
             </div>
-            <span style={{ whiteSpace: 'nowrap' }}>{cell.row.original.percentageCompleted.toFixed(2)}%</span>
+            <span style={{ whiteSpace: 'nowrap' }}>{cell.row.original.execution.toFixed(2)}%</span>
           </div>
         ),
       }
@@ -180,7 +174,7 @@ export const ListConstructions = () => {
       }),
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
+      baseBackgroundColor: "#FFFFFF",
       draggingBorderColor: theme.palette.secondary.main,
     }),
     enablePagination: false,
@@ -190,10 +184,10 @@ export const ListConstructions = () => {
   return (
     <Grid container spacing={2}>
       <Navbar
-        title={<TitleScreen title="Obras" />}
+        title="Obras"
         showBreadcrumb={true}
         breadcrumb={
-          <Breadcrumb breadcrumbPath1={"Obras"} breadcrumbPath2={"Listagem"} />
+          <Breadcrumb breadcrumbPath1="Obras" breadcrumbPath2="Listagem" />
         }
       />
       <Grid item xs={12} lg={12}>

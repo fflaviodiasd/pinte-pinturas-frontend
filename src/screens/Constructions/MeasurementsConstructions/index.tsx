@@ -42,7 +42,7 @@ export const MeasurementsConstructions = () => {
 
   const [disciplineOptions, setDisciplineOptions] = useState<DropdownOption[]>([]);
   const [isSaving, setIsSaving] = useState(false);
-  const [filteredMeasurements, setFilteredMeasurements] = useState([]);
+  const [filteredMeasurements, setFilteredMeasurements] = useState<any[]>([]);
 
   const { id } = useParams();
       // console.log('construction id pac: ', selectedPackageConstructionId)
@@ -56,16 +56,16 @@ export const MeasurementsConstructions = () => {
  
   }, [id]);
 
-  useEffect(() => {
-    // Certifique-se de que listConstructionsMeasurements é uma lista antes de filtrar
-    if (listConstructionsMeasurements && listConstructionsMeasurements.length > 0) {
-      // Filtrar as medições onde o id da construção corresponde ao id dos parâmetros da URL
-      const filteredData = listConstructionsMeasurements.filter(
-        (measurement) => measurement.construction.id.toString() === id
-      );
-      setFilteredMeasurements(filteredData);
-    }
-  }, [listConstructionsMeasurements, id]);
+
+useEffect(() => {
+  if (listConstructionsMeasurements && listConstructionsMeasurements && listConstructionsMeasurements.length > 0) {
+    const filteredData = listConstructionsMeasurements.filter(
+      (measurement) => measurement.construction.toString() === id
+    );
+    setFilteredMeasurements(filteredData);
+  }
+}, [listConstructionsMeasurements, id]);
+
   
 
 
@@ -79,44 +79,7 @@ export const MeasurementsConstructions = () => {
     }
   };
 
-  // const handleEditPackages: MRT_TableOptions<any>["onEditingRowSave"] = async ({
-  //   exitEditingMode, // Função para sair do modo de edição
-  //   row, // A linha sendo editada
-  //   values, // Os valores editados
-  // }) => {
-  //   console.log('Salvando edição', values);
-  //   // Supondo uma função de atualização async genérica 'updateConstructionPackage'
-  //   // await updateConstructionPackage(row.original.id, values);
-  //   getAllConstructionPackages();
-  //   exitEditingMode(); // Sai do modo de edição após a atualização
-  // };
 
-  // const handleEditPackages: MRT_TableOptions<any>['onEditingRowSave'] = async ({
-  //   exitEditingMode,
-  //   row,
-  //   values,
-  // }) => {
-  //   if (!row?.original?.id) {
-  //     errorMessage('Não foi possível identificar o pacote para atualização.');
-  //     return;
-  //   }
-  
-  //   try {
-  //     console.log('Salvando edições para o pacote:', values);
-  
-  //     // const updatedPackage = await updateConstructionPackage(row.original.id, values);
-  
-  //     // setListConstructionPackages(prevPackages =>
-  //     //   prevPackages.map(pkg => (pkg.id === row.original.id ? { ...pkg, ...updatedPackage } : pkg))
-  //     // );
-  
-  //     successMessage('Pacote atualizado com sucesso.');
-  //     exitEditingMode(); 
-  //   } catch (error) {
-  //     errorMessage('Erro ao atualizar o pacote.');
-  //     console.error('Erro ao salvar as edições:', error);
-  //   }
-  // };
   
   
   const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] = async ({

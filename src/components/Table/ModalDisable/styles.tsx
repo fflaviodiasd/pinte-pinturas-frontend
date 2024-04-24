@@ -1,4 +1,5 @@
 import { makeStyles } from "tss-react/mui";
+import styled from "styled-components";
 
 export const useStyles = makeStyles()(() => {
   return {
@@ -53,3 +54,7 @@ export const useStyles = makeStyles()(() => {
     },
   };
 });
+
+export const SelectedTeamName = styled.span`
+  font-weight: 600;
+`;

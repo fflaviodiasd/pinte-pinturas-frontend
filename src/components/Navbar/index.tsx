@@ -1,16 +1,24 @@
-import { Box, Button, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import { useStyles } from "./styles";
-import Breadcrumb from "../Breadcrumb";
+import { ReactElement } from "react";
+
+type NavbarProps = {
+  title: string;
+  button?: ReactElement;
+  showBreadcrumb?: boolean;
+  breadcrumb?: ReactElement;
+};
 
 export function Navbar({
   title,
   button,
   showBreadcrumb = false,
   breadcrumb,
-}: any) {
+}: NavbarProps) {
   const { classes } = useStyles();
+
   return (
-    <Grid item xs={12} lg={12}>
+    <Grid container>
       <Paper className={classes.paper}>
         <div className={classes.actionBar}>
           <div className={classes.actionBarLeftContent}>

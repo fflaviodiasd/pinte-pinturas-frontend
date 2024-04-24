@@ -6,10 +6,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
-import { BackgroundAvatar } from "../Avatar";
-import { UserContext } from "../../contexts/UserContext";
+import { BackgroundAvatar } from "../../../Avatar";
+import { UserContext } from "../../../../contexts/UserContext";
 
-export default function AccountMenu() {
+export function LogoutButton() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuOpen, setMenuOpen] = React.useState<boolean>(false);
   const { user, setIsSigned } = React.useContext(UserContext);

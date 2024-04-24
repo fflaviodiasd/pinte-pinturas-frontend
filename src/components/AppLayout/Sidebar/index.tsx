@@ -1,4 +1,4 @@
-import { useState, ReactElement, Fragment, useContext } from "react";
+import { useState, ReactElement, Fragment, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
@@ -11,27 +11,19 @@ import {
   Collapse,
   Link,
 } from "@mui/material";
+import { ExpandLess, ExpandMore, Menu } from "@mui/icons-material";
 
-import {
-  Business,
-  Badge,
-  ExpandLess,
-  ExpandMore,
-  Menu,
-  Logout,
-} from "@mui/icons-material";
+import { KEY_SIDEBAR } from "../../../utils/consts";
 
-import ClientsIcon from "../../../assets/images/clients.svg";
-import EmployeesIcon from "../../../assets/images/employees.svg";
-import ConstructionsIcon from "../../../assets/images/constructions.svg";
-import MaterialsIcon from "../../../assets/images/materials.svg";
-
-import logoImage from "../../../assets/images/logo.png";
+import { LogoutButton } from "./LogoutButton";
 
 import { Drawer, DrawerHeader } from "./styles";
-import { UserContext } from "../../../contexts/UserContext";
-import { BackgroundAvatar } from "../../Avatar";
-import AccountMenu from "../../AccountMenu";
+
+import ConstructionsIcon from "../../../assets/images/constructions.svg";
+import EmployeesIcon from "../../../assets/images/employees.svg";
+import MaterialsIcon from "../../../assets/images/materials.svg";
+import ClientsIcon from "../../../assets/images/clients.svg";
+import logoImage from "../../../assets/images/logo.png";
 
 interface NavItem {
   text: string;
@@ -44,7 +36,15 @@ export const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [openSidebar, setOpenSidebar] = useState(false);
+  const isSideBarOpen = () => {
+    const storageIsSideBarOpen = localStorage.getItem(KEY_SIDEBAR);
+    if (storageIsSideBarOpen) {
+      return Boolean(JSON.parse(storageIsSideBarOpen));
+    }
+    return false;
+  };
+
+  const [openSidebar, setOpenSidebar] = useState(isSideBarOpen());
   const [openClientsItemMenu, setOpenClientsItemMenu] = useState(false);
   const [openEmployeesItemMenu, setOpenEmployeesItemMenu] = useState(false);
   const [openItemMenus, setOpenItemMenus] = useState<{ [key: string]: boolean }>({});
@@ -59,6 +59,7 @@ export const Sidebar = () => {
 
   const handleDrawer = () => {
     setOpenSidebar(!openSidebar);
+    localStorage.setItem(KEY_SIDEBAR, String(!openSidebar));
     if (openSidebar) {
       setOpenItemMenus({});
     }
@@ -73,16 +74,18 @@ export const Sidebar = () => {
   };
   const handleClientsList = () => {
     setOpenClientsItemMenu(!openClientsItemMenu);
+    // setOpenEmployeesItemMenu(false);
   };
 
   const handleEmployeesList = () => {
     setOpenEmployeesItemMenu(!openEmployeesItemMenu);
+    // setOpenClientsItemMenu(false);
   };
 
   const navItems: NavItem[] = [
     {
       text: "Clientes",
-      path: "/clientes",
+      path: "clientes",
       icon: <img src={ClientsIcon} alt="Clientes" />,
       subItems: [
         { text: "• Cadastro", path: "/clientes/cadastrar" },
@@ -91,7 +94,7 @@ export const Sidebar = () => {
     },
     {
       text: "Funcionários",
-      path: "/colaboradores",
+      path: "colaboradores",
       icon: <img src={EmployeesIcon} alt="Funcionários" />,
       subItems: [
         { text: "• Cadastro", path: "/colaboradores/cadastrar" },
@@ -100,7 +103,7 @@ export const Sidebar = () => {
     },
     {
       text: "Obras",
-      path: "/obras",
+      path: "obras",
       icon: <img src={ConstructionsIcon} alt="Obras" />,
       subItems: [
         { text: "• Cadastro", path: "/obras/cadastrar" },
@@ -109,7 +112,7 @@ export const Sidebar = () => {
     },
     {
       text: "Materiais",
-      path: "/materiais",
+      path: "materiais",
       icon: <img src={MaterialsIcon} alt="Materiais" />,
     },
   ];
@@ -121,15 +124,28 @@ export const Sidebar = () => {
     return <ExpandMore />;
   };
 
+  const verifyPathname = (pathname: string) => {
+    if (location.pathname) {
+      return location.pathname
+        .split("/")
+        .filter((item) => {
+          if (item) {
+            return item;
+          }
+        })[0]
+        ?.includes(pathname);
+    }
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <Drawer variant="permanent" open={openSidebar}>
         {/* Container Logo */}
         <div
           style={{
-            display: openSidebar ? "flex" : "none",
+            display: "flex",
             justifyContent: "center",
-            height: 140,
+            height: 80,
           }}
         >
           <Box
@@ -143,10 +159,12 @@ export const Sidebar = () => {
             <img
               src={logoImage}
               alt="Logo"
-              style={{ height: "30%", width: "50%" }}
+              style={{ height: 45, width: 45, cursor: "pointer" }}
+              onClick={() => navigate("/")}
             />
             <div
               style={{
+                display: openSidebar ? "flex" : "none",
                 color: "#0076BE",
                 fontFamily: "Open Sans",
                 fontWeight: "600",
@@ -159,7 +177,6 @@ export const Sidebar = () => {
           </Box>
         </div>
 
-        {/* Drawer */}
         <DrawerHeader
           style={{
             display: "flex",
@@ -177,124 +194,130 @@ export const Sidebar = () => {
           </IconButton>
         </DrawerHeader>
 
-        <List>
-          {navItems.map((navItem) => {
-            const { path, subItems } = navItem;
-            const isActive = location.pathname.includes(path);
-            const isOpen = openItemMenus[path];
-            // const isOpen =
-            //   path === "/clientes"
-            //     ? openClientsItemMenu
-            //     : openEmployeesItemMenu;
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            flex: 1,
+          }}
+        >
+          <List>
+            {navItems.map((navItem) => {
+              const { path, subItems } = navItem;
 
-            return (
-              <Fragment key={navItem.text}>
-                {/* IsActive */}
-                <ListItem
-                  disablePadding
-                  sx={{
-                    display: "block",
-                    backgroundColor: isActive ? "#DEF4FF" : "",
-                  }}
-                >
-                  {/* Navigation */}
-                  <ListItemButton
+              const isActive = verifyPathname(path);
+
+              const isOpen =
+                path === "clientes"
+                  ? openClientsItemMenu
+                  : openEmployeesItemMenu;
+
+              return (
+                <Fragment key={navItem.text}>
+                  {/* IsActive */}
+                  <ListItem
+                    disablePadding
                     sx={{
-                      minHeight: 48,
-                      justifyContent: openSidebar ? "initial" : "center",
-                      px: 2.5,
-                    }}
-                    onClick={() => {
-                      if (subItems) {
-                        handleToggleSubmenu(path); 
-                        setOpenSidebar(true);
-                      } else {
-                        navigate(`${path}`);
-                      }
+                      display: "block",
+                      backgroundColor: isActive ? "#DEF4FF" : "",
                     }}
                   >
-                    {/* Icons */}
-                    <ListItemIcon
+                    {/* Navigation */}
+                    <ListItemButton
                       sx={{
-                        minWidth: 0,
-                        mr: openSidebar ? 3 : "auto",
-                        justifyContent: "center",
-                        color: isActive ? "#0076BE" : "#2E3132",
+                        minHeight: 48,
+                        justifyContent: openSidebar ? "initial" : "center",
+                        px: 2.5,
+                      }}
+                      onClick={() => {
+                        if (path === "clientes") {
+                          handleClientsList();
+                          setOpenSidebar(true);
+                        } else if (path === "colaboradores") {
+                          handleEmployeesList();
+                          setOpenSidebar(true);
+                        } else {
+                          navigate(`${path}`);
+                        }
                       }}
                     >
-                      {navItem.icon}
-                    </ListItemIcon>
+                      {/* Icons */}
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: openSidebar ? 3 : "auto",
+                          justifyContent: "center",
+                          color: isActive ? "#0076BE" : "#2E3132",
+                        }}
+                      >
+                        {navItem.icon}
+                      </ListItemIcon>
 
-                    {/* Text */}
-                    <ListItemText
-                      primary={navItem.text}
-                      sx={{
-                        opacity: openSidebar ? 1 : 0,
-                        fontFamily: "Open Sans",
-                        fontWeight: "600",
-                        fontSize: "1rem",
-                        lineHeight: "1.625rem",
-                        color: isActive ? "#0076BE" : "#2E3132",
-                        letterSpacing: "2px",
-                      }}
-                    />
-                    {subItems && openSidebar && returnedIcon(isOpen)}
-                  </ListItemButton>
-                </ListItem>
+                      {/* Text */}
+                      <ListItemText
+                        primary={navItem.text}
+                        sx={{
+                          opacity: openSidebar ? 1 : 0,
+                          fontFamily: "Open Sans",
+                          fontWeight: "600",
+                          fontSize: "1rem",
+                          lineHeight: "1.625rem",
+                          color: isActive ? "#0076BE" : "#2E3132",
+                          letterSpacing: "2px",
+                        }}
+                      />
+                      {subItems && openSidebar && returnedIcon(isOpen)}
+                    </ListItemButton>
+                  </ListItem>
 
-                {/* Collapse */}
-                {subItems && (
-                  <Collapse in={isOpen} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                      {subItems.map((subItem) => (
-                        <ListItem
-                          key={subItem.text}
-                          sx={{
-                            backgroundColor: location.pathname.includes(
-                              subItem.path
-                            )
-                              ? "#0076BE"
-                              : "#EBF4FA",
-                          }}
-                        >
-                          <Link
-                            underline="none"
-                            sx={{ pl: 4, cursor: "pointer" }}
-                            onClick={() => {
-                              navigate(subItem.path);
-                              if (subItem.path.includes("cadastrar")) {
-                                history.go(0);
-                              }
+                  {/* Collapse */}
+                  {subItems && (
+                    <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        {subItems.map((subItem) => (
+                          <ListItem
+                            key={subItem.text}
+                            sx={{
+                              backgroundColor: location.pathname.includes(
+                                subItem.path
+                              )
+                                ? "#0076BE"
+                                : "#EBF4FA",
                             }}
                           >
-                            <ListItemText
-                              primary={subItem.text}
-                              sx={{
-                                fontFamily: "Open Sans",
-                                fontSize: "1rem",
-                                color: location.pathname.includes(subItem.path)
-                                  ? "#FFFFFF"
-                                  : "#2E3132",
-                                fontWeight: 600,
-                                lineHeight: "1.625rem",
-                              }}
-                            />
-                          </Link>
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Collapse>
-                )}
-              </Fragment>
-            );
-          })}
-        </List>
+                            <Link
+                              underline="none"
+                              sx={{ pl: 4, cursor: "pointer" }}
+                              onClick={() => navigate(subItem.path)}
+                            >
+                              <ListItemText
+                                primary={subItem.text}
+                                sx={{
+                                  fontFamily: "Open Sans",
+                                  fontSize: "1rem",
+                                  color: location.pathname.includes(
+                                    subItem.path
+                                  )
+                                    ? "#FFFFFF"
+                                    : "#2E3132",
+                                  fontWeight: 600,
+                                  lineHeight: "1.625rem",
+                                }}
+                              />
+                            </Link>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Collapse>
+                  )}
+                </Fragment>
+              );
+            })}
+          </List>
 
-        {/* Logout Button */}
-
-        <Box sx={{ marginTop: "100%" }}>
-          <AccountMenu />
-        </Box>
+          <LogoutButton />
+        </div>
       </Drawer>
     </Box>
   );

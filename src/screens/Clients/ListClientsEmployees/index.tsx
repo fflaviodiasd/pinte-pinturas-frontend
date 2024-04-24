@@ -69,7 +69,7 @@ export const ListClientsEmployees = () => {
         ),
       },
       {
-        accessorKey: "cellPhone",
+        accessorKey: "cell_phone",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Celular",

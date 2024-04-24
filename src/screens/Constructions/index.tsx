@@ -1,27 +1,31 @@
-import { useState, useEffect } from "react";
-import { Box, Grid } from "@mui/material";
-import { HeaderButton } from "../../components/Screen/HeaderButton";
-import { ConstructionsTeams } from "./Teams";
-import { ListConstructionsMaterials } from "./Materials";
-import { ListLocal } from "./Local";
-import { Navbar } from "../../components/Navbar";
-import { TitleScreen } from "../../components/TitleScreen";
-import Breadcrumb from "../../components/Breadcrumb";
+import { useEffect } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Grid } from "@mui/material";
+
 import { useConstructions } from "../../hooks/useConstructions";
-import { useParams } from "react-router-dom";
+
+import Breadcrumb from "../../components/Breadcrumb";
+import { Navbar } from "../../components/Navbar";
+import { Tab } from "../../components/Tab";
+
 import { ServicesConstructions } from "./ServicesConstructions";
 import { PackageConstructions } from "./PackageConstructions";
+import { ListConstructionsMaterials } from "./Materials";
 import { MeasurementsConstructions } from "./MeasurementsConstructions";
 import { SupervisorConstructions } from "./SupervisorConstructions";
-import { CustomerSupervisorConstructions } from "./CustomerSupervisorConstructions";
+import { CustomerSupervisor } from "./CustomerSupervisor";
+
+import { ListLocal } from "./Local";
+import { Teams } from "./Teams";
+
+import { TabsContainer } from "./styles";
 
 export const Constructions = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const { id: constructionId } = useParams();
-  const [indexDisplay, setIndexDisplay] = useState(0);
-  const [selectedConstructionName, setSelectedConstructionName] = useState("");
-  const { constructionData, getConstruction } = useConstructions();
 
-  console.log('cId',constructionId);
+  const { constructionData, getConstruction } = useConstructions();
 
   useEffect(() => {
     if (constructionId) {
@@ -29,118 +33,97 @@ export const Constructions = () => {
     }
   }, [constructionId]);
 
-  useEffect(() => {
-    if (constructionData && constructionData.corporateName) {
-      setSelectedConstructionName(constructionData.corporateName);
-    }
-  }, [constructionData]);
-
-  const handleChangeContent = (indexDisplay: number) => {
-    setIndexDisplay(indexDisplay);
-  };
-
-  const displayContent = (indexDisplay: number) => {
-    if (indexDisplay === 0) {
-      return <ListConstructionsMaterials />;
-    }
-    if (indexDisplay === 1) {
-      return <ConstructionsTeams />;
-    }
-    if (indexDisplay === 2) {
-      return <ListLocal />;
-    }
-    if (indexDisplay === 3) {
-      return <ServicesConstructions />
+  const displayContent = () => {
+    switch (true) {
+      case location.pathname.includes("materiais"):
+        return <ListConstructionsMaterials />;
+      case location.pathname.includes("equipes"):
+        return <Teams />;
+      case location.pathname.includes("locais"):
+        return <ListLocal />;
+      case location.pathname.includes("servicos"):
+        return <ServicesConstructions />; 
+      case location.pathname.includes("pacotes"):
+        return <PackageConstructions />;
+      case location.pathname.includes("medicoes"):
+        return <MeasurementsConstructions />;
+      case location.pathname.includes("supervisores"):
+        return <SupervisorConstructions />;
+      case location.pathname.includes("encarregados-cliente"):
+        return <CustomerSupervisor />;
+      default:
+        return <ListConstructionsMaterials />;
     }
 
-    if (indexDisplay === 4) {
-      return <PackageConstructions />
-    }
-
-    if (indexDisplay === 5) {
-      return < MeasurementsConstructions />
-    }
-
-    if (indexDisplay === 6) {
-      return < SupervisorConstructions />
-    }
-
-    if (indexDisplay === 7) {
-      return < CustomerSupervisorConstructions />
-    }
 
   };
 
   return (
     <Grid container sx={{ display: "flex", flexDirection: "column" }}>
-      <div>
-        <Navbar
-          title={<TitleScreen title={selectedConstructionName} />}
-          showBreadcrumb={true}
-          breadcrumb={
-            <Breadcrumb
-              breadcrumbPath1={"Obras"}
-              breadcrumbPath2={"Edição"}
-              hrefBreadcrumbPath1={"/obras"}
-            />
-          }
-        />
-      </div>
+      <Navbar
+        title={constructionData.corporateName}
+        showBreadcrumb={true}
+        breadcrumb={
+          <Breadcrumb
+            breadcrumbPath1="Obras"
+            breadcrumbPath2="Edição"
+            hrefBreadcrumbPath1="/obras"
+          />
+        }
+      />
 
-      <Box sx={{ display: "flex", backgroundColor: "#eff1f3" }}>
-        <HeaderButton
+      <TabsContainer>
+        <Tab
           text="Materiais"
-          isActive={indexDisplay === 0}
-          onClick={() => handleChangeContent(0)}
+          isActive={location.pathname.includes("materiais")}
+          onClick={() => navigate(`/obras/${constructionId}/materiais`)}
         />
 
-        <HeaderButton
+        <Tab
           text="Equipes"
-          isActive={indexDisplay === 1}
-          onClick={() => handleChangeContent(1)}
+          isActive={location.pathname.includes("equipes")}
+          onClick={() => navigate(`/obras/${constructionId}/equipes`)}
         />
 
-        <HeaderButton
+        <Tab
           text="Locais"
-          isActive={indexDisplay === 2}
-          onClick={() => handleChangeContent(2)}
+          isActive={location.pathname.includes("locais")}
+          onClick={() => navigate(`/obras/${constructionId}/locais`)}
+        />
+
+        <Tab
+          text="Serviços"
+          isActive={location.pathname.includes("servicos")}
+          onClick={() => navigate(`/obras/${constructionId}/servicos`)}
+        />
+
+        <Tab
+          text="Pacotes"
+          isActive={location.pathname.includes("pacotes")}
+          onClick={() => navigate(`/obras/${constructionId}/pacotes`)}
         />
 
        
-
-        <HeaderButton
-          text="Serviços"
-          isActive={indexDisplay === 3}
-          onClick={() => handleChangeContent(3)}
+        <Tab
+          text="Medições"
+          isActive={location.pathname.includes("medicoes")}
+          onClick={() => navigate(`/obras/${constructionId}/medicoes`)}
         />
-
-        
-        <HeaderButton
-          text="Pacotes"
-          isActive={indexDisplay === 4}
-          onClick={() => handleChangeContent(4)}
-        />
-
-        <HeaderButton
-          text="Medição"
-          isActive={indexDisplay === 5}
-          onClick={() => handleChangeContent(5)}
-        />
-
-        <HeaderButton
+ 
+        <Tab
           text="Encarregados"
-          isActive={indexDisplay === 6}
-          onClick={() => handleChangeContent(6)}
+          isActive={location.pathname.includes("supervisores")}
+          onClick={() => navigate(`/obras/${constructionId}/supervisores`)}
         />
 
-        <HeaderButton
+        <Tab
           text="Encarregados do Cliente"
-          isActive={indexDisplay === 7}
-          onClick={() => handleChangeContent(7)}
-        />
-      </Box>
+          isActive={location.pathname.includes("encarregados-cliente")}
+          onClick={() => navigate(`/obras/${constructionId}/encarregados-cliente`)}
+          />
+      </TabsContainer>
 
-      {displayContent(indexDisplay)}
+      {displayContent()}
     </Grid>
   );
 };

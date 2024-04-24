@@ -25,6 +25,7 @@ interface ChipCustomChecklistProps {
   chipId?: number | null;
   hideOrdinal?: boolean;
   checklistPackage?: any;
+  onCreateChecklist?: () => void;
 }
 
 export const ChipCustomChecklist = ({
@@ -42,10 +43,11 @@ export const ChipCustomChecklist = ({
   chipId,
   hideOrdinal = false,
   checklistPackage,
+  onCreateChecklist,
 }: ChipCustomChecklistProps) => {
   const [editingValue, setEditingValue] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
-
+  const [valueEdit, setValueEdit] = useState<any>(number);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEditingValue(event.target.value);
   };
@@ -55,13 +57,17 @@ export const ChipCustomChecklist = ({
   }, [editingValue, setValueActual]);
 
   const handleChipDeleteChecklist = async () => {
-    try {
-      const response = await api.delete(`checklists/${chipId}/`);
-      console.log(response);
-      successMessage("Checklist deletado com sucesso!");
-    } catch (error) {
-      errorMessage("Erro ao deletar checklist!");
-      console.error("Erro ao deletar checklist:", error);
+    if (onCreateChecklist) {
+      onCreateChecklist();
+    } else {
+      try {
+        const response = await api.delete(`checklists/${chipId}/`);
+        console.log(response);
+        successMessage("Checklist deletado com sucesso!");
+      } catch (error) {
+        errorMessage("Erro ao deletar checklist!");
+        console.error("Erro ao deletar checklist:", error);
+      }
     }
   };
 
@@ -99,10 +105,24 @@ export const ChipCustomChecklist = ({
         </div>
       )}
       {number && (
-        <StyledChipLabelNumber bg={bg}>{number}º</StyledChipLabelNumber>
+        <StyledChipLabelNumber
+          type="text"
+          value={`${valueEdit}°`}
+          bg={bg}
+          onChange={(e: any) => setValueEdit(e.target.value)}
+        >
+          {/* {number}º */}
+        </StyledChipLabelNumber>
       )}
       {number && hideOrdinal && (
-        <StyledChipLabelNumber bg={bg}>{number}</StyledChipLabelNumber>
+        <StyledChipLabelNumber
+          type="text"
+          bg={bg}
+          value={valueEdit}
+          onChange={(e: any) => setValueEdit(e.target.value)}
+        >
+          {/* {number} */}
+        </StyledChipLabelNumber>
       )}
     </StyledChipDiv>
   );
