@@ -5,6 +5,7 @@ import { api } from "../services/api";
 import { Construction } from "../types";
 import { UserContext } from "../contexts/UserContext";
 import { MRT_ColumnDef } from "material-react-table";
+import { LevelComponent } from "../components/Level";
 
 type ConstructionPackage = {
   id: number;
@@ -71,15 +72,17 @@ export const useConstructions = () => {
       setLoading(false);
     }
   };
+  const [listConstructionsLocations, setListConstructionsLocations] = useState<
+    any[]
+  >([]);
 
   const addConstructionLocal = async (
     dynamicColumns: MRT_ColumnDef<any>[],
     list: any[]
   ) => {
     try {
+      console.log(list);
       const newList = list.map((item: any) => {
-        console.log(item);
-
         if (dynamicColumns && dynamicColumns.length > 0) {
           const levels = dynamicColumns
             .filter(
@@ -89,14 +92,19 @@ export const useConstructions = () => {
             .map((column) => {
               const name =
                 item && item[column.accessorKey as keyof typeof item];
+              const filterId =
+                item && item.ids?.filter((item: any) => item.name === name);
               return {
+                id: filterId ? filterId[0].id : null,
                 level: {
+                  id: Number(column?.id?.slice(6, column.id?.length)),
                   name: column.header,
                 },
                 name: name || "",
               };
             });
           return {
+            id: item.id ? item.id : null,
             code: item && item.code,
             levels: levels,
           };
@@ -358,34 +366,45 @@ export const useConstructions = () => {
     }
   };
 
-  const [listConstructionsLocations, setListConstructionsLocations] = useState<
-    any[]
-  >([]);
   const getAllConstructionsLocations = async (
     dynamicColumns: MRT_ColumnDef<any>[]
   ) => {
     setLoading(true);
     try {
       const { data } = await api.get(`/constructions/${id}/areas/`);
+      console.log(data);
       const constructionLocalList = data.areas.map((result: any) => {
-        const levelNames: Record<string, string> = {};
+        // const levelNames: Record<string, string> = {};
+        const levelNames: any = {};
+        const levelNamesWithId: any = [];
         result.levels.forEach((level: any) => {
           const matchingColumn = dynamicColumns.find(
             (column) => column.accessorKey === `nivel_${level.level.id}`
           );
           if (matchingColumn) {
             levelNames[`nivel_${level.level.id}`] = level.name;
+            // levelNamesWithId[`nivel_${level.level.id}`] = {
+            //   id: level.id,
+            //   name: level.name,
+            // };
+            levelNamesWithId.push({
+              id: level.id,
+              name: level.name,
+            });
           }
         });
         return {
           id: result.id,
           code: result.code,
           checklist: result.checklist_count,
+          ids: levelNamesWithId,
           ...levelNames,
         };
       });
+      console.log(constructionLocalList);
 
       setListConstructionsLocations(constructionLocalList);
+
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -406,7 +425,7 @@ export const useConstructions = () => {
         active: result.active,
         name: result.corporate_name,
         client: "",
-        responsible: result.supervisor,
+        responsible: result.supervisor.name,
         percentageCompleted: result.execution,
       }));
       setListConstructions(constructionList);

@@ -189,12 +189,18 @@ const Locations = () => {
           <div>
             <Button
               variant="contained"
-              onClick={() =>
+              onClick={() => {
+                const control: any = {};
+                const teste = dynamicColumns
+                  .filter((item: any, index: any) => index >= 2)
+                  .map((item2: any) => (control[item2.id] = ""));
+                console.log("teste", teste);
+
                 setListConstructionsLocations([
                   ...listConstructionsLocations,
-                  {},
-                ])
-              }
+                  { checklist: 0, code: "", id: null, ...control },
+                ]);
+              }}
               style={{
                 marginRight: "0.5rem",
                 textTransform: "capitalize",
@@ -206,18 +212,6 @@ const Locations = () => {
             </Button>
             <Button
               variant="contained"
-              onClick={handleCreateLocal}
-              style={{
-                marginRight: "0.5rem",
-                textTransform: "capitalize",
-                fontFamily: "Open Sans",
-                fontWeight: 600,
-              }}
-            >
-              Salvar
-            </Button>
-            <Button
-              variant="contained"
               style={{
                 textTransform: "capitalize",
                 fontFamily: "Open Sans",
@@ -226,6 +220,18 @@ const Locations = () => {
             >
               <GoPackage style={{ marginRight: "0.5rem" }} />
               Pacotes
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleCreateLocal}
+              style={{
+                marginLeft: "0.5rem",
+                textTransform: "capitalize",
+                fontFamily: "Open Sans",
+                fontWeight: 600,
+              }}
+            >
+              Salvar
             </Button>
           </div>
         </div>
