@@ -12,6 +12,7 @@ import { Button } from "../../../components/Button";
 import { TableTeams } from "./Tables/TableTeams";
 
 import { useStyles } from "./styles";
+import { SectionTitle } from "../../../components/SectionTitle";
 
 type SelectedTeam = {
   id: number;
@@ -90,10 +91,7 @@ export const Teams = () => {
           </div>
         )}
 
-        <Typography className={classes.teamsTitle}>
-          <span className={classes.teamsBorder}>Equip</span>
-          es
-        </Typography>
+        <SectionTitle title="Equipes" />
 
         <Box
           sx={{ display: "flex", justifyContent: "right", marginRight: "1rem" }}

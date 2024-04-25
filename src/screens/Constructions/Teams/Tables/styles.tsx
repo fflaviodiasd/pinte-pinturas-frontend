@@ -6,6 +6,7 @@ export const useStyles = makeStyles()(() => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 12,
   },
   tableTitle: {
     fontFamily: "Open Sans",

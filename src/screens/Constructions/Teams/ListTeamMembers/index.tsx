@@ -1,24 +1,33 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
-import { Grid, TextField, Autocomplete } from "@mui/material";
+import {
+  Grid,
+  TextField,
+  Autocomplete,
+  Button as MuiButton,
+  CircularProgress,
+} from "@mui/material";
 import { Field, Form, Formik } from "formik";
 
 import { useTeams } from "../../../../hooks/useTeams";
 import { api } from "../../../../services/api";
 
+import { QuantityRowsText } from "../../../../components/QuantityRowsText";
 import { Button } from "../../../../components/Button";
+
 import { TableMembers } from "../Tables/TableMembers";
 
-import { GroupHeader, GroupItems } from "./styles";
+import { ButtonsContainer, GroupHeader, GroupItems, useStyles } from "./styles";
 
 type ListTeamMembers = {
   teamId: number;
 };
 
-type Option = {
+type TeamMember = {
   id: number;
   firstLetter: string;
+  avatar: string;
   active: boolean;
   name: string;
   office: string;
@@ -31,7 +40,9 @@ type FormUpdateTeamMembers = {
 };
 
 export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
+  const { classes } = useStyles();
   const {
+    loading,
     listTeamMembers,
     getTeam,
     updateTeamMembers,
@@ -45,8 +56,8 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
     }
   }, [teamId]);
 
-  const [options, setOptions] = useState<Option[]>([]);
-  const [selectedMembers, setSelectedMembers] = useState<Option[]>([]);
+  const [options, setOptions] = useState<TeamMember[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<TeamMember[]>([]);
 
   const currentMembersIds = listTeamMembers.map(
     (selectedMember) => selectedMember.id
@@ -58,7 +69,7 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
 
   const getOptionsTeamMembers = async () => {
     try {
-      const { data } = await api.get<Option[]>(
+      const { data } = await api.get<TeamMember[]>(
         `teams/${teamId}/select_members`
       );
 
@@ -83,7 +94,7 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
     setSelectedMembers([]);
   };
 
-  const returnedOptions = (option: Option) => {
+  const returnedOptions = (option: TeamMember) => {
     return `${option.active ? "Ativo" : "Inativo"} - ${option.name} - ${
       option.office
     }`;
@@ -98,63 +109,67 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
           enableReinitialize={true}
         >
           <Form>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  gap: "1rem",
+            <div className={classes.inputsContainer}>
+              <Field
+                as={TextField}
+                name="teamName"
+                label="Nome da Equipe"
+                variant="outlined"
+                sx={{ width: "50%" }}
+              />
+
+              <Autocomplete
+                id="grouped-demo"
+                value={selectedMembers}
+                options={currentOptions.sort((a, b) =>
+                  a.name.localeCompare(b.name)
+                )}
+                groupBy={(option) => option.name.charAt(0).toUpperCase()}
+                getOptionLabel={(option) => returnedOptions(option)}
+                onChange={(_, newValue) => setSelectedMembers(newValue)}
+                multiple
+                fullWidth
+                filterSelectedOptions
+                renderGroup={(params) => {
+                  return (
+                    <li>
+                      <GroupHeader>{params.group}</GroupHeader>
+                      <GroupItems>{params.children}</GroupItems>
+                    </li>
+                  );
                 }}
-              >
-                <Field
-                  as={TextField}
-                  name="teamName"
-                  label="Nome da Equipe"
-                  variant="outlined"
-                  sx={{ width: "50%" }}
-                />
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Adicionar colaborador por nome, matricula ou perfil"
+                  />
+                )}
+              />
+            </div>
 
-                <Autocomplete
-                  id="grouped-demo"
-                  value={selectedMembers}
-                  options={currentOptions.sort((a, b) =>
-                    a.name.localeCompare(b.name)
-                  )}
-                  groupBy={(option) => option.name.charAt(0).toUpperCase()}
-                  getOptionLabel={(option) => returnedOptions(option)}
-                  onChange={(_, newValue) => setSelectedMembers(newValue)}
-                  multiple
-                  fullWidth
-                  filterSelectedOptions
-                  renderGroup={(params) => {
-                    return (
-                      <li>
-                        <GroupHeader>{params.group}</GroupHeader>
-                        <GroupItems>{params.children}</GroupItems>
-                      </li>
-                    );
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Adicionar colaborador por nome, matricula ou perfil"
-                    />
-                  )}
-                />
+            {loading ? (
+              <div className={classes.loadingContainer}>
+                <CircularProgress size={32} />
               </div>
-            </div>
+            ) : (
+              <>
+                <TableMembers listTeamMembers={listTeamMembers} />
 
-            <TableMembers listTeamMembers={listTeamMembers} />
+                <QuantityRowsText quantityRows={listTeamMembers.length} />
 
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button label="Salvar" color="primary" />
-            </div>
+                <ButtonsContainer>
+                  <MuiButton
+                    className={classes.cancelButton}
+                    onClick={() => {
+                      setSelectedMembers([]);
+                    }}
+                  >
+                    Cancelar
+                  </MuiButton>
+                  <Button label="Salvar" color="primary" />
+                </ButtonsContainer>
+              </>
+            )}
           </Form>
         </Formik>
       </Grid>
