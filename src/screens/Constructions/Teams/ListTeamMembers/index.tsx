@@ -148,15 +148,15 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
                   )}
                 />
               </div>
+            </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <Button label="Salvar" color="primary" />
-              </div>
+            <TableMembers listTeamMembers={listTeamMembers} />
+
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button label="Salvar" color="primary" />
             </div>
           </Form>
         </Formik>
-
-        <TableMembers listTeamMembers={listTeamMembers} />
       </Grid>
     </Grid>
   );
