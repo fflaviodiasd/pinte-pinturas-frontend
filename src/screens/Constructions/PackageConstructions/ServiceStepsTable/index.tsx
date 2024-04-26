@@ -10,14 +10,35 @@ import { useConstructions } from "../../../../hooks/useConstructions";
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { Delete, Edit, Add } from '@mui/icons-material';
 
+interface Step {
+  id: number;
+  order: number;
+  name: string;
+  price_service: string;
+  price_workmanship: string;
+  compensation: number;
+  cost: number;
+}
+
+interface PackageStep {
+  total_price: string;
+  total_workmanship: string;
+  price_unit: string;
+  compensation_service: number;
+  workmanship_price: string;
+  compensation_workmanship: number;
+}
+
 const ServiceStepTable = ({ order }: any) => {
-  const [packageSteps, setPackageSteps] = useState([]); 
-  const [unitOptions, setUnitOptions] = useState([]);
-  const [serviceOptions, setServiceOptions] = useState([]);
-  const [stepOptions, setStepOptions] = useState([]);
+  // const [packageSteps, setPackageSteps] = useState([]); 
+  const [packageSteps, setPackageSteps] = useState<PackageStep[]>([]);
+  // const [serviceOptions, setServiceOptions] = useState([]);
+  // const [stepOptions, setStepOptions] = useState([]);
   const [selectedValue, setSelectedValue] = useState('');
   const [editStepEnabled, setEditStepEnabled] = useState(false);
-
+  const [stepOptions, setStepOptions] = useState<{ label: string; value: number }[]>([]);
+  const [serviceOptions, setServiceOptions] = useState<{ label: string; value: number }[]>([]);
+ 
   const { getAllPackageStepsById, addPackageStep, deletePackageStep, getAllUnits, getAllConstructionServices, listConstructionServices, getServiceById, getAllServiceStepsById  } = useConstructions(); 
 
   
@@ -25,30 +46,20 @@ const ServiceStepTable = ({ order }: any) => {
     setEditStepEnabled(stepOptions.length > 0 || !!selectedValue);
   }, [stepOptions, selectedValue]);
   
-  
-  const fetchUnits = async () => {
-    const units = await getAllUnits();
-    const options = units.results.map(unit => ({ label: unit.name, value: unit.id }));
-    setUnitOptions(options);
-    setServiceOptions(serviceOptions);
-  };
+
 
   useEffect(() => {
     const updateStepOptions = async () => {
       if (selectedValue) {
         try {
           const steps = await getAllServiceStepsById(selectedValue);
-          console.log('steps>>:', steps);
-          const options = steps.map(step => ({ label: step.name, value: step.id }));
-          console.log('Atualizado stepOptions:', options);
+          const options = steps.map((step: Step) => ({ label: step.name, value: step.id }));
           setStepOptions(options);
-          // console.log('Atualizado stepOptions:', options);
         } catch (error) {
           console.error('Erro ao buscar etapas para o serviço:', error);
         }
       } else {
         setStepOptions([]);
-        console.log('Limpo stepOptions porque selectedValue é null');
       }
     };
   
@@ -62,15 +73,16 @@ const ServiceStepTable = ({ order }: any) => {
   }, [order]);
 
   useEffect(() => {
+    setEditStepEnabled(stepOptions.length > 0 || !!selectedValue);
+  }, [stepOptions, selectedValue]);
+
+  useEffect(() => {
     if (listConstructionServices) {
       const options = listConstructionServices.map(service => ({ label: service.name, value: service.id }));
       setServiceOptions(options);
     }
   }, [listConstructionServices]);
-  useEffect(() => {
 
-    fetchUnits();
-  }, []);
 
 
   const fetchPackageSteps = async () => {
@@ -125,7 +137,6 @@ const ServiceStepTable = ({ order }: any) => {
   const compensation = packageSteps.map(step => step.compensation_service);
   const workmanshipUnit = packageSteps.map(step => step.workmanship_price); 
   const compensationWorkmanship = packageSteps.map(step => step.compensation_workmanship);
-
   
   const prices = priceStrings.map(parseCurrency);
   const workmanships = workmanshipStrings.map(parseCurrency);
