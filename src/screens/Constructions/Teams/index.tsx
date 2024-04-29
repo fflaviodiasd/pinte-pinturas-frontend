@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import { Box, Grid, Tooltip, Typography, TextField } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { useEffect, useMemo, useState } from "react";
+import { Grid, TextField } from "@mui/material";
 
 import { Field, Form, Formik } from "formik";
 
@@ -11,18 +10,13 @@ import { Button } from "../../../components/Button";
 
 import { TableTeams } from "./Tables/TableTeams";
 
-import { useStyles } from "./styles";
-import { SectionTitle } from "../../../components/SectionTitle";
-
 type SelectedTeam = {
   id: number;
   name: string;
 };
 
 export const Teams = () => {
-  const { classes } = useStyles();
   const { disableTeam, addTeam, listTeams, getAllTeams } = useTeams();
-
   const [selectedTeam, setSelectedTeam] = useState<SelectedTeam>({
     id: 0,
     name: "",
@@ -34,6 +28,10 @@ export const Teams = () => {
   useEffect(() => {
     getAllTeams();
   }, []);
+
+  useEffect(() => {
+    console.log("listTeams", listTeams);
+  }, [listTeams]);
 
   const handleOpenModal = (selectedTeam: SelectedTeam) => {
     setSelectedTeam(selectedTeam);
@@ -49,20 +47,13 @@ export const Teams = () => {
     setIsModalOpen(false);
   };
 
-  const handleAddTeam = (name: string) => {
+  const handleAddTeam = async (name: string) => {
     addTeam(name);
     setShowAddTeamInput(false);
   };
 
-  const handleShowAddTeamInput = () => {
-    setShowAddTeamInput(true);
-  };
-
   return (
-    <Grid
-      container
-      // style={{ padding: 16, backgroundColor: "#eff1f3" }}
-    >
+    <Grid container>
       <Grid item xs={12} lg={12}>
         {showAddTeamInput && (
           <div style={{ padding: "1.5rem" }}>
@@ -91,9 +82,9 @@ export const Teams = () => {
           </div>
         )}
 
-        <SectionTitle title="Equipes" />
+        {/* <SectionTitle title="Equipes" /> */}
 
-        <Box
+        {/* <Box
           sx={{ display: "flex", justifyContent: "right", marginRight: "1rem" }}
         >
           <Button
@@ -105,7 +96,7 @@ export const Teams = () => {
             color="secondary"
             onClick={handleShowAddTeamInput}
           />
-        </Box>
+        </Box> */}
 
         <TableTeams listTeams={listTeams} handleOpenModal={handleOpenModal} />
 

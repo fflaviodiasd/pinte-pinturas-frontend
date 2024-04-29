@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { api } from "../services/api";
@@ -20,6 +20,7 @@ export type TeamMember = {
   office: string;
   profile: string;
   cell_phone: string;
+  weight: number;
 };
 
 type Option = {
@@ -30,6 +31,7 @@ type Option = {
   office: string;
   cell_phone: string;
   profile: string;
+  weight: number;
 };
 
 export const useTeams = () => {
@@ -51,7 +53,6 @@ export const useTeams = () => {
         id: data.id,
         teamName: data.name,
       });
-      console.log("lista", data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -65,11 +66,27 @@ export const useTeams = () => {
       await api.post(`/constructions/${id}/teams/`, {
         name: name,
       });
+
       getAllTeams();
       successMessage("Equipe adicionada com sucesso!");
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível adicionar equipe!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateTeamRow = async (teamName: string, teamId: number) => {
+    setLoading(true);
+    try {
+      await api.patch(`teams/${teamId}/`, {
+        name: teamName,
+      });
+      successMessage("Equipe atualizada com sucesso!");
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível atualizar equipe!");
     } finally {
       setLoading(false);
     }
@@ -136,12 +153,18 @@ export const useTeams = () => {
     teamName: string,
     teamId: number
   ) => {
-    const currentMembersIds = listTeamMembers.map((member) => member.id);
-    const newMembersIds = selectedMembers.map(
-      (selectedMember) => selectedMember.id
-    );
+    const currentMembersIds = listTeamMembers.map((member) => ({
+      id: member.id,
+      weight: member.weight,
+    }));
+    const newMembersIds = selectedMembers.map((selectedMember) => ({
+      id: selectedMember.id,
+      weight: selectedMember.weight,
+    }));
 
     const membersIds = currentMembersIds.concat(newMembersIds);
+
+    console.log("backend", membersIds);
 
     setLoading(true);
     try {
@@ -156,6 +179,7 @@ export const useTeams = () => {
         id: member.id,
         name: member.name,
         profile: member.profile,
+        weight: member.weight,
         office: member.office,
       }));
       setListTeamMembers((prevState) => prevState.concat(newMembers));
@@ -173,6 +197,7 @@ export const useTeams = () => {
     try {
       const { data } = await api.get(`teams/${teamId}`);
       const teamMembers: TeamMember[] = data.members;
+      console.log("data", data);
       setListTeamMembers(teamMembers);
     } catch (error) {
       console.log(error);
@@ -193,5 +218,7 @@ export const useTeams = () => {
     listTeamMembers,
     updateTeamMembers,
     getAllTeamMembers,
+    setListTeamMembers,
+    updateTeamRow,
   };
 };

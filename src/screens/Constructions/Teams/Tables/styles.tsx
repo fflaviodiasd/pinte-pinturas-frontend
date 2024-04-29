@@ -1,6 +1,11 @@
 import { makeStyles } from "tss-react/mui";
 
 export const useStyles = makeStyles()(() => ({
+  toolbarButton: {
+    color: "#0076be",
+    border: "1px solid #0076be",
+    borderRadius: "4px",
+  },
   tableTitleContainer: {
     width: "100%",
     display: "flex",

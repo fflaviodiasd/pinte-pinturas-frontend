@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
 import {
   MaterialReactTable,
@@ -29,7 +31,7 @@ interface DropdownOption {
 
 export const ServicesConstructions = () => {
   const { classes } = useStyles();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const {
     listConstructionServices,
     getAllConstructionServices,
@@ -39,17 +41,17 @@ export const ServicesConstructions = () => {
   } = useConstructions();
   const theme = useTheme();
 
-  const [selectedPackageConstructionId, setSelectedPackageConstructionId] =
-    useState<number>(0);
-  const [disciplineOptions, setDisciplineOptions] = useState<DropdownOption[]>(
-    []
-  );
+  // const [selectedPackageConstructionId, setSelectedPackageConstructionId] =
+  //   useState<number>(0);
+  // const [disciplineOptions, setDisciplineOptions] = useState<DropdownOption[]>(
+  //   []
+  // );
   const [unitOptions, setUnitOptions] = useState<DropdownOption[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
-  const [dynamicColumns, setDynamicColumns] = useState<MRT_ColumnDef<any>[]>(
-    []
-  );
+  // const [dynamicColumns, setDynamicColumns] = useState<MRT_ColumnDef<any>[]>(
+  //   []
+  // );
   const { id } = useParams();
   // console.log('construction id pac: ', selectedPackageConstructionId)
 
@@ -133,8 +135,8 @@ export const ServicesConstructions = () => {
   };
 
   const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] =
-    async ({ values, table }) => {
-      const { "unit.name": unitName, id, ...restOfValues } = values;
+    async ({ values }) => {
+      const { "unit.name": unitName, ...restOfValues } = values;
 
       const adjustedValues = {
         ...restOfValues,
@@ -355,35 +357,19 @@ export const ServicesConstructions = () => {
         <Box sx={{ display: "flex", gap: "1rem", alignItems: "center" }}>
           <MRT_ToggleFiltersButton
             table={table}
-            sx={{
-              color: "#0076be",
-              border: "1px solid #0076be",
-              borderRadius: "4px",
-            }}
+            className={classes.toolbarButton}
           />
           <MRT_ShowHideColumnsButton
             table={table}
-            sx={{
-              color: "#0076be",
-              border: "1px solid #0076be",
-              borderRadius: "4px",
-            }}
+            className={classes.toolbarButton}
           />
           <MRT_ToggleDensePaddingButton
             table={table}
-            sx={{
-              color: "#0076be",
-              border: "1px solid #0076be",
-              borderRadius: "4px",
-            }}
+            className={classes.toolbarButton}
           />
           <MRT_ToggleFullScreenButton
             table={table}
-            sx={{
-              color: "#0076be",
-              border: "1px solid #0076be",
-              borderRadius: "4px",
-            }}
+            className={classes.toolbarButton}
           />
           <Tooltip title="Adicionar Pacote">
             <IconButton
@@ -418,7 +404,7 @@ export const ServicesConstructions = () => {
       elevation: 0,
     },
     muiTableBodyProps: {
-      sx: (theme) => ({
+      sx: () => ({
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",

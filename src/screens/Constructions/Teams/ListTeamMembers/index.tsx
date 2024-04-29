@@ -33,6 +33,7 @@ type TeamMember = {
   office: string;
   profile: string;
   cell_phone: string;
+  weight: number;
 };
 
 type FormUpdateTeamMembers = {
@@ -153,7 +154,10 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
               </div>
             ) : (
               <>
-                <TableMembers listTeamMembers={listTeamMembers} />
+                <TableMembers
+                  listTeamMembers={listTeamMembers}
+                  teamId={teamId}
+                />
 
                 <QuantityRowsText quantityRows={listTeamMembers.length} />
 
