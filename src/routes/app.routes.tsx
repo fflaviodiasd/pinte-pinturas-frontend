@@ -48,8 +48,8 @@ export const AppRoutes = () => {
             path="/obras/cadastrar"
             element={<FormConstructionsMultiStep />}
           />
-          
-          <Route path="/obras" element={<ListConstructions />} />
+
+          <Route path="/obras/listagem" element={<ListConstructions />} />
 
           <Route path="/obras/:id/materiais" element={<Constructions />} />
           <Route path="/obras/:id/equipes" element={<Constructions />} />
@@ -58,7 +58,9 @@ export const AppRoutes = () => {
           <Route path="/obras/:id/pacotes" element={<Constructions />} />
           <Route path="/obras/:id/medicoes" element={<Constructions />} />
           <Route path="/obras/:id/supervisores" element={<Constructions />} />
-          <Route path="/obras/:id/encarregados-cliente" element={<Constructions />}
+          <Route
+            path="/obras/:id/encarregados-cliente"
+            element={<Constructions />}
           />
 
           <Route path="/materiais" element={<ListMaterials />} />
