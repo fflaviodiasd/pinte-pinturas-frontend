@@ -1,6 +1,5 @@
 import { Box, Button, DialogContent, TextField } from "@mui/material";
 import { Field, Form, Formik } from "formik";
-import { SelectComponent } from "../../../Select";
 import { useParams } from "react-router-dom";
 import { SelectChecklists } from "../SelectChecklists";
 import { useConstructions } from "../../../../hooks/useConstructions";
@@ -47,7 +46,7 @@ export const FormChecklists = ({ checklistId }: any) => {
                     optionValueKey="id"
                     optionLabelKey="name"
                   />
-                  <SelectComponent
+                  <SelectChecklists
                     name="measurement"
                     label="Medição"
                     endpoint={`/constructions/${id}/measurements/`}
