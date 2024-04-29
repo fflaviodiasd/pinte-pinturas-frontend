@@ -38,7 +38,7 @@ api.interceptors.response.use(
 
     if (
       error.response.status === 401 &&
-      originalRequest.url === baseApiURL + "token/refresh/"
+      originalRequest.url === baseApiURL + "accounts/token/refresh/"
     ) {
       window.location.href = "/#/login";
       return Promise.reject(error);

@@ -152,6 +152,7 @@ const Locations = () => {
     enableEditing: true,
     enableRowActions: true,
     enableExpandAll: true,
+    enablePagination: false,
     muiExpandButtonProps: ({ row, table }) => ({
       onClick: () => table.setExpanded({ [row.id]: !row.getIsExpanded() }),
       sx: {
