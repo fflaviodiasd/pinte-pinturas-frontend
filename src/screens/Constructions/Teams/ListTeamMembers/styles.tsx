@@ -1,19 +1,29 @@
 import { makeStyles } from "tss-react/mui";
 import styled from "styled-components";
 
-export const useStyles = makeStyles()((theme) => {
+export const useStyles = makeStyles()(() => {
   return {
-    paper: {
-      color: theme.palette.text.secondary,
-      flexGrow: 1,
+    loadingContainer: {
+      display: "flex",
+      flex: 1,
+      marginTop: 20,
+      justifyContent: "center",
     },
-    searchBarContainer: {
+    inputsContainer: {
       display: "flex",
       flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "flex-end",
-
-      padding: 16,
+      gap: "1rem",
+    },
+    cancelButton: {
+      marginRight: 12,
+      color: "#0076be",
+      fontFamily: "Open Sans",
+      fontWeight: 600,
+      textTransform: "capitalize",
+      padding: "12px 22px",
+      borderColor: "#0076be",
+      borderWidth: 1,
+      borderStyle: "solid",
     },
   };
 });
@@ -33,4 +43,10 @@ export const GroupItems = styled.ul`
   color: #2e3132;
   font-family: "Open Sans";
   font-weight: 600;
+`;
+
+export const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
 `;

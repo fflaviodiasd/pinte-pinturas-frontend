@@ -12,9 +12,11 @@ import { EditIcon } from "../../../components/EditIcon";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { Navbar } from "../../../components/Navbar";
-import Breadcrumb from "../../../components/Breadcrumb";
-import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
-import { styled } from '@mui/material/styles';
+import { Breadcrumb } from "../../../components/Breadcrumb";
+import LinearProgress, {
+  linearProgressClasses,
+} from "@mui/material/LinearProgress";
+import { styled } from "@mui/material/styles";
 import { numberToPercentage } from "../../../utils";
 
 interface responsible {
@@ -24,11 +26,12 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 15,
   borderRadius: 10,
   [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor: theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+    backgroundColor:
+      theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
   },
   [`& .${linearProgressClasses.bar}`]: {
     borderRadius: 5,
-    backgroundColor: theme.palette.mode === 'light' ? '#455a64' : '#455a64',
+    backgroundColor: theme.palette.mode === "light" ? "#455a64" : "#455a64",
   },
 }));
 
@@ -40,7 +43,7 @@ export const ListConstructions = () => {
 
   useEffect(() => {
     getAllConstructions();
-    console.log(listConstructions, 'listConstructions')
+    console.log(listConstructions, "listConstructions");
   }, []);
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -115,13 +118,13 @@ export const ListConstructions = () => {
       //   accessorKey: "responsible",
       //   header: "Encarregado",
       //   Cell: ({ cell }) => {
-      //     const responsible = cell.row.original.responsible; 
+      //     const responsible = cell.row.original.responsible;
       //     if (responsible && typeof responsible === 'object' && responsible.name) {
       //       return responsible.name;
       //     }
       //     return 'Não definido';
       //   },
-      // },      
+      // },
       {
         accessorKey: "execution",
         enableColumnFilterModes: false,
@@ -136,15 +139,25 @@ export const ListConstructions = () => {
         filterVariant: "range-slider",
         header: "Execução",
         Cell: ({ cell }) => (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ flexGrow: 1, marginRight: '8px' }}>
-              <BorderLinearProgress variant="determinate" value={cell.row.original.execution} />
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <div style={{ flexGrow: 1, marginRight: "8px" }}>
+              <BorderLinearProgress
+                variant="determinate"
+                value={cell.row.original.execution}
+              />
             </div>
-            <span style={{ whiteSpace: 'nowrap' }}>{cell.row.original.execution.toFixed(2)}%</span>
+            <span style={{ whiteSpace: "nowrap" }}>
+              {cell.row.original.execution.toFixed(2)}%
+            </span>
           </div>
         ),
-      }
-
+      },
     ],
     []
   );
@@ -153,8 +166,8 @@ export const ListConstructions = () => {
     columns,
     data: listConstructions,
     enableColumnFilterModes: true,
-  
-    initialState: { showColumnFilters: true, density: 'compact'},
+
+    initialState: { showColumnFilters: true, density: "compact" },
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;

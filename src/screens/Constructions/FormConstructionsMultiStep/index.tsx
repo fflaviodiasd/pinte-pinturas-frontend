@@ -23,16 +23,18 @@ import { useCompanies } from "../../../hooks/useCompanies";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { BackgroundAvatar } from "../../../components/Avatar";
 import { useParams } from "react-router-dom";
-import Breadcrumb from "../../../components/Breadcrumb";
+import { Breadcrumb } from "../../../components/Breadcrumb";
 
 const FormikSwitch = ({ field, form, ...props }) => {
   return (
     <FormControlLabel
       control={
-        <IOSSwitch 
+        <IOSSwitch
           checked={field.value}
           sx={{ m: 1 }}
-          onChange={(event) => form.setFieldValue(field.name, event.target.checked)}
+          onChange={(event) =>
+            form.setFieldValue(field.name, event.target.checked)
+          }
           {...props}
         />
       }
@@ -49,9 +51,8 @@ export function FormConstructionsMultiStep() {
   // const { getAllClients, listClients } = useClients();
   const { getAllCompanyCustomers, listCompanyCustomers } = useCompanies();
   const { addConstruction, addCompaniesConstruction } = useConstructions();
-  const [selectedClientId, setSelectedClientId] = useState(''); // Estado para guardar o ID do cliente selecionado
-  const [selectedClient, setSelectedClient] = useState(''); // Estado para guardar o cliente selecionado
-
+  const [selectedClientId, setSelectedClientId] = useState(""); // Estado para guardar o ID do cliente selecionado
+  const [selectedClient, setSelectedClient] = useState(""); // Estado para guardar o cliente selecionado
 
   // const onSubmit = async (values: any) => {
   //   if (!isEditScreen) {
@@ -61,8 +62,7 @@ export function FormConstructionsMultiStep() {
   //   }
   // };
 
-
-  const onSubmit = async (values:any) => {
+  const onSubmit = async (values: any) => {
     console.log("values", values);
     console.log("selectedClientId", selectedClientId);
     const valuesToSend = {
@@ -115,26 +115,26 @@ export function FormConstructionsMultiStep() {
                     />
                   </Grid>
                   <Grid item xs={12} lg={5}>
-                  <Field
-                    name="customer"
-                    label="Cliente"
-                    as={Select}
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                    onChange={(event:any) => {
-                      const { value } = event.target;
-                      console.log("value", value);
-                      // setFieldValue('client', value); // Atualiza o valor no Formik
-                      setSelectedClientId(value); // Atualiza o estado com o ID do cliente
-                    }}                  >
-                    
-                        {listCompanyCustomers.map((client) => (
-                          <MenuItem key={client.id} value={client.id}>
-                            {client.name}
-                          </MenuItem>
-                        ))}
-                      </Field>
+                    <Field
+                      name="customer"
+                      label="Cliente"
+                      as={Select}
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      onChange={(event: any) => {
+                        const { value } = event.target;
+                        console.log("value", value);
+                        // setFieldValue('client', value); // Atualiza o valor no Formik
+                        setSelectedClientId(value); // Atualiza o estado com o ID do cliente
+                      }}
+                    >
+                      {listCompanyCustomers.map((client) => (
+                        <MenuItem key={client.id} value={client.id}>
+                          {client.name}
+                        </MenuItem>
+                      ))}
+                    </Field>
                   </Grid>
                   <Grid item xs={12} lg={2}>
                     <Field
@@ -149,11 +149,9 @@ export function FormConstructionsMultiStep() {
                       }}
                     />
                   </Grid>
-             
-              
                 </Grid>
                 <Grid container spacing={1} className={classes.formContainer}>
-                <Grid item xs={12} lg={4}>
+                  <Grid item xs={12} lg={4}>
                     <Field
                       as={TextField}
                       name="corporate_name"
@@ -200,11 +198,9 @@ export function FormConstructionsMultiStep() {
                       type="email"
                     />
                   </Grid>
-               
-              
                 </Grid>
                 <Grid container spacing={1} className={classes.formContainer}>
-                <Grid item xs={12} lg={3}>
+                  <Grid item xs={12} lg={3}>
                     <Field
                       as={TextField}
                       name="municipal_registration"
@@ -226,13 +222,9 @@ export function FormConstructionsMultiStep() {
                     />
                   </Grid>
                   <Grid item xs={12} lg={3}>
-                <Field
-                  name="isActive"
-                  component={FormikSwitch} 
-                />
-              </Grid>
+                    <Field name="isActive" component={FormikSwitch} />
+                  </Grid>
                 </Grid>
-
               </Paper>
             </Grid>
           </FormikStep>

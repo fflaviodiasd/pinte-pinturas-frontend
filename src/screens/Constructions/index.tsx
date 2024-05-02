@@ -4,17 +4,16 @@ import { Grid } from "@mui/material";
 
 import { useConstructions } from "../../hooks/useConstructions";
 
-import Breadcrumb from "../../components/Breadcrumb";
+import { Breadcrumb } from "../../components/Breadcrumb";
 import { Navbar } from "../../components/Navbar";
 import { Tab } from "../../components/Tab";
 
-import { ServicesConstructions } from "./ServicesConstructions";
-import { PackageConstructions } from "./PackageConstructions";
-import { ListConstructionsMaterials } from "./Materials";
 import { MeasurementsConstructions } from "./MeasurementsConstructions";
 import { SupervisorConstructions } from "./SupervisorConstructions";
+import { ServicesConstructions } from "./ServicesConstructions";
+import { PackageConstructions } from "./PackageConstructions";
 import { CustomerSupervisor } from "./CustomerSupervisor";
-
+import { ListConstructionsMaterials } from "./Materials";
 import { ListLocal } from "./Local";
 import { Teams } from "./Teams";
 
@@ -42,7 +41,7 @@ export const Constructions = () => {
       case location.pathname.includes("locais"):
         return <ListLocal />;
       case location.pathname.includes("servicos"):
-        return <ServicesConstructions />; 
+        return <ServicesConstructions />;
       case location.pathname.includes("pacotes"):
         return <PackageConstructions />;
       case location.pathname.includes("medicoes"):
@@ -101,13 +100,12 @@ export const Constructions = () => {
           onClick={() => navigate(`/obras/${constructionId}/pacotes`)}
         />
 
-       
         <Tab
           text="Medições"
           isActive={location.pathname.includes("medicoes")}
           onClick={() => navigate(`/obras/${constructionId}/medicoes`)}
         />
- 
+
         <Tab
           text="Encarregados"
           isActive={location.pathname.includes("supervisores")}
@@ -117,10 +115,11 @@ export const Constructions = () => {
         <Tab
           text="Encarregados do Cliente"
           isActive={location.pathname.includes("encarregados-cliente")}
-          onClick={() => navigate(`/obras/${constructionId}/encarregados-cliente`)}
-          />
+          onClick={() =>
+            navigate(`/obras/${constructionId}/encarregados-cliente`)
+          }
+        />
       </TabsContainer>
-
 
       {displayContent()}
     </Grid>

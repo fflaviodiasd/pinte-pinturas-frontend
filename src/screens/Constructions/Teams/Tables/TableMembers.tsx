@@ -1,30 +1,67 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { Chip, Typography } from "@mui/material";
 import {
+  MRT_TableOptions,
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
 
+import { TeamsContext, TeamMember } from "../../../../contexts/TeamsContext";
 import { BackgroundAvatar } from "../../../../components/Avatar";
-import { TeamMember } from "../../../../hooks/useTeams";
+
 import { useStyles } from "./styles";
 
 type TableMembersProps = {
   listTeamMembers: TeamMember[];
+  teamId: number;
 };
 
-export const TableMembers = ({ listTeamMembers }: TableMembersProps) => {
+export const TableMembers = ({
+  listTeamMembers,
+  teamId,
+}: TableMembersProps) => {
   const { classes } = useStyles();
+  const { updateTeamMembers, teamData } = useContext(TeamsContext);
+
+  const handleEditTeamMembers: MRT_TableOptions<any>["onEditingRowSave"] = ({
+    exitEditingMode,
+    row,
+    values,
+  }) => {
+    const updatedRow = [
+      {
+        id: Number(row.original.id),
+        active: values.active,
+        cell_phone: String(values.cell_phone),
+        name: String(values.name),
+        office: String(values.office),
+        profile: String(values.profile),
+        weight: Number(values.weight),
+        firstLetter: "",
+      },
+    ];
+    console.log("updatedRow", updatedRow);
+    updateTeamMembers(updatedRow, teamData.teamName, teamId);
+
+    exitEditingMode();
+  };
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
+      {
+        id: "id",
+        header: "",
+        size: 0,
+        enableEditing: false,
+      },
       {
         header: "Status",
         accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
         id: "active",
         filterVariant: "checkbox",
+        enableEditing: false,
         Cell: ({ cell }) => {
           const status = cell.getValue() === "true" ? "Ativo" : "Inativo";
           const chipColor = status === "Ativo" ? "success" : "error";
@@ -38,6 +75,7 @@ export const TableMembers = ({ listTeamMembers }: TableMembersProps) => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Nome",
+        enableEditing: false,
         Cell: ({ cell }) => (
           <div
             style={{
@@ -59,18 +97,30 @@ export const TableMembers = ({ listTeamMembers }: TableMembersProps) => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Cargo",
+        enableEditing: false,
       },
       {
         accessorKey: "profile",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Perfil",
+        enableEditing: false,
       },
       {
         accessorKey: "cell_phone",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Celular",
+        enableEditing: false,
+      },
+      {
+        accessorKey: "weight",
+        enableColumnFilterModes: false,
+        filterFn: "startsWith",
+        header: "Peso",
+        muiEditTextFieldProps: () => ({
+          type: "number",
+        }),
       },
     ],
     []
@@ -85,6 +135,9 @@ export const TableMembers = ({ listTeamMembers }: TableMembersProps) => {
     enableBottomToolbar: false,
     enableTopToolbar: false,
     initialState: { showColumnFilters: true },
+    onEditingRowSave: handleEditTeamMembers,
+    enableEditing: true,
+    editDisplayMode: "row",
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;
