@@ -1,4 +1,11 @@
-import { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useState,
+} from "react";
 import { useParams } from "react-router-dom";
 
 import { api } from "../services/api";
@@ -34,7 +41,38 @@ type Option = {
   weight: number;
 };
 
-export const useTeams = () => {
+type Member = { id: number; weight: number };
+
+type TeamsContextProviderProps = {
+  children: ReactNode;
+};
+
+type TeamsContextProps = {
+  loading: boolean;
+  teamData: {
+    id: number;
+    teamName: string;
+  };
+  listTeams: Team[];
+  getTeam: (teamId: number) => Promise<void>;
+  addTeam: (name: string) => Promise<void>;
+  disableTeam: (teamId: number) => Promise<void>;
+  getAllTeams: () => Promise<void>;
+  listTeamMembers: TeamMember[];
+  updateTeamMembers: (
+    selectedMembers: Option[],
+    teamName: string,
+    teamId: number
+  ) => Promise<void>;
+  getAllTeamMembers: (teamId: number) => Promise<void>;
+  setListTeamMembers: Dispatch<SetStateAction<TeamMember[]>>;
+  updateTeamRow: (teamName: string, teamId: number) => Promise<void>;
+  setListTeams: Dispatch<SetStateAction<Team[]>>;
+};
+
+const TeamsContext = createContext<TeamsContextProps>({} as TeamsContextProps);
+
+const TeamsContextProvider = ({ children }: TeamsContextProviderProps) => {
   const { id } = useParams();
 
   const [teamData, setTeamData] = useState({
@@ -67,13 +105,13 @@ export const useTeams = () => {
         name: name,
       });
 
-      getAllTeams();
       successMessage("Equipe adicionada com sucesso!");
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível adicionar equipe!");
     } finally {
       setLoading(false);
+      getAllTeams();
     }
   };
 
@@ -82,26 +120,6 @@ export const useTeams = () => {
     try {
       await api.patch(`teams/${teamId}/`, {
         name: teamName,
-      });
-      successMessage("Equipe atualizada com sucesso!");
-    } catch (error) {
-      console.log(error);
-      errorMessage("Não foi possível atualizar equipe!");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateTeam = async (
-    membersIds: number[],
-    teamName: string,
-    teamId: number
-  ) => {
-    setLoading(true);
-    try {
-      await api.patch(`teams/${teamId}/`, {
-        name: teamName,
-        team_members: membersIds,
       });
       successMessage("Equipe atualizada com sucesso!");
     } catch (error) {
@@ -162,18 +180,16 @@ export const useTeams = () => {
       weight: selectedMember.weight,
     }));
 
-    const membersIds = currentMembersIds.concat(newMembersIds);
-
-    console.log("backend", membersIds);
+    const allMembers = allMembersToSend(currentMembersIds, newMembersIds);
 
     setLoading(true);
     try {
       await api.patch(`teams/${teamId}/`, {
         name: teamName,
-        team_members: membersIds,
+        team_members: allMembers,
       });
       const newMembers = selectedMembers.map((member) => ({
-        active: member.active,
+        active: String(member.active).toLowerCase() === "true",
         avatar: "",
         cell_phone: member.cell_phone,
         id: member.id,
@@ -182,7 +198,20 @@ export const useTeams = () => {
         weight: member.weight,
         office: member.office,
       }));
-      setListTeamMembers((prevState) => prevState.concat(newMembers));
+
+      setListTeamMembers((prevState) =>
+        updateListTeamMembers(prevState, newMembers)
+      );
+      const newMemberCount = allMembers.length;
+      setListTeams((prevState) =>
+        prevState.map((team) => {
+          if (team.id === teamId) {
+            return { ...team, member_count: newMemberCount };
+          } else {
+            return team;
+          }
+        })
+      );
       successMessage("Equipe atualizada com sucesso!");
     } catch (error) {
       console.log(error);
@@ -197,7 +226,7 @@ export const useTeams = () => {
     try {
       const { data } = await api.get(`teams/${teamId}`);
       const teamMembers: TeamMember[] = data.members;
-      console.log("data", data);
+
       setListTeamMembers(teamMembers);
     } catch (error) {
       console.log(error);
@@ -206,19 +235,68 @@ export const useTeams = () => {
     }
   };
 
-  return {
-    loading,
-    teamData,
-    listTeams,
-    getTeam,
-    addTeam,
-    updateTeam,
-    disableTeam,
-    getAllTeams,
-    listTeamMembers,
-    updateTeamMembers,
-    getAllTeamMembers,
-    setListTeamMembers,
-    updateTeamRow,
-  };
+  return (
+    <TeamsContext.Provider
+      value={{
+        loading,
+        teamData,
+        listTeams,
+        setListTeams,
+        getTeam,
+        addTeam,
+        disableTeam,
+        getAllTeams,
+        listTeamMembers,
+        updateTeamMembers,
+        getAllTeamMembers,
+        setListTeamMembers,
+        updateTeamRow,
+      }}
+    >
+      {children}
+    </TeamsContext.Provider>
+  );
 };
+
+export { TeamsContext, TeamsContextProvider };
+
+function allMembersToSend(currentMembers: Member[], newMembers: Member[]) {
+  return currentMembers
+    .map((currentMember) => {
+      const newMember = newMembers.find(
+        (newMember) => newMember.id === currentMember.id
+      );
+
+      return newMember ? newMember : currentMember;
+    })
+    .concat(
+      newMembers.filter(
+        (newMember) =>
+          !currentMembers.some(
+            (currentMember) => currentMember.id === newMember.id
+          )
+      )
+    );
+}
+
+function updateListTeamMembers(
+  currentMembers: TeamMember[],
+  newMembers: TeamMember[]
+) {
+  return currentMembers
+    .map((currentMember) => {
+      const newMember = newMembers.find(
+        (newMember) => newMember.id === currentMember.id
+      );
+
+      return newMember ? newMember : currentMember;
+    })
+    .concat(
+      newMembers.filter(
+        (newMember) =>
+          !currentMembers.some(
+            (currentMember) => currentMember.id === newMember.id
+          )
+      )
+    );
+}

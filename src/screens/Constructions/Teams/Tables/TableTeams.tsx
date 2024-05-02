@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo } from "react";
+import { useContext, useMemo } from "react";
 import {
   Box,
   FormControlLabel,
@@ -19,11 +19,11 @@ import {
   type MRT_ColumnDef,
 } from "material-react-table";
 
-import { Team, useTeams } from "../../../../hooks/useTeams";
-
-import { ListTeamMembers } from "../ListTeamMembers";
+import { TeamsContext, Team } from "../../../../contexts/TeamsContext";
 
 import { SectionTitle } from "../../../../components/SectionTitle";
+import { ListTeamMembers } from "../ListTeamMembers";
+
 import { useStyles } from "./styles";
 
 type TableTeamsProps = {
@@ -38,11 +38,7 @@ type SelectedTeam = {
 
 export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
   const { classes } = useStyles();
-  const { addTeam, updateTeamRow } = useTeams();
-
-  useEffect(() => {
-    console.log("Tableteams", listTeams);
-  }, [listTeams]);
+  const { addTeam, updateTeamRow } = useContext(TeamsContext);
 
   const handleCreateTeam: MRT_TableOptions<any>["onCreatingRowSave"] = ({
     values,

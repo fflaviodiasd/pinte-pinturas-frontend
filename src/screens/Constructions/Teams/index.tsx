@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Grid, TextField } from "@mui/material";
-
 import { Field, Form, Formik } from "formik";
 
-import { useTeams } from "../../../hooks/useTeams";
-
 import { ModalDisable } from "../../../components/Table/ModalDisable";
+import {
+  TeamsContext,
+  TeamsContextProvider,
+} from "../../../contexts/TeamsContext";
 import { Button } from "../../../components/Button";
 
 import { TableTeams } from "./Tables/TableTeams";
@@ -16,7 +17,16 @@ type SelectedTeam = {
 };
 
 export const Teams = () => {
-  const { disableTeam, addTeam, listTeams, getAllTeams } = useTeams();
+  return (
+    <TeamsContextProvider>
+      <TeamsComponent />
+    </TeamsContextProvider>
+  );
+};
+
+const TeamsComponent = () => {
+  const { disableTeam, addTeam, listTeams, getAllTeams } =
+    useContext(TeamsContext);
   const [selectedTeam, setSelectedTeam] = useState<SelectedTeam>({
     id: 0,
     name: "",
@@ -28,10 +38,6 @@ export const Teams = () => {
   useEffect(() => {
     getAllTeams();
   }, []);
-
-  useEffect(() => {
-    console.log("listTeams", listTeams);
-  }, [listTeams]);
 
   const handleOpenModal = (selectedTeam: SelectedTeam) => {
     setSelectedTeam(selectedTeam);
@@ -81,22 +87,6 @@ export const Teams = () => {
             </div>
           </div>
         )}
-
-        {/* <SectionTitle title="Equipes" /> */}
-
-        {/* <Box
-          sx={{ display: "flex", justifyContent: "right", marginRight: "1rem" }}
-        >
-          <Button
-            label={
-              <Tooltip title="Adicionar Equipe">
-                <Add />
-              </Tooltip>
-            }
-            color="secondary"
-            onClick={handleShowAddTeamInput}
-          />
-        </Box> */}
 
         <TableTeams listTeams={listTeams} handleOpenModal={handleOpenModal} />
 

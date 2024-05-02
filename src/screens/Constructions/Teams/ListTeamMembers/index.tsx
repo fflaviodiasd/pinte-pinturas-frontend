@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Grid,
   TextField,
@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 
-import { useTeams } from "../../../../hooks/useTeams";
+import { TeamsContext } from "../../../../contexts/TeamsContext";
 import { api } from "../../../../services/api";
 
 import { QuantityRowsText } from "../../../../components/QuantityRowsText";
@@ -49,7 +49,8 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
     updateTeamMembers,
     getAllTeamMembers,
     teamData,
-  } = useTeams();
+    setListTeams,
+  } = useContext(TeamsContext);
 
   useEffect(() => {
     if (teamId) {
@@ -74,7 +75,7 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
         `teams/${teamId}/select_members`
       );
 
-      setOptions(data);
+      setOptions(data.map((option) => ({ ...option, weight: 1 })));
     } catch (error) {
       console.error("Erro ao buscar dados:", error);
     }
@@ -91,7 +92,24 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
   }, [teamId]);
 
   const handleUpdateTeamMembers = ({ teamName }: FormUpdateTeamMembers) => {
-    updateTeamMembers(selectedMembers, teamName, teamId);
+    if (teamData.teamName !== teamName) {
+      updateTeamMembers(selectedMembers, teamName, teamId);
+      setListTeams((prevState) =>
+        prevState.map((team) => {
+          if (team.id === teamId) {
+            return {
+              id: team.id,
+              name: teamName,
+              active: team.active,
+              member_count: team.member_count,
+            };
+          }
+          return team;
+        })
+      );
+    } else {
+      updateTeamMembers(selectedMembers, teamName, teamId);
+    }
     setSelectedMembers([]);
   };
 

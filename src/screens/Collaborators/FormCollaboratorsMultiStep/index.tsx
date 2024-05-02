@@ -23,7 +23,7 @@ import { ListCollaboratorsRelatedWorks } from "../ListCollaboratorsRelatedWorks"
 import { SelectProfileComponent } from "../../../components/Select/Profile";
 import { SelectRoleComponent } from "../../../components/Select/Role";
 import { ListCollaboratorsHistory } from "../ListCollaboratorsHistory";
-import Breadcrumb from "../../../components/Breadcrumb";
+import { Breadcrumb } from "../../../components/Breadcrumb";
 
 export function FormCollaboratorsMultiStep() {
   const { id: collaboratorId } = useParams();
