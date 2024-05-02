@@ -11,8 +11,12 @@ export const useStyles = makeStyles()((theme) => {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "flex-end",
-
       padding: 16,
+    },
+    toolbarButton: {
+      color: "#0076be",
+      border: "1px solid #0076be",
+      borderRadius: "4px",
     },
   };
 });

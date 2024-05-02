@@ -1,17 +1,15 @@
-import { useEffect, useState } from "react";
-import { Box, Grid, Tooltip, Typography, TextField } from "@mui/material";
-import { Add } from "@mui/icons-material";
-
+import { useContext, useEffect, useState } from "react";
+import { Grid, TextField } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 
-import { useTeams } from "../../../hooks/useTeams";
-
 import { ModalDisable } from "../../../components/Table/ModalDisable";
+import {
+  TeamsContext,
+  TeamsContextProvider,
+} from "../../../contexts/TeamsContext";
 import { Button } from "../../../components/Button";
 
 import { TableTeams } from "./Tables/TableTeams";
-
-import { useStyles } from "./styles";
 
 type SelectedTeam = {
   id: number;
@@ -19,9 +17,16 @@ type SelectedTeam = {
 };
 
 export const Teams = () => {
-  const { classes } = useStyles();
-  const { disableTeam, addTeam, listTeams, getAllTeams } = useTeams();
+  return (
+    <TeamsContextProvider>
+      <TeamsComponent />
+    </TeamsContextProvider>
+  );
+};
 
+const TeamsComponent = () => {
+  const { disableTeam, addTeam, listTeams, getAllTeams } =
+    useContext(TeamsContext);
   const [selectedTeam, setSelectedTeam] = useState<SelectedTeam>({
     id: 0,
     name: "",
@@ -48,20 +53,13 @@ export const Teams = () => {
     setIsModalOpen(false);
   };
 
-  const handleAddTeam = (name: string) => {
+  const handleAddTeam = async (name: string) => {
     addTeam(name);
     setShowAddTeamInput(false);
   };
 
-  const handleShowAddTeamInput = () => {
-    setShowAddTeamInput(true);
-  };
-
   return (
-    <Grid
-      container
-      // style={{ padding: 16, backgroundColor: "#eff1f3" }}
-    >
+    <Grid container>
       <Grid item xs={12} lg={12}>
         {showAddTeamInput && (
           <div style={{ padding: "1.5rem" }}>
@@ -89,25 +87,6 @@ export const Teams = () => {
             </div>
           </div>
         )}
-
-        <Typography className={classes.teamsTitle}>
-          <span className={classes.teamsBorder}>Equip</span>
-          es
-        </Typography>
-
-        <Box
-          sx={{ display: "flex", justifyContent: "right", marginRight: "1rem" }}
-        >
-          <Button
-            label={
-              <Tooltip title="Adicionar Equipe">
-                <Add />
-              </Tooltip>
-            }
-            color="secondary"
-            onClick={handleShowAddTeamInput}
-          />
-        </Box>
 
         <TableTeams listTeams={listTeams} handleOpenModal={handleOpenModal} />
 

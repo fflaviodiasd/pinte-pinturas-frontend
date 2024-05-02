@@ -19,7 +19,7 @@ import { BackgroundAvatar } from "../../../components/Avatar";
 import { useParams } from "react-router-dom";
 import { ListClientsRelatedWorks } from "../ListClientsRelatedWorks";
 import { ListClientsEmployees } from "../ListClientsEmployees";
-import Breadcrumb from "../../../components/Breadcrumb";
+import { Breadcrumb } from "../../../components/Breadcrumb";
 
 export function FormClientsMultiStep() {
   const { id: clientId } = useParams();

@@ -5,7 +5,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 import { useStyles } from "./styles";
 
-export default function Breadcrumb({
+export function Breadcrumb({
   breadcrumbPath1,
   breadcrumbPath2,
   hrefBreadcrumbPath1,

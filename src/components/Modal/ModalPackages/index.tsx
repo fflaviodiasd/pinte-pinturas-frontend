@@ -1,4 +1,4 @@
-import React, { ReactElement, forwardRef, useEffect, useState } from "react";
+import React, { useState, useEffect, forwardRef, ReactElement } from "react";
 import {
   Button,
   Checkbox,
@@ -15,10 +15,10 @@ import {
 import { TransitionProps } from "@mui/material/transitions";
 import { Info, Search } from "@mui/icons-material";
 import { api } from "../../../services/api";
-import { SelectComponent } from "../../Select";
 import { Form, Formik } from "formik";
-import { SelectPackages } from "./SelectPackages";
 import { useParams } from "react-router-dom";
+import { FilterPackagesDiscipline } from "./FilterPackagesDiscipline";
+import { useConstructions } from "../../../hooks/useConstructions";
 
 type ModalPackagesProps = {
   modalOpen: boolean;
@@ -27,6 +27,7 @@ type ModalPackagesProps = {
 };
 
 interface Checklist {
+  id: any;
   name: string;
 }
 
@@ -43,7 +44,9 @@ export const ModalPackages = ({
   const [selectedChecklists, setSelectedChecklists] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [errorMessageVisible, setErrorMessageVisible] = useState(false);
+  const [selectedPackageId, setSelectedPackageId] = useState<string>("");
   const { id } = useParams();
+  const { addDisciplinePackage } = useConstructions();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,16 +62,18 @@ export const ModalPackages = ({
   }, []);
 
   const handleSubmit = async () => {
-    alert("Salvo");
+    console.log("ID do pacote selecionado ao submeter:", selectedPackageId);
+    console.log("ID dos checklists selecionados:", selectedChecklists);
+    await addDisciplinePackage(selectedPackageId, selectedChecklists);
   };
 
-  const handleToggleChecklist = (checklistName: string) => {
-    if (selectedChecklists.includes(checklistName)) {
+  const handleToggleChecklist = (checklistId: any) => {
+    if (selectedChecklists.includes(checklistId)) {
       setSelectedChecklists(
-        selectedChecklists.filter((name) => name !== checklistName)
+        selectedChecklists.filter((id) => id !== checklistId)
       );
     } else {
-      setSelectedChecklists([...selectedChecklists, checklistName]);
+      setSelectedChecklists([...selectedChecklists, checklistId]);
     }
   };
 
@@ -122,10 +127,7 @@ export const ModalPackages = ({
               packages: "",
             }}
             onSubmit={(values, actions) => {
-              setTimeout(() => {
-                alert(JSON.stringify(values, null, 2));
-                actions.setSubmitting(false);
-              }, 1000);
+              handleSubmit();
             }}
           >
             {() => (
@@ -138,21 +140,15 @@ export const ModalPackages = ({
                       gap: "1rem",
                     }}
                   >
-                    <SelectComponent
-                      name="discipline"
-                      label="Disciplina"
-                      endpoint={`disciplines`}
+                    <FilterPackagesDiscipline
+                      label="Selecione uma disciplina"
+                      name="disciplineAndPackages"
+                      disciplineEndpoint="disciplines"
+                      packagesEndpoint={`constructions/${id}/packages`}
                       optionKey="id"
                       optionValueKey="id"
                       optionLabelKey="name"
-                    />
-                    <SelectPackages
-                      name="packages"
-                      label="Pacotes"
-                      endpoint={`constructions/${id}/packages`}
-                      optionKey="id"
-                      optionValueKey="id"
-                      optionLabelKey="name"
+                      setSelectedPackageId={setSelectedPackageId}
                     />
                   </div>
                 </DialogContent>
@@ -216,11 +212,11 @@ export const ModalPackages = ({
                     <ListItem
                       key={`${areaIndex}-${checklistIndex}`}
                       button
-                      onClick={() => handleToggleChecklist(checklist.name)}
+                      onClick={() => handleToggleChecklist(checklist.id)}
                     >
                       <Checkbox
                         edge="start"
-                        checked={selectedChecklists.includes(checklist.name)}
+                        checked={selectedChecklists.includes(checklist.id)}
                         tabIndex={-1}
                         disableRipple
                       />

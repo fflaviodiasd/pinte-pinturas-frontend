@@ -2,7 +2,7 @@ import { makeStyles } from "tss-react/mui";
 
 export const useStyles = makeStyles()(() => ({
   teamsTitle: {
-    // padding: "1rem",
+    padding: "1rem",
     color: "#2E3132",
     fontFamily: "Open Sans",
     fontWeight: "600",
