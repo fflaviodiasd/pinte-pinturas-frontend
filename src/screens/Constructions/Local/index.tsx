@@ -46,9 +46,25 @@ const Locations = () => {
   const { classes } = useStyles();
   const [modalOpen, setIsModalOpen] = useState(false);
 
+  const generateNextId = (rowCount: any) => {
+    const nextId = rowCount + 1;
+    return `L${nextId.toString().padStart(4, "0")}`;
+  };
+
+  const [rowCount, setRowCount] = useState(0);
+
+  const [editState, setEditState] = useState({
+    rowId: null,
+    value: "",
+  });
+
   const handleClose = () => {
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    setRowCount(listConstructionsLocations.length);
+  }, [listConstructionsLocations]);
 
   useEffect(() => {
     getAllConstructionsLocations(dynamicColumns);
@@ -63,6 +79,26 @@ const Locations = () => {
           {
             accessorKey: "code",
             header: "ID",
+            enableEditing: false,
+            Cell: ({ row }: any) => {
+              return (
+                <div>
+                  {editState.rowId === row.id ? generateNextId(rowCount) : ""}
+                </div>
+              );
+            },
+          },
+          {
+            accessorKey: "micro",
+            header: "Micro",
+            muiTableBodyCellProps: ({ cell }: any) => ({
+              onChange: (e: any) => {
+                const newValue = e.target.value;
+                const rowId = cell.row.id;
+                setEditState({ rowId, value: newValue });
+                console.log(`Row ${rowId} has value ${newValue}`);
+              },
+            }),
           },
           {
             accessorKey: "checklist",
@@ -88,6 +124,11 @@ const Locations = () => {
           newDynamicColumns.push({
             accessorKey: `nivel_${level.id}`,
             header: level.name,
+            muiTableBodyCellProps: ({ cell }: any) => ({
+              onChange: (e: any) => {
+                console.log("teste");
+              },
+            }),
           });
         });
         setDynamicColumns(newDynamicColumns);
@@ -97,13 +138,14 @@ const Locations = () => {
     };
 
     fetchLevel();
-  }, []);
+  }, [editState]);
 
   const handleCreateLocal: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
     values,
     table,
   }) => {
-    await addConstructionLocal(values, dynamicColumns);
+    const code = generateNextId(rowCount);
+    await addConstructionLocal({ ...values, code }, dynamicColumns);
   };
 
   const handleDeleteSnackbar = () => {
