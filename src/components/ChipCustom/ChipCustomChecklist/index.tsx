@@ -48,13 +48,16 @@ export const ChipCustomChecklist = ({
   const [editingValue, setEditingValue] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
   const [valueEdit, setValueEdit] = useState<any>(number);
+  const [orderValue, setOrderValue] = useState<number | undefined>(number);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEditingValue(event.target.value);
   };
 
   useEffect(() => {
     setValueActual(editingValue);
-  }, [editingValue, setValueActual]);
+    setOrderValue(valueEdit);
+  }, [editingValue, setValueActual, valueEdit]);
 
   const handleChipDeleteChecklist = async () => {
     if (onCreateChecklist) {
@@ -67,6 +70,20 @@ export const ChipCustomChecklist = ({
       } catch (error) {
         errorMessage("Erro ao deletar checklist!");
         console.error("Erro ao deletar checklist:", error);
+      }
+    }
+  };
+
+  const handleUpdateChecklistOrder = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
+      try {
+        await api.put(`checklists/${chipId}/`, { order: orderValue });
+        successMessage("Ordem do checklist atualizada com sucesso!");
+      } catch (error) {
+        errorMessage("Erro ao atualizar ordem do checklist!");
+        console.error("Erro ao atualizar ordem do checklist:", error);
       }
     }
   };
@@ -120,10 +137,12 @@ export const ChipCustomChecklist = ({
           bg={bg}
           value={valueEdit}
           onChange={(e: any) => setValueEdit(e.target.value)}
+          onKeyDown={handleUpdateChecklistOrder}
         >
           {/* {number} */}
         </StyledChipLabelNumber>
       )}
+      {/* Botão para enviar a ordem para o backend */}
     </StyledChipDiv>
   );
 };

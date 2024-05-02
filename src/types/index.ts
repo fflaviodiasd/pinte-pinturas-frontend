@@ -72,6 +72,9 @@ export type Construction = {
   material: string;
   teamName: string;
   teamMembers: any[];
+  team: string;
+  measurement: string;
+  package: string;
 };
 
 export type Customer = {

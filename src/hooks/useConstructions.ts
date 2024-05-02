@@ -62,7 +62,7 @@ export const useConstructions = () => {
     measurement: "",
     package: "",
     number: "",
-    checklistName: "",
+    checklistName: ""
   });
 
   const [constructInfoData, setConstructInfoData] = useState<any>({})
@@ -108,9 +108,9 @@ export const useConstructions = () => {
       const { data } = await api.get(`/checklists/${checklistId}/`);
       setConstructionData({
         ...constructionData,
-        team: data.team,
-        measurement: data.measurement,
-        package: data.package,
+        team: data.team.id,
+        measurement: data.measurement.id,
+        package: data.package.id,
         number: data.order,
         checklistName: data.name,
       });
@@ -223,6 +223,26 @@ export const useConstructions = () => {
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível adicionar equipe!");
+      setLoading(false);
+    }
+  };
+
+  const addDisciplinePackage = async (
+    selectedPackageId: any,
+    selectedChecklists: any
+  ) => {
+    setLoading(true);
+    try {
+      const response = await api.post("/packages/checklist_bulk/", {
+        package_id: selectedPackageId,
+        checklist_ids: selectedChecklists,
+      });
+      console.log("Pacote associado!", response);
+      successMessage("Pacote associado com sucesso!");
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      errorMessage("Erro ao associar pacote!");
       setLoading(false);
     }
   };
@@ -772,6 +792,7 @@ export const useConstructions = () => {
     addConstruction,
     addConstructionMaterial,
     addConstructionTeam,
+    addDisciplinePackage,
     updateConstruction,
     updateConstructionMaterial,
     updateChecklist,
