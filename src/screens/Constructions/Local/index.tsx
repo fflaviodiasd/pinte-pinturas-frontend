@@ -83,7 +83,9 @@ const Locations = () => {
             Cell: ({ row }: any) => {
               return (
                 <div>
-                  {editState.rowId === row.id ? generateNextId(rowCount) : ""}
+                  {editState.rowId === row.id
+                    ? generateNextId(rowCount)
+                    : row.original.code}
                 </div>
               );
             },
