@@ -84,7 +84,7 @@ const Locations = () => {
               return (
                 <div>
                   {editState.rowId === row.id
-                    ? generateNextId(rowCount)
+                    ? row.original.code || generateNextId(rowCount)
                     : row.original.code}
                 </div>
               );
