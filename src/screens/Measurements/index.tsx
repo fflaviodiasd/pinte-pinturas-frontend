@@ -30,7 +30,7 @@ export function Measurements() {
         style={{
           display: "flex",
           flexDirection: "row",
-          padding: 16,
+          padding: "24px 16px",
           backgroundColor: "#EEE",
         }}
       >

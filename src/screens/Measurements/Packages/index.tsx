@@ -18,7 +18,12 @@ import {
 import { Line } from "react-chartjs-2";
 import colorLib from "@kurkle/color";
 
-import { LabelColor, TableContainer, useStyles } from "./styles";
+import {
+  LabelColor,
+  TableContainer,
+  TableContainer2,
+  useStyles,
+} from "./styles";
 import { SectionTitle } from "../../../components/SectionTitle";
 import { moneyFormatter } from "../../../utils";
 
@@ -82,7 +87,17 @@ export function MeasurementsPackages() {
 
   return (
     <Grid item lg={12} className={classes.content}>
-      <Grid item lg={8} style={{ backgroundColor: "#FFF", paddingRight: 16 }}>
+      <Grid
+        item
+        lg={8}
+        style={{
+          backgroundColor: "#FFF",
+          paddingRight: 16,
+          overflow: "auto",
+          height: "calc(100vh - 164px)",
+          scrollbarWidth: "none",
+        }}
+      >
         <div className={classes.graphTitle}>
           <SectionTitle title="Tendência Executiva" />
 
@@ -98,11 +113,60 @@ export function MeasurementsPackages() {
           </div>
         </div>
         <Line data={data} options={options} />
+        <div
+          style={{
+            display: "flex",
+            paddingTop: 12,
+            paddingLeft: 12,
+            paddingBottom: 12,
+            flexDirection: "column",
+            marginTop: 12,
+          }}
+        >
+          <TableContainer2 style={{ scrollbarWidth: "thin" }}>
+            <table>
+              <thead>
+                <tr>
+                  <th style={{ width: 150 }}>Disciplina</th>
+                  <th style={{ width: 200 }}>Pacote</th>
+                  <th style={{ width: 110 }}>Diárias Totais</th>
+                  <th style={{ width: 150 }}>Rentabilidade/Diária</th>
+                  <th style={{ width: 200 }}>Rentabilidade/Mão de Obra</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fakeData2.map((fake) => (
+                  <tr key={fake.id}>
+                    <td className={classes.colunm1}>{fake.discipline}</td>
+                    <td className={classes.colunm1}>{fake.package}</td>
+                    <td className={classes.colunm1}>{fake.totalDailies}</td>
+                    <td className={classes.colunm2}>
+                      {moneyFormatter.format(fake.profitabilityDaily)}
+                    </td>
+                    <td className={classes.colunm2}>
+                      {moneyFormatter.format(fake.profitabilityByLabor)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableContainer2>
+          <Typography
+            style={{ fontFamily: "Open Sans", color: "#2E3132", fontSize: 14 }}
+          >
+            Mostrando 10 de 234 linhas.
+          </Typography>
+        </div>
       </Grid>
       <Grid
         item
         lg={4}
-        style={{ backgroundColor: "#FFF", marginLeft: 16, padding: 16 }}
+        style={{
+          backgroundColor: "#FFF",
+          marginLeft: 16,
+          padding: 16,
+          height: "calc(100vh - 164px)",
+        }}
       >
         <div style={{ height: "50%" }}>
           <div
@@ -248,5 +312,88 @@ const fakeData = [
     meters: 30,
     costDaily: 40.23,
     labor: 23.23,
+  },
+];
+
+const fakeData2 = [
+  {
+    id: 1,
+    discipline: "Gesso",
+    package: "Pintura ",
+    totalDailies: 30,
+    profitabilityDaily: 23,
+    profitabilityByLabor: 23.23,
+  },
+  {
+    id: 2,
+    discipline: "Gesso",
+    package: "Pintura Externa",
+    totalDailies: 30,
+    profitabilityDaily: 23,
+    profitabilityByLabor: 23.23,
+  },
+  {
+    id: 3,
+    discipline: "Gesso",
+    package: "Pintura Externa",
+    totalDailies: 30,
+    profitabilityDaily: 23,
+    profitabilityByLabor: 23.23,
+  },
+  {
+    id: 4,
+    discipline: "Exemplo de disciplina",
+    package: "Pintura Externa",
+    totalDailies: 30,
+    profitabilityDaily: 23,
+    profitabilityByLabor: 23.23,
+  },
+  {
+    id: 5,
+    discipline: "Gesso",
+    package: "Pintura Interna",
+    totalDailies: 30,
+    profitabilityDaily: 23,
+    profitabilityByLabor: 23.23,
+  },
+  {
+    id: 6,
+    discipline: "Gesso",
+    package: "Pintura Interna",
+    totalDailies: 30,
+    profitabilityDaily: 23,
+    profitabilityByLabor: 23.23,
+  },
+  {
+    id: 7,
+    discipline: "Gesso",
+    package: "Pintura Interna",
+    totalDailies: 30,
+    profitabilityDaily: 23,
+    profitabilityByLabor: 23.23,
+  },
+  {
+    id: 8,
+    discipline: "Gesso",
+    package: "Pintura Interna",
+    totalDailies: 30,
+    profitabilityDaily: 23,
+    profitabilityByLabor: 23.23,
+  },
+  {
+    id: 9,
+    discipline: "Gesso",
+    package: "Pintura Interna",
+    totalDailies: 30,
+    profitabilityDaily: 23,
+    profitabilityByLabor: 23.23,
+  },
+  {
+    id: 10,
+    discipline: "Gesso",
+    package: "Pintura Interna",
+    totalDailies: 30,
+    profitabilityDaily: 23,
+    profitabilityByLabor: 23.23,
   },
 ];

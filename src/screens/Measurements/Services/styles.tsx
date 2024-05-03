@@ -7,8 +7,11 @@ export const useStyles = makeStyles()(() => {
     content: {
       display: "flex",
       flexDirection: "row",
-      padding: 16,
+      paddingLeft: 16,
+      paddingRight: 16,
+      paddingBottom: 16,
       backgroundColor: "#EEE",
+      flex: 1,
     },
     graphTitle: {
       display: "flex",
@@ -85,6 +88,40 @@ export const TableContainer = styled.div`
     tr {
       &:nth-child(odd) {
         background-color: #eeeeee;
+      }
+    }
+  }
+`;
+
+export const TableContainer2 = styled.div`
+  flex: 1;
+  overflow: auto;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
+    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  margin-bottom: 8px;
+
+  table {
+    width: 120%;
+    border-collapse: collapse;
+    margin-top: 12px;
+  }
+
+  th {
+    font-family: "Open Sans";
+    font-weight: 600;
+    color: #2e3132;
+    text-align: left;
+  }
+
+  td {
+    border-bottom: 1px solid #eee;
+  }
+
+  tbody {
+    border-top: 1px solid #eee;
+    tr {
+      &:nth-child(even) {
+        background-color: #fafafa;
       }
     }
   }

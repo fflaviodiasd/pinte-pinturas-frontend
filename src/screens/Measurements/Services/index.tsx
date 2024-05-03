@@ -21,7 +21,12 @@ import colorLib from "@kurkle/color";
 import { SectionTitle } from "../../../components/SectionTitle";
 import { moneyFormatter } from "../../../utils";
 
-import { LabelColor, TableContainer, useStyles } from "./styles";
+import {
+  LabelColor,
+  TableContainer,
+  TableContainer2,
+  useStyles,
+} from "./styles";
 
 function transparentize(value: any, opacity?: any) {
   let alpha = opacity === undefined ? 0.5 : 1 - opacity;
@@ -99,7 +104,17 @@ export function MeasurementsServices() {
 
   return (
     <Grid item lg={12} className={classes.content}>
-      <Grid item lg={8} style={{ backgroundColor: "#FFF", paddingRight: 16 }}>
+      <Grid
+        item
+        lg={8}
+        style={{
+          backgroundColor: "#FFF",
+          paddingRight: 16,
+          overflow: "auto",
+          height: "calc(100vh - 164px)",
+          scrollbarWidth: "none",
+        }}
+      >
         <div className={classes.graphTitle}>
           <SectionTitle title="Tendência Executiva" />
 
@@ -115,11 +130,62 @@ export function MeasurementsServices() {
           </div>
         </div>
         <Line data={data} options={options} />
+        <div
+          style={{
+            display: "flex",
+            paddingTop: 12,
+            paddingLeft: 12,
+            paddingBottom: 12,
+            flexDirection: "column",
+            marginTop: 12,
+          }}
+        >
+          <TableContainer2 style={{ scrollbarWidth: "thin" }}>
+            <table>
+              <thead>
+                <tr>
+                  <th style={{ width: 130 }}>Escopo</th>
+                  <th style={{ width: 200 }}>Serviço</th>
+                  <th style={{ width: 100 }}>Etapa</th>
+                  <th style={{ width: 110 }}>Unidades/Dia</th>
+                  <th style={{ width: 110 }}>Valor Unitário</th>
+                  <th style={{ width: 150 }}>Rentabilidade/Diária</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fakeData2.map((fake) => (
+                  <tr key={fake.id}>
+                    <td className={classes.colunm1}>{fake.scope}</td>
+                    <td className={classes.colunm1}>{fake.service}</td>
+                    <td className={classes.colunm1}>{fake.step}</td>
+                    <td className={classes.colunm2}>{fake.unitsByDay}</td>
+                    <td className={classes.colunm2}>
+                      {moneyFormatter.format(fake.unitValue)}
+                    </td>
+                    <td className={classes.colunm2}>
+                      {moneyFormatter.format(fake.dailyProfitability)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableContainer2>
+          <Typography
+            style={{ fontFamily: "Open Sans", color: "#2E3132", fontSize: 14 }}
+          >
+            Mostrando 10 de 234 linhas.
+          </Typography>
+        </div>
       </Grid>
       <Grid
         item
         lg={4}
-        style={{ backgroundColor: "#FFF", marginLeft: 16, padding: 16 }}
+        style={{
+          backgroundColor: "#FFF",
+          marginLeft: 16,
+          padding: 16,
+          height: "calc(100vh - 164px)",
+        }}
       >
         <div style={{ height: "50%" }}>
           <div
@@ -265,5 +331,98 @@ const fakeData = [
     meters: 30,
     costDaily: 40.23,
     labor: 23.23,
+  },
+];
+
+const fakeData2 = [
+  {
+    id: 1,
+    scope: "Pintura",
+    service: "Pintura interna",
+    step: "Etapa A",
+    unitsByDay: "20m²",
+    unitValue: 23,
+    dailyProfitability: 23.23,
+  },
+  {
+    id: 2,
+    scope: "Pintura",
+    service: "Pintura interna",
+    step: "Etapa B",
+    unitsByDay: "20m²",
+    unitValue: 23,
+    dailyProfitability: 23.23,
+  },
+  {
+    id: 3,
+    scope: "Pintura",
+    service: "Pintura interna",
+    step: "Etapa A",
+    unitsByDay: "20m²",
+    unitValue: 23,
+    dailyProfitability: 23.23,
+  },
+  {
+    id: 4,
+    scope: "Pintura",
+    service: "Pintura interna",
+    step: "Etapa A",
+    unitsByDay: "20m²",
+    unitValue: 23,
+    dailyProfitability: 23.23,
+  },
+  {
+    id: 5,
+    scope: "Pintura",
+    service: "Pintura externa",
+    step: "Etapa A",
+    unitsByDay: "23unidade",
+    unitValue: 23,
+    dailyProfitability: 23.23,
+  },
+  {
+    id: 6,
+    scope: "Pintura",
+    service: "Pintura externa",
+    step: "Etapa B",
+    unitsByDay: "34L",
+    unitValue: 23,
+    dailyProfitability: 23.23,
+  },
+  {
+    id: 7,
+    scope: "Pintura",
+    service: "Pintura externa",
+    step: "Etapa B",
+    unitsByDay: "34L",
+    unitValue: 23,
+    dailyProfitability: 23.23,
+  },
+  {
+    id: 8,
+    scope: "Pintura",
+    service: "Pintura externa",
+    step: "Etapa B",
+    unitsByDay: "34L",
+    unitValue: 23,
+    dailyProfitability: 23.23,
+  },
+  {
+    id: 9,
+    scope: "Pintura",
+    service: "Pintura externa",
+    step: "Etapa B",
+    unitsByDay: "34L",
+    unitValue: 23,
+    dailyProfitability: 23.23,
+  },
+  {
+    id: 10,
+    scope: "Pintura",
+    service: "Pintura externa",
+    step: "Etapa B",
+    unitsByDay: "34L",
+    unitValue: 23,
+    dailyProfitability: 23.23,
   },
 ];
