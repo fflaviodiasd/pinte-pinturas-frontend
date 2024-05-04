@@ -24,6 +24,7 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
+  Avatar,
   Typography,
 } from '@mui/material';
 import { useStyles } from "./styles";
@@ -40,6 +41,14 @@ interface DropdownOption {
   value: any; 
 }
 
+interface Supervisor {
+  id: number;
+  name: string;
+}
+
+const getInitials = (name = '') => {
+  return name.split(' ').filter((n) => n !== '').map((n) => n[0]).join('');
+};
 
 export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
 
@@ -62,6 +71,7 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSupervisors, setSelectedSupervisors] = useState(secondaryInfoData);
   const [supervisorsToSelect, setSupervisorsToSelect] = useState(companiesSupervisorList);
+
   const { id } = useParams();
 
   const handleOpenModal = () => {
@@ -71,32 +81,70 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  // useEffect(() => {
+  //   // Inicializa supervisorsToSelect removendo os já selecionados
+  //   const initialSupervisorsToSelect = companiesSupervisorList.filter(
+  //     (supervisor) => !selectedSupervisors.find((selected) => selected.id === supervisor.id)
+  //   );
+  //   setSupervisorsToSelect(initialSupervisorsToSelect);
+  // }, [companiesSupervisorList, selectedSupervisors]);
+
   useEffect(() => {
-    // Inicializa supervisorsToSelect removendo os já selecionados
     const initialSupervisorsToSelect = companiesSupervisorList.filter(
-      (supervisor) => !selectedSupervisors.find((selected) => selected.id === supervisor.id)
+      (supervisor: Supervisor) => !selectedSupervisors.find((selected: Supervisor) => selected.id === supervisor.id)
     );
     setSupervisorsToSelect(initialSupervisorsToSelect);
   }, [companiesSupervisorList, selectedSupervisors]);
-
-  const handleAddSupervisor = (supervisor:any) => {
-    setSelectedSupervisors((prevSelected):any => [...prevSelected, supervisor]);
+  
+  const handleAddSupervisor = (supervisor: Supervisor) => {
+    setSelectedSupervisors((prevSelected) => [...prevSelected, supervisor]);
     setSupervisorsToSelect((prevSupervisors:any) =>
-      prevSupervisors.filter((s:any) => s.id !== supervisor.id)
+      prevSupervisors.filter((s: Supervisor) => s.id !== supervisor.id)
     );
     console.log('Added supervisor:', supervisor);
   };
+  // const handleAddSupervisor = (supervisor:any) => {
+  //   setSelectedSupervisors((prevSelected):any => [...prevSelected, supervisor]);
+  //   setSupervisorsToSelect((prevSupervisors:any) =>
+  //     prevSupervisors.filter((s:any) => s.id !== supervisor.id)
+  //   );
+  //   console.log('Added supervisor:', supervisor);
+  // };
 
-  const handleRemoveSupervisor = (supervisorId:any) => {
-    const removedSupervisor = selectedSupervisors.find((s) => s.id === supervisorId);
+  const handleSelectAllSupervisors = () => {
+    setSelectedSupervisors(selectedSupervisors.concat(supervisorsToSelect));
+    setSupervisorsToSelect([]);
+  };
+  
+  // Remove todos os supervisores da lista de selecionados
+  const handleRemoveAllSupervisors = () => {
+    setSupervisorsToSelect(supervisorsToSelect.concat(selectedSupervisors));
+    setSelectedSupervisors([]);
+  };
+  
+
+  const handleRemoveSupervisor = (supervisorId: number) => {
+    const removedSupervisor = selectedSupervisors.find((s: Supervisor) => s.id === supervisorId);
     setSelectedSupervisors((prevSelected) =>
-      prevSelected.filter((s:any) => s.id !== supervisorId)
+      prevSelected.filter((s: Supervisor) => s.id !== supervisorId)
     );
     if (removedSupervisor) {
       setSupervisorsToSelect((prevSupervisors:any) => [...prevSupervisors, removedSupervisor]);
     }
     console.log('Removed supervisor:', supervisorId);
   };
+
+  // const handleRemoveSupervisor = (supervisorId:any) => {
+  //   const removedSupervisor = selectedSupervisors.find((s) => s.id === supervisorId);
+  //   setSelectedSupervisors((prevSelected) =>
+  //     prevSelected.filter((s:any) => s.id !== supervisorId)
+  //   );
+  //   if (removedSupervisor) {
+  //     setSupervisorsToSelect((prevSupervisors:any) => [...prevSupervisors, removedSupervisor]);
+  //   }
+  //   console.log('Removed supervisor:', supervisorId);
+  // };
   console.log('secondaryInfoData: ', secondaryInfoData)
 
   const handleCancel = () => {
@@ -106,15 +154,14 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
     handleCloseModal();
   };
 
-  const updateSecondarySupervisor = (selectedSupervisors:any) => {
-    const dataToSend = selectedSupervisors.map(supervisor => supervisor.id);
+  const updateSecondarySupervisor = (selectedSupervisors: Supervisor[]) => {
+    const dataToSend = selectedSupervisors.map((supervisor: Supervisor) => supervisor.id);
     console.log('Data to send:', dataToSend);
     updateResponsibleSecondary(dataToSend, false);
-
+  
     handleCloseModal();
-
- 
   };
+  
 
       useEffect(() => {
         if (id) {
@@ -154,6 +201,17 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
         filterFn: "startsWith",
         header: "Nome Completo",
         enableEditing: false, 
+        Cell: ({ row }) => {
+          const { avatar, name } = row.original;
+          const initials = getInitials(name); // Reutilizando sua função para obter as iniciais
+    
+          return (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {avatar === null ? <Avatar sx={{ bgcolor: 'primary.main', color: 'primary.contrastText' }}>{initials}</Avatar> : null}
+              <Typography>{name}</Typography>
+            </Box>
+          );
+        },
       },
       {
         accessorKey: 'office',
@@ -298,43 +356,49 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
 
         <MaterialReactTable table={table}/>
         <Dialog open={isModalOpen} onClose={handleCloseModal} fullWidth maxWidth="md">
-        <DialogTitle>Adicionar Encarregados Secundários</DialogTitle>
-        <DialogContent>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 2 }}>
-            <List sx={{ width: '45%', overflow: 'auto' }}>
-              <Typography variant="h6">Selecione Encarregados</Typography>
-              {supervisorsToSelect.map((supervisor:any) => (
-                <ListItem key={supervisor.id}>
-                  <ListItemText primary={supervisor.name} />
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" onClick={() => handleAddSupervisor(supervisor)}>
-                      <Add sx={{      color: '#0076be',
-                      }}/>
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
-            <List sx={{ width: '45%', overflow: 'auto' }}>
-              <Typography variant="h6">Encarregados Selecionados</Typography>
-              {selectedSupervisors.map((supervisor:any) => (
-                <ListItem key={supervisor.id}>
-                  <ListItemText primary={supervisor.name} />
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" onClick={() => handleRemoveSupervisor(supervisor.id)}>
-                      <Delete />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-  <Button onClick={handleCancel}>Cancelar</Button>
-  <Button onClick={() => updateSecondarySupervisor(selectedSupervisors)}>Adicionar</Button>
-</Box>
-        </DialogContent>
-      </Dialog>
+  <DialogTitle>Adicionar Encarregados Secundários</DialogTitle>
+  <DialogContent>
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 2 }}>
+      <Box sx={{ width: '45%' }}>
+        <Typography variant="h6">Selecione Encarregados</Typography>
+        <List sx={{ overflow: 'auto', maxHeight: 300, marginBottom: 2 }}>  {/* Altere maxHeight conforme necessário */}
+          {supervisorsToSelect.map((supervisor: any) => (
+            <ListItem key={supervisor.id}>
+              <ListItemText primary={supervisor.name} />
+              <ListItemSecondaryAction>
+                <IconButton edge="end" onClick={() => handleAddSupervisor(supervisor)}>
+                  <Add sx={{ color: '#0076be' }}/>
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+        {supervisorsToSelect.length > 0 && (<Button onClick={handleSelectAllSupervisors}  fullWidth  sx={{ textTransform: 'none' }} >Selecionar Todos</Button>)}
+      </Box>
+      <Box sx={{ width: '45%' }}>
+        <Typography variant="h6">Encarregados Selecionados</Typography>
+        <List sx={{ overflow: 'auto', maxHeight: 300, marginBottom: 2 }}>  
+          {selectedSupervisors.map((supervisor: any) => (
+            <ListItem key={supervisor.id}>
+              <ListItemText primary={supervisor.name} />
+              <ListItemSecondaryAction>
+                <IconButton edge="end" onClick={() => handleRemoveSupervisor(supervisor.id)}>
+                  <Delete sx={{color: '#D32F2F'}}/>
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+        {selectedSupervisors.length > 0 && (<Button onClick={handleRemoveAllSupervisors} color="error" fullWidth  sx={{ textTransform: 'none' }} >Remover Todos</Button>)}
+      </Box>
+    </Box>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+      <Button onClick={handleCancel} sx={{ textTransform: 'none' }} >Cancelar</Button>
+      <Button onClick={() => updateSecondarySupervisor(selectedSupervisors)} variant='contained' sx={{ textTransform: 'none' }} >Adicionar</Button>
+    </Box>
+  </DialogContent>
+</Dialog>
+
       </Grid>
     </Grid>
   );

@@ -26,6 +26,12 @@ import HistoryTable from "../../../components/HistoryTable";
 import SearchIcon from '@mui/icons-material/Search';
 import  SupervisorDialog  from "../../../components/SupervisorDialog";
 import { get } from "http";
+
+interface Supervisor {
+  id: number;
+  name: string;
+}
+
 const getInitials = (name = '') => {
   return name.split(' ').filter((n) => n !== '').map((n) => n[0]).join('');
 };
@@ -54,12 +60,15 @@ export const SupervisorConstructions = () => {
   const [selectedSupervisor, setSelectedSupervisor] = useState('');
   const [selectedSupervisorName, setSelectedSupervisorName] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [newSupervisor, setNewSupervisor] = useState(null);
+  // const [newSupervisor, setNewSupervisor] = useState(null);
   const [oldSupervisor, setOldSupervisor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedSupervisors, setSelectedSupervisors] = useState([]);
-  const [supervisorsToSelect, setSupervisorsToSelect] = useState(companiesSupervisorList);
-
+  // const [selectedSupervisors, setSelectedSupervisors] = useState([]);
+  // const [supervisorsToSelect, setSupervisorsToSelect] = useState(companiesSupervisorList);
+  const [selectedSupervisors, setSelectedSupervisors] = useState<Supervisor[]>([]);
+  const [supervisorsToSelect, setSupervisorsToSelect] = useState<Supervisor[]>(companiesSupervisorList);
+  const [newSupervisor, setNewSupervisor] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
  const handleAddSupervisor = (supervisor:any) => {
     setSelectedSupervisors((prevSelected):any => [...prevSelected, supervisor]);
     setSupervisorsToSelect((prevSupervisors:any) =>
@@ -68,20 +77,20 @@ export const SupervisorConstructions = () => {
     console.log('Added supervisor>:', supervisor);
   };
 
-  const handleRemoveSupervisor = (supervisorId:any) => {
-    const removedSupervisor = selectedSupervisors.find((s) => s.id === supervisorId);
+  const handleRemoveSupervisor = (supervisorId: number) => {
+    const removedSupervisor = selectedSupervisors.find((supervisor) => supervisor.id === supervisorId);
     setSelectedSupervisors((prevSelected) =>
-      prevSelected.filter((s:any) => s.id !== supervisorId)
+      prevSelected.filter((supervisor) => supervisor.id !== supervisorId)
     );
     if (removedSupervisor) {
-      setSupervisorsToSelect((prevSupervisors:any) => [...prevSupervisors, removedSupervisor]);
+      setSupervisorsToSelect((prevSupervisors) => [...prevSupervisors, removedSupervisor]);
     }
     console.log('Removed supervisor:', supervisorId);
   };
 
   useEffect(() => {
     if (id) {
-      getHistorySupervisor(parseInt(id), false);
+      getHistorySupervisor(id, false);
     }
   }, [id]);
 
@@ -93,27 +102,54 @@ export const SupervisorConstructions = () => {
     setIsModalOpen(false);
   }
 
-  const updateSecondarySupervisor = (selectedSupervisors:any) => {
+  const updateSecondarySupervisor = (selectedSupervisors: Supervisor[]) => {
     const dataToSend = selectedSupervisors.map(supervisor => supervisor.id);
     console.log('Data to send:', dataToSend);
     updateResponsibleSecondary(dataToSend, false);
   
-  
     handleCloseModal();
-  
   };
-  // console.log("companiesSupervisorList", companiesSupervisorList);
+
+
+  console.log("companiesSupervisorList", companiesSupervisorList);
 useEffect(() => {
   // console.log("History Supervisor has updated", historySupervisor);
 }, [historySupervisor]); 
 
+  // useEffect(() => {
+  //   if (id) {
+  //     getConstruction(id).finally(() => setLoading(false)); 
+  //     getCompaniesSupervisorList();
+  //   }
+  // }, [id]);
+
+  // useEffect(() => {
+  //   if (id) {
+  //     getConstruction(id).finally(() => setLoading(false));
+  //     getCompaniesSupervisorList().then((data: Supervisor[]) => { // Fazendo um cast aqui
+  //       setSupervisorsToSelect(data.map((item) => ({
+  //         id: item.id,
+  //         name: item.name
+  //         // mapeie outros campos necessários aqui
+  //       })));
+  //     }).catch(error => {
+  //       console.error('Failed to fetch supervisors:', error);
+  //       // Tratar erro aqui, por exemplo, ajustando o estado para mostrar uma mensagem ao usuário
+  //     });
+  //   }
+  // }, [id]);
+
   useEffect(() => {
     if (id) {
-      getConstruction(id).finally(() => setLoading(false)); 
-      getCompaniesSupervisorList();
+      getConstruction(id).finally(() => setLoading(false));
+      getCompaniesSupervisorList().then((supervisors: Supervisor[]) => {
+        setSupervisorsToSelect(supervisors);
+      }).catch(error => {
+        console.error('Failed to fetch supervisors:', error);
+      });
     }
-  }, [id]);
-
+  }, [id]); // Inclui getCompaniesSupervisorList como dependência se necessário
+  
 
   const handleChange = (event:any) => {
     setSelectedSupervisor(event.target.value);
@@ -127,42 +163,99 @@ useEffect(() => {
     setOpenModal(false);
   };
 
-const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supervisor?: any) => {
+  const handleModalDeleteOpen = () => {
+    setIsDeleteModalOpen(true);
+    const currentSupervisor = constructInfoData.responsible_primary;
+
+    setOldSupervisor(currentSupervisor.name);
+  }
+
+  const handleModalDeleteClose = () => {
+    setIsDeleteModalOpen(false);
+  }
+
+// const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supervisor?: any) => {
+//   const supervisorId = event.target.value;
+//   const selectedSup = supervisor || companiesSupervisorList.find((sup) => sup.id.toString() === supervisorId);
+//   setSelectedSupervisor(supervisorId);
+//   setSelectedSupervisorName(selectedSup?.name);
+// };
+
+// const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supervisor?: Supervisor) => {
+//   const supervisorId = event.target.value;
+//   const selectedSup = supervisor || companiesSupervisorList.find((sup: Supervisor) => sup.id.toString() === supervisorId);
+//   setSelectedSupervisor(supervisorId);
+//   setSelectedSupervisorName(selectedSup?.name);
+// };
+
+const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supervisor?: Supervisor) => {
   const supervisorId = event.target.value;
-  const selectedSup = supervisor || companiesSupervisorList.find((sup) => sup.id.toString() === supervisorId);
-  setSelectedSupervisor(supervisorId);
-  setSelectedSupervisorName(selectedSup?.name);
+  // Encontra o supervisor na lista ou usa o supervisor fornecido
+  const selectedSup = supervisor || supervisorsToSelect.find(sup => sup.id.toString() === supervisorId);
+  if (selectedSup) {
+    setSelectedSupervisor(selectedSup.id.toString());
+    setSelectedSupervisorName(selectedSup.name);
+  }
 };
 
-  
-  const handleConfirmAddSupervisor = async () => {
-    if (typeof id !== 'string') {
-      errorMessage("ID da construção não está disponível.");
-      return;
-    }
-  
-    const currentSupervisor = constructInfoData.responsible_primary;
-    if (currentSupervisor && currentSupervisor.name && selectedSupervisorName && currentSupervisor.name !== selectedSupervisorName) {
-      setOldSupervisor(currentSupervisor.name);
-      setNewSupervisor(selectedSupervisorName);
-      await getConstruction(id);
-      await getHistorySupervisor(id, false);
 
-      setIsConfirmModalOpen(true);
-    } else {
-      try {
-        await updateResponsible(parseInt(selectedSupervisor), false, false);
-        successMessage("Responsável primário atualizado com sucesso!");
-        await getHistorySupervisor(parseInt(id), false);
-        await getConstruction(id);
-        handleCloseModal();
-      } catch (error) {
-        console.error(error);
-        errorMessage("Não foi possível atualizar o responsável primário!");
-        setLoading(false);
-      }
+const handleConfirmAddSupervisor = async () => {
+  if (typeof id !== 'string') {
+    errorMessage("ID da construção não está disponível.");
+    return;
+  }
+
+  const currentSupervisor = constructInfoData.responsible_primary;
+  if (currentSupervisor && currentSupervisor.name && selectedSupervisorName && currentSupervisor.name !== selectedSupervisorName) {
+    setOldSupervisor(currentSupervisor.name);
+    setNewSupervisor(selectedSupervisorName);
+    await getConstruction(id);
+    await getHistorySupervisor(id, false);
+
+    setIsConfirmModalOpen(true);
+  } else {
+    try {
+      await updateResponsible(parseInt(selectedSupervisor), false, false);
+      successMessage("Responsável primário atualizado com sucesso!");
+      await getHistorySupervisor(id, false);
+      await getConstruction(id);
+      handleCloseModal();
+    } catch (error) {
+      console.error(error);
+      errorMessage("Não foi possível atualizar o responsável primário!");
+      setLoading(false);
     }
-  };
+  }
+};
+
+  // const handleConfirmAddSupervisor = async () => {
+  //   if (typeof id !== 'string') {
+  //     errorMessage("ID da construção não está disponível.");
+  //     return;
+  //   }
+  
+  //   const currentSupervisor = constructInfoData.responsible_primary;
+  //   if (currentSupervisor && currentSupervisor.name && selectedSupervisorName && currentSupervisor.name !== selectedSupervisorName) {
+  //     setOldSupervisor(currentSupervisor.name);
+  //     setNewSupervisor(selectedSupervisorName);
+  //     await getConstruction(id);
+  //     await getHistorySupervisor(id, false);
+
+  //     setIsConfirmModalOpen(true);
+  //   } else {
+  //     try {
+  //       await updateResponsible(parseInt(selectedSupervisor), false, false);
+  //       successMessage("Responsável primário atualizado com sucesso!");
+  //       await getHistorySupervisor(parseInt(id), false);
+  //       await getConstruction(id);
+  //       handleCloseModal();
+  //     } catch (error) {
+  //       console.error(error);
+  //       errorMessage("Não foi possível atualizar o responsável primário!");
+  //       setLoading(false);
+  //     }
+  //   }
+  // };
   
 
 
@@ -174,39 +267,77 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
     if (currentSupervisor && currentSupervisor.id) {
       setOldSupervisor(currentSupervisor.name);
       handleOpenModal(); 
-      handleOpenModal(); 
+      // handleOpenModal(); 
     }
     
   };
 
+  // const handleDeleteSupervisor = async () => {
+  //   try {
+  //     await updateResponsible(null, false, true);
+  //     await getConstruction(id);
+  //     await getHistorySupervisor(id, false);
+  //     successMessage("Responsável primário removido com sucesso!");
+  //   } catch (error) {
+  //     console.error("Erro ao remover responsável primário:", error);
+  //     errorMessage("Não foi possível remover o responsável primário!");
+  //   }
+  // }
+
   const handleDeleteSupervisor = async () => {
+    if (typeof id === 'undefined') {
+      errorMessage("ID da construção não está disponível.");
+      return;
+    }
+  
     try {
       await updateResponsible(null, false, true);
       await getConstruction(id);
       await getHistorySupervisor(id, false);
+      handleModalDeleteClose();
       successMessage("Responsável primário removido com sucesso!");
     } catch (error) {
       console.error("Erro ao remover responsável primário:", error);
       errorMessage("Não foi possível remover o responsável primário!");
     }
   }
-
   
-
   const handleConfirmUpdate = async () => {
+    if (typeof id === 'undefined') {
+      errorMessage("ID da construção não está disponível.");
+      return; // Interrompe a execução se o ID não estiver disponível
+    }
+  
     try {
       await updateResponsible(parseInt(selectedSupervisor), false, false);
-      await getHistorySupervisor(id, false); 
+      await getHistorySupervisor(id, false); // Agora é seguro usar `id` pois sabemos que não é `undefined`
       await getConstruction(id);
- 
+  
       successMessage("Encarregado substituído com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar o responsável:", error);
       errorMessage("Não foi possível atualizar o responsável primário!");
     }
+  
     setIsConfirmModalOpen(false);
     setOpenModal(false);
   };
+  
+
+  // const handleConfirmUpdate = async () => {
+  //   try {
+  //     await updateResponsible(parseInt(selectedSupervisor), false, false);
+  //     await getHistorySupervisor(id, false); 
+  //     await getConstruction(id);
+ 
+  //     successMessage("Encarregado substituído com sucesso!");
+  //   } catch (error) {
+  //     console.error("Erro ao atualizar o responsável:", error);
+  //     errorMessage("Não foi possível atualizar o responsável primário!");
+  //   }
+  //   setIsConfirmModalOpen(false);
+  //   setOpenModal(false);
+  // };
   
 
 
@@ -286,7 +417,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
         <Tooltip title="Remover encarregado">
 
           <IconButton
-          onClick={() => handleDeleteSupervisor()}
+          onClick={() => handleModalDeleteOpen()}
             sx={{
               border: '1px solid #D32F2F',
               borderRadius: '8px',
@@ -387,18 +518,14 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
     </Grid>)}
 
       <Grid item xs={12} lg={12}>
-      <Grid item xs={12} container justifyContent="space-between" alignItems="center">
-        <Typography variant="h5" component="div" gutterBottom>
-          Histórico
-        </Typography>
-        </Grid>
+    
         <HistoryTable key={historySupervisor.length} historyData={historySupervisor} />
        </Grid> 
       <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
         <DialogTitle>Adicionar Encarregado</DialogTitle>
         <DialogContent dividers={true}>
      
-        <RadioGroup value={selectedSupervisor} onChange={(event) => handleSelectSupervisor(event, companiesSupervisorList.find(sup => sup.id.toString() === event.target.value))}>
+        {/* <RadioGroup value={selectedSupervisor} onChange={(event) => handleSelectSupervisor(event, companiesSupervisorList.find(sup => sup.id.toString() === event.target.value))}>
   {companiesSupervisorList.map((supervisor: any) => (
     <FormControlLabel
       key={supervisor.id}
@@ -407,7 +534,22 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
       label={supervisor.name}
     />
   ))}
+</RadioGroup> */}
+
+<RadioGroup 
+  value={selectedSupervisor} 
+  onChange={(event) => handleSelectSupervisor(event, companiesSupervisorList.find((sup: Supervisor) => sup.id.toString() === event.target.value))}
+>
+  {companiesSupervisorList.map((supervisor: Supervisor) => (
+    <FormControlLabel
+      key={supervisor.id}
+      value={supervisor.id.toString()}
+      control={<Radio />}
+      label={supervisor.name}
+    />
+  ))}
 </RadioGroup>
+
 
 
 
@@ -464,7 +606,7 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
     <Typography>
       Já existe um encarregado principal selecionado, deseja substituir 
       <strong> {oldSupervisor} </strong> por 
-      <strong> {newSupervisor} </strong>?
+      <strong> {newSupervisor}</strong>?
     </Typography>
   </DialogContent>
   <DialogActions>
@@ -480,7 +622,48 @@ const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supe
       Substituir
     </Button>
   </DialogActions>
-</Dialog>
+      </Dialog>
+
+      <Dialog
+  open={isDeleteModalOpen}
+  onClose={() => setIsDeleteModalOpen(false)}
+  maxWidth="sm"
+  fullWidth
+  PaperProps={{
+    style: { 
+      width: 'fit-content',
+      maxWidth: '400px', 
+      borderRadius: 8 
+    },
+  }}
+>
+  <DialogTitle sx={{ display: 'flex', alignItems: 'center', color: '#FF9B1B' }}>
+    <WarningIcon sx={{ color: '#FF9B1B', marginRight: 1 }} />
+    <Typography variant="h6" component="span" sx={{ fontWeight: 'bold' }}>
+      Atenção
+    </Typography>
+  </DialogTitle>
+  <DialogContent>
+    <Typography>
+      Deseja remover o encarregado principal
+      <strong> {oldSupervisor}</strong>?
+    </Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => handleModalDeleteClose()} sx={{
+      color: 'primary.main', 
+      textTransform: 'none',
+    }}>
+      Cancelar
+    </Button>
+    <Button onClick={handleDeleteSupervisor} color="primary" variant="contained"  sx={{
+      textTransform: 'none',
+    }}>
+      Remover
+    </Button>
+  </DialogActions>
+      </Dialog>
+
 <SupervisorDialog
         open={isModalOpen}
         onClose={handleSecondaryClose}

@@ -42,6 +42,11 @@ type ConstructionData = {
   checklistName: string;
 };
 
+interface Supervisor {
+  id: number;
+  name: string;
+}
+
 export const useConstructions = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -88,15 +93,29 @@ export const useConstructions = () => {
     }
   };
 
-  const getCompaniesSupervisorList = async () => {
+  // const getCompaniesSupervisorList = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const { data } = await api.get(`companies/${user.company}/construction_supervisor`);
+  //     setCompaniesSupervisor(data);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //     setLoading(false);
+  //   }
+  // }
+
+  const getCompaniesSupervisorList = async (): Promise<Supervisor[]> => {
     setLoading(true);
     try {
       const { data } = await api.get(`companies/${user.company}/construction_supervisor`);
-      setCompaniesSupervisor(data);
       setLoading(false);
+      setCompaniesSupervisor(data);
+      return data; 
     } catch (error) {
       console.log(error);
       setLoading(false);
+      return []; 
     }
   }
 
@@ -749,7 +768,7 @@ export const useConstructions = () => {
   const [historySupervisor, setHistorySupervisor] = useState<any[]>([]);
 
   
-  const getHistorySupervisor = async (id: number, isCustomer: boolean) => {
+  const getHistorySupervisor = async (id: string, isCustomer: boolean) => {
     setLoading(true);
     try {
       const { data } = await api.get(`constructions/${id}/history/?responsible_primary=${!isCustomer}`);
