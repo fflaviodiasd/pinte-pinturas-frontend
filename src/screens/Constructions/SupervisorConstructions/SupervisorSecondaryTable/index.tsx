@@ -25,12 +25,14 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   Avatar,
+  DialogActions,
   Typography,
 } from '@mui/material';
 import { useStyles } from "./styles";
 import { useParams, useNavigate } from "react-router-dom";
 import { useConstructions } from "../../../../hooks/useConstructions";
-import { Add, Launch, Edit, Delete, Info } from "@mui/icons-material";
+import { Add, Launch, Edit, Delete, Info  } from "@mui/icons-material";
+import WarningIcon from '@mui/icons-material/Warning';
 
 import { errorMessage, successMessage } from "../../../../components/Messages";
 import { UserContext } from "../../../../contexts/UserContext";
@@ -71,7 +73,17 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSupervisors, setSelectedSupervisors] = useState(secondaryInfoData);
   const [supervisorsToSelect, setSupervisorsToSelect] = useState(companiesSupervisorList);
-
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [currentSupervisor, setCurrentSupervisor] = useState({ id: null, name: '' });
+  
+  const handleOpenDeleteModal = (supervisorId:any, supervisorName:any) => {
+    setCurrentSupervisor({ id: supervisorId, name: supervisorName });
+    setIsDeleteModalOpen(true);
+  };
+  
+  const handleModalDeleteClose = () => {
+    setIsDeleteModalOpen(false);
+  };
   const { id } = useParams();
 
   const handleOpenModal = () => {
@@ -175,16 +187,56 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
 
 
 
-  const handleDisable = async (measurementId: number) => {
+  // const handleDisable = async (measurementId: number, secondarySupervisorName: string) => {
+  //   console.log('measurementId: ', measurementId)
+  //   console.log('secondarySupervisorName: ', secondarySupervisorName)
+  //   try {
+  //     //  await disableConstructionMeasurements(measurementId);
+  //     // successMessage("Medição apagada com sucesso!");
+  //     // getAllConstructionsMeasurements();
+  //   } catch (error) {
+  //     errorMessage("Não foi possível apagar medição!");
+  //   }
+  // };
+
+  // const handleDisable = async (supervisorId: number, supervisorName: string) => {
+  //   // Mostrar diálogo de confirmação antes de excluir
+  //   const confirm = window.confirm(`Deseja realmente remover o encarregado ${supervisorName}?`);
+  //   if (confirm) {
+  //     console.log('Removendo supervisor com ID:', supervisorId);
+  
+  //     const updatedSupervisors = secondaryInfoData.filter(supervisor => supervisor.id !== supervisorId);
+  
+  //     const idsToUpdate = updatedSupervisors.map(supervisor => supervisor.id);
+  
+  //     try {
+  //       await updateResponsibleSecondary(idsToUpdate, false);
+  //       successMessage("Encarregado removido com sucesso!");
+  
+  //       setSecondaryInfoData(updatedSupervisors);
+  //     } catch (error) {
+  //       console.error('Erro ao remover o encarregado:', error);
+  //       errorMessage("Não foi possível remover o encarregado!");
+  //     }
+  //   }
+  // };
+
+  const handleDeleteSupervisor = async () => {
+    const supervisorId = currentSupervisor.id;
+    const updatedSupervisors = secondaryInfoData.filter(supervisor => supervisor.id !== supervisorId);
+    const idsToUpdate = updatedSupervisors.map(supervisor => supervisor.id);
+  
     try {
-      //  await disableConstructionMeasurements(measurementId);
-      // successMessage("Medição apagada com sucesso!");
-      // getAllConstructionsMeasurements();
+      await updateResponsibleSecondary(idsToUpdate, false);
+      successMessage("Encarregado removido com sucesso!");
+      setSecondaryInfoData(updatedSupervisors);
+      handleModalDeleteClose();
     } catch (error) {
-      errorMessage("Não foi possível apagar medição!");
+      console.error('Erro ao remover o encarregado:', error);
+      errorMessage("Não foi possível remover o encarregado!");
     }
   };
-
+  
 
   
 
@@ -250,7 +302,9 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
       <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
         <IconButton
           aria-label="Excluir"
-          onClick={() => handleDisable(row.original.id)}
+          // onClick={() => handleDisable(row.original.id, row.original.name)}
+                    onClick={() => handleOpenDeleteModal(row.original.id, row.original.name)}
+
           sx={{ color: "#C5C7C8" }} 
         >
           <Delete />
@@ -397,6 +451,45 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
       <Button onClick={() => updateSecondarySupervisor(selectedSupervisors)} variant='contained' sx={{ textTransform: 'none' }} >Adicionar</Button>
     </Box>
   </DialogContent>
+</Dialog>
+<Dialog
+  open={isDeleteModalOpen}
+  onClose={handleModalDeleteClose}
+  maxWidth="sm"
+  fullWidth
+  PaperProps={{
+    style: { 
+      width: 'fit-content',
+      maxWidth: '400px', 
+      borderRadius: 8 
+    },
+  }}
+>
+  <DialogTitle sx={{ display: 'flex', alignItems: 'center', color: '#FF9B1B' }}>
+    <WarningIcon sx={{ color: '#FF9B1B', marginRight: 1 }} />
+    <Typography variant="h6" component="span" sx={{ fontWeight: 'bold' }}>
+      Atenção
+    </Typography>
+  </DialogTitle>
+  <DialogContent>
+    <Typography>
+      Deseja remover o encarregado
+      <strong> {currentSupervisor.name}</strong>?
+    </Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleModalDeleteClose} sx={{
+      color: 'primary.main', 
+      textTransform: 'none',
+    }}>
+      Cancelar
+    </Button>
+    <Button onClick={handleDeleteSupervisor} color="primary" variant="contained" sx={{
+      textTransform: 'none',
+    }}>
+      Remover
+    </Button>
+  </DialogActions>
 </Dialog>
 
       </Grid>
