@@ -25,6 +25,7 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   Avatar,
+  TextField,
   DialogActions,
   Typography,
 } from '@mui/material';
@@ -75,7 +76,11 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
   const [supervisorsToSelect, setSupervisorsToSelect] = useState(companiesSupervisorList);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentSupervisor, setCurrentSupervisor] = useState({ id: null, name: '' });
-  
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredSupervisors = useMemo(() => {
+    return supervisorsToSelect.filter((supervisor:Supervisor) => supervisor.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  }, [supervisorsToSelect, searchTerm]);
   const handleOpenDeleteModal = (supervisorId:any, supervisorName:any) => {
     setCurrentSupervisor({ id: supervisorId, name: supervisorName });
     setIsDeleteModalOpen(true);
@@ -413,22 +418,37 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
   <DialogTitle>Adicionar Encarregados Secundários</DialogTitle>
   <DialogContent>
     <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 2 }}>
-      <Box sx={{ width: '45%' }}>
-        <Typography variant="h6">Selecione Encarregados</Typography>
-        <List sx={{ overflow: 'auto', maxHeight: 300, marginBottom: 2 }}>  {/* Altere maxHeight conforme necessário */}
-          {supervisorsToSelect.map((supervisor: any) => (
-            <ListItem key={supervisor.id}>
-              <ListItemText primary={supervisor.name} />
-              <ListItemSecondaryAction>
-                <IconButton edge="end" onClick={() => handleAddSupervisor(supervisor)}>
-                  <Add sx={{ color: '#0076be' }}/>
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
-        {supervisorsToSelect.length > 0 && (<Button onClick={handleSelectAllSupervisors}  fullWidth  sx={{ textTransform: 'none' }} >Selecionar Todos</Button>)}
-      </Box>
+    <Box sx={{ width: '45%' }}>
+      <Typography variant="h6">Selecione Encarregados</Typography>
+      {filteredSupervisors.length > 0 && (
+      <TextField
+        fullWidth
+        variant="outlined"
+        placeholder="Pesquisar..."
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        sx={{ marginBottom: 2 }}
+      />
+      )}
+      <List sx={{ overflow: 'auto', maxHeight: 300, marginBottom: 2 }}>
+        {filteredSupervisors.map((supervisor: Supervisor) => (
+          <ListItem key={supervisor.id}>
+            <ListItemText primary={supervisor.name} />
+            <ListItemSecondaryAction>
+              <IconButton edge="end" onClick={() => handleAddSupervisor(supervisor)}>
+                <Add sx={{ color: '#0076be' }} />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
+        ))}
+      </List>
+      {filteredSupervisors.length > 0 && (
+        <Button onClick={handleSelectAllSupervisors} fullWidth sx={{ textTransform: 'none' }}>
+          Selecionar Todos
+        </Button>
+      )}
+    </Box>
       <Box sx={{ width: '45%' }}>
         <Typography variant="h6">Encarregados Selecionados</Typography>
         <List sx={{ overflow: 'auto', maxHeight: 300, marginBottom: 2 }}>  
