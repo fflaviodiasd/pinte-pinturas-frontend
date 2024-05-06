@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
@@ -46,24 +46,39 @@ const Locations = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { classes } = useStyles();
   const [modalOpen, setIsModalOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [valueActual, setValueActual] = useState();
 
   const handleClose = () => {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    getAllConstructionsLocations(dynamicColumns);
+  useLayoutEffect(() => {
+    if (!isLoaded) {
+      getAllConstructionsLocations(dynamicColumns);
+      setIsLoaded(true);
+    }
   }, [dynamicColumns]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchLevel = async () => {
       try {
-        const response = await api.get(`constructions/${id}/level_area/`);
-        const level = response.data;
+        const { data } = await api.get(`constructions/${id}/level_area/`);
         const newDynamicColumns = [
           {
             accessorKey: "code",
             header: "ID",
+          },
+          {
+            accessorKey: "micro",
+            header: "Micro",
+            muiTableBodyCellProps: ({ cell }: any) => ({
+              onChange: (e: any) => {
+                const newValue = e.target.value;
+                const rowId = cell.row.id;
+                console.log(`Row ${rowId} has value ${newValue}`);
+              },
+            }),
           },
           {
             accessorKey: "checklist",
@@ -85,10 +100,27 @@ const Locations = () => {
           },
         ];
 
-        level.forEach((level: any, index: any) => {
+        data.forEach((level: any) => {
           newDynamicColumns.push({
             accessorKey: `nivel_${level.id}`,
             header: level.name,
+            muiTableBodyCellProps: ({ cell }: any) => ({
+              onChange: (e: any) => {
+                setValueActual(e.target.value);
+                if (listConstructionsLocations.length > 0) {
+                  const newList = listConstructionsLocations.map(
+                    (item: any) => {
+                      if (item.id === cell.row.id) {
+                        item[cell.column.id] = e.target.value;
+                      }
+                      return item;
+                    }
+                  );
+
+                  setListConstructionsLocations(newList);
+                }
+              },
+            }),
           });
         });
         setDynamicColumns(newDynamicColumns);
@@ -98,7 +130,7 @@ const Locations = () => {
     };
 
     fetchLevel();
-  }, []);
+  }, [valueActual]);
 
   const handleCreateLocal = async () => {
     await addConstructionLocal(dynamicColumns, listConstructionsLocations);

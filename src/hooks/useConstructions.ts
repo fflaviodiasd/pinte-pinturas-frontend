@@ -68,12 +68,11 @@ export const useConstructions = () => {
     measurement: "",
     package: "",
     number: "",
-    checklistName: ""
+    checklistName: "",
   });
 
-  const [constructInfoData, setConstructInfoData] = useState<any>({})
-  const [companiesSupervisorList, setCompaniesSupervisor] = useState<any>([])
-
+  const [constructInfoData, setConstructInfoData] = useState<any>({});
+  const [companiesSupervisorList, setCompaniesSupervisor] = useState<any>([]);
 
   const getConstruction = async (id: string) => {
     setLoading(true);
@@ -109,18 +108,18 @@ export const useConstructions = () => {
   const getCompaniesSupervisorList = async (): Promise<Supervisor[]> => {
     setLoading(true);
     try {
-      const { data } = await api.get(`companies/${user.company}/construction_supervisor`);
+      const { data } = await api.get(
+        `companies/${user.company}/construction_supervisor`
+      );
       setLoading(false);
       setCompaniesSupervisor(data);
-      return data; 
+      return data;
     } catch (error) {
       console.log(error);
       setLoading(false);
-      return []; 
+      return [];
     }
-  }
-
-
+  };
 
   const getChecklists = async (checklistId: any) => {
     setLoading(true);
@@ -149,7 +148,6 @@ export const useConstructions = () => {
     list: any[]
   ) => {
     try {
-      console.log(list);
       const newList = list.map((item: any) => {
         if (dynamicColumns && dynamicColumns.length > 0) {
           const levels = dynamicColumns
@@ -161,7 +159,8 @@ export const useConstructions = () => {
               const name =
                 item && item[column.accessorKey as keyof typeof item];
               const filterId =
-                item && item.ids?.filter((item: any) => item.name === name);
+                item.length > 0 &&
+                item.ids?.filter((item: any) => item.name === name);
               return {
                 id: filterId ? filterId[0].id : null,
                 level: {
@@ -226,10 +225,13 @@ export const useConstructions = () => {
 
   const addCompaniesConstruction = async (constructionData: any) => {
     setLoading(true);
-    console.log('constructionData:', constructionData);
-    console.log('userInfo', user)
+    console.log("constructionData:", constructionData);
+    console.log("userInfo", user);
     try {
-      await api.post(`companies/${user.company}/constructions/`, constructionData);
+      await api.post(
+        `companies/${user.company}/constructions/`,
+        constructionData
+      );
       successMessage("Obra adicionada com sucesso!");
       setLoading(false);
       navigate("/obras");
@@ -411,7 +413,6 @@ export const useConstructions = () => {
     }
   };
 
-
   const [listConstructionsTeams, setListConstructionsTeams] = useState<any[]>(
     []
   );
@@ -493,8 +494,6 @@ export const useConstructions = () => {
           ...levelNames,
         };
       });
-      console.log(constructionLocalList);
-
       setListConstructionsLocations(constructionLocalList);
 
       setLoading(false);
@@ -766,24 +765,24 @@ export const useConstructions = () => {
       return []; // Retorna um array vazio em caso de erro
     }
   };
-  
-  const [listConstructionsMeasurements, setListConstructionsMeasurements] =  useState<any[]>([]);
 
+  const [listConstructionsMeasurements, setListConstructionsMeasurements] =
+    useState<any[]>([]);
 
   const getAllConstructionsMeasurements = async () => {
     if (!id) {
-      console.error('ID da construção não foi fornecido');
+      console.error("ID da construção não foi fornecido");
       return;
     }
 
     setLoading(true);
     try {
       const { data } = await api.get(`/constructions/${id}/measurements/`);
-      console.log('data:', data);
+      console.log("data:", data);
       setListConstructionsMeasurements(data);
       setLoading(false);
     } catch (error) {
-      console.error('Erro ao obter serviços de construção:', error);
+      console.error("Erro ao obter serviços de construção:", error);
       setLoading(false);
     }
   };
@@ -793,13 +792,13 @@ export const useConstructions = () => {
     try {
       const response = await api.delete(`/measurements/${measurementId}`);
       if (response.status === 204) {
-        successMessage('Medição apagada com sucesso!');
+        successMessage("Medição apagada com sucesso!");
       } else {
-        console.log('Erro ao apagar medição!', response.data.detail);
-        errorMessage('Erro ao apagar! ' + response.data.detail);
+        console.log("Erro ao apagar medição!", response.data.detail);
+        errorMessage("Erro ao apagar! " + response.data.detail);
       }
     } catch (error) {
-      throw error; 
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -808,21 +807,35 @@ export const useConstructions = () => {
   const addConstructionMeasurements = async (newmeasurement: any) => {
     setLoading(true);
     try {
-      const response = await api.post(`/constructions/${id}/measurements/`, newmeasurement);
-      setListConstructionPackages(prevMeasurement => [...prevMeasurement, response.data]);
-      successMessage('Pacote adicionado com sucesso!');
+      const response = await api.post(
+        `/constructions/${id}/measurements/`,
+        newmeasurement
+      );
+      setListConstructionPackages((prevMeasurement) => [
+        ...prevMeasurement,
+        response.data,
+      ]);
+      successMessage("Pacote adicionado com sucesso!");
     } catch (error) {
-      errorMessage('Erro ao adicionar o pacote!');
+      errorMessage("Erro ao adicionar o pacote!");
     } finally {
       setLoading(false);
     }
   };
 
-  const updateResponsible = async (responsibleId: number | null, isCustomer: boolean, isDeleteAction: boolean = false) => {
+  const updateResponsible = async (
+    responsibleId: number | null,
+    isCustomer: boolean,
+    isDeleteAction: boolean = false
+  ) => {
     setLoading(true);
-    const propertyName = isCustomer ? 'responsible_customer_primary' : 'responsible_primary';
-    const updateData = { [propertyName]: isDeleteAction ? null : responsibleId };
-  
+    const propertyName = isCustomer
+      ? "responsible_customer_primary"
+      : "responsible_primary";
+    const updateData = {
+      [propertyName]: isDeleteAction ? null : responsibleId,
+    };
+
     try {
       await api.patch(`constructions/${id}/`, updateData);
       setLoading(false);
@@ -832,25 +845,28 @@ export const useConstructions = () => {
         // successMessage("Responsável atualizado com sucesso!");
       }
     } catch (error) {
-      console.error('Erro ao atualizar/remover responsável:', error);
+      console.error("Erro ao atualizar/remover responsável:", error);
       setLoading(false);
       // errorMessage("Não foi possível atualizar/remover o responsável!");
     }
   };
 
-  const updateResponsibleSecondary = async (responsibleSecondaryData: any, isCustomer: boolean) => {
+  const updateResponsibleSecondary = async (
+    responsibleSecondaryData: any,
+    isCustomer: boolean
+  ) => {
     setLoading(true);
-    const propertyName = isCustomer ? 'responsible_customer_secondary' : 'responsible_secondary';
+    const propertyName = isCustomer
+      ? "responsible_customer_secondary"
+      : "responsible_secondary";
     const updateData = { [propertyName]: responsibleSecondaryData };
-  
+
     try {
       await api.patch(`constructions/${id}/`, updateData);
       setLoading(false);
       successMessage("Responsável atualizado com sucesso!");
-      
-   
     } catch (error) {
-      console.error('Erro ao atualizar/remover responsável:', error);
+      console.error("Erro ao atualizar/remover responsável:", error);
       setLoading(false);
       // errorMessage("Não foi possível atualizar/remover o responsável!");
     }
@@ -858,18 +874,19 @@ export const useConstructions = () => {
 
   const [historySupervisor, setHistorySupervisor] = useState<any[]>([]);
 
-  
   const getHistorySupervisor = async (id: string, isCustomer: boolean) => {
     setLoading(true);
     try {
-      const { data } = await api.get(`constructions/${id}/history/?responsible_primary=${!isCustomer}`);
+      const { data } = await api.get(
+        `constructions/${id}/history/?responsible_primary=${!isCustomer}`
+      );
       setHistorySupervisor(data);
     } catch (error) {
-      console.error('Failed to fetch history:', error);
+      console.error("Failed to fetch history:", error);
     }
     setLoading(false);
   };
-  
+
   return {
     loading,
     setLoading,
