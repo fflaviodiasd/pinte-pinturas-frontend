@@ -116,6 +116,7 @@ useEffect(() => {
   // console.log("History Supervisor has updated", historySupervisor);
 }, [historySupervisor]); 
 
+
   // useEffect(() => {
   //   if (id) {
   //     getConstruction(id).finally(() => setLoading(false)); 
@@ -148,7 +149,7 @@ useEffect(() => {
         console.error('Failed to fetch supervisors:', error);
       });
     }
-  }, [id]); // Inclui getCompaniesSupervisorList como dependência se necessário
+  }, [id]); 
   
 
   const handleChange = (event:any) => {
@@ -190,7 +191,6 @@ useEffect(() => {
 
 const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supervisor?: Supervisor) => {
   const supervisorId = event.target.value;
-  // Encontra o supervisor na lista ou usa o supervisor fornecido
   const selectedSup = supervisor || supervisorsToSelect.find(sup => sup.id.toString() === supervisorId);
   if (selectedSup) {
     setSelectedSupervisor(selectedSup.id.toString());
@@ -305,12 +305,12 @@ const handleConfirmAddSupervisor = async () => {
   const handleConfirmUpdate = async () => {
     if (typeof id === 'undefined') {
       errorMessage("ID da construção não está disponível.");
-      return; // Interrompe a execução se o ID não estiver disponível
+      return; 
     }
   
     try {
       await updateResponsible(parseInt(selectedSupervisor), false, false);
-      await getHistorySupervisor(id, false); // Agora é seguro usar `id` pois sabemos que não é `undefined`
+      await getHistorySupervisor(id, false); 
       await getConstruction(id);
   
       successMessage("Encarregado substituído com sucesso!");

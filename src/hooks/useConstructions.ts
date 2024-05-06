@@ -757,6 +757,7 @@ export const useConstructions = () => {
     try {
       await api.patch(`constructions/${id}/`, updateData);
       setLoading(false);
+      successMessage("Responsável atualizado com sucesso!");
    
     } catch (error) {
       console.error('Erro ao atualizar/remover responsável:', error);
