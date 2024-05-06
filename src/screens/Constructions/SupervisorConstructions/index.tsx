@@ -69,6 +69,8 @@ export const SupervisorConstructions = () => {
   const [supervisorsToSelect, setSupervisorsToSelect] = useState<Supervisor[]>(companiesSupervisorList);
   const [newSupervisor, setNewSupervisor] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [secondarySupervisorData, setSecondarySupervisorData] = useState<Supervisor[]>([]);
+
  const handleAddSupervisor = (supervisor:any) => {
     setSelectedSupervisors((prevSelected):any => [...prevSelected, supervisor]);
     setSupervisorsToSelect((prevSupervisors:any) =>
@@ -94,6 +96,24 @@ export const SupervisorConstructions = () => {
     }
   }, [id]);
 
+  useEffect(() => {
+    setSecondarySupervisorData(constructInfoData.responsible_secondary || []);
+  }, [constructInfoData.responsible_secondary]);
+  
+  useEffect(() => {
+    if (id) {
+      getConstruction(id).finally(() => setLoading(false));
+      getCompaniesSupervisorList().then((supervisors: Supervisor[]) => {
+        setSupervisorsToSelect(supervisors);
+      }).catch(error => {
+        console.error('Failed to fetch supervisors:', error);
+      });
+    }
+  }, [id]);
+
+  useEffect(() => {
+    setSecondarySupervisorData(constructInfoData.responsible_secondary || []);
+  }, [constructInfoData.responsible_secondary]);
   const handleSecondaryModal = () => {
     setIsModalOpen(true);
   }
@@ -106,39 +126,24 @@ export const SupervisorConstructions = () => {
     const dataToSend = selectedSupervisors.map(supervisor => supervisor.id);
     console.log('Data to send:', dataToSend);
     updateResponsibleSecondary(dataToSend, false);
+ if (id) {
+      getConstruction(id).finally(() => setLoading(false)); 
+
+    }
+
   
     handleCloseModal();
   };
 
 
-  console.log("companiesSupervisorList", companiesSupervisorList);
+  // console.log("companiesSupervisorList", companiesSupervisorList);
 useEffect(() => {
   // console.log("History Supervisor has updated", historySupervisor);
 }, [historySupervisor]); 
 
 
-  // useEffect(() => {
-  //   if (id) {
-  //     getConstruction(id).finally(() => setLoading(false)); 
-  //     getCompaniesSupervisorList();
-  //   }
-  // }, [id]);
 
-  // useEffect(() => {
-  //   if (id) {
-  //     getConstruction(id).finally(() => setLoading(false));
-  //     getCompaniesSupervisorList().then((data: Supervisor[]) => { // Fazendo um cast aqui
-  //       setSupervisorsToSelect(data.map((item) => ({
-  //         id: item.id,
-  //         name: item.name
-  //         // mapeie outros campos necessários aqui
-  //       })));
-  //     }).catch(error => {
-  //       console.error('Failed to fetch supervisors:', error);
-  //       // Tratar erro aqui, por exemplo, ajustando o estado para mostrar uma mensagem ao usuário
-  //     });
-  //   }
-  // }, [id]);
+
 
   useEffect(() => {
     if (id) {
@@ -175,19 +180,6 @@ useEffect(() => {
     setIsDeleteModalOpen(false);
   }
 
-// const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supervisor?: any) => {
-//   const supervisorId = event.target.value;
-//   const selectedSup = supervisor || companiesSupervisorList.find((sup) => sup.id.toString() === supervisorId);
-//   setSelectedSupervisor(supervisorId);
-//   setSelectedSupervisorName(selectedSup?.name);
-// };
-
-// const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supervisor?: Supervisor) => {
-//   const supervisorId = event.target.value;
-//   const selectedSup = supervisor || companiesSupervisorList.find((sup: Supervisor) => sup.id.toString() === supervisorId);
-//   setSelectedSupervisor(supervisorId);
-//   setSelectedSupervisorName(selectedSup?.name);
-// };
 
 const handleSelectSupervisor = (event: React.ChangeEvent<HTMLInputElement>, supervisor?: Supervisor) => {
   const supervisorId = event.target.value;
@@ -228,36 +220,6 @@ const handleConfirmAddSupervisor = async () => {
   }
 };
 
-  // const handleConfirmAddSupervisor = async () => {
-  //   if (typeof id !== 'string') {
-  //     errorMessage("ID da construção não está disponível.");
-  //     return;
-  //   }
-  
-  //   const currentSupervisor = constructInfoData.responsible_primary;
-  //   if (currentSupervisor && currentSupervisor.name && selectedSupervisorName && currentSupervisor.name !== selectedSupervisorName) {
-  //     setOldSupervisor(currentSupervisor.name);
-  //     setNewSupervisor(selectedSupervisorName);
-  //     await getConstruction(id);
-  //     await getHistorySupervisor(id, false);
-
-  //     setIsConfirmModalOpen(true);
-  //   } else {
-  //     try {
-  //       await updateResponsible(parseInt(selectedSupervisor), false, false);
-  //       successMessage("Responsável primário atualizado com sucesso!");
-  //       await getHistorySupervisor(parseInt(id), false);
-  //       await getConstruction(id);
-  //       handleCloseModal();
-  //     } catch (error) {
-  //       console.error(error);
-  //       errorMessage("Não foi possível atualizar o responsável primário!");
-  //       setLoading(false);
-  //     }
-  //   }
-  // };
-  
-
 
   
   
@@ -272,17 +234,6 @@ const handleConfirmAddSupervisor = async () => {
     
   };
 
-  // const handleDeleteSupervisor = async () => {
-  //   try {
-  //     await updateResponsible(null, false, true);
-  //     await getConstruction(id);
-  //     await getHistorySupervisor(id, false);
-  //     successMessage("Responsável primário removido com sucesso!");
-  //   } catch (error) {
-  //     console.error("Erro ao remover responsável primário:", error);
-  //     errorMessage("Não foi possível remover o responsável primário!");
-  //   }
-  // }
 
   const handleDeleteSupervisor = async () => {
     if (typeof id === 'undefined') {
@@ -324,21 +275,6 @@ const handleConfirmAddSupervisor = async () => {
   };
   
 
-  // const handleConfirmUpdate = async () => {
-  //   try {
-  //     await updateResponsible(parseInt(selectedSupervisor), false, false);
-  //     await getHistorySupervisor(id, false); 
-  //     await getConstruction(id);
- 
-  //     successMessage("Encarregado substituído com sucesso!");
-  //   } catch (error) {
-  //     console.error("Erro ao atualizar o responsável:", error);
-  //     errorMessage("Não foi possível atualizar o responsável primário!");
-  //   }
-  //   setIsConfirmModalOpen(false);
-  //   setOpenModal(false);
-  // };
-  
 
 
   const handleCancelAddSupervisor = () => {
@@ -347,7 +283,12 @@ const handleConfirmAddSupervisor = async () => {
   };
 
  
-
+  const handleDataUpdated = () => {
+    if (id) {
+      getConstruction(id).finally(() => setLoading(false));
+    }
+  };
+  
 
   const responsiblePrimary = constructInfoData.responsible_primary || {};
   const responsibleSecondary = constructInfoData.responsible_secondary || [];
@@ -512,10 +453,15 @@ const handleConfirmAddSupervisor = async () => {
         Adicionar Encarregado
       </Button>
     </Grid>) : (
+
       <Grid item xs={12} lg={12}>
  
-    <SupervisorSecondaryTable secondaryInfo={responsibleSecondary}/>
-    </Grid>)}
+    <SupervisorSecondaryTable secondaryInfo={secondarySupervisorData} onDataUpdated={handleDataUpdated}/>
+
+
+    </Grid>
+  
+  )}
 
       <Grid item xs={12} lg={12}>
     

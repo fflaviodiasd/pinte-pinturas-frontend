@@ -53,18 +53,18 @@ const getInitials = (name = '') => {
   return name.split(' ').filter((n) => n !== '').map((n) => n[0]).join('');
 };
 
-export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
+export const SupervisorSecondaryTable = ({ secondaryInfo, onDataUpdated }: any) => {
 
   // const { classes } = useStyles();
   // const navigate = useNavigate();
   const {
-  
     getConstruction,
     getCompaniesSupervisorList,
     companiesSupervisorList,
     constructInfoData,
     updateResponsibleSecondary
   } = useConstructions();
+
   const theme = useTheme();
 
   const [isSaving, setIsSaving] = useState(false);
@@ -99,13 +99,23 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
     setIsModalOpen(false);
   };
 
-  // useEffect(() => {
-  //   // Inicializa supervisorsToSelect removendo os já selecionados
-  //   const initialSupervisorsToSelect = companiesSupervisorList.filter(
-  //     (supervisor) => !selectedSupervisors.find((selected) => selected.id === supervisor.id)
-  //   );
-  //   setSupervisorsToSelect(initialSupervisorsToSelect);
-  // }, [companiesSupervisorList, selectedSupervisors]);
+
+  useEffect(() => {
+    setSecondaryInfoData(secondaryInfo);
+  }, [secondaryInfo]);
+
+  const updateSecondarySupervisor = (selectedSupervisors: Supervisor[]) => {
+    const dataToSend = selectedSupervisors.map(supervisor => supervisor.id);
+    updateResponsibleSecondary(dataToSend, false)
+      .then(() => {
+        console.log('Data updated successfully');
+        onDataUpdated();  // Chamada do callback aqui
+        handleCloseModal();
+      })
+      .catch((error) => {
+        console.error('Failed to update data', error);
+      });
+  };
 
   useEffect(() => {
     const initialSupervisorsToSelect = companiesSupervisorList.filter(
@@ -120,14 +130,8 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
       prevSupervisors.filter((s: Supervisor) => s.id !== supervisor.id)
     );
     console.log('Added supervisor:', supervisor);
+    
   };
-  // const handleAddSupervisor = (supervisor:any) => {
-  //   setSelectedSupervisors((prevSelected):any => [...prevSelected, supervisor]);
-  //   setSupervisorsToSelect((prevSupervisors:any) =>
-  //     prevSupervisors.filter((s:any) => s.id !== supervisor.id)
-  //   );
-  //   console.log('Added supervisor:', supervisor);
-  // };
 
   const handleSelectAllSupervisors = () => {
     setSelectedSupervisors(selectedSupervisors.concat(supervisorsToSelect));
@@ -152,17 +156,6 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
     console.log('Removed supervisor:', supervisorId);
   };
 
-  // const handleRemoveSupervisor = (supervisorId:any) => {
-  //   const removedSupervisor = selectedSupervisors.find((s) => s.id === supervisorId);
-  //   setSelectedSupervisors((prevSelected) =>
-  //     prevSelected.filter((s:any) => s.id !== supervisorId)
-  //   );
-  //   if (removedSupervisor) {
-  //     setSupervisorsToSelect((prevSupervisors:any) => [...prevSupervisors, removedSupervisor]);
-  //   }
-  //   console.log('Removed supervisor:', supervisorId);
-  // };
-  console.log('secondaryInfoData: ', secondaryInfoData)
 
   const handleCancel = () => {
     // Limpa o estado das variáveis e fecha o modal
@@ -171,13 +164,15 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
     handleCloseModal();
   };
 
-  const updateSecondarySupervisor = (selectedSupervisors: Supervisor[]) => {
-    const dataToSend = selectedSupervisors.map((supervisor: Supervisor) => supervisor.id);
-    console.log('Data to send:', dataToSend);
-    updateResponsibleSecondary(dataToSend, false);
+  // const updateSecondarySupervisor = (selectedSupervisors: Supervisor[]) => {
+  //   const dataToSend = selectedSupervisors.map((supervisor: Supervisor) => supervisor.id);
+  //   console.log('Data to send:', dataToSend);
+  //   updateResponsibleSecondary(dataToSend, false);
   
-    handleCloseModal();
-  };
+  //   handleCloseModal();
+  // };
+
+ 
   
 
       useEffect(() => {
@@ -187,44 +182,6 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
         }
       }, [id]);
       
-
-      console.log('companiesSupervisorList:>>>> ', companiesSupervisorList)
-
-
-
-  // const handleDisable = async (measurementId: number, secondarySupervisorName: string) => {
-  //   console.log('measurementId: ', measurementId)
-  //   console.log('secondarySupervisorName: ', secondarySupervisorName)
-  //   try {
-  //     //  await disableConstructionMeasurements(measurementId);
-  //     // successMessage("Medição apagada com sucesso!");
-  //     // getAllConstructionsMeasurements();
-  //   } catch (error) {
-  //     errorMessage("Não foi possível apagar medição!");
-  //   }
-  // };
-
-  // const handleDisable = async (supervisorId: number, supervisorName: string) => {
-  //   // Mostrar diálogo de confirmação antes de excluir
-  //   const confirm = window.confirm(`Deseja realmente remover o encarregado ${supervisorName}?`);
-  //   if (confirm) {
-  //     console.log('Removendo supervisor com ID:', supervisorId);
-  
-  //     const updatedSupervisors = secondaryInfoData.filter(supervisor => supervisor.id !== supervisorId);
-  
-  //     const idsToUpdate = updatedSupervisors.map(supervisor => supervisor.id);
-  
-  //     try {
-  //       await updateResponsibleSecondary(idsToUpdate, false);
-  //       successMessage("Encarregado removido com sucesso!");
-  
-  //       setSecondaryInfoData(updatedSupervisors);
-  //     } catch (error) {
-  //       console.error('Erro ao remover o encarregado:', error);
-  //       errorMessage("Não foi possível remover o encarregado!");
-  //     }
-  //   }
-  // };
 
   const handleDeleteSupervisor = async () => {
     const supervisorId = currentSupervisor.id;
@@ -463,7 +420,8 @@ export const SupervisorSecondaryTable = ({secondaryInfo}:any) => {
             </ListItem>
           ))}
         </List>
-        {selectedSupervisors.length > 0 && (<Button onClick={handleRemoveAllSupervisors} color="error" fullWidth  sx={{ textTransform: 'none' }} >Remover Todos</Button>)}
+        {selectedSupervisors.length > 0 && (
+        <Button onClick={handleRemoveAllSupervisors} color="error" fullWidth  sx={{ textTransform: 'none' }} >Remover Todos</Button>)}
       </Box>
     </Box>
     <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
