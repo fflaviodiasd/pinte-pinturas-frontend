@@ -408,7 +408,7 @@ export const SupervisorSecondaryTable = ({ secondaryInfo, onDataUpdated }: any) 
     </Box>
       <Box sx={{ width: '45%' }}>
         <Typography variant="h6">Encarregados Selecionados</Typography>
-        <List sx={{ overflow: 'auto', maxHeight: 300, marginBottom: 2 }}>  
+        <List sx={{ overflow: 'auto', maxHeight: 380, marginBottom: 2 }}>  
           {selectedSupervisors.map((supervisor: any) => (
             <ListItem key={supervisor.id}>
               <ListItemText primary={supervisor.name} />

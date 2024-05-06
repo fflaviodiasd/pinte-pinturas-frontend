@@ -111,7 +111,7 @@ const SupervisorDialog: React.FC<SupervisorDialogProps> = ({
           </Box>
           <Box sx={{ width: '45%', overflow: 'auto' }}>
             <Typography variant="h6">Encarregados Selecionados</Typography>
-            <List sx={{ maxHeight: 300, overflowY: 'auto' }}>
+            <List sx={{ overflow: 'auto', maxHeight: 380, marginBottom: 2 }}>  
               {selectedSupervisors.map(supervisor => (
                 <ListItem key={supervisor.id}>
                   <ListItemText primary={supervisor.name} />
