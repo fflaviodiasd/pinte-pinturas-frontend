@@ -39,6 +39,7 @@ const Locations = () => {
     getAllConstructionsLocations,
     addConstructionLocal,
     disableConstructionLocal,
+    setListConstructionsLocations,
   } = useConstructions();
 
   const [selectedLocalIds, setSelectedLocalIds] = useState<number[]>([]);
@@ -99,11 +100,8 @@ const Locations = () => {
     fetchLevel();
   }, []);
 
-  const handleCreateLocal: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
-    values,
-    table,
-  }) => {
-    await addConstructionLocal(values, dynamicColumns);
+  const handleCreateLocal = async () => {
+    await addConstructionLocal(dynamicColumns, listConstructionsLocations);
   };
 
   const handleDeleteSnackbar = () => {
@@ -160,12 +158,11 @@ const Locations = () => {
         transition: "transform 0.2s",
       },
     }),
-    renderDetailPanel: ({ row }) => (
-      <ChecklistComponent localId={row.original.id} />
-    ),
+    renderDetailPanel: ({ row }) =>
+      row.original ? <ChecklistComponent localId={row.original.id} /> : null,
     getRowId: (row) => row.id,
     onCreatingRowCancel: () => setValidationErrors({}),
-    onCreatingRowSave: handleCreateLocal,
+    // onCreatingRowSave: handleCreateLocal,
     renderRowActions: ({ row }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
         <Checkbox
@@ -200,7 +197,16 @@ const Locations = () => {
             <Button
               variant="contained"
               onClick={() => {
-                table.setCreatingRow(true);
+                const control: any = {};
+                const teste = dynamicColumns
+                  .filter((item: any, index: any) => index >= 2)
+                  .map((item2: any) => (control[item2.id] = ""));
+                console.log("teste", teste);
+
+                setListConstructionsLocations([
+                  ...listConstructionsLocations,
+                  { checklist: 0, code: "", id: null, ...control },
+                ]);
               }}
               style={{
                 marginRight: "0.5rem",
@@ -224,6 +230,18 @@ const Locations = () => {
             >
               <GoPackage style={{ marginRight: "0.5rem" }} />
               Pacotes
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleCreateLocal}
+              style={{
+                marginLeft: "0.5rem",
+                textTransform: "capitalize",
+                fontFamily: "Open Sans",
+                fontWeight: 600,
+              }}
+            >
+              Salvar
             </Button>
           </div>
         </div>
