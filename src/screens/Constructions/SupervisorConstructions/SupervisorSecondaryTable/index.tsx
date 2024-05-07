@@ -99,6 +99,8 @@ export const SupervisorSecondaryTable = ({ secondaryInfo, onDataUpdated }: any) 
     setIsModalOpen(false);
   };
 
+  console.log('SecondaryInfo:', secondaryInfo);
+  console.log('Selected Supervisors:', selectedSupervisors);
 
   useEffect(() => {
     setSecondaryInfoData(secondaryInfo);
