@@ -127,28 +127,43 @@ const Locations = () => {
           },
         ];
 
-        data.forEach((level: any) => {
-          newDynamicColumns.push({
-            accessorKey: `nivel_${level.id}`,
-            header: level.name,
-            muiTableBodyCellProps: ({ cell }: any) => ({
-              onChange: (e: any) => {
-                setValueActual(e.target.value);
-                if (listConstructionsLocations.length > 0) {
-                  const newList = listConstructionsLocations.map(
-                    (item: any) => {
-                      if (item.id === cell.row.id) {
-                        item[cell.column.id] = e.target.value;
+        data.forEach((level: any, index: any) => {
+          if (index === data.length - 1) {
+            newDynamicColumns.push({
+              accessorKey: `nivel_${level.id}`,
+              header: level.name,
+              muiTableBodyCellProps: ({ cell }: any) => ({
+                onChange: (e: any) => {
+                  const newValue = e.target.value;
+                  const rowId = cell.row.id;
+                  setEditState({ rowId, value: newValue });
+                  console.log(`Row ${rowId} has value ${newValue}`);
+                },
+              }),
+            });
+          } else {
+            newDynamicColumns.push({
+              accessorKey: `nivel_${level.id}`,
+              header: level.name,
+              muiTableBodyCellProps: ({ cell }: any) => ({
+                onChange: (e: any) => {
+                  setValueActual(e.target.value);
+                  if (listConstructionsLocations.length > 0) {
+                    const newList = listConstructionsLocations.map(
+                      (item: any) => {
+                        if (item.id === cell.row.id) {
+                          item[cell.column.id] = e.target.value;
+                        }
+                        return item;
                       }
-                      return item;
-                    }
-                  );
+                    );
 
-                  setListConstructionsLocations(newList);
-                }
-              },
-            }),
-          });
+                    setListConstructionsLocations(newList);
+                  }
+                },
+              }),
+            });
+          }
         });
         setDynamicColumns(newDynamicColumns);
       } catch (error) {
@@ -158,18 +173,6 @@ const Locations = () => {
 
     fetchLevel();
   }, [valueActual, editState]);
-
-  {
-    /*const handleCreateLocal: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
-    values,
-    table,
-  }) => {
-    const code = generateNextId(rowCount);
-    await addConstructionLocal({ ...values, code }, dynamicColumns);
-  }, [valueActual]);
-
-*/
-  }
 
   const handleCreateLocal = async () => {
     const code = generateNextId(rowCount);
