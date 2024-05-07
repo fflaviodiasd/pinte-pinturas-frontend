@@ -8,6 +8,7 @@ import { api } from "../services/api";
 import { Construction } from "../types";
 import { UserContext } from "../contexts/UserContext";
 import { MRT_ColumnDef } from "material-react-table";
+import { LevelComponent } from "../components/Level";
 
 type ConstructionPackage = {
   id: number;
@@ -42,6 +43,11 @@ type ConstructionData = {
   checklistName: string;
 };
 
+interface Supervisor {
+  id: number;
+  name: string;
+}
+
 export const useConstructions = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -62,12 +68,11 @@ export const useConstructions = () => {
     measurement: "",
     package: "",
     number: "",
-    checklistName: ""
+    checklistName: "",
   });
 
-  const [constructInfoData, setConstructInfoData] = useState<any>({})
-  const [companiesSupervisorList, setCompaniesSupervisor] = useState<any>([])
-
+  const [constructInfoData, setConstructInfoData] = useState<any>({});
+  const [companiesSupervisorList, setCompaniesSupervisor] = useState<any>([]);
 
   const getConstruction = async (id: string) => {
     setLoading(true);
@@ -88,19 +93,33 @@ export const useConstructions = () => {
     }
   };
 
-  const getCompaniesSupervisorList = async () => {
+  // const getCompaniesSupervisorList = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const { data } = await api.get(`companies/${user.company}/construction_supervisor`);
+  //     setCompaniesSupervisor(data);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //     setLoading(false);
+  //   }
+  // }
+
+  const getCompaniesSupervisorList = async (): Promise<Supervisor[]> => {
     setLoading(true);
     try {
-      const { data } = await api.get(`companies/${user.company}/construction_supervisor`);
-      setCompaniesSupervisor(data);
+      const { data } = await api.get(
+        `companies/${user.company}/construction_supervisor`
+      );
       setLoading(false);
+      setCompaniesSupervisor(data);
+      return data;
     } catch (error) {
       console.log(error);
       setLoading(false);
+      return [];
     }
-  }
-
-
+  };
 
   const getChecklists = async (checklistId: any) => {
     setLoading(true);
@@ -120,43 +139,51 @@ export const useConstructions = () => {
       setLoading(false);
     }
   };
+  const [listConstructionsLocations, setListConstructionsLocations] = useState<
+    any[]
+  >([]);
 
   const addConstructionLocal = async (
-    values: any,
-    dynamicColumns: MRT_ColumnDef<any>[]
+    dynamicColumns: MRT_ColumnDef<any>[],
+    list: any[]
   ) => {
     try {
-      if (dynamicColumns && dynamicColumns.length > 0) {
-        const levels = dynamicColumns
-          .filter(
-            (column) =>
-              column.accessorKey && column.accessorKey.startsWith("nivel_")
-          )
-          .map((column) => {
-            const name =
-              values && values[column.accessorKey as keyof typeof values];
-            return {
-              level: {
-                name: column.header,
-              },
-              name: name || "",
-            };
-          });
-        const requestData = {
-          areas: [
-            {
-              code: values && values.code,
-              levels: levels,
-            },
-          ],
-        };
-        console.log(requestData);
-        await api.post(`constructions/${id}/areas/`, requestData);
-        successMessage("Área adicionada com sucesso!");
-        setLoading(false);
-      } else {
-        errorMessage("Não foi possível adicionar área!");
-      }
+      const newList = list.map((item: any) => {
+        if (dynamicColumns && dynamicColumns.length > 0) {
+          const levels = dynamicColumns
+            .filter(
+              (column) =>
+                column.accessorKey && column.accessorKey.startsWith("nivel_")
+            )
+            .map((column) => {
+              const name =
+                item && item[column.accessorKey as keyof typeof item];
+              const filterId =
+                item.length > 0 &&
+                item.ids?.filter((item: any) => item.name === name);
+              return {
+                id: filterId ? filterId[0].id : null,
+                level: {
+                  id: Number(column?.id?.slice(6, column.id?.length)),
+                  name: column.header,
+                },
+                name: name || "",
+              };
+            });
+          return {
+            id: item.id ? item.id : null,
+            code: item && item.code,
+            levels: levels,
+          };
+        } else {
+          errorMessage("Não foi possível adicionar área!");
+        }
+      });
+      console.log({ areas: newList });
+
+      await api.post(`constructions/${id}/areas/`, { areas: newList });
+      successMessage("Área adicionada com sucesso!");
+      setLoading(false);
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível adicionar área!");
@@ -198,10 +225,13 @@ export const useConstructions = () => {
 
   const addCompaniesConstruction = async (constructionData: any) => {
     setLoading(true);
-    console.log('constructionData:', constructionData);
-    console.log('userInfo', user)
+    console.log("constructionData:", constructionData);
+    console.log("userInfo", user);
     try {
-      await api.post(`companies/${user.company}/constructions/`, constructionData);
+      await api.post(
+        `companies/${user.company}/constructions/`,
+        constructionData
+      );
       successMessage("Obra adicionada com sucesso!");
       setLoading(false);
       navigate("/obras");
@@ -383,32 +413,89 @@ export const useConstructions = () => {
     }
   };
 
-  const [listConstructionsLocations, setListConstructionsLocations] =
-    useState<any>([]);
+  const [listConstructionsTeams, setListConstructionsTeams] = useState<any[]>(
+    []
+  );
+
+  const getAllConstructionsTeams = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`constructions/${id}/teams`);
+      const constructionTeamsList = data.map((result: any) => ({
+        id: result.id,
+        active: result.active,
+        teams: result.name,
+        collaborators: result.member_count,
+      }));
+      console.log(data);
+      setListConstructionsTeams(constructionTeamsList);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const [listConstructionsTeamMembers, setListConstructionsTeamMembers] =
+    useState<any[]>([]);
+  const getAllConstructionsTeamMembers = async (teamId: any) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`teams/${teamId}`);
+      const constructionTeamMembersList = data.members.map((result: any) => ({
+        id: result.id,
+        active: result.active,
+        avatar: result.avatar,
+        name: result.name,
+        role: result.office,
+        profile: result.profile,
+        cellPhone: result.cell_phone,
+      }));
+      setListConstructionsTeamMembers(constructionTeamMembersList);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
   const getAllConstructionsLocations = async (
     dynamicColumns: MRT_ColumnDef<any>[]
   ) => {
     setLoading(true);
     try {
       const { data } = await api.get(`/constructions/${id}/areas/`);
+      console.log(data);
       const constructionLocalList = data.areas.map((result: any) => {
-        const levelNames: Record<string, string> = {};
+        // const levelNames: Record<string, string> = {};
+        const levelNames: any = {};
+        const levelNamesWithId: any = [];
         result.levels.forEach((level: any) => {
           const matchingColumn = dynamicColumns.find(
             (column) => column.accessorKey === `nivel_${level.level.id}`
           );
           if (matchingColumn) {
             levelNames[`nivel_${level.level.id}`] = level.name;
+            // levelNamesWithId[`nivel_${level.level.id}`] = {
+            //   id: level.id,
+            //   name: level.name,
+            // };
+            levelNamesWithId.push({
+              id: level.id,
+              name: level.name,
+            });
           }
         });
         return {
           id: result.id,
           code: result.code,
           checklist: result.checklist_count,
+          ids: levelNamesWithId,
           ...levelNames,
         };
       });
       setListConstructionsLocations(constructionLocalList);
+
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -678,24 +765,24 @@ export const useConstructions = () => {
       return []; // Retorna um array vazio em caso de erro
     }
   };
-  
-  const [listConstructionsMeasurements, setListConstructionsMeasurements] =  useState<any[]>([]);
 
+  const [listConstructionsMeasurements, setListConstructionsMeasurements] =
+    useState<any[]>([]);
 
   const getAllConstructionsMeasurements = async () => {
     if (!id) {
-      console.error('ID da construção não foi fornecido');
+      console.error("ID da construção não foi fornecido");
       return;
     }
 
     setLoading(true);
     try {
       const { data } = await api.get(`/constructions/${id}/measurements/`);
-      console.log('data:', data);
+      console.log("data:", data);
       setListConstructionsMeasurements(data);
       setLoading(false);
     } catch (error) {
-      console.error('Erro ao obter serviços de construção:', error);
+      console.error("Erro ao obter serviços de construção:", error);
       setLoading(false);
     }
   };
@@ -705,13 +792,13 @@ export const useConstructions = () => {
     try {
       const response = await api.delete(`/measurements/${measurementId}`);
       if (response.status === 204) {
-        successMessage('Medição apagada com sucesso!');
+        successMessage("Medição apagada com sucesso!");
       } else {
-        console.log('Erro ao apagar medição!', response.data.detail);
-        errorMessage('Erro ao apagar! ' + response.data.detail);
+        console.log("Erro ao apagar medição!", response.data.detail);
+        errorMessage("Erro ao apagar! " + response.data.detail);
       }
     } catch (error) {
-      throw error; 
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -720,21 +807,35 @@ export const useConstructions = () => {
   const addConstructionMeasurements = async (newmeasurement: any) => {
     setLoading(true);
     try {
-      const response = await api.post(`/constructions/${id}/measurements/`, newmeasurement);
-      setListConstructionPackages(prevMeasurement => [...prevMeasurement, response.data]);
-      successMessage('Pacote adicionado com sucesso!');
+      const response = await api.post(
+        `/constructions/${id}/measurements/`,
+        newmeasurement
+      );
+      setListConstructionPackages((prevMeasurement) => [
+        ...prevMeasurement,
+        response.data,
+      ]);
+      successMessage("Pacote adicionado com sucesso!");
     } catch (error) {
-      errorMessage('Erro ao adicionar o pacote!');
+      errorMessage("Erro ao adicionar o pacote!");
     } finally {
       setLoading(false);
     }
   };
 
-  const updateResponsible = async (responsibleId: number | null, isCustomer: boolean, isDeleteAction: boolean = false) => {
+  const updateResponsible = async (
+    responsibleId: number | null,
+    isCustomer: boolean,
+    isDeleteAction: boolean = false
+  ) => {
     setLoading(true);
-    const propertyName = isCustomer ? 'responsible_customer_primary' : 'responsible_primary';
-    const updateData = { [propertyName]: isDeleteAction ? null : responsibleId };
-  
+    const propertyName = isCustomer
+      ? "responsible_customer_primary"
+      : "responsible_primary";
+    const updateData = {
+      [propertyName]: isDeleteAction ? null : responsibleId,
+    };
+
     try {
       await api.patch(`constructions/${id}/`, updateData);
       setLoading(false);
@@ -744,23 +845,28 @@ export const useConstructions = () => {
         // successMessage("Responsável atualizado com sucesso!");
       }
     } catch (error) {
-      console.error('Erro ao atualizar/remover responsável:', error);
+      console.error("Erro ao atualizar/remover responsável:", error);
       setLoading(false);
       // errorMessage("Não foi possível atualizar/remover o responsável!");
     }
   };
 
-  const updateResponsibleSecondary = async (responsibleSecondaryData: any, isCustomer: boolean) => {
+  const updateResponsibleSecondary = async (
+    responsibleSecondaryData: any,
+    isCustomer: boolean
+  ) => {
     setLoading(true);
-    const propertyName = isCustomer ? 'responsible_customer_secondary' : 'responsible_secondary';
+    const propertyName = isCustomer
+      ? "responsible_customer_secondary"
+      : "responsible_secondary";
     const updateData = { [propertyName]: responsibleSecondaryData };
-  
+
     try {
       await api.patch(`constructions/${id}/`, updateData);
       setLoading(false);
-   
+      successMessage("Responsável atualizado com sucesso!");
     } catch (error) {
-      console.error('Erro ao atualizar/remover responsável:', error);
+      console.error("Erro ao atualizar/remover responsável:", error);
       setLoading(false);
       // errorMessage("Não foi possível atualizar/remover o responsável!");
     }
@@ -768,18 +874,19 @@ export const useConstructions = () => {
 
   const [historySupervisor, setHistorySupervisor] = useState<any[]>([]);
 
-  
-  const getHistorySupervisor = async (id: number, isCustomer: boolean) => {
+  const getHistorySupervisor = async (id: string, isCustomer: boolean) => {
     setLoading(true);
     try {
-      const { data } = await api.get(`constructions/${id}/history/?responsible_primary=${!isCustomer}`);
+      const { data } = await api.get(
+        `constructions/${id}/history/?responsible_primary=${!isCustomer}`
+      );
       setHistorySupervisor(data);
     } catch (error) {
-      console.error('Failed to fetch history:', error);
+      console.error("Failed to fetch history:", error);
     }
     setLoading(false);
   };
-  
+
   return {
     loading,
     setLoading,
@@ -833,6 +940,6 @@ export const useConstructions = () => {
     listConstructionsMeasurements,
     disableConstructionMeasurements,
     addConstructionMeasurements,
-
+    setListConstructionsLocations,
   };
 };

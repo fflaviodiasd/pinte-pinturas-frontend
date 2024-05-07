@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
@@ -39,12 +39,15 @@ const Locations = () => {
     getAllConstructionsLocations,
     addConstructionLocal,
     disableConstructionLocal,
+    setListConstructionsLocations,
   } = useConstructions();
 
   const [selectedLocalIds, setSelectedLocalIds] = useState<number[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { classes } = useStyles();
   const [modalOpen, setIsModalOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [valueActual, setValueActual] = useState();
 
   const generateNextId = (rowCount: any) => {
     const nextId = rowCount + 1;
@@ -66,15 +69,17 @@ const Locations = () => {
     setRowCount(listConstructionsLocations.length);
   }, [listConstructionsLocations]);
 
-  useEffect(() => {
-    getAllConstructionsLocations(dynamicColumns);
+  useLayoutEffect(() => {
+    if (!isLoaded) {
+      getAllConstructionsLocations(dynamicColumns);
+      setIsLoaded(true);
+    }
   }, [dynamicColumns]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchLevel = async () => {
       try {
-        const response = await api.get(`constructions/${id}/level_area/`);
-        const level = response.data;
+        const { data } = await api.get(`constructions/${id}/level_area/`);
         const newDynamicColumns = [
           {
             accessorKey: "code",
@@ -122,13 +127,25 @@ const Locations = () => {
           },
         ];
 
-        level.forEach((level: any, index: any) => {
+        data.forEach((level: any) => {
           newDynamicColumns.push({
             accessorKey: `nivel_${level.id}`,
             header: level.name,
             muiTableBodyCellProps: ({ cell }: any) => ({
               onChange: (e: any) => {
-                console.log("teste");
+                setValueActual(e.target.value);
+                if (listConstructionsLocations.length > 0) {
+                  const newList = listConstructionsLocations.map(
+                    (item: any) => {
+                      if (item.id === cell.row.id) {
+                        item[cell.column.id] = e.target.value;
+                      }
+                      return item;
+                    }
+                  );
+
+                  setListConstructionsLocations(newList);
+                }
               },
             }),
           });
@@ -140,14 +157,25 @@ const Locations = () => {
     };
 
     fetchLevel();
-  }, [editState]);
+  }, [valueActual, editState]);
 
-  const handleCreateLocal: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
+  {
+    /*const handleCreateLocal: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
     values,
     table,
   }) => {
     const code = generateNextId(rowCount);
     await addConstructionLocal({ ...values, code }, dynamicColumns);
+  }, [valueActual]);
+
+*/
+  }
+
+  const handleCreateLocal = async () => {
+    const code = generateNextId(rowCount);
+    listConstructionsLocations[listConstructionsLocations.length - 1].code =
+      code;
+    await addConstructionLocal(dynamicColumns, listConstructionsLocations);
   };
 
   const handleDeleteSnackbar = () => {
@@ -204,12 +232,11 @@ const Locations = () => {
         transition: "transform 0.2s",
       },
     }),
-    renderDetailPanel: ({ row }) => (
-      <ChecklistComponent localId={row.original.id} />
-    ),
+    renderDetailPanel: ({ row }) =>
+      row.original ? <ChecklistComponent localId={row.original.id} /> : null,
     getRowId: (row) => row.id,
     onCreatingRowCancel: () => setValidationErrors({}),
-    onCreatingRowSave: handleCreateLocal,
+    // onCreatingRowSave: handleCreateLocal,
     renderRowActions: ({ row }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
         <Checkbox
@@ -244,7 +271,16 @@ const Locations = () => {
             <Button
               variant="contained"
               onClick={() => {
-                table.setCreatingRow(true);
+                const control: any = {};
+                const teste = dynamicColumns
+                  .filter((item: any, index: any) => index >= 2)
+                  .map((item2: any) => (control[item2.id] = ""));
+                console.log("teste", teste);
+
+                setListConstructionsLocations([
+                  ...listConstructionsLocations,
+                  { checklist: 0, code: "", id: null, ...control },
+                ]);
               }}
               style={{
                 marginRight: "0.5rem",
@@ -268,6 +304,18 @@ const Locations = () => {
             >
               <GoPackage style={{ marginRight: "0.5rem" }} />
               Pacotes
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleCreateLocal}
+              style={{
+                marginLeft: "0.5rem",
+                textTransform: "capitalize",
+                fontFamily: "Open Sans",
+                fontWeight: 600,
+              }}
+            >
+              Salvar
             </Button>
           </div>
         </div>
