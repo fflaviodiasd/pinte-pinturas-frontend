@@ -5,6 +5,7 @@ import {
   type MRT_Row,
   type MRT_TableOptions,
   useMaterialReactTable,
+  MRT_Cell,
 } from "material-react-table";
 import { Box, Button, Checkbox, Tooltip, Typography } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -29,9 +30,9 @@ const Locations = () => {
     Record<string, string | undefined>
   >({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [dynamicColumns, setDynamicColumns] = useState<MRT_ColumnDef<any>[]>(
-    []
-  );
+  const [dynamicColumns, setDynamicColumns] = useState<
+    CustomMRT_ColumnDef<any>[]
+  >([]);
   const { id } = useParams();
 
   const {
@@ -48,6 +49,12 @@ const Locations = () => {
   const [modalOpen, setIsModalOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [valueActual, setValueActual] = useState();
+
+  type CustomMRT_ColumnDef<T> = MRT_ColumnDef<any> & {
+    muiTableBodyCellProps?: (cell: MRT_Cell<any>) => {
+      onChange: (e: any) => void;
+    };
+  };
 
   const generateNextId = (rowCount: any) => {
     const nextId = rowCount + 1;
@@ -80,7 +87,7 @@ const Locations = () => {
     const fetchLevel = async () => {
       try {
         const { data } = await api.get(`constructions/${id}/level_area/`);
-        const newDynamicColumns = [
+        const newDynamicColumns: CustomMRT_ColumnDef<any>[] = [
           {
             accessorKey: "code",
             header: "ID",
@@ -94,18 +101,6 @@ const Locations = () => {
                 </div>
               );
             },
-          },
-          {
-            accessorKey: "micro",
-            header: "Micro",
-            muiTableBodyCellProps: ({ cell }: any) => ({
-              onChange: (e: any) => {
-                const newValue = e.target.value;
-                const rowId = cell.row.id;
-                setEditState({ rowId, value: newValue });
-                console.log(`Row ${rowId} has value ${newValue}`);
-              },
-            }),
           },
           {
             accessorKey: "checklist",
