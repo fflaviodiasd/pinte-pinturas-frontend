@@ -52,7 +52,6 @@ export const SelectChecklists: React.FC<SelectChecklistsProps> = ({
       error={Boolean(error)}
       variant="outlined"
       size="small"
-      required
     >
       <InputLabel id={`${name}-label`}>{label}</InputLabel>
       <Select labelId={`${name}-label`} id={name} {...field} label={label}>
