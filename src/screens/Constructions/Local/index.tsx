@@ -57,7 +57,7 @@ const Locations = () => {
   };
 
   const generateNextId = (rowCount: any) => {
-    const nextId = rowCount + 1;
+    const nextId = rowCount;
     return `L${nextId.toString().padStart(4, "0")}`;
   };
 
