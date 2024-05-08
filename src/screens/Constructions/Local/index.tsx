@@ -133,6 +133,19 @@ const Locations = () => {
                   const rowId = cell.row.id;
                   setEditState({ rowId, value: newValue });
                   console.log(`Row ${rowId} has value ${newValue}`);
+                  setValueActual(e.target.value);
+                  if (listConstructionsLocations.length > 0) {
+                    const newList = listConstructionsLocations.map(
+                      (item: any) => {
+                        if (item.id === cell.row.id) {
+                          item[cell.column.id] = e.target.value;
+                        }
+                        return item;
+                      }
+                    );
+                    console.log("newlist", newList);
+                    setListConstructionsLocations(newList);
+                  }
                 },
               }),
             });
@@ -152,7 +165,7 @@ const Locations = () => {
                         return item;
                       }
                     );
-
+                    console.log("newlist", newList);
                     setListConstructionsLocations(newList);
                   }
                 },
