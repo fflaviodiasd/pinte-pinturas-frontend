@@ -77,7 +77,7 @@ const Locations = () => {
   }, [listConstructionsLocations]);
 
   useLayoutEffect(() => {
-    if (!isLoaded) {
+    if (!isLoaded && dynamicColumns.length > 0) {
       getAllConstructionsLocations(dynamicColumns);
       setIsLoaded(true);
     }
