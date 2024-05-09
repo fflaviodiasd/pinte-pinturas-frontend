@@ -56,21 +56,7 @@ export default function AccordionChecklists({ localId }: any) {
             </div>
           </AccordionSummary>
           <AccordionDetails>
-            <table>
-              <thead>
-                <tr
-                  style={{
-                    color: "#2E3132",
-                  }}
-                >
-                  <th>Etapa</th>
-                  <th>Digitada</th>
-                  <th>Sistema</th>
-                  <th>Atualização</th>
-                </tr>
-              </thead>
-              <HistoryInfo checklistId={item.id} />
-            </table>
+            <HistoryInfo checklistId={item.id} />
             <FormChecklists checklistId={item.id} />
           </AccordionDetails>
         </Accordion>

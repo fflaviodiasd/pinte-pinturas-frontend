@@ -28,38 +28,52 @@ export function HistoryInfo({ checklistId }: any) {
   };
 
   return (
-    <tbody>
-      {Object.keys(STATUS_COLORS).map((status: string, index: number) => (
-        <tr key={index}>
-          <td>
-            <Chip
-              label={status}
-              style={{
-                backgroundColor: STATUS_COLORS[status],
-                color: "#FFFFFF",
-                fontFamily: "Open Sans",
-                fontWeight: 600,
-              }}
-            />
-          </td>
-          {checklistHistory.map(
-            (item: any) =>
-              item.status === status && (
-                <>
-                  <td>
-                    <span>{item.histories.written_date}</span>
-                  </td>
-                  <td>
-                    <span>{item.histories.marking_action_date}</span>
-                  </td>
-                  <td>
-                    <span>{item.histories.responsible_action}</span>
-                  </td>
-                </>
-              )
-          )}
+    <table>
+      <thead>
+        <tr
+          style={{
+            color: "#2E3132",
+          }}
+        >
+          <th>Etapa</th>
+          <th>Digitada</th>
+          <th>Sistema</th>
+          <th>Atualização</th>
         </tr>
-      ))}
-    </tbody>
+      </thead>
+      <tbody>
+        {Object.keys(STATUS_COLORS).map((status: string, index: number) => (
+          <tr key={index}>
+            <td>
+              <Chip
+                label={status}
+                style={{
+                  backgroundColor: STATUS_COLORS[status],
+                  color: "#FFFFFF",
+                  fontFamily: "Open Sans",
+                  fontWeight: 600,
+                }}
+              />
+            </td>
+            {checklistHistory.map(
+              (item: any) =>
+                item.status === status && (
+                  <>
+                    <td>
+                      <span>{item.histories.written_date}</span>
+                    </td>
+                    <td>
+                      <span>{item.histories.marking_action_date}</span>
+                    </td>
+                    <td>
+                      <span>{item.histories.responsible_action}</span>
+                    </td>
+                  </>
+                )
+            )}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
