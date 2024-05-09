@@ -35,8 +35,14 @@ export const useStyles = makeStyles()(() => {
       color: "#8F9193",
       fontFamily: "Open Sans",
     },
+    columnTitle: {
+      fontSize: 14,
+      fontFamily: "Open Sans",
+      fontWeight: 600,
+      color: "#2E3132",
+    },
     colunm1: {
-      fontSize: 12,
+      fontSize: 14,
       fontFamily: "Open Sans",
       color: "#2E3132",
       padding: 4,

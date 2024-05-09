@@ -14,6 +14,28 @@ export const useStyles = makeStyles()((theme: Theme) => {
       fontFamily: "Open Sans",
       padding: theme.spacing(2),
     },
+    tabContainer: {
+      display: "flex",
+      flexDirection: "row",
+      padding: "24px 16px",
+      backgroundColor: "#EEE",
+    },
+    filterContainer: {
+      gap: 8,
+      display: "flex",
+      justifyContent: "flex-end",
+    },
+    filterButton: {
+      width: 100,
+      color: "#0076BE",
+      fontSize: 12,
+      fontWeight: 600,
+      fontFamily: "Open Sans",
+      backgroundColor: "#FFFFFF",
+      border: "#0076BE 1px solid",
+      borderRadius: 16,
+      textTransform: "capitalize",
+    },
   };
 });
 

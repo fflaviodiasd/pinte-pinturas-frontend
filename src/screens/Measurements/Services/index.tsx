@@ -144,20 +144,32 @@ export function MeasurementsServices() {
             <table>
               <thead>
                 <tr>
-                  <th style={{ width: 130 }}>Escopo</th>
-                  <th style={{ width: 200 }}>Serviço</th>
-                  <th style={{ width: 100 }}>Etapa</th>
-                  <th style={{ width: 110 }}>Unidades/Dia</th>
-                  <th style={{ width: 110 }}>Valor Unitário</th>
-                  <th style={{ width: 150 }}>Rentabilidade/Diária</th>
+                  <th style={{ width: 130 }} className={classes.columnTitle}>
+                    Escopo
+                  </th>
+                  <th style={{ width: 200 }} className={classes.columnTitle}>
+                    Serviço
+                  </th>
+                  <th style={{ width: 100 }} className={classes.columnTitle}>
+                    Etapa
+                  </th>
+                  <th style={{ width: 110 }} className={classes.columnTitle}>
+                    Unidades/Dia
+                  </th>
+                  <th style={{ width: 110 }} className={classes.columnTitle}>
+                    Valor Unitário
+                  </th>
+                  <th style={{ width: 150 }} className={classes.columnTitle}>
+                    Rentabilidade/Diária
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {fakeData2.map((fake) => (
                   <tr key={fake.id}>
-                    <td className={classes.colunm1}>{fake.scope}</td>
-                    <td className={classes.colunm1}>{fake.service}</td>
-                    <td className={classes.colunm1}>{fake.step}</td>
+                    <td className={classes.colunm2}>{fake.scope}</td>
+                    <td className={classes.colunm2}>{fake.service}</td>
+                    <td className={classes.colunm2}>{fake.step}</td>
                     <td className={classes.colunm2}>{fake.unitsByDay}</td>
                     <td className={classes.colunm2}>
                       {moneyFormatter.format(fake.unitValue)}

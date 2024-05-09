@@ -18,14 +18,18 @@ import {
 import { Line } from "react-chartjs-2";
 import colorLib from "@kurkle/color";
 
+import { useMeasurements } from "../../../hooks/useMeasurements";
+
+import { SectionTitle } from "../../../components/SectionTitle";
+import { moneyFormatter } from "../../../utils";
+
 import {
   LabelColor,
   TableContainer,
   TableContainer2,
   useStyles,
 } from "./styles";
-import { SectionTitle } from "../../../components/SectionTitle";
-import { moneyFormatter } from "../../../utils";
+import { useEffect } from "react";
 
 function transparentize(value: any, opacity?: any) {
   let alpha = opacity === undefined ? 0.5 : 1 - opacity;
@@ -40,6 +44,26 @@ const CHART_COLORS = {
 export function MeasurementsPackages() {
   const { classes } = useStyles();
 
+  const {
+    getDataTable,
+    getExecution,
+    getProfitability,
+    getAllConstructions,
+    listConstructions,
+    lessProfitable,
+    moreProfitable,
+    execution,
+    dataTable,
+  } = useMeasurements();
+
+  useEffect(() => {
+    getDataTable();
+    getExecution();
+    getProfitability();
+    getAllConstructions();
+    listConstructions;
+  }, []);
+
   ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -50,19 +74,22 @@ export function MeasurementsPackages() {
     Filler
   );
 
-  const labels = ["M1", "M2", "M3", "M4", "M5", "M6", "M7"];
+  const labels = execution.map((execution) => execution.measurement);
+  const liberados = execution.map((execution) => execution.status.liberado);
+  const finalizados = execution.map((execution) => execution.status.finalizado);
+
   const data = {
     labels,
     datasets: [
       {
-        data: [40, 41, 20, 27, 53, 68, 76, 90],
+        data: liberados,
         borderColor: CHART_COLORS.orange,
         backgroundColor: transparentize(CHART_COLORS.orange),
         fill: true,
         tension: 0.2,
       },
       {
-        data: [12, 36, 35, 47, 55, 60, 71],
+        data: finalizados,
         borderColor: CHART_COLORS.blue,
         backgroundColor: transparentize(CHART_COLORS.blue),
         fill: true,
@@ -127,24 +154,32 @@ export function MeasurementsPackages() {
             <table>
               <thead>
                 <tr>
-                  <th style={{ width: 150 }}>Disciplina</th>
-                  <th style={{ width: 200 }}>Pacote</th>
-                  <th style={{ width: 110 }}>Diárias Totais</th>
-                  <th style={{ width: 150 }}>Rentabilidade/Diária</th>
-                  <th style={{ width: 200 }}>Rentabilidade/Mão de Obra</th>
+                  <th style={{ width: 150 }} className={classes.columnTitle}>
+                    Disciplina
+                  </th>
+                  <th style={{ width: 200 }} className={classes.columnTitle}>
+                    Pacote
+                  </th>
+                  <th style={{ width: 110 }} className={classes.columnTitle}>
+                    Diárias Totais
+                  </th>
+                  <th style={{ width: 150 }} className={classes.columnTitle}>
+                    Rentabilidade/Diária
+                  </th>
+                  <th style={{ width: 200 }} className={classes.columnTitle}>
+                    Rentabilidade/Mão de Obra
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {fakeData2.map((fake) => (
-                  <tr key={fake.id}>
-                    <td className={classes.colunm1}>{fake.discipline}</td>
-                    <td className={classes.colunm1}>{fake.package}</td>
-                    <td className={classes.colunm1}>{fake.totalDailies}</td>
+                {dataTable.map((fake) => (
+                  <tr key={fake.discipline}>
+                    <td className={classes.colunm2}>{fake.discipline}</td>
+                    <td className={classes.colunm2}>{fake.namePackage}</td>
+                    <td className={classes.colunm2}>{fake.avgDays}</td>
+                    <td className={classes.colunm2}>{fake.priceDays}</td>
                     <td className={classes.colunm2}>
-                      {moneyFormatter.format(fake.profitabilityDaily)}
-                    </td>
-                    <td className={classes.colunm2}>
-                      {moneyFormatter.format(fake.profitabilityByLabor)}
+                      {fake.priceWorkmanshipDays}
                     </td>
                   </tr>
                 ))}
@@ -193,24 +228,22 @@ export function MeasurementsPackages() {
             <table>
               <thead>
                 <tr>
-                  {fakeColumns.map((column) => (
+                  {profitableTableColumns.map((column) => (
                     <th key={column}>{column}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {fakeData.map((fake) => (
-                  <tr key={fake.id}>
+                {moreProfitable.map((fake) => (
+                  <tr key={fake.namePackage}>
                     <td className={classes.colunm1}>
-                      {fake.name}
+                      {fake.namePackage}
                       <br />
-                      {fake.meters}m²
+                      {fake.avgDays}m²
                     </td>
+                    <td className={classes.colunm2}>{fake.priceDays}</td>
                     <td className={classes.colunm2}>
-                      {moneyFormatter.format(fake.costDaily)}
-                    </td>
-                    <td className={classes.colunm2}>
-                      {moneyFormatter.format(fake.labor)}
+                      {fake.priceWorkmanshipDays}
                     </td>
                   </tr>
                 ))}
@@ -245,24 +278,22 @@ export function MeasurementsPackages() {
             <table>
               <thead>
                 <tr>
-                  {fakeColumns.map((column) => (
+                  {profitableTableColumns.map((column) => (
                     <th key={column}>{column}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {fakeData.map((fake) => (
-                  <tr key={fake.id}>
+                {lessProfitable.map((fake) => (
+                  <tr key={fake.namePackage}>
                     <td className={classes.colunm1}>
-                      {fake.name}
+                      {fake.namePackage}
                       <br />
-                      {fake.meters}m²
+                      {fake.avgDays}m²
                     </td>
+                    <td className={classes.colunm2}>{fake.priceDays}</td>
                     <td className={classes.colunm2}>
-                      {moneyFormatter.format(fake.costDaily)}
-                    </td>
-                    <td className={classes.colunm2}>
-                      {moneyFormatter.format(fake.labor)}
+                      {fake.priceWorkmanshipDays}
                     </td>
                   </tr>
                 ))}
@@ -275,125 +306,8 @@ export function MeasurementsPackages() {
   );
 }
 
-const fakeColumns = ["Serviços/QTD. por Dia", "Diária", "Mão de Obra"];
-
-const fakeData = [
-  {
-    id: 1,
-    name: "Pintura externa",
-    meters: 30,
-    costDaily: 40.23,
-    labor: 23.23,
-  },
-  {
-    id: 2,
-    name: "Pintura externa",
-    meters: 30,
-    costDaily: 40.23,
-    labor: 23.23,
-  },
-  {
-    id: 3,
-    name: "Pintura externa",
-    meters: 30,
-    costDaily: 40.23,
-    labor: 23.23,
-  },
-  {
-    id: 4,
-    name: "Pintura externa",
-    meters: 30,
-    costDaily: 40.23,
-    labor: 23.23,
-  },
-  {
-    id: 5,
-    name: "Pintura externa",
-    meters: 30,
-    costDaily: 40.23,
-    labor: 23.23,
-  },
-];
-
-const fakeData2 = [
-  {
-    id: 1,
-    discipline: "Gesso",
-    package: "Pintura ",
-    totalDailies: 30,
-    profitabilityDaily: 23,
-    profitabilityByLabor: 23.23,
-  },
-  {
-    id: 2,
-    discipline: "Gesso",
-    package: "Pintura Externa",
-    totalDailies: 30,
-    profitabilityDaily: 23,
-    profitabilityByLabor: 23.23,
-  },
-  {
-    id: 3,
-    discipline: "Gesso",
-    package: "Pintura Externa",
-    totalDailies: 30,
-    profitabilityDaily: 23,
-    profitabilityByLabor: 23.23,
-  },
-  {
-    id: 4,
-    discipline: "Exemplo de disciplina",
-    package: "Pintura Externa",
-    totalDailies: 30,
-    profitabilityDaily: 23,
-    profitabilityByLabor: 23.23,
-  },
-  {
-    id: 5,
-    discipline: "Gesso",
-    package: "Pintura Interna",
-    totalDailies: 30,
-    profitabilityDaily: 23,
-    profitabilityByLabor: 23.23,
-  },
-  {
-    id: 6,
-    discipline: "Gesso",
-    package: "Pintura Interna",
-    totalDailies: 30,
-    profitabilityDaily: 23,
-    profitabilityByLabor: 23.23,
-  },
-  {
-    id: 7,
-    discipline: "Gesso",
-    package: "Pintura Interna",
-    totalDailies: 30,
-    profitabilityDaily: 23,
-    profitabilityByLabor: 23.23,
-  },
-  {
-    id: 8,
-    discipline: "Gesso",
-    package: "Pintura Interna",
-    totalDailies: 30,
-    profitabilityDaily: 23,
-    profitabilityByLabor: 23.23,
-  },
-  {
-    id: 9,
-    discipline: "Gesso",
-    package: "Pintura Interna",
-    totalDailies: 30,
-    profitabilityDaily: 23,
-    profitabilityByLabor: 23.23,
-  },
-  {
-    id: 10,
-    discipline: "Gesso",
-    package: "Pintura Interna",
-    totalDailies: 30,
-    profitabilityDaily: 23,
-    profitabilityByLabor: 23.23,
-  },
+const profitableTableColumns = [
+  "Serviços/QTD. por Dia",
+  "Diária",
+  "Mão de Obra",
 ];

@@ -24,11 +24,10 @@ export const useCompanies = () => {
     number: "",
     neighborhood: "",
     city: "",
-    cep: ""
+    cep: "",
   });
-  
 
-const  [listCompanies, setListCompanies] = useState<Company[]>([]);
+  const [listCompanies, setListCompanies] = useState<Company[]>([]);
 
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -65,7 +64,7 @@ const  [listCompanies, setListCompanies] = useState<Company[]>([]);
         number: result.number,
         neighborhood: result.neighborhood,
         city: result.city,
-        cep: result.cep
+        cep: result.cep,
       }));
       setListCompanies(allCompanies);
       setLoading(false);
@@ -77,7 +76,7 @@ const  [listCompanies, setListCompanies] = useState<Company[]>([]);
 
   const [listCompanyCustomers, setListCompanyCustomers] = useState<any[]>([]);
 
-  const getAllCompanyCustomers  = async () => {
+  const getAllCompanyCustomers = async () => {
     setLoading(true);
     try {
       const { data } = await api.get(
