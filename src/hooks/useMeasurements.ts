@@ -67,11 +67,13 @@ export const useMeasurements = () => {
 
   const [dataTable, setDataTable] = useState<DataItem[]>([]);
 
-  const getDataTable = async () => {
+  const getDataTable = async (filters?: string) => {
+    let url = `/dashboard_measurements/${34}/data_table/`;
+    if (filters) {
+      url = `/dashboard_measurements/${34}/data_table/?${filters}`;
+    }
     try {
-      const { data } = await api.get(
-        `/dashboard_measurements/${34}/data_table/`
-      );
+      const { data } = await api.get(url);
       // console.log("Tabela", data);
       if (data.length) {
         const dataTableResponse = data.map((item: DataItemReturned) => ({
@@ -83,7 +85,6 @@ export const useMeasurements = () => {
         }));
         setDataTable(dataTableResponse);
       } else {
-        // setDataTable(fakeDataTable);
         setDataTable([]);
       }
     } catch (error) {
@@ -93,16 +94,17 @@ export const useMeasurements = () => {
 
   const [execution, setExecution] = useState<Execution[]>([]);
 
-  const getExecution = async () => {
+  const getExecution = async (filters?: string) => {
+    let url = `/dashboard_measurements/${34}/execution/`;
+    if (filters) {
+      url = `/dashboard_measurements/${34}/execution/?${filters}`;
+    }
     try {
-      const { data } = await api.get(
-        `/dashboard_measurements/${34}/execution/`
-      );
+      const { data } = await api.get(url);
       // console.log("Execução", data);
       if (data.length) {
         setExecution(data);
       } else {
-        // setExecution(fakeExecution);
         setExecution([]);
       }
     } catch (error) {
@@ -113,11 +115,13 @@ export const useMeasurements = () => {
   const [lessProfitable, setLessProfitable] = useState<ProfitableItem[]>([]);
   const [moreProfitable, setMoreProfitable] = useState<ProfitableItem[]>([]);
 
-  const getProfitability = async () => {
+  const getProfitability = async (filters?: string) => {
+    let url = `/dashboard_measurements/${34}/profitability/`;
+    if (filters) {
+      url = `/dashboard_measurements/${34}/profitability/?${filters}`;
+    }
     try {
-      const { data } = await api.get(
-        `/dashboard_measurements/${34}/profitability/`
-      );
+      const { data } = await api.get(url);
 
       // console.log("Menos rentáveis", data.less_profitable);
       if (data.less_profitable.length) {
@@ -131,7 +135,6 @@ export const useMeasurements = () => {
         );
         setLessProfitable(lessProfitableResponse);
       } else {
-        // setLessProfitable(fakeProfitability);
         setLessProfitable([]);
       }
 
@@ -147,7 +150,6 @@ export const useMeasurements = () => {
         );
         setMoreProfitable(moreProfitableResponse);
       } else {
-        // setMoreProfitable(fakeProfitability);
         setMoreProfitable([]);
       }
     } catch (error) {
