@@ -4,11 +4,10 @@ import { TransitionProps } from "@mui/material/transitions";
 import { ArrowForwardIosRounded as ArroForwardIcon } from "@mui/icons-material/";
 
 import { ProfitabilityFilter } from "../Filters/ProfitabilityFilter";
-import { ServiceFilter } from "../Filters/ServiceFilter";
+import { DisciplineFilter } from "../Filters/DisciplineFilter";
+import { PackageFilter } from "../Filters/PackageFilter";
 import { PeriodFilter } from "../Filters/PeriodFilter";
-import { ScopeFilter } from "../Filters/ScopeFilter";
-import { StepFilter } from "../Filters/StepFilter";
-import { UnitFilter } from "../Filters/UnitFilter";
+import { DailyFilter } from "../Filters/DailyFilter";
 
 import { useStyles } from "./styles";
 
@@ -50,42 +49,38 @@ export const ModalFilters = ({
         </IconButton>
       </div>
 
-      {displayFilterContent(filter)}
+      {displayFilterContent(filter, handleClose)}
     </Dialog>
   );
 };
 
 const displayFilterTitle = (filter: string) => {
   switch (filter) {
-    case "scope":
-      return "Escopo";
-    case "step":
-      return "Etapa";
-    case "service":
-      return "Serviço";
-    case "unit":
-      return "Unidade";
+    case "daily":
+      return "Diárias";
     case "period":
       return "Período";
-    default:
+    case "package":
+      return "Pacotes";
+    case "profitability":
       return "Rentabilidade";
+    default:
+      return "Disciplina";
   }
 };
 
-const displayFilterContent = (filter: string) => {
+const displayFilterContent = (filter: string, handleClose: () => void) => {
   switch (filter) {
-    case "scope":
-      return <ScopeFilter />;
-    case "step":
-      return <StepFilter />;
-    case "service":
-      return <ServiceFilter />;
-    case "unit":
-      return <UnitFilter />;
+    case "daily":
+      return <DailyFilter handleClose={handleClose} />;
     case "period":
-      return <PeriodFilter />;
+      return <PeriodFilter handleClose={handleClose} />;
+    case "package":
+      return <PackageFilter handleClose={handleClose} />;
+    case "profitability":
+      return <ProfitabilityFilter handleClose={handleClose} />;
     default:
-      return <ProfitabilityFilter />;
+      return <DisciplineFilter handleClose={handleClose} />;
   }
 };
 

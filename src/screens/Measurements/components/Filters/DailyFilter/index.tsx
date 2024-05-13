@@ -1,11 +1,11 @@
 import { ActionButtons } from "../components/ActionButtons";
 import { useStyles } from "../filterStyles";
 
-type ServiceFilterProps = {
+type DailyFilterProps = {
   handleClose: () => void;
 };
 
-export const ServiceFilter = ({ handleClose }: ServiceFilterProps) => {
+export const DailyFilter = ({ handleClose }: DailyFilterProps) => {
   const { classes } = useStyles();
 
   const handleApply = () => {

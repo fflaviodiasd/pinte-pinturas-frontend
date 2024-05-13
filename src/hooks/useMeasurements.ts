@@ -58,7 +58,7 @@ export const useMeasurements = () => {
         id: construction.id,
         name: construction.corporate_name,
       }));
-
+      // console.log("constructionList", constructionList);
       setListConstructions(constructionList);
     } catch (error) {
       console.log(error);
@@ -70,19 +70,21 @@ export const useMeasurements = () => {
   const getDataTable = async () => {
     try {
       const { data } = await api.get(
-        `/dashboard_measurements/${9}/data_table/`
+        `/dashboard_measurements/${34}/data_table/`
       );
-      //   console.log("Tabela", data);
+      // console.log("Tabela", data);
       if (data.length) {
-        data.map((item: DataItemReturned) => ({
+        const dataTableResponse = data.map((item: DataItemReturned) => ({
           discipline: item.discipline,
           namePackage: item.name_package,
           avgDays: item.avg_days,
           priceDays: item.price_days,
           priceWorkmanshipDays: item.price_workmanship_days,
         }));
+        setDataTable(dataTableResponse);
       } else {
-        setDataTable(fakeDataTable);
+        // setDataTable(fakeDataTable);
+        setDataTable([]);
       }
     } catch (error) {
       console.log(error);
@@ -93,12 +95,15 @@ export const useMeasurements = () => {
 
   const getExecution = async () => {
     try {
-      const { data } = await api.get(`/dashboard_measurements/${9}/execution/`);
-      //   console.log("Execução", data);
+      const { data } = await api.get(
+        `/dashboard_measurements/${34}/execution/`
+      );
+      // console.log("Execução", data);
       if (data.length) {
         setExecution(data);
       } else {
-        setExecution(fakeExecution);
+        // setExecution(fakeExecution);
+        setExecution([]);
       }
     } catch (error) {
       console.log(error);
@@ -111,31 +116,39 @@ export const useMeasurements = () => {
   const getProfitability = async () => {
     try {
       const { data } = await api.get(
-        `/dashboard_measurements/${9}/profitability/`
+        `/dashboard_measurements/${34}/profitability/`
       );
 
-      //   console.log("Menos rentáveis", data.less_profitable);
+      // console.log("Menos rentáveis", data.less_profitable);
       if (data.less_profitable.length) {
-        data.less_profitable.map((item: ProfitableItemReturned) => ({
-          namePackage: item.name_package,
-          avgDays: item.avg_days,
-          priceDays: item.price_days,
-          priceWorkmanshipDays: item.price_workmanship_days,
-        }));
+        const lessProfitableResponse = data.less_profitable.map(
+          (item: ProfitableItemReturned) => ({
+            namePackage: item.name_package,
+            avgDays: item.avg_days,
+            priceDays: item.price_days,
+            priceWorkmanshipDays: item.price_workmanship_days,
+          })
+        );
+        setLessProfitable(lessProfitableResponse);
       } else {
-        setLessProfitable(fakeProfitability);
+        // setLessProfitable(fakeProfitability);
+        setLessProfitable([]);
       }
 
-      //   console.log("Mais rentáveis", data.more_profitable);
+      // console.log("Mais rentáveis", data.more_profitable);
       if (data.more_profitable.length) {
-        data.more_profitable.map((item: ProfitableItemReturned) => ({
-          namePackage: item.name_package,
-          avgDays: item.avg_days,
-          priceDays: item.price_days,
-          priceWorkmanshipDays: item.price_workmanship_days,
-        }));
+        const moreProfitableResponse = data.more_profitable.map(
+          (item: ProfitableItemReturned) => ({
+            namePackage: item.name_package,
+            avgDays: item.avg_days,
+            priceDays: item.price_days,
+            priceWorkmanshipDays: item.price_workmanship_days,
+          })
+        );
+        setMoreProfitable(moreProfitableResponse);
       } else {
-        setMoreProfitable(fakeProfitability);
+        // setMoreProfitable(fakeProfitability);
+        setMoreProfitable([]);
       }
     } catch (error) {
       console.log(error);
@@ -154,117 +167,3 @@ export const useMeasurements = () => {
     getAllConstructions,
   };
 };
-
-const fakeExecution = [
-  { measurement: "M01", status: { liberado: 40, finalizado: 12 } },
-  { measurement: "M02", status: { liberado: 41, finalizado: 36 } },
-  { measurement: "M03", status: { liberado: 20, finalizado: 35 } },
-  { measurement: "M04", status: { liberado: 27, finalizado: 47 } },
-  { measurement: "M05", status: { liberado: 53, finalizado: 55 } },
-];
-
-const fakeProfitability = [
-  {
-    namePackage: "Pintura externa 1",
-    avgDays: "30",
-    priceDays: "R$ 40,23",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    namePackage: "Pintura externa 2",
-    avgDays: "30",
-    priceDays: "R$ 40,23",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    namePackage: "Pintura externa 3",
-    avgDays: "30",
-    priceDays: "R$ 40,23",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    namePackage: "Pintura externa 4",
-    avgDays: "30",
-    priceDays: "R$ 40,23",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    namePackage: "Pintura externa 5",
-    avgDays: "30",
-    priceDays: "R$ 40,23",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-];
-
-const fakeDataTable = [
-  {
-    discipline: "Gesso",
-    namePackage: "Pintura ",
-    avgDays: "30",
-    priceDays: "R$ 23,00",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    discipline: "Gesso",
-    namePackage: "Pintura Externa",
-    avgDays: "30",
-    priceDays: "R$ 23,00",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    discipline: "Gesso",
-    namePackage: "Pintura Externa",
-    avgDays: "30",
-    priceDays: "R$ 23,00",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    discipline: "Exemplo de disciplina",
-    namePackage: "Pintura Externa",
-    avgDays: "30",
-    priceDays: "R$ 23,00",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    discipline: "Gesso",
-    namePackage: "Pintura Interna",
-    avgDays: "30",
-    priceDays: "R$ 23,00",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    discipline: "Gesso",
-    namePackage: "Pintura Interna",
-    avgDays: "30",
-    priceDays: "R$ 23,00",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    discipline: "Gesso",
-    namePackage: "Pintura Interna",
-    avgDays: "30",
-    priceDays: "R$ 23,00",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    discipline: "Gesso",
-    namePackage: "Pintura Interna",
-    avgDays: "30",
-    priceDays: "R$ 23,00",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    discipline: "Gesso",
-    namePackage: "Pintura Interna",
-    avgDays: "30",
-    priceDays: "R$ 23,00",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-  {
-    discipline: "Gesso",
-    namePackage: "Pintura Interna",
-    avgDays: "30",
-    priceDays: "R$ 23,00",
-    priceWorkmanshipDays: "R$ 23,23",
-  },
-];

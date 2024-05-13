@@ -55,62 +55,20 @@ export function Measurements() {
             onClick={() => {}}
           />
         </Grid>
-        <Grid item lg={4} />
-        <Grid item lg={6} className={classes.filterContainer}>
-          <Button
-            className={classes.filterButton}
-            onClick={() => {
-              setSelectedFilter("scope");
-              handleClickOpen();
-            }}
-          >
-            Escopo
-          </Button>
-          <Button
-            className={classes.filterButton}
-            onClick={() => {
-              setSelectedFilter("step");
-              handleClickOpen();
-            }}
-          >
-            Etapa
-          </Button>
-          <Button
-            className={classes.filterButton}
-            onClick={() => {
-              setSelectedFilter("service");
-              handleClickOpen();
-            }}
-          >
-            Serviço
-          </Button>
-          <Button
-            className={classes.filterButton}
-            onClick={() => {
-              setSelectedFilter("unit");
-              handleClickOpen();
-            }}
-          >
-            Unidade
-          </Button>
-          <Button
-            className={classes.filterButton}
-            onClick={() => {
-              setSelectedFilter("period");
-              handleClickOpen();
-            }}
-          >
-            Período
-          </Button>
-          <Button
-            className={classes.filterButton}
-            onClick={() => {
-              setSelectedFilter("profitability");
-              handleClickOpen();
-            }}
-          >
-            Rentabilidade
-          </Button>
+        <Grid item lg={2} />
+        <Grid item lg={8} className={classes.filterContainer}>
+          {listFilters.map((filter) => (
+            <Button
+              key={filter.filterName}
+              className={classes.filterButton}
+              onClick={() => {
+                setSelectedFilter(filter.filterName);
+                handleClickOpen();
+              }}
+            >
+              {filter.text}
+            </Button>
+          ))}
         </Grid>
       </Grid>
 
@@ -125,3 +83,11 @@ export function Measurements() {
     </Grid>
   );
 }
+
+const listFilters = [
+  { text: "Diárias", filterName: "daily" },
+  { text: "Período", filterName: "period" },
+  { text: "Pacotes", filterName: "package" },
+  { text: "Rentabilidade", filterName: "profitability" },
+  { text: "Disciplina", filterName: "discipline" },
+];
