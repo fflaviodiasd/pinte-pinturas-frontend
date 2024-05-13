@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
@@ -50,6 +50,17 @@ const Locations = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [valueActual, setValueActual] = useState();
 
+  const [listLocal, setListLocal] = useState<any>();
+
+  useEffect(() => {
+    console.log("treco", listLocal);
+  }, [listLocal]);
+
+  // const listLocal = useMemo(() => {
+  //   console.log("Lista do memo", listConstructionsLocations);
+  //   return [listConstructionsLocations];
+  // }, [listConstructionsLocations]);
+
   type CustomMRT_ColumnDef<T> = MRT_ColumnDef<any> & {
     muiTableBodyCellProps?: (cell: MRT_Cell<any>) => {
       onChange: (e: any) => void;
@@ -74,6 +85,7 @@ const Locations = () => {
 
   useEffect(() => {
     setRowCount(listConstructionsLocations.length);
+    console.log("Mudou a ", listConstructionsLocations);
   }, [listConstructionsLocations]);
 
   useLayoutEffect(() => {
@@ -93,6 +105,11 @@ const Locations = () => {
             header: "ID",
             enableEditing: false,
             Cell: ({ row }: any) => {
+              {
+                editState.rowId === row.id
+                  ? (row.original.code = generateNextId(rowCount))
+                  : null;
+              }
               return (
                 <div>
                   {editState.rowId === row.id
@@ -132,18 +149,25 @@ const Locations = () => {
                   const newValue = e.target.value;
                   const rowId = cell.row.id;
                   setEditState({ rowId, value: newValue });
-                  console.log(`Row ${rowId} has value ${newValue}`);
                   setValueActual(e.target.value);
                   if (listConstructionsLocations.length > 0) {
+
                     const newList = listConstructionsLocations.map(
                       (item: any) => {
-                        if (item.id === cell.row.id) {
+                        if (item.code === cell.row.original.code) {
                           item[cell.column.id] = e.target.value;
+                          item.ids?.forEach((itemId: any) => {
+                            if (itemId.id_ref === +cell.column.id.slice(6)) {
+                              itemId.name = e.target.value;
+                            }
+                          });
                         }
+
                         return item;
                       }
                     );
                     console.log("newlist", newList);
+                    setListLocal(newList);
                     setListConstructionsLocations(newList);
                   }
                 },
@@ -159,13 +183,20 @@ const Locations = () => {
                   if (listConstructionsLocations.length > 0) {
                     const newList = listConstructionsLocations.map(
                       (item: any) => {
-                        if (item.id === cell.row.id) {
+                        if (item.code === cell.row.original.code) {
                           item[cell.column.id] = e.target.value;
+                          item.ids?.forEach((itemId: any) => {
+                            if (itemId.id_ref === +cell.column.id.slice(6)) {
+                              itemId.name = e.target.value;
+                            }
+                          });
                         }
+
                         return item;
                       }
                     );
                     console.log("newlist", newList);
+                    setListLocal(newList);
                     setListConstructionsLocations(newList);
                   }
                 },
@@ -283,15 +314,21 @@ const Locations = () => {
               variant="contained"
               onClick={() => {
                 const control: any = {};
-                const teste = dynamicColumns
+                const transform = dynamicColumns
                   .filter((item: any, index: any) => index >= 2)
-                  .map((item2: any) => (control[item2.id] = ""));
-                console.log("teste", teste);
-
-                setListConstructionsLocations([
-                  ...listConstructionsLocations,
-                  { checklist: 0, code: "", id: null, ...control },
-                ]);
+                  .map((item2: any) => {
+                    control[item2.id] = "";
+                  });
+                if (transform) {
+                  setListLocal([
+                    ...listConstructionsLocations,
+                    { checklist: 0, code: "", id: null, ...control },
+                  ]);
+                  setListConstructionsLocations([
+                    ...listConstructionsLocations,
+                    { checklist: 0, code: "", id: null, ...control },
+                  ]);
+                }
               }}
               style={{
                 marginRight: "0.5rem",

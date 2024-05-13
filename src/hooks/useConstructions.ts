@@ -158,11 +158,20 @@ export const useConstructions = () => {
             .map((column) => {
               const name =
                 item && item[column.accessorKey as keyof typeof item];
-              const filterId =
-                item.length > 0 &&
-                item.ids?.filter((item: any) => item.name === name);
+              console.log("name", name);
+              console.log("item", item);
+              console.log("column", column);
+
+              const filterId: any = [];
+              if (item) {
+                item.ids?.forEach((item_interno: any) => {
+                  filterId.push(item_interno);
+                  // if (item.name === name) {
+                  // }
+                });
+              }
               return {
-                id: filterId ? filterId[0].id : null,
+                id: filterId[0] ? filterId[0].id : null,
                 level: {
                   id: Number(column?.id?.slice(6, column.id?.length)),
                   name: column.header,
@@ -465,7 +474,6 @@ export const useConstructions = () => {
     setLoading(true);
     try {
       const { data } = await api.get(`/constructions/${id}/areas/`);
-      console.log(data);
       const constructionLocalList = data.areas.map((result: any) => {
         // const levelNames: Record<string, string> = {};
         const levelNames: any = {};
@@ -476,12 +484,14 @@ export const useConstructions = () => {
           );
           if (matchingColumn) {
             levelNames[`nivel_${level.level.id}`] = level.name;
-            // levelNamesWithId[`nivel_${level.level.id}`] = {
+            // levelNames[`nivel_${level.level.id}`] = {
             //   id: level.id,
             //   name: level.name,
             // };
+
             levelNamesWithId.push({
-              id: level.id,
+              id: level.id || null,
+              id_ref: level.level.id,
               name: level.name,
             });
           }
@@ -494,6 +504,8 @@ export const useConstructions = () => {
           ...levelNames,
         };
       });
+      console.log(constructionLocalList);
+
       setListConstructionsLocations(constructionLocalList);
 
       setLoading(false);
