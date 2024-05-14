@@ -95,6 +95,44 @@ const Locations = () => {
     }
   }, [dynamicColumns]);
 
+  const [pendingUpdates, setPendingUpdates] = useState<any>([]);
+
+  useEffect(() => {
+    //ESSE EFFECT CONTROLA AS ATUALIZAÇÕES PENDENTES, ELE CHECA SE HÁ ALGUMA, E ENTÃO COLOCA ELA NA LISTA
+    if (pendingUpdates.length > 0) {
+        setListConstructionsLocations((current) => [
+        ...current,
+        ...pendingUpdates,
+      ]);
+      setPendingUpdates([]); // LIMPA TODAS AS ATUALIZAÇÕES PENDENTES
+    }
+  }, [pendingUpdates]);
+
+  const updateLocationData = (cell: any, newValue: any) => {
+    //CRIEI UMA FUNÇÃO QUE ATUALIZA A CÉLULA EM VEZ DE ATUALIZAR DIRETO DENTRO DO CHANGE, NESSA EU USO UMA FUNÇÃO DE CALLBACK DO PRÓRPIO SET DO USESTATE PARA GARANTIR QUE VOU USAR A VERSÃO MAIS ATUALIZADA DA LISTA
+    setListConstructionsLocations((currentLocations) => {
+      return currentLocations.map((location) => {
+        if (location.code === cell.row.original.code) {
+          //CRIO UMA NOVA COPIA DA LISTA PRA EVITAR QUE TENHA UMA MUTAÇÃO DIRETA
+          const updatedLocation = { ...location, [cell.column.id]: newValue };
+
+          //SE TIVER CAMPOS NAS CELULAS, ATUALIZO
+          if (updatedLocation.ids) {
+            updatedLocation.ids = updatedLocation.ids.map((itemId: any) => {
+              if (itemId.id_ref === +cell.column.id.slice(6)) {
+                return { ...itemId, name: newValue };
+              }
+              return itemId;
+            });
+          }
+
+          return updatedLocation;
+        }
+        return location;
+      });
+    });
+  };
+
   useLayoutEffect(() => {
     const fetchLevel = async () => {
       try {
@@ -150,26 +188,7 @@ const Locations = () => {
                   const rowId = cell.row.id;
                   setEditState({ rowId, value: newValue });
                   setValueActual(e.target.value);
-                  if (listConstructionsLocations.length > 0) {
-
-                    const newList = listConstructionsLocations.map(
-                      (item: any) => {
-                        if (item.code === cell.row.original.code) {
-                          item[cell.column.id] = e.target.value;
-                          item.ids?.forEach((itemId: any) => {
-                            if (itemId.id_ref === +cell.column.id.slice(6)) {
-                              itemId.name = e.target.value;
-                            }
-                          });
-                        }
-
-                        return item;
-                      }
-                    );
-                    console.log("newlist", newList);
-                    setListLocal(newList);
-                    setListConstructionsLocations(newList);
-                  }
+                  updateLocationData(cell, newValue);
                 },
               }),
             });
@@ -180,25 +199,8 @@ const Locations = () => {
               muiTableBodyCellProps: ({ cell }: any) => ({
                 onChange: (e: any) => {
                   setValueActual(e.target.value);
-                  if (listConstructionsLocations.length > 0) {
-                    const newList = listConstructionsLocations.map(
-                      (item: any) => {
-                        if (item.code === cell.row.original.code) {
-                          item[cell.column.id] = e.target.value;
-                          item.ids?.forEach((itemId: any) => {
-                            if (itemId.id_ref === +cell.column.id.slice(6)) {
-                              itemId.name = e.target.value;
-                            }
-                          });
-                        }
-
-                        return item;
-                      }
-                    );
-                    console.log("newlist", newList);
-                    setListLocal(newList);
-                    setListConstructionsLocations(newList);
-                  }
+                  const newValue = e.target.value;
+                  updateLocationData(cell, newValue);
                 },
               }),
             });
@@ -256,6 +258,17 @@ const Locations = () => {
   const deleteIconMessage =
     selectedLocalIds.length === 1 ? "Remover local" : "Remover locais";
 
+  const addNewLine = () => {
+    //ESSA FUNÇÃO AQUI CONTROLA UM ESTADO INTERMEDIÁRIO, PARA NÃO FAZER A ALTERAÇÃO DIRETO DENTRO DA LISTA, É TIPO UM PONTO DE PAUSA NO PROCESSO
+    setPendingUpdates((currentUpdates) => {
+      const control = {};
+      dynamicColumns.forEach((column, index) => {
+        if (index >= 2) control[column.id] = "";
+      });
+      const newLine = { checklist: 0, code: "", id: null, ...control };
+      return [...currentUpdates, newLine];
+    });
+  };
   const table = useMaterialReactTable({
     columns: dynamicColumns,
     data: listConstructionsLocations,
@@ -312,24 +325,7 @@ const Locations = () => {
           <div>
             <Button
               variant="contained"
-              onClick={() => {
-                const control: any = {};
-                const transform = dynamicColumns
-                  .filter((item: any, index: any) => index >= 2)
-                  .map((item2: any) => {
-                    control[item2.id] = "";
-                  });
-                if (transform) {
-                  setListLocal([
-                    ...listConstructionsLocations,
-                    { checklist: 0, code: "", id: null, ...control },
-                  ]);
-                  setListConstructionsLocations([
-                    ...listConstructionsLocations,
-                    { checklist: 0, code: "", id: null, ...control },
-                  ]);
-                }
-              }}
+              onClick={addNewLine}
               style={{
                 marginRight: "0.5rem",
                 textTransform: "capitalize",

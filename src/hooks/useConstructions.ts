@@ -158,16 +158,10 @@ export const useConstructions = () => {
             .map((column) => {
               const name =
                 item && item[column.accessorKey as keyof typeof item];
-              console.log("name", name);
-              console.log("item", item);
-              console.log("column", column);
-
               const filterId: any = [];
               if (item) {
                 item.ids?.forEach((item_interno: any) => {
                   filterId.push(item_interno);
-                  // if (item.name === name) {
-                  // }
                 });
               }
               return {
