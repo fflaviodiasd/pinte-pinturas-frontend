@@ -10,8 +10,8 @@ export function MeasurementsPackages() {
   const { classes } = useStyles();
 
   return (
-    <Grid item lg={12} className={classes.content}>
-      <Grid item lg={8} className={classes.graphContainer}>
+    <Grid item md={12} lg={12} className={classes.content}>
+      <Grid item md={8} lg={8} className={classes.graphContainer}>
         <ExecutionGraph />
         <DataTable />
       </Grid>

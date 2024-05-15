@@ -19,106 +19,97 @@ export const ProfitableTable = () => {
     getProfitability();
   }, []);
 
+  const hasMoreProfitableData = moreProfitable.length > 0;
+  const hasLessProfitableData = lessProfitable.length > 0;
+
   return (
-    <Grid item lg={4} className={classes.profitableContainer}>
-      <div style={{ height: "50%" }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 8,
-            color: "#4caf50",
-          }}
-        >
-          <TrendingUpIcon />
-          <Typography
-            style={{
-              fontFamily: "Open Sans",
-              fontWeight: 600,
-            }}
-          >
+    <Grid item md={4} lg={4} className={classes.profitableContainer}>
+      <div className={classes.content}>
+        <div className={classes.titleTable}>
+          <TrendingUpIcon className={classes.moreProfitableIcon} />
+          <Typography className={classes.moreProfitableTitle}>
             Mais rentáveis
           </Typography>
         </div>
 
-        <TableContainer>
-          <table>
-            <thead>
-              <tr>
-                {profitableTableColumns.map((column) => (
-                  <th key={column}>{column}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {moreProfitable.map((item) => (
-                <tr key={item.namePackage}>
-                  <td className={classes.colunm1}>
-                    {item.namePackage}
-                    <br />
-                    {item.avgDays}m²
-                  </td>
-                  <td className={classes.colunm2}>{item.priceDays}</td>
-                  <td className={classes.colunm2}>
-                    {item.priceWorkmanshipDays}
-                  </td>
+        {hasMoreProfitableData ? (
+          <TableContainer>
+            <table>
+              <thead>
+                <tr>
+                  {profitableTableColumns.map((column) => (
+                    <th key={column}>{column}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </TableContainer>
+              </thead>
+              <tbody>
+                {moreProfitable.map((item) => (
+                  <tr key={item.namePackage}>
+                    <td className={classes.colunm}>
+                      {item.namePackage}
+                      <br />
+                      {item.avgDays}m²
+                    </td>
+                    <td className={classes.colunm}>{item.priceDays}</td>
+                    <td className={classes.colunm}>
+                      {item.priceWorkmanshipDays}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableContainer>
+        ) : (
+          <div className={classes.emptyDataContainer}>
+            <Typography className={classes.emptyDataText}>
+              Não há dados para serem mostrados
+            </Typography>
+          </div>
+        )}
       </div>
 
-      <div style={{ height: "50%" }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <TrendingDownIcon
-            style={{ color: "#ffa51f", transform: "scaleX(-1)" }}
-          />
-          <Typography
-            style={{
-              fontFamily: "Open Sans",
-              fontWeight: 600,
-              color: "#ffa51f",
-            }}
-          >
+      <div className={classes.content}>
+        <div className={classes.titleTable}>
+          <TrendingDownIcon className={classes.lessProfitableIcon} />
+          <Typography className={classes.lessProfitableTitle}>
             Menos rentáveis
           </Typography>
         </div>
 
-        <TableContainer>
-          <table>
-            <thead>
-              <tr>
-                {profitableTableColumns.map((column) => (
-                  <th key={column}>{column}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {lessProfitable.map((item) => (
-                <tr key={item.namePackage}>
-                  <td className={classes.colunm1}>
-                    {item.namePackage}
-                    <br />
-                    {item.avgDays}m²
-                  </td>
-                  <td className={classes.colunm2}>{item.priceDays}</td>
-                  <td className={classes.colunm2}>
-                    {item.priceWorkmanshipDays}
-                  </td>
+        {hasLessProfitableData ? (
+          <TableContainer>
+            <table>
+              <thead>
+                <tr>
+                  {profitableTableColumns.map((column) => (
+                    <th key={column}>{column}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </TableContainer>
+              </thead>
+              <tbody>
+                {lessProfitable.map((item) => (
+                  <tr key={item.namePackage}>
+                    <td className={classes.colunm}>
+                      {item.namePackage}
+                      <br />
+                      {item.avgDays}m²
+                    </td>
+                    <td className={classes.colunm}>{item.priceDays}</td>
+                    <td className={classes.colunm}>
+                      {item.priceWorkmanshipDays}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableContainer>
+        ) : (
+          <div className={classes.emptyDataContainer}>
+            <Typography className={classes.emptyDataText}>
+              Não há dados para serem mostrados
+            </Typography>
+          </div>
+        )}
       </div>
     </Grid>
   );

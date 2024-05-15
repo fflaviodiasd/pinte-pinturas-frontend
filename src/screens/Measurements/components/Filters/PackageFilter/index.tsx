@@ -8,6 +8,9 @@ import {
   TextField,
 } from "@mui/material";
 
+import { KEY_PACKAGE_OPTIONS } from "../../../../../utils/consts";
+import { FilterOption } from "../../../../../types";
+
 import { ActionButtons } from "../components/ActionButtons";
 import { useStyles } from "../filterStyles";
 
@@ -23,32 +26,36 @@ interface FilmOptionType {
 export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
   const { classes } = useStyles();
 
-  const [newOptions, setNewOptions] = useState([
-    { name: "Pacote 01", checked: false },
-    { name: "Pacote 02", checked: false },
-    { name: "Pacote 03", checked: false },
-    { name: "Pacote 04", checked: false },
-    { name: "Pacote 05", checked: false },
-  ]);
-  const [value, setValue] = useState<FilmOptionType | null>(null);
-  const movies = [
-    { title: "The Shawshank Redemption", year: 1994 },
-    { title: "The Godfather", year: 1972 },
-    { title: "The Godfather: Part II", year: 1974 },
-    { title: "The Dark Knight", year: 2008 },
-    { title: "12 Angry Men", year: 1957 },
-    { title: "Schindler's List", year: 1993 },
-    { title: "Pulp Fiction", year: 1994 },
-  ];
-
-  const clearValues = () => {
-    setNewOptions([]);
-    setValue(null);
+  const getStoredOptions = () => {
+    const packageOptionsStorage = localStorage.getItem(KEY_PACKAGE_OPTIONS);
+    if (packageOptionsStorage) {
+      const packageOptionsParsed = JSON.parse(packageOptionsStorage);
+      return packageOptionsParsed;
+    }
+    return [
+      { name: "Pacote 01", checked: false },
+      { name: "Pacote 02", checked: false },
+      { name: "Pacote 03", checked: false },
+      { name: "Pacote 04", checked: false },
+      { name: "Pacote 05", checked: false },
+    ];
   };
 
-  const selectedOptions = newOptions.filter(
-    (option) => option.checked === true
-  );
+  const setStorageOptions = () => {
+    const packageOptions = JSON.stringify(options);
+    localStorage.setItem(KEY_PACKAGE_OPTIONS, packageOptions);
+  };
+
+  const [options, setOptions] = useState<FilterOption[]>(getStoredOptions());
+  const [value, setValue] = useState<FilmOptionType | null>(null);
+
+  const clearValues = () => {
+    setOptions([]);
+    setValue(null);
+    localStorage.removeItem(KEY_PACKAGE_OPTIONS);
+  };
+
+  const selectedOptions = options.filter((option) => option.checked === true);
 
   const queryParams = selectedOptions
     .map((option) => `package_name=${option.name}`)
@@ -58,6 +65,7 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
 
   const handleApply = () => {
     console.log(queryParams);
+    setStorageOptions();
     handleClose();
   };
 
@@ -70,7 +78,7 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
       setValue(value);
       return;
     }
-    setNewOptions((prevState) => {
+    setOptions((prevState) => {
       const alreadyExist =
         prevState.filter((option) => option.name === value.title).length > 0;
       if (alreadyExist) {
@@ -85,11 +93,6 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
       ];
     });
     setValue(null);
-  };
-
-  const defaultProps = {
-    options: movies,
-    getOptionLabel: (option: FilmOptionType) => option.title,
   };
 
   return (
@@ -114,13 +117,13 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
         />
 
         <FormGroup>
-          {newOptions.map((option, index) => (
+          {options.map((option, index) => (
             <FormControlLabel
               control={
                 <Checkbox
                   checked={option.checked}
                   onChange={(e) =>
-                    setNewOptions((prevState) => {
+                    setOptions((prevState) => {
                       return prevState.map((prevItem, prevIndex) => {
                         if (prevIndex === index) {
                           return { ...prevItem, checked: e.target.checked };
@@ -145,4 +148,19 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
       />
     </div>
   );
+};
+
+const movies = [
+  { title: "The Shawshank Redemption", year: 1994 },
+  { title: "The Godfather", year: 1972 },
+  { title: "The Godfather: Part II", year: 1974 },
+  { title: "The Dark Knight", year: 2008 },
+  { title: "12 Angry Men", year: 1957 },
+  { title: "Schindler's List", year: 1993 },
+  { title: "Pulp Fiction", year: 1994 },
+];
+
+const defaultProps = {
+  options: movies,
+  getOptionLabel: (option: FilmOptionType) => option.title,
 };

@@ -17,8 +17,11 @@ export const useStyles = makeStyles()((theme: Theme) => {
     tabContainer: {
       display: "flex",
       flexDirection: "row",
-      padding: "24px 16px",
+      padding: "20px 16px",
       backgroundColor: "#EEE",
+      // [theme.breakpoints.down("xl")]: {
+      //   padding: "20px 16px",
+      // },
     },
     filterContainer: {
       gap: 8,

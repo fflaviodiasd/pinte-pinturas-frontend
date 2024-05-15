@@ -89,6 +89,11 @@ export const ExecutionGraph = () => {
         position: "left" as const,
       },
     },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
   };
 
   return (

@@ -9,14 +9,47 @@ export const useStyles = makeStyles()(() => {
       marginLeft: 16,
       padding: 16,
       height: "calc(100vh - 164px)",
+      overflow: "auto",
+      scrollbarWidth: "thin",
     },
-    colunm1: {
-      fontSize: 14,
+    content: {
+      height: "50%",
+      flex: 1,
+    },
+    titleTable: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+    },
+    emptyDataContainer: {
+      height: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    emptyDataText: {
       fontFamily: "Open Sans",
-      color: "#2E3132",
-      padding: 4,
+      color: "#999",
     },
-    colunm2: {
+    moreProfitableIcon: {
+      color: "#4caf50",
+    },
+    moreProfitableTitle: {
+      fontFamily: "Open Sans",
+      fontWeight: 600,
+      color: "#4caf50",
+    },
+    lessProfitableIcon: {
+      color: "#ffa51f",
+      transform: "scaleX(-1)",
+    },
+    lessProfitableTitle: {
+      fontFamily: "Open Sans",
+      fontWeight: 600,
+      color: "#ffa51f",
+    },
+    colunm: {
       fontSize: 14,
       fontFamily: "Open Sans",
       color: "#2E3132",
@@ -36,6 +69,7 @@ export const TableContainer = styled.div`
   }
 
   th {
+    font-size: 14px;
     font-family: "Open Sans";
     font-weight: 600;
     color: #2e3132;
@@ -44,7 +78,7 @@ export const TableContainer = styled.div`
 
   td {
     &:first-child {
-      width: 60%;
+      width: 50%;
     }
   }
 

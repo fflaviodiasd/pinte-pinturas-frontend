@@ -68,9 +68,9 @@ export const useMeasurements = () => {
   const [dataTable, setDataTable] = useState<DataItem[]>([]);
 
   const getDataTable = async (filters?: string) => {
-    let url = `/dashboard_measurements/${34}/data_table/`;
+    let url = `/reports_measurements/${34}/data_table/`;
     if (filters) {
-      url = `/dashboard_measurements/${34}/data_table/?${filters}`;
+      url = `/reports_measurements/${34}/data_table/?${filters}`;
     }
     try {
       const { data } = await api.get(url);
@@ -95,9 +95,9 @@ export const useMeasurements = () => {
   const [execution, setExecution] = useState<Execution[]>([]);
 
   const getExecution = async (filters?: string) => {
-    let url = `/dashboard_measurements/${34}/execution/`;
+    let url = `/reports_measurements/${34}/execution/`;
     if (filters) {
-      url = `/dashboard_measurements/${34}/execution/?${filters}`;
+      url = `/reports_measurements/${34}/execution/?${filters}`;
     }
     try {
       const { data } = await api.get(url);
@@ -116,9 +116,9 @@ export const useMeasurements = () => {
   const [moreProfitable, setMoreProfitable] = useState<ProfitableItem[]>([]);
 
   const getProfitability = async (filters?: string) => {
-    let url = `/dashboard_measurements/${34}/profitability/`;
+    let url = `/reports_measurements/${34}/profitability/`;
     if (filters) {
-      url = `/dashboard_measurements/${34}/profitability/?${filters}`;
+      url = `/reports_measurements/${34}/profitability/?${filters}`;
     }
     try {
       const { data } = await api.get(url);

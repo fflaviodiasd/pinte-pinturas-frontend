@@ -98,7 +98,7 @@ export type Customer = {
   stateRegistration: string;
   email: string;
   phoneNumber: string;
-  construction: any[];  
+  construction: any[];
 };
 
 export type Company = {
@@ -112,4 +112,9 @@ export type Company = {
   neighborhood: string;
   city: string;
   cep: string;
+};
+
+export type FilterOption = {
+  name: string;
+  checked: boolean;
 };

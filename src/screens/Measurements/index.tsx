@@ -37,11 +37,11 @@ export function Measurements() {
 
   return (
     <Grid container>
-      <Grid item lg={12} className={classes.titleContainer}>
+      <Grid item sm={12} md={12} lg={12} className={classes.titleContainer}>
         <Typography className={classes.title}>Medições</Typography>
       </Grid>
-      <Grid item lg={12} className={classes.tabContainer}>
-        <Grid item lg={2} style={{ display: "flex", gap: 8 }}>
+      <Grid item sm={12} md={12} lg={12} className={classes.tabContainer}>
+        <Grid item sm={2} md={2} lg={2} style={{ display: "flex", gap: 8 }}>
           {/* <Tab
             text="Serviços"
             isActive={!location.pathname.includes("pacotes")}
@@ -55,8 +55,8 @@ export function Measurements() {
             onClick={() => {}}
           />
         </Grid>
-        <Grid item lg={2} />
-        <Grid item lg={8} className={classes.filterContainer}>
+        <Grid item sm={2} md={2} lg={2} />
+        <Grid item sm={8} md={8} lg={8} className={classes.filterContainer}>
           {listFilters.map((filter) => (
             <Button
               key={filter.filterName}

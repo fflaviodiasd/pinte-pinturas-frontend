@@ -12,17 +12,40 @@ export const useStyles = makeStyles()(() => {
       flexDirection: "column",
       marginTop: 12,
     },
-    columnTitle: {
+    columnTitleMedium: {
+      width: 150,
       fontSize: 14,
       fontFamily: "Open Sans",
       fontWeight: 600,
       color: "#2E3132",
     },
-    colunm: {
+    columnTitleSmall: {
+      width: 100,
+      fontSize: 14,
+      fontFamily: "Open Sans",
+      fontWeight: 600,
+      color: "#2E3132",
+    },
+    cell: {
       fontSize: 14,
       fontFamily: "Open Sans",
       color: "#2E3132",
       padding: 4,
+    },
+    totalResultsText: {
+      fontFamily: "Open Sans",
+      color: "#2E3132",
+      fontSize: 14,
+    },
+    emptyDataContainer: {
+      height: 300,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    emptyDataText: {
+      fontFamily: "Open Sans",
+      color: "#999",
     },
   };
 });

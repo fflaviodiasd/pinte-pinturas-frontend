@@ -8,6 +8,9 @@ import {
   TextField,
 } from "@mui/material";
 
+import { KEY_DAILY_OPTIONS } from "../../../../../utils/consts";
+import { FilterOption } from "../../../../../types";
+
 import { ActionButtons } from "../components/ActionButtons";
 import { useStyles } from "../filterStyles";
 
@@ -23,29 +26,31 @@ interface FilmOptionType {
 export const DailyFilter = ({ handleClose }: DailyFilterProps) => {
   const { classes } = useStyles();
 
-  const [options, setOptions] = useState([
-    { name: "12 dias", checked: false },
-    { name: "15 dias", checked: false },
-    { name: "19 dias", checked: false },
-    { name: "23 dias", checked: false },
-    { name: "43 dias", checked: false },
-    { name: "123 dias", checked: false },
-  ]);
+  const getStoredOptions = () => {
+    const dailyOptionsStorage = localStorage.getItem(KEY_DAILY_OPTIONS);
+    if (dailyOptionsStorage) {
+      const dailyOptionsParsed = JSON.parse(dailyOptionsStorage);
+      return dailyOptionsParsed;
+    }
+    return [
+      { name: "12 dias", checked: false },
+      { name: "15 dias", checked: false },
+      { name: "19 dias", checked: false },
+    ];
+  };
 
+  const setStorageOptions = () => {
+    const dailyOptions = JSON.stringify(options);
+    localStorage.setItem(KEY_DAILY_OPTIONS, dailyOptions);
+  };
+
+  const [options, setOptions] = useState<FilterOption[]>(getStoredOptions());
   const [value, setValue] = useState<FilmOptionType | null>(null);
-  const movies = [
-    { title: "The Shawshank Redemption", year: 1994 },
-    { title: "The Godfather", year: 1972 },
-    { title: "The Godfather: Part II", year: 1974 },
-    { title: "The Dark Knight", year: 2008 },
-    { title: "12 Angry Men", year: 1957 },
-    { title: "Schindler's List", year: 1993 },
-    { title: "Pulp Fiction", year: 1994 },
-  ];
 
   const clearValues = () => {
     setOptions([]);
     setValue(null);
+    localStorage.removeItem(KEY_DAILY_OPTIONS);
   };
 
   const selectedOptions = options.filter((option) => option.checked === true);
@@ -58,6 +63,7 @@ export const DailyFilter = ({ handleClose }: DailyFilterProps) => {
 
   const handleApply = () => {
     console.log(queryParams);
+    setStorageOptions();
     handleClose();
   };
 
@@ -85,11 +91,6 @@ export const DailyFilter = ({ handleClose }: DailyFilterProps) => {
       ];
     });
     setValue(null);
-  };
-
-  const defaultProps = {
-    options: movies,
-    getOptionLabel: (option: FilmOptionType) => option.title,
   };
 
   return (
@@ -145,4 +146,19 @@ export const DailyFilter = ({ handleClose }: DailyFilterProps) => {
       />
     </div>
   );
+};
+
+const movies = [
+  { title: "The Shawshank Redemption", year: 1994 },
+  { title: "The Godfather", year: 1972 },
+  { title: "The Godfather: Part II", year: 1974 },
+  { title: "The Dark Knight", year: 2008 },
+  { title: "12 Angry Men", year: 1957 },
+  { title: "Schindler's List", year: 1993 },
+  { title: "Pulp Fiction", year: 1994 },
+];
+
+const defaultProps = {
+  options: movies,
+  getOptionLabel: (option: FilmOptionType) => option.title,
 };
