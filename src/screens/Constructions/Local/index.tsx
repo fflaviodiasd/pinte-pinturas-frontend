@@ -49,6 +49,7 @@ const Locations = () => {
   const [modalOpen, setIsModalOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [valueActual, setValueActual] = useState();
+  const [control, setControl] = useState();
 
   type CustomMRT_ColumnDef<T> = MRT_ColumnDef<any> & {
     muiTableBodyCellProps?: (cell: MRT_Cell<any>) => {
@@ -180,7 +181,7 @@ const Locations = () => {
     };
 
     fetchLevel();
-  }, [valueActual, editState]);
+  }, [valueActual, editState, control]);
 
   const handleCreateLocal = async () => {
     const code = generateNextId(rowCount);
@@ -333,7 +334,7 @@ const Locations = () => {
         <div style={{ display: "flex", justifyContent: "right" }}>
           <StatusPanel />
         </div>
-        <LevelComponent />
+        <LevelComponent setControl={setControl} />
       </div>
     ),
   });

@@ -356,7 +356,6 @@ export const useConstructions = () => {
       };
 
       await api.delete(`/areas/bulk/`, { data: requestBody });
-      getAllConstructions();
       successMessage("Local apagado com sucesso!");
       setLoading(false);
     } catch (error: any) {
