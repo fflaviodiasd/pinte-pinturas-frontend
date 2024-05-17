@@ -59,7 +59,7 @@ api.interceptors.response.use(
 
         if (tokenParts.exp > now) {
           return api
-            .post("/token/refresh/", { refresh: refreshToken })
+            .post("accounts/token/refresh/", { refresh: refreshToken })
             .then((response) => {
               localStorage.setItem(KEY_TOKEN, response.data.access);
               localStorage.setItem(KEY_REFRESH_TOKEN, response.data.refresh);

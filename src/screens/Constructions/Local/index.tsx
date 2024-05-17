@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
   type MRT_Row,
   type MRT_TableOptions,
   useMaterialReactTable,
+  MRT_Cell,
 } from "material-react-table";
 import { Box, Button, Checkbox, Tooltip, Typography } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -29,9 +30,9 @@ const Locations = () => {
     Record<string, string | undefined>
   >({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [dynamicColumns, setDynamicColumns] = useState<MRT_ColumnDef<any>[]>(
-    []
-  );
+  const [dynamicColumns, setDynamicColumns] = useState<
+    CustomMRT_ColumnDef<any>[]
+  >([]);
   const { id } = useParams();
 
   const {
@@ -39,30 +40,67 @@ const Locations = () => {
     getAllConstructionsLocations,
     addConstructionLocal,
     disableConstructionLocal,
+    setListConstructionsLocations,
   } = useConstructions();
 
   const [selectedLocalIds, setSelectedLocalIds] = useState<number[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { classes } = useStyles();
   const [modalOpen, setIsModalOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [valueActual, setValueActual] = useState();
+
+  type CustomMRT_ColumnDef<T> = MRT_ColumnDef<any> & {
+    muiTableBodyCellProps?: (cell: MRT_Cell<any>) => {
+      onChange: (e: any) => void;
+    };
+  };
+
+  const generateNextId = (rowCount: any) => {
+    const nextId = rowCount;
+    return `L${nextId.toString().padStart(4, "0")}`;
+  };
+
+  const [rowCount, setRowCount] = useState(0);
+
+  const [editState, setEditState] = useState({
+    rowId: null,
+    value: "",
+  });
 
   const handleClose = () => {
     setIsModalOpen(false);
   };
 
   useEffect(() => {
-    getAllConstructionsLocations(dynamicColumns);
+    setRowCount(listConstructionsLocations.length);
+  }, [listConstructionsLocations]);
+
+  useLayoutEffect(() => {
+    if (!isLoaded && dynamicColumns.length > 0) {
+      getAllConstructionsLocations(dynamicColumns);
+      setIsLoaded(true);
+    }
   }, [dynamicColumns]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchLevel = async () => {
       try {
-        const response = await api.get(`constructions/${id}/level_area/`);
-        const level = response.data;
-        const newDynamicColumns = [
+        const { data } = await api.get(`constructions/${id}/level_area/`);
+        const newDynamicColumns: CustomMRT_ColumnDef<any>[] = [
           {
             accessorKey: "code",
             header: "ID",
+            enableEditing: false,
+            Cell: ({ row }: any) => {
+              return (
+                <div>
+                  {editState.rowId === row.id
+                    ? row.original.code || generateNextId(rowCount)
+                    : row.original.code}
+                </div>
+              );
+            },
           },
           {
             accessorKey: "checklist",
@@ -84,11 +122,56 @@ const Locations = () => {
           },
         ];
 
-        level.forEach((level: any, index: any) => {
-          newDynamicColumns.push({
-            accessorKey: `nivel_${level.id}`,
-            header: level.name,
-          });
+        data.forEach((level: any, index: any) => {
+          if (index === data.length - 1) {
+            newDynamicColumns.push({
+              accessorKey: `nivel_${level.id}`,
+              header: level.name,
+              muiTableBodyCellProps: ({ cell }: any) => ({
+                onChange: (e: any) => {
+                  const newValue = e.target.value;
+                  const rowId = cell.row.id;
+                  setEditState({ rowId, value: newValue });
+                  console.log(`Row ${rowId} has value ${newValue}`);
+                  setValueActual(e.target.value);
+                  if (listConstructionsLocations.length > 0) {
+                    const newList = listConstructionsLocations.map(
+                      (item: any) => {
+                        if (item.id === cell.row.id) {
+                          item[cell.column.id] = e.target.value;
+                        }
+                        return item;
+                      }
+                    );
+                    console.log("newlist", newList);
+                    setListConstructionsLocations(newList);
+                  }
+                },
+              }),
+            });
+          } else {
+            newDynamicColumns.push({
+              accessorKey: `nivel_${level.id}`,
+              header: level.name,
+              muiTableBodyCellProps: ({ cell }: any) => ({
+                onChange: (e: any) => {
+                  setValueActual(e.target.value);
+                  if (listConstructionsLocations.length > 0) {
+                    const newList = listConstructionsLocations.map(
+                      (item: any) => {
+                        if (item.id === cell.row.id) {
+                          item[cell.column.id] = e.target.value;
+                        }
+                        return item;
+                      }
+                    );
+                    console.log("newlist", newList);
+                    setListConstructionsLocations(newList);
+                  }
+                },
+              }),
+            });
+          }
         });
         setDynamicColumns(newDynamicColumns);
       } catch (error) {
@@ -97,13 +180,13 @@ const Locations = () => {
     };
 
     fetchLevel();
-  }, []);
+  }, [valueActual, editState]);
 
-  const handleCreateLocal: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
-    values,
-    table,
-  }) => {
-    await addConstructionLocal(values, dynamicColumns);
+  const handleCreateLocal = async () => {
+    const code = generateNextId(rowCount);
+    listConstructionsLocations[listConstructionsLocations.length - 1].code =
+      code;
+    await addConstructionLocal(dynamicColumns, listConstructionsLocations);
   };
 
   const handleDeleteSnackbar = () => {
@@ -160,12 +243,11 @@ const Locations = () => {
         transition: "transform 0.2s",
       },
     }),
-    renderDetailPanel: ({ row }) => (
-      <ChecklistComponent localId={row.original.id} />
-    ),
+    renderDetailPanel: ({ row }) =>
+      row.original ? <ChecklistComponent localId={row.original.id} /> : null,
     getRowId: (row) => row.id,
     onCreatingRowCancel: () => setValidationErrors({}),
-    onCreatingRowSave: handleCreateLocal,
+    // onCreatingRowSave: handleCreateLocal,
     renderRowActions: ({ row }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
         <Checkbox
@@ -200,7 +282,16 @@ const Locations = () => {
             <Button
               variant="contained"
               onClick={() => {
-                table.setCreatingRow(true);
+                const control: any = {};
+                const teste = dynamicColumns
+                  .filter((item: any, index: any) => index >= 2)
+                  .map((item2: any) => (control[item2.id] = ""));
+                console.log("teste", teste);
+
+                setListConstructionsLocations([
+                  ...listConstructionsLocations,
+                  { checklist: 0, code: "", id: null, ...control },
+                ]);
               }}
               style={{
                 marginRight: "0.5rem",
@@ -224,6 +315,18 @@ const Locations = () => {
             >
               <GoPackage style={{ marginRight: "0.5rem" }} />
               Pacotes
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleCreateLocal}
+              style={{
+                marginLeft: "0.5rem",
+                textTransform: "capitalize",
+                fontFamily: "Open Sans",
+                fontWeight: 600,
+              }}
+            >
+              Salvar
             </Button>
           </div>
         </div>

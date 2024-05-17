@@ -11,9 +11,30 @@ import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { Delete, Edit, Add } from '@mui/icons-material';
 import { get } from 'http';
 
+
+
+interface ServiceInfo {
+  order?: number; 
+}
+
+interface ServiceStep {
+  price_service: number;
+  price_workmanship: number;
+  compensation: number;
+  cost: number;
+  id: number; 
+  name: string; 
+}
+
+
+
 const ServiceStepTable = ({ order }: any) => {
-  const [serviceSteps, setServiceSteps] = useState([]);
-  const [serviceInfo, setServiceInfo] = useState({});
+  // const [serviceSteps, setServiceSteps] = useState([]);
+  // const [serviceInfo, setServiceInfo] = useState({});
+  const [serviceSteps, setServiceSteps] = useState<ServiceStep[]>([]);
+
+  const [serviceInfo, setServiceInfo] = useState<ServiceInfo>({});
+
   const [unitOptions, setUnitOptions] = useState([]);
   console.log('order:', order)
 
@@ -57,7 +78,7 @@ const ServiceStepTable = ({ order }: any) => {
     try {
       const updatedValues = {
         ...values,
-        order: serviceInfo.order, // Aqui você adiciona o 'order' ao objeto
+        order: serviceInfo.order, 
       };
       console.log('updated values:', updatedValues);
       await addServiceStep(order, updatedValues); 
