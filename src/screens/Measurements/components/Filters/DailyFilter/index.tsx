@@ -1,30 +1,34 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-extra-boolean-cast */
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
-  Autocomplete,
   Checkbox,
   FormControlLabel,
   FormGroup,
   TextField,
 } from "@mui/material";
 
+import { MeasurementsContext } from "../../../../../contexts/MeasurementsContext";
 import { KEY_DAILY_OPTIONS } from "../../../../../utils/consts";
 import { FilterOption } from "../../../../../types";
 
 import { ActionButtons } from "../components/ActionButtons";
+import { NumberInput } from "../components/NumericInput";
+
 import { useStyles } from "../filterStyles";
 
 type DailyFilterProps = {
   handleClose: () => void;
 };
 
-interface FilmOptionType {
-  title: string;
-  year: number;
-}
-
 export const DailyFilter = ({ handleClose }: DailyFilterProps) => {
   const { classes } = useStyles();
+  const { getDataTable, getProfitability } = useContext(MeasurementsContext);
+
+  const [days, setDays] = useState("");
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDays(event.target.value);
+  };
 
   const getStoredOptions = () => {
     const dailyOptionsStorage = localStorage.getItem(KEY_DAILY_OPTIONS);
@@ -32,11 +36,7 @@ export const DailyFilter = ({ handleClose }: DailyFilterProps) => {
       const dailyOptionsParsed = JSON.parse(dailyOptionsStorage);
       return dailyOptionsParsed;
     }
-    return [
-      { name: "12 dias", checked: false },
-      { name: "15 dias", checked: false },
-      { name: "19 dias", checked: false },
-    ];
+    return [];
   };
 
   const setStorageOptions = () => {
@@ -45,97 +45,93 @@ export const DailyFilter = ({ handleClose }: DailyFilterProps) => {
   };
 
   const [options, setOptions] = useState<FilterOption[]>(getStoredOptions());
-  const [value, setValue] = useState<FilmOptionType | null>(null);
-
-  const clearValues = () => {
-    setOptions([]);
-    setValue(null);
-    localStorage.removeItem(KEY_DAILY_OPTIONS);
-  };
 
   const selectedOptions = options.filter((option) => option.checked === true);
 
   const queryParams = selectedOptions
-    .map((option) => `package_name=${option.name}`)
+    .map((option) => `days=${option.name}`)
     .join("&");
 
   const disableApplyButton = !Boolean(selectedOptions.length);
 
   const handleApply = () => {
-    console.log(queryParams);
+    // console.log(queryParams);
+    getProfitability(queryParams);
+    getDataTable(queryParams);
     setStorageOptions();
     handleClose();
+  };
+
+  const clearValues = () => {
+    setOptions([]);
+    localStorage.removeItem(KEY_DAILY_OPTIONS);
   };
 
   const handleClear = () => {
     clearValues();
   };
 
-  const onSelectedOption = (value: FilmOptionType | null) => {
-    if (value === null) {
-      setValue(value);
-      return;
-    }
-    setOptions((prevState) => {
-      const alreadyExist =
-        prevState.filter((option) => option.name === value.title).length > 0;
-      if (alreadyExist) {
-        return prevState;
-      }
-      return [
-        ...prevState,
-        {
-          name: value!.title,
-          checked: true,
-        },
-      ];
-    });
-    setValue(null);
-  };
-
   return (
     <div className={classes.container}>
       <div className={classes.content}>
-        <Autocomplete
-          {...defaultProps}
-          value={value}
-          onChange={(_, newValue: FilmOptionType | null) => {
-            onSelectedOption(newValue);
+        <TextField
+          label="Dias"
+          value={days}
+          onChange={handleChange}
+          InputProps={{
+            inputComponent: NumberInput as any,
           }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Pesquisar"
-              variant="outlined"
-              size="small"
-            />
-          )}
-          noOptionsText="Não há opções"
-          style={{ margin: "4px 0" }}
+          size="small"
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              const dayOption = (event.target as HTMLInputElement).value;
+              setOptions((prevState) => {
+                const alreadyExist =
+                  prevState.filter(
+                    (option) => option.name === String(dayOption)
+                  ).length > 0;
+                if (alreadyExist) {
+                  return prevState;
+                }
+                return [
+                  ...prevState,
+                  {
+                    name: String(dayOption),
+                    checked: true,
+                  },
+                ];
+              });
+            }
+          }}
         />
 
         <FormGroup>
-          {options.map((option, index) => (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={option.checked}
-                  onChange={(e) =>
-                    setOptions((prevState) => {
-                      return prevState.map((prevItem, prevIndex) => {
-                        if (prevIndex === index) {
-                          return { ...prevItem, checked: e.target.checked };
-                        } else {
-                          return prevItem;
-                        }
-                      });
-                    })
-                  }
-                />
-              }
-              label={option.name}
-            />
-          ))}
+          {options.map((option, index) => {
+            const label = `${option.name} dia${
+              Number(option.name) > 1 ? "s" : ""
+            }`;
+            return (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={option.checked}
+                    onChange={(e) =>
+                      setOptions((prevState) => {
+                        return prevState.map((prevItem, prevIndex) => {
+                          if (prevIndex === index) {
+                            return { ...prevItem, checked: e.target.checked };
+                          } else {
+                            return prevItem;
+                          }
+                        });
+                      })
+                    }
+                  />
+                }
+                label={label}
+              />
+            );
+          })}
         </FormGroup>
       </div>
 
@@ -146,19 +142,4 @@ export const DailyFilter = ({ handleClose }: DailyFilterProps) => {
       />
     </div>
   );
-};
-
-const movies = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-];
-
-const defaultProps = {
-  options: movies,
-  getOptionLabel: (option: FilmOptionType) => option.title,
 };

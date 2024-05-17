@@ -1,5 +1,5 @@
 /* eslint-disable no-extra-boolean-cast */
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Autocomplete,
   Checkbox,
@@ -8,6 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 
+import { MeasurementsContext } from "../../../../../contexts/MeasurementsContext";
 import { KEY_PACKAGE_OPTIONS } from "../../../../../utils/consts";
 import { FilterOption } from "../../../../../types";
 
@@ -18,13 +19,19 @@ type PackageFilterProps = {
   handleClose: () => void;
 };
 
-interface FilmOptionType {
-  title: string;
-  year: number;
+interface PackageOption {
+  id: number;
+  name: string;
 }
 
 export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
   const { classes } = useStyles();
+  const { listPackages, getAllPackages, getDataTable, getProfitability } =
+    useContext(MeasurementsContext);
+
+  useEffect(() => {
+    getAllPackages();
+  }, []);
 
   const getStoredOptions = () => {
     const packageOptionsStorage = localStorage.getItem(KEY_PACKAGE_OPTIONS);
@@ -32,13 +39,12 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
       const packageOptionsParsed = JSON.parse(packageOptionsStorage);
       return packageOptionsParsed;
     }
-    return [
-      { name: "Pacote 01", checked: false },
-      { name: "Pacote 02", checked: false },
-      { name: "Pacote 03", checked: false },
-      { name: "Pacote 04", checked: false },
-      { name: "Pacote 05", checked: false },
-    ];
+    return [];
+  };
+
+  const defaultProps = {
+    options: listPackages,
+    getOptionLabel: (option: PackageOption) => option.name,
   };
 
   const setStorageOptions = () => {
@@ -47,7 +53,7 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
   };
 
   const [options, setOptions] = useState<FilterOption[]>(getStoredOptions());
-  const [value, setValue] = useState<FilmOptionType | null>(null);
+  const [value, setValue] = useState<PackageOption | null>(null);
 
   const clearValues = () => {
     setOptions([]);
@@ -64,7 +70,9 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
   const disableApplyButton = !Boolean(selectedOptions.length);
 
   const handleApply = () => {
-    console.log(queryParams);
+    // console.log(queryParams);
+    getProfitability(queryParams);
+    getDataTable(queryParams);
     setStorageOptions();
     handleClose();
   };
@@ -73,21 +81,21 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
     clearValues();
   };
 
-  const onSelectedOption = (value: FilmOptionType | null) => {
+  const onSelectedOption = (value: PackageOption | null) => {
     if (value === null) {
       setValue(value);
       return;
     }
     setOptions((prevState) => {
       const alreadyExist =
-        prevState.filter((option) => option.name === value.title).length > 0;
+        prevState.filter((option) => option.name === value.name).length > 0;
       if (alreadyExist) {
         return prevState;
       }
       return [
         ...prevState,
         {
-          name: value!.title,
+          name: value!.name,
           checked: true,
         },
       ];
@@ -101,7 +109,7 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
         <Autocomplete
           {...defaultProps}
           value={value}
-          onChange={(_, newValue: FilmOptionType | null) => {
+          onChange={(_, newValue: PackageOption | null) => {
             onSelectedOption(newValue);
           }}
           renderInput={(params) => (
@@ -148,19 +156,4 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
       />
     </div>
   );
-};
-
-const movies = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-];
-
-const defaultProps = {
-  options: movies,
-  getOptionLabel: (option: FilmOptionType) => option.title,
 };

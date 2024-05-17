@@ -1,7 +1,31 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
+
+// import { errorMessage } from "../components/Messages";
+
 import { api } from "../services/api";
-import { UserContext } from "../contexts/UserContext";
+import { UserContext } from "./UserContext";
+
+type MeasurementsContextProviderProps = {
+  children: ReactNode;
+};
+
+type MeasurementsContextProps = {
+  listConstructions: Construction[];
+  getAllConstructions: () => Promise<void>;
+  listPackages: Construction[];
+  getAllPackages: () => Promise<void>;
+  listDisciplines: Construction[];
+  getAllDisciplines: () => Promise<void>;
+  dataTable: DataItem[];
+  getDataTable: (filters?: string) => Promise<void>;
+  execution: Execution[];
+  getExecution: (filters?: string) => Promise<void>;
+  lessProfitable: ProfitableItem[];
+  moreProfitable: ProfitableItem[];
+  getProfitability: (filters?: string) => Promise<void>;
+};
 
 type Construction = {
   name: string;
@@ -43,7 +67,13 @@ type DataItem = {
   priceWorkmanshipDays: string;
 };
 
-export const useMeasurements = () => {
+const MeasurementsContext = createContext<MeasurementsContextProps>(
+  {} as MeasurementsContextProps
+);
+
+const MeasurementsContextProvider = ({
+  children,
+}: MeasurementsContextProviderProps) => {
   const { user } = useContext(UserContext);
 
   const [listConstructions, setListConstructions] = useState<Construction[]>(
@@ -65,8 +95,35 @@ export const useMeasurements = () => {
     }
   };
 
-  const [dataTable, setDataTable] = useState<DataItem[]>([]);
+  const [listPackages, setListPackages] = useState<Construction[]>([]);
+  const getAllPackages = async () => {
+    try {
+      const { data } = await api.get(`constructions/${34}/packages`);
+      const packageList = data.map((construction: any) => ({
+        id: construction.id,
+        name: construction.name,
+      }));
+      setListPackages(packageList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  const [listDisciplines, setListDisciplines] = useState<Construction[]>([]);
+  const getAllDisciplines = async () => {
+    try {
+      const { data } = await api.get(`/disciplines/`);
+      const disciplineList = data.results.map((construction: any) => ({
+        id: construction.id,
+        name: construction.name,
+      }));
+      setListDisciplines(disciplineList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [dataTable, setDataTable] = useState<DataItem[]>([]);
   const getDataTable = async (filters?: string) => {
     let url = `/reports_measurements/${34}/data_table/`;
     if (filters) {
@@ -93,7 +150,6 @@ export const useMeasurements = () => {
   };
 
   const [execution, setExecution] = useState<Execution[]>([]);
-
   const getExecution = async (filters?: string) => {
     let url = `/reports_measurements/${34}/execution/`;
     if (filters) {
@@ -114,7 +170,6 @@ export const useMeasurements = () => {
 
   const [lessProfitable, setLessProfitable] = useState<ProfitableItem[]>([]);
   const [moreProfitable, setMoreProfitable] = useState<ProfitableItem[]>([]);
-
   const getProfitability = async (filters?: string) => {
     let url = `/reports_measurements/${34}/profitability/`;
     if (filters) {
@@ -157,15 +212,27 @@ export const useMeasurements = () => {
     }
   };
 
-  return {
-    execution,
-    getExecution,
-    dataTable,
-    getDataTable,
-    lessProfitable,
-    moreProfitable,
-    getProfitability,
-    listConstructions,
-    getAllConstructions,
-  };
+  return (
+    <MeasurementsContext.Provider
+      value={{
+        execution,
+        getExecution,
+        dataTable,
+        getDataTable,
+        lessProfitable,
+        moreProfitable,
+        getProfitability,
+        listConstructions,
+        getAllConstructions,
+        listPackages,
+        getAllPackages,
+        listDisciplines,
+        getAllDisciplines,
+      }}
+    >
+      {children}
+    </MeasurementsContext.Provider>
+  );
 };
+
+export { MeasurementsContext, MeasurementsContextProvider };

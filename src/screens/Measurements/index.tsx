@@ -5,13 +5,22 @@ import {
 } from "react-router-dom";
 import { Button, Grid, Typography } from "@mui/material";
 
+import { MeasurementsContextProvider } from "../../contexts/MeasurementsContext";
 import { MeasurementsPackages } from "./Packages";
 // import { MeasurementsServices } from "./Services";
 
 import { ModalFilters } from "./components/ModalFilters";
 import { Tab, useStyles } from "./styles";
 
-export function Measurements() {
+export const Measurements = () => {
+  return (
+    <MeasurementsContextProvider>
+      <MeasurementsComponent />
+    </MeasurementsContextProvider>
+  );
+};
+
+function MeasurementsComponent() {
   const location = useLocation();
   // const navigate = useNavigate();
   const { classes } = useStyles();

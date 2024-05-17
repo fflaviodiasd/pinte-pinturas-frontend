@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Grid, Typography } from "@mui/material";
 import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
 } from "@mui/icons-material";
 
-import { useMeasurements } from "../../../../../hooks/useMeasurements";
+import { MeasurementsContext } from "../../../../../contexts/MeasurementsContext";
 
 import { TableContainer, useStyles } from "./styles";
 
@@ -13,7 +13,7 @@ export const ProfitableTable = () => {
   const { classes } = useStyles();
 
   const { getProfitability, lessProfitable, moreProfitable } =
-    useMeasurements();
+    useContext(MeasurementsContext);
 
   useEffect(() => {
     getProfitability();

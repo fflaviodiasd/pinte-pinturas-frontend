@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   FormControl,
   FormControlLabel,
@@ -8,6 +8,8 @@ import {
   RadioGroup,
   TextField,
 } from "@mui/material";
+
+import { MeasurementsContext } from "../../../../../contexts/MeasurementsContext";
 
 import { ActionButtons } from "../components/ActionButtons";
 import { NumericInput } from "../components/NumericInput";
@@ -22,32 +24,84 @@ export const ProfitabilityFilter = ({
   handleClose,
 }: ProfitabilityFilterProps) => {
   const { classes } = useStyles();
+  const { getDataTable, getProfitability } = useContext(MeasurementsContext);
 
-  const [options, setOptions] = useState({
-    option1: true,
-    option2: false,
+  const [fieldType, setFieldType] = useState(1);
+
+  const [conditions, setConditions] = useState({
+    firstCondition: 1,
+    secondCondition: 1,
   });
 
-  const clearValues = () => {
-    setOptions({
-      option1: true,
-      option2: false,
-    });
+  const [values, setValues] = useState({
+    firstValue: "",
+    secondValue: "",
+  });
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValues((prevState) => ({
+      ...prevState,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  const [conjuctions, setConjuctions] = useState({
+    conjuction1: true,
+    conjuction2: false,
+  });
+
+  const getQueryParams = () => {
+    const getCondition = (value: number) => {
+      switch (value) {
+        case 1:
+          return "É igual";
+        case 2:
+          return "É diferente";
+        case 3:
+          return "É maior";
+        case 4:
+          return "É menor";
+        case 5:
+          return "É menor ou igual";
+        case 6:
+          return "É maior ou igual";
+        case 7:
+          return "Está em branco";
+        default:
+          return "Não está em branco";
+      }
+    };
+
+    const field = fieldType === 1 ? "price_days" : "price_workmanship_days";
+    const conjuction = conjuctions.conjuction1 ? "E" : "OU";
+    const firstValue = values.firstValue;
+    const firstCondition = getCondition(conditions.firstCondition);
+    const secondValue = values.secondValue;
+    const secondCondition = getCondition(conditions.secondCondition);
+
+    return `field=${field}&condition=${firstCondition}&value=${firstValue}&conjuction=${conjuction}&conjuction2=${secondCondition}&value2=${secondValue}`;
   };
 
   const handleApply = () => {
-    console.log(options);
+    getProfitability(getQueryParams());
+    getDataTable(getQueryParams());
     handleClose();
   };
 
   const handleClear = () => {
-    clearValues();
-  };
-
-  const [numberformat, setNumberformat] = useState("1320");
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNumberformat(event.target.value);
+    setFieldType(1);
+    setConditions({
+      firstCondition: 1,
+      secondCondition: 1,
+    });
+    setConjuctions({
+      conjuction1: true,
+      conjuction2: false,
+    });
+    setValues({
+      firstValue: "",
+      secondValue: "",
+    });
   };
 
   return (
@@ -58,8 +112,9 @@ export const ProfitabilityFilter = ({
           fullWidth
           size="small"
           label="Rentabilidade"
-          defaultValue={1}
+          defaultValue={fieldType}
           style={{ marginTop: 12 }}
+          onChange={(e) => setFieldType(Number(e.target.value))}
         >
           {profitableList.map((option) => (
             <MenuItem key={option.value} value={option.value}>
@@ -72,7 +127,13 @@ export const ProfitabilityFilter = ({
           fullWidth
           size="small"
           label="Mostrar Quando"
-          defaultValue={1}
+          defaultValue={conditions.firstCondition}
+          onChange={(e) =>
+            setConditions((prevState) => ({
+              ...prevState,
+              firstCondition: Number(e.target.value),
+            }))
+          }
           style={{ marginTop: 12 }}
         >
           {showWhenList.map((option) => (
@@ -82,8 +143,9 @@ export const ProfitabilityFilter = ({
           ))}
         </TextField>
         <TextField
+          name="firstValue"
           label="Valor"
-          value={numberformat}
+          value={values.firstValue}
           onChange={handleChange}
           InputProps={{
             inputComponent: NumericInput as any,
@@ -97,11 +159,11 @@ export const ProfitabilityFilter = ({
             <FormControlLabel
               control={
                 <Radio
-                  checked={options.option1}
+                  checked={conjuctions.conjuction1}
                   onChange={(e) =>
-                    setOptions({
-                      option1: e.target.checked,
-                      option2: false,
+                    setConjuctions({
+                      conjuction1: e.target.checked,
+                      conjuction2: false,
                     })
                   }
                 />
@@ -111,11 +173,11 @@ export const ProfitabilityFilter = ({
             <FormControlLabel
               control={
                 <Radio
-                  checked={options.option2}
+                  checked={conjuctions.conjuction2}
                   onChange={(e) =>
-                    setOptions({
-                      option1: false,
-                      option2: e.target.checked,
+                    setConjuctions({
+                      conjuction1: false,
+                      conjuction2: e.target.checked,
                     })
                   }
                 />
@@ -130,7 +192,13 @@ export const ProfitabilityFilter = ({
           fullWidth
           size="small"
           label="Mostrar Quando"
-          defaultValue={1}
+          defaultValue={conditions.secondCondition}
+          onChange={(e) =>
+            setConditions((prevState) => ({
+              ...prevState,
+              secondCondition: Number(e.target.value),
+            }))
+          }
           style={{ marginTop: 12 }}
         >
           {showWhenList.map((option) => (
@@ -140,8 +208,9 @@ export const ProfitabilityFilter = ({
           ))}
         </TextField>
         <TextField
+          name="secondValue"
           label="Valor"
-          value={numberformat}
+          value={values.secondValue}
           onChange={handleChange}
           InputProps={{
             inputComponent: NumericInput as any,
@@ -192,9 +261,6 @@ const showWhenList = [
 ];
 
 const profitableList = [
-  { value: 1, label: "Mão de Obra 01" },
-  { value: 2, label: "Mão de Obra 02" },
-  { value: 3, label: "Mão de Obra 03" },
-  { value: 4, label: "Mão de Obra 04" },
-  { value: 5, label: "Mão de Obra 05" },
+  { value: 1, label: "Diária" },
+  { value: 2, label: "Mão de Obra" },
 ];

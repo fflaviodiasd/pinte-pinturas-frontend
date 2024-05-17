@@ -1,0 +1,53 @@
+.react-daterange-picker {
+    width: 95%;
+    padding-right: 12px;
+}
+
+.react-calendar {
+    margin-top: 8px;
+    border-radius: 8px;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+    font-family: Open Sans;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    text-align: center;
+    color: #8F9193;
+    text-transform: capitalize;
+}
+
+.react-calendar__tile  {
+    border-radius: 50px;
+}
+
+.react-calendar__tile--range {
+    background-color: #DEF4FF;
+    color: #0076BE;
+}
+
+.react-calendar__tile--rangeStart {
+    background-color: #0076BE;
+    color: #FFF;
+}
+
+.react-calendar__tile--rangeEnd {
+    background-color: #0076BE;
+    color: #FFF;
+}
+
+.react-calendar__tile--now {
+    border: 1px solid #0076BE;
+    color: #0076BE;
+    background: #FFF;
+}
+
+.react-daterange-picker__inputGroup {
+    min-width: auto;
+    height: 100%;
+    flex-grow: 1;
+    padding: 0 2px;
+    box-sizing: content-box;
+}
+

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-const */
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Typography } from "@mui/material";
 import {
   Chart as ChartJS,
@@ -15,7 +15,7 @@ import {
 import { Line } from "react-chartjs-2";
 import colorLib from "@kurkle/color";
 
-import { useMeasurements } from "../../../../../hooks/useMeasurements";
+import { MeasurementsContext } from "../../../../../contexts/MeasurementsContext";
 
 import { SectionTitle } from "../../../../../components/SectionTitle";
 
@@ -35,7 +35,7 @@ export const ExecutionGraph = () => {
   const { classes } = useStyles();
 
   const { getExecution, getAllConstructions, listConstructions, execution } =
-    useMeasurements();
+    useContext(MeasurementsContext);
 
   useEffect(() => {
     getExecution();

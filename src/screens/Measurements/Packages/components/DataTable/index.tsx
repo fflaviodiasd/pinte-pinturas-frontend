@@ -1,14 +1,14 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Typography } from "@mui/material";
 
-import { useMeasurements } from "../../../../../hooks/useMeasurements";
+import { MeasurementsContext } from "../../../../../contexts/MeasurementsContext";
 
 import { TableContainer, useStyles } from "./styles";
 
 export const DataTable = () => {
   const { classes } = useStyles();
 
-  const { getDataTable, dataTable } = useMeasurements();
+  const { getDataTable, dataTable } = useContext(MeasurementsContext);
 
   useEffect(() => {
     getDataTable();
@@ -20,7 +20,6 @@ export const DataTable = () => {
     <div className={classes.dataTableContainer}>
       {hasDataTable ? (
         <>
-          {" "}
           <TableContainer style={{ scrollbarWidth: "thin" }}>
             <table>
               <thead>

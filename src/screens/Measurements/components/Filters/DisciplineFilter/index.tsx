@@ -1,5 +1,5 @@
 /* eslint-disable no-extra-boolean-cast */
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   TextField,
   Autocomplete,
@@ -8,6 +8,7 @@ import {
   FormGroup,
 } from "@mui/material";
 
+import { MeasurementsContext } from "../../../../../contexts/MeasurementsContext";
 import { KEY_DISCIPLINE_OPTIONS } from "../../../../../utils/consts";
 import { FilterOption } from "../../../../../types";
 
@@ -18,13 +19,19 @@ type DisciplineFilterProps = {
   handleClose: () => void;
 };
 
-interface FilmOptionType {
-  title: string;
-  year: number;
+interface DisciplineOption {
+  id: number;
+  name: string;
 }
 
 export const DisciplineFilter = ({ handleClose }: DisciplineFilterProps) => {
   const { classes } = useStyles();
+  const { listDisciplines, getAllDisciplines, getDataTable, getProfitability } =
+    useContext(MeasurementsContext);
+
+  useEffect(() => {
+    getAllDisciplines();
+  }, []);
 
   const getStoredOptions = () => {
     const disciplineOptionsStorage = localStorage.getItem(
@@ -34,13 +41,12 @@ export const DisciplineFilter = ({ handleClose }: DisciplineFilterProps) => {
       const disciplineOptionsParsed = JSON.parse(disciplineOptionsStorage);
       return disciplineOptionsParsed;
     }
-    return [
-      { name: "Disciplina 01", checked: false },
-      { name: "Disciplina 02", checked: false },
-      { name: "Disciplina 03", checked: false },
-      { name: "Disciplina 04", checked: false },
-      { name: "Disciplina 05", checked: false },
-    ];
+    return [];
+  };
+
+  const defaultProps = {
+    options: listDisciplines,
+    getOptionLabel: (option: DisciplineOption) => option.name,
   };
 
   const setStorageOptions = () => {
@@ -49,7 +55,7 @@ export const DisciplineFilter = ({ handleClose }: DisciplineFilterProps) => {
   };
 
   const [options, setOptions] = useState<FilterOption[]>(getStoredOptions());
-  const [value, setValue] = useState<FilmOptionType | null>(null);
+  const [value, setValue] = useState<DisciplineOption | null>(null);
 
   const clearValues = () => {
     setOptions([]);
@@ -60,13 +66,15 @@ export const DisciplineFilter = ({ handleClose }: DisciplineFilterProps) => {
   const selectedOptions = options.filter((option) => option.checked === true);
 
   const queryParams = selectedOptions
-    .map((option) => `package_name=${option.name}`)
+    .map((option) => `discipline_name=${option.name}`)
     .join("&");
 
   const disableApplyButton = !Boolean(selectedOptions.length);
 
   const handleApply = () => {
-    console.log(queryParams);
+    // console.log(queryParams);
+    getProfitability(queryParams);
+    getDataTable(queryParams);
     setStorageOptions();
     handleClose();
   };
@@ -75,21 +83,21 @@ export const DisciplineFilter = ({ handleClose }: DisciplineFilterProps) => {
     clearValues();
   };
 
-  const onSelectedOption = (value: FilmOptionType | null) => {
+  const onSelectedOption = (value: DisciplineOption | null) => {
     if (value === null) {
       setValue(value);
       return;
     }
     setOptions((prevState) => {
       const alreadyExist =
-        prevState.filter((option) => option.name === value.title).length > 0;
+        prevState.filter((option) => option.name === value.name).length > 0;
       if (alreadyExist) {
         return prevState;
       }
       return [
         ...prevState,
         {
-          name: value!.title,
+          name: value!.name,
           checked: true,
         },
       ];
@@ -103,7 +111,7 @@ export const DisciplineFilter = ({ handleClose }: DisciplineFilterProps) => {
         <Autocomplete
           {...defaultProps}
           value={value}
-          onChange={(_, newValue: FilmOptionType | null) => {
+          onChange={(_, newValue: DisciplineOption | null) => {
             onSelectedOption(newValue);
           }}
           renderInput={(params) => (
@@ -150,19 +158,4 @@ export const DisciplineFilter = ({ handleClose }: DisciplineFilterProps) => {
       />
     </div>
   );
-};
-
-const movies = [
-  { title: "The Shawshank Redemption", year: 1994 },
-  { title: "The Godfather", year: 1972 },
-  { title: "The Godfather: Part II", year: 1974 },
-  { title: "The Dark Knight", year: 2008 },
-  { title: "12 Angry Men", year: 1957 },
-  { title: "Schindler's List", year: 1993 },
-  { title: "Pulp Fiction", year: 1994 },
-];
-
-const defaultProps = {
-  options: movies,
-  getOptionLabel: (option: FilmOptionType) => option.title,
 };
