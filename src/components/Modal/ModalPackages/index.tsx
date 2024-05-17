@@ -229,9 +229,15 @@ export const ModalPackages = ({
         </div>
         <div
           style={{
+            position: "sticky",
+            bottom: 0,
+            backgroundColor: "#fff",
+            padding: "1rem",
+            borderTop: "1px solid #e0e0e0",
             display: "flex",
-            justifyContent: "space-evenly",
-            paddingBottom: "1rem",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "1rem",
           }}
         >
           <Button onClick={handleClose} style={{ marginRight: "0.5rem" }}>

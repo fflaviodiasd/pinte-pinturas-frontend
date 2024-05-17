@@ -37,6 +37,7 @@ export const FilterPackagesDiscipline: React.FC<
   setSelectedPackageId,
 }) => {
   const [selectedDiscipline, setSelectedDiscipline] = useState("");
+  const [disciplineOptionName, setDisciplineOptionName] = useState<string>("");
   const [selectedPackage, setSelectedPackage] = useState("");
   const [disciplineOptions, setDisciplineOptions] = useState<Option[]>([]);
   const [packageOptions, setPackageOptions] = useState<Option[]>([]);
@@ -64,7 +65,7 @@ export const FilterPackagesDiscipline: React.FC<
         try {
           const response = await api.get(
             `${packagesEndpoint}?search=${encodeURIComponent(
-              selectedDiscipline
+              disciplineOptionName
             )}`
           );
           setPackageOptions(response.data);
@@ -72,7 +73,7 @@ export const FilterPackagesDiscipline: React.FC<
           console.log(
             "URL",
             `${packagesEndpoint}?search=${encodeURIComponent(
-              selectedDiscipline
+              disciplineOptionName
             )}`
           );
         } catch (error) {
@@ -95,14 +96,21 @@ export const FilterPackagesDiscipline: React.FC<
     const selectedOption = disciplineOptions.find(
       (option) => option[optionValueKey] === event.target.value
     );
-    const disciplineName = selectedOption ? selectedOption[optionLabelKey] : "";
-    setSelectedDiscipline(disciplineName);
+    const disciplineOptionName = selectedOption
+      ? selectedOption[optionLabelKey]
+      : "";
+    setSelectedDiscipline(event.target.value);
+
+    if (selectedOption) {
+      selectedOption.name = disciplineOptionName;
+    }
+    setDisciplineOptionName(disciplineOptionName);
+    console.log("disciplineOptionName", disciplineOptionName);
   };
 
   const handlePackageChange = (event: SelectChangeEvent<string>) => {
     setSelectedPackage(event.target.value);
     setSelectedPackageId(event.target.value);
-    console.log("ID do pacote selecionado:", event.target.value);
   };
 
   return (
@@ -126,7 +134,6 @@ export const FilterPackagesDiscipline: React.FC<
             ))
           )}
         </Select>
-        <span>Disciplina Selecionada: {selectedDiscipline}</span>
       </FormControl>
       <FormControl fullWidth variant="outlined">
         <InputLabel id={`${name}-package-label`}>Pacotes</InputLabel>
