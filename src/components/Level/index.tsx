@@ -16,10 +16,12 @@ interface Level {
 interface LevelComponentProps {
   getLevelEndpoint?: string;
   postLevelEndpoint?: string;
+  setControl?: any;
 }
 
 export const LevelComponent: React.FC<LevelComponentProps> = ({
   getLevelEndpoint,
+  setControl,
 }) => {
   const [level, setLevel] = useState<Level[]>([]);
   const [isInputVisible, setIsInputVisible] = useState(false);
@@ -69,6 +71,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
           };
           setLevel((prevLevel) => [...prevLevel, newLevel]);
           setValueActual("");
+          setControl(response);
         } catch (error) {
           console.error("Erro ao criar um novo nível:", error);
         }
