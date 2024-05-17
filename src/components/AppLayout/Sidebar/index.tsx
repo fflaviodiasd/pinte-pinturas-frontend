@@ -101,11 +101,11 @@ export const Sidebar = () => {
       path: "materiais",
       icon: <img src={MaterialsIcon} alt="Materiais" />,
     },
-    // {
-    //   text: "Medições",
-    //   path: "medicoes",
-    //   icon: <img src={MeasurementsIcon} alt="Medições" />,
-    // },
+    {
+      text: "Medições",
+      path: "medicoes",
+      icon: <img src={MeasurementsIcon} alt="Medições" />,
+    },
   ];
 
   const returnedIcon = (isOpen: boolean) => {

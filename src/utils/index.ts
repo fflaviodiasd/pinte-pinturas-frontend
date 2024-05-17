@@ -36,3 +36,8 @@ export const returnedPhraseToModalDelete = (location: Location) => {
 export const numberToPercentage = (number: number) => {
   return number.toFixed(2) + "%";
 };
+
+export const moneyFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});

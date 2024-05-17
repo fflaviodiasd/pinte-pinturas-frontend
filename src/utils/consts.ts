@@ -3,3 +3,6 @@ export const KEY_TOKEN = "@TOKEN";
 export const KEY_REFRESH_TOKEN = "@REFRESH_TOKEN";
 export const KEY_SIGNED = "@SIGNED";
 export const KEY_SIDEBAR = "@SIDEBAR";
+export const KEY_DAILY_OPTIONS = "@DAILY_OPTIONS";
+export const KEY_PACKAGE_OPTIONS = "@PACKAGE_OPTIONS";
+export const KEY_DISCIPLINE_OPTIONS = "@DISCIPLINE_OPTIONS";
