@@ -1,15 +1,19 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   useLocation,
   // useNavigate
 } from "react-router-dom";
-import { Button, Grid, Typography } from "@mui/material";
+import { Button, Grid, IconButton, Typography } from "@mui/material";
+import { KeyboardArrowDownRounded as ArrowForwardIcon } from "@mui/icons-material/";
 
-import { MeasurementsContextProvider } from "../../contexts/MeasurementsContext";
-import { MeasurementsPackages } from "./Packages";
+import {
+  MeasurementsContext,
+  MeasurementsContextProvider,
+} from "../../contexts/MeasurementsContext";
 // import { MeasurementsServices } from "./Services";
 
 import { ModalFilters } from "./components/ModalFilters";
+import { MeasurementsPackages } from "./Packages";
 import { Tab, useStyles } from "./styles";
 
 export const Measurements = () => {
@@ -24,6 +28,7 @@ function MeasurementsComponent() {
   const location = useLocation();
   // const navigate = useNavigate();
   const { classes } = useStyles();
+  const { selectedConstruction } = useContext(MeasurementsContext);
 
   // const displayContent = () => {
   //   if (location.pathname.includes("pacotes")) {
@@ -48,6 +53,34 @@ function MeasurementsComponent() {
     <Grid container>
       <Grid item sm={12} md={12} lg={12} className={classes.titleContainer}>
         <Typography className={classes.title}>Medições</Typography>
+
+        <div className={classes.constructionFilterContainer}>
+          <Typography
+            className={classes.constructionFilterText}
+            onClick={() => {
+              setSelectedFilter("construction");
+              handleClickOpen();
+            }}
+          >
+            {selectedConstruction.name
+              ? selectedConstruction.name
+              : "Selecionar Obra"}
+          </Typography>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="close"
+            onClick={() => {
+              setSelectedFilter("construction");
+              handleClickOpen();
+            }}
+          >
+            <ArrowForwardIcon
+              className={classes.openFilterButton}
+              fontSize="small"
+            />
+          </IconButton>
+        </div>
       </Grid>
       <Grid item sm={12} md={12} lg={12} className={classes.tabContainer}>
         <Grid item sm={2} md={2} lg={2} style={{ display: "flex", gap: 8 }}>

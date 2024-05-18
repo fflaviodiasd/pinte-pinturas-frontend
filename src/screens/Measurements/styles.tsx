@@ -5,7 +5,26 @@ import { makeStyles } from "tss-react/mui";
 export const useStyles = makeStyles()((theme: Theme) => {
   return {
     titleContainer: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
       backgroundColor: "#FAFAFA",
+    },
+    constructionFilterContainer: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginRight: 12,
+    },
+    constructionFilterText: {
+      marginRight: 12,
+      color: "#0076BE",
+      fontFamily: "Open Sans",
+      fontWeight: 600,
+      cursor: "pointer",
+    },
+    openFilterButton: {
+      color: "#0076BE",
     },
     title: {
       color: "#2E3132",
