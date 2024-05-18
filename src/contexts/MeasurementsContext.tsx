@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 // import { errorMessage } from "../components/Messages";
 
@@ -25,6 +33,16 @@ type MeasurementsContextProps = {
   lessProfitable: ProfitableItem[];
   moreProfitable: ProfitableItem[];
   getProfitability: (filters?: string) => Promise<void>;
+  selectedConstruction: {
+    id: number;
+    name: string;
+  };
+  setSelectedConstruction: Dispatch<
+    SetStateAction<{
+      id: number;
+      name: string;
+    }>
+  >;
 };
 
 type Construction = {
@@ -76,6 +94,19 @@ const MeasurementsContextProvider = ({
 }: MeasurementsContextProviderProps) => {
   const { user } = useContext(UserContext);
 
+  const [selectedConstruction, setSelectedConstruction] = useState({
+    id: 0,
+    name: "",
+  });
+
+  useEffect(() => {
+    if (selectedConstruction.id !== 0) {
+      getDataTable();
+      getExecution();
+      getProfitability();
+    }
+  }, [selectedConstruction]);
+
   const [listConstructions, setListConstructions] = useState<Construction[]>(
     []
   );
@@ -98,7 +129,9 @@ const MeasurementsContextProvider = ({
   const [listPackages, setListPackages] = useState<Construction[]>([]);
   const getAllPackages = async () => {
     try {
-      const { data } = await api.get(`constructions/${34}/packages`);
+      const { data } = await api.get(
+        `constructions/${selectedConstruction.id}/packages`
+      );
       const packageList = data.map((construction: any) => ({
         id: construction.id,
         name: construction.name,
@@ -125,9 +158,9 @@ const MeasurementsContextProvider = ({
 
   const [dataTable, setDataTable] = useState<DataItem[]>([]);
   const getDataTable = async (filters?: string) => {
-    let url = `/reports_measurements/${34}/data_table/`;
+    let url = `/reports_measurements/${selectedConstruction.id}/data_table/`;
     if (filters) {
-      url = `/reports_measurements/${34}/data_table/?${filters}`;
+      url = `/reports_measurements/${selectedConstruction.id}/data_table/?${filters}`;
     }
     try {
       const { data } = await api.get(url);
@@ -151,9 +184,9 @@ const MeasurementsContextProvider = ({
 
   const [execution, setExecution] = useState<Execution[]>([]);
   const getExecution = async (filters?: string) => {
-    let url = `/reports_measurements/${34}/execution/`;
+    let url = `/reports_measurements/${selectedConstruction.id}/execution/`;
     if (filters) {
-      url = `/reports_measurements/${34}/execution/?${filters}`;
+      url = `/reports_measurements/${selectedConstruction.id}/execution/?${filters}`;
     }
     try {
       const { data } = await api.get(url);
@@ -171,9 +204,9 @@ const MeasurementsContextProvider = ({
   const [lessProfitable, setLessProfitable] = useState<ProfitableItem[]>([]);
   const [moreProfitable, setMoreProfitable] = useState<ProfitableItem[]>([]);
   const getProfitability = async (filters?: string) => {
-    let url = `/reports_measurements/${34}/profitability/`;
+    let url = `/reports_measurements/${selectedConstruction.id}/profitability/`;
     if (filters) {
-      url = `/reports_measurements/${34}/profitability/?${filters}`;
+      url = `/reports_measurements/${selectedConstruction.id}/profitability/?${filters}`;
     }
     try {
       const { data } = await api.get(url);
@@ -215,6 +248,8 @@ const MeasurementsContextProvider = ({
   return (
     <MeasurementsContext.Provider
       value={{
+        selectedConstruction,
+        setSelectedConstruction,
         execution,
         getExecution,
         dataTable,

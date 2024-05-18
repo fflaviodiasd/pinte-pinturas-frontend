@@ -36,8 +36,8 @@ export const DataTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {dataTable.map((item) => (
-                  <tr key={item.discipline}>
+                {dataTable.map((item, index) => (
+                  <tr key={`${item.discipline}-${index}`}>
                     <td className={classes.cell}>{item.discipline}</td>
                     <td className={classes.cell}>{item.namePackage}</td>
                     <td className={classes.cell}>{item.avgDays}</td>

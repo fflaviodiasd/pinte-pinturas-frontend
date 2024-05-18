@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { Dialog, IconButton, Slide, Typography } from "@mui/material";
 import { TransitionProps } from "@mui/material/transitions";
-import { ArrowForwardIosRounded as ArroForwardIcon } from "@mui/icons-material/";
+import { ArrowForwardIosRounded as ArrowForwardIcon } from "@mui/icons-material/";
 
 import { ProfitabilityFilter } from "../Filters/ProfitabilityFilter";
 import { DisciplineFilter } from "../Filters/DisciplineFilter";
@@ -10,6 +10,7 @@ import { PeriodFilter } from "../Filters/PeriodFilter";
 import { DailyFilter } from "../Filters/DailyFilter";
 
 import { useStyles } from "./styles";
+import { ConstructionFilter } from "../Filters/ConstructionFilter";
 
 type ModalFiltersProps = {
   open: boolean;
@@ -42,7 +43,7 @@ export const ModalFilters = ({
           onClick={handleClose}
           aria-label="close"
         >
-          <ArroForwardIcon
+          <ArrowForwardIcon
             className={classes.closeFilterButton}
             fontSize="small"
           />
@@ -56,6 +57,8 @@ export const ModalFilters = ({
 
 const displayFilterTitle = (filter: string) => {
   switch (filter) {
+    case "construction":
+      return "Obras";
     case "daily":
       return "Diárias";
     case "period":
@@ -71,6 +74,8 @@ const displayFilterTitle = (filter: string) => {
 
 const displayFilterContent = (filter: string, handleClose: () => void) => {
   switch (filter) {
+    case "construction":
+      return <ConstructionFilter handleClose={handleClose} />;
     case "daily":
       return <DailyFilter handleClose={handleClose} />;
     case "period":
