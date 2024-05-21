@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
@@ -51,6 +51,17 @@ const Locations = () => {
   const [valueActual, setValueActual] = useState();
   const [control, setControl] = useState();
 
+  const [listLocal, setListLocal] = useState<any>();
+
+  useEffect(() => {
+    console.log(listLocal);
+  }, [listLocal]);
+
+  // const listLocal = useMemo(() => {
+  //   console.log("Lista do memo", listConstructionsLocations);
+  //   return [listConstructionsLocations];
+  // }, [listConstructionsLocations]);
+
   type CustomMRT_ColumnDef<T> = MRT_ColumnDef<any> & {
     muiTableBodyCellProps?: (cell: MRT_Cell<any>) => {
       onChange: (e: any) => void;
@@ -75,6 +86,7 @@ const Locations = () => {
 
   useEffect(() => {
     setRowCount(listConstructionsLocations.length);
+    console.log("Mudou a lista ", listConstructionsLocations);
   }, [listConstructionsLocations]);
 
   useLayoutEffect(() => {
@@ -83,6 +95,44 @@ const Locations = () => {
       setIsLoaded(true);
     }
   }, [dynamicColumns]);
+
+  const [pendingUpdates, setPendingUpdates] = useState<any>([]);
+
+  useEffect(() => {
+    //ESSE EFFECT CONTROLA AS ATUALIZAÇÕES PENDENTES, ELE CHECA SE HÁ ALGUMA, E ENTÃO COLOCA ELA NA LISTA
+    if (pendingUpdates.length > 0) {
+      setListConstructionsLocations((current) => [
+        ...current,
+        ...pendingUpdates,
+      ]);
+      setPendingUpdates([]); // LIMPA TODAS AS ATUALIZAÇÕES PENDENTES
+    }
+  }, [pendingUpdates]);
+
+  const updateLocationData = (cell: any, newValue: any) => {
+    //CRIEI UMA FUNÇÃO QUE ATUALIZA A CÉLULA EM VEZ DE ATUALIZAR DIRETO DENTRO DO CHANGE, NESSA EU USO UMA FUNÇÃO DE CALLBACK DO PRÓRPIO SET DO USESTATE PARA GARANTIR QUE VOU USAR A VERSÃO MAIS ATUALIZADA DA LISTA
+    setListConstructionsLocations((currentLocations) => {
+      return currentLocations.map((location) => {
+        if (location.code === cell.row.original.code) {
+          //CRIO UMA NOVA COPIA DA LISTA PRA EVITAR QUE TENHA UMA MUTAÇÃO DIRETA
+          const updatedLocation = { ...location, [cell.column.id]: newValue };
+
+          //SE TIVER CAMPOS NAS CELULAS, ATUALIZO
+          if (updatedLocation.ids) {
+            updatedLocation.ids = updatedLocation.ids.map((itemId: any) => {
+              if (itemId.id_ref === +cell.column.id.slice(6)) {
+                return { ...itemId, name: newValue };
+              }
+              return itemId;
+            });
+          }
+
+          return updatedLocation;
+        }
+        return location;
+      });
+    });
+  };
 
   useLayoutEffect(() => {
     const fetchLevel = async () => {
@@ -94,6 +144,11 @@ const Locations = () => {
             header: "ID",
             enableEditing: false,
             Cell: ({ row }: any) => {
+              {
+                editState.rowId === row.id
+                  ? (row.original.code = generateNextId(rowCount))
+                  : null;
+              }
               return (
                 <div>
                   {editState.rowId === row.id
@@ -133,20 +188,8 @@ const Locations = () => {
                   const newValue = e.target.value;
                   const rowId = cell.row.id;
                   setEditState({ rowId, value: newValue });
-                  console.log(`Row ${rowId} has value ${newValue}`);
                   setValueActual(e.target.value);
-                  if (listConstructionsLocations.length > 0) {
-                    const newList = listConstructionsLocations.map(
-                      (item: any) => {
-                        if (item.id === cell.row.id) {
-                          item[cell.column.id] = e.target.value;
-                        }
-                        return item;
-                      }
-                    );
-                    console.log("newlist", newList);
-                    setListConstructionsLocations(newList);
-                  }
+                  updateLocationData(cell, newValue);
                 },
               }),
             });
@@ -157,18 +200,8 @@ const Locations = () => {
               muiTableBodyCellProps: ({ cell }: any) => ({
                 onChange: (e: any) => {
                   setValueActual(e.target.value);
-                  if (listConstructionsLocations.length > 0) {
-                    const newList = listConstructionsLocations.map(
-                      (item: any) => {
-                        if (item.id === cell.row.id) {
-                          item[cell.column.id] = e.target.value;
-                        }
-                        return item;
-                      }
-                    );
-                    console.log("newlist", newList);
-                    setListConstructionsLocations(newList);
-                  }
+                  const newValue = e.target.value;
+                  updateLocationData(cell, newValue);
                 },
               }),
             });
@@ -226,6 +259,17 @@ const Locations = () => {
   const deleteIconMessage =
     selectedLocalIds.length === 1 ? "Remover local" : "Remover locais";
 
+  const addNewLine = () => {
+    //ESSA FUNÇÃO AQUI CONTROLA UM ESTADO INTERMEDIÁRIO, PARA NÃO FAZER A ALTERAÇÃO DIRETO DENTRO DA LISTA, É TIPO UM PONTO DE PAUSA NO PROCESSO
+    setPendingUpdates((currentUpdates: any) => {
+      const control = {};
+      dynamicColumns.forEach((column, index) => {
+        if (index >= 2) control[column.id] = "";
+      });
+      const newLine = { checklist: 0, code: "", id: null, ...control };
+      return [...currentUpdates, newLine];
+    });
+  };
   const table = useMaterialReactTable({
     columns: dynamicColumns,
     data: listConstructionsLocations,
@@ -282,18 +326,7 @@ const Locations = () => {
           <div>
             <Button
               variant="contained"
-              onClick={() => {
-                const control: any = {};
-                const teste = dynamicColumns
-                  .filter((item: any, index: any) => index >= 2)
-                  .map((item2: any) => (control[item2.id] = ""));
-                console.log("teste", teste);
-
-                setListConstructionsLocations([
-                  ...listConstructionsLocations,
-                  { checklist: 0, code: "", id: null, ...control },
-                ]);
-              }}
+              onClick={addNewLine}
               style={{
                 marginRight: "0.5rem",
                 textTransform: "capitalize",
