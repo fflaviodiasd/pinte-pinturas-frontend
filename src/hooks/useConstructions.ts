@@ -155,17 +155,15 @@ export const useConstructions = () => {
               (column) =>
                 column.accessorKey && column.accessorKey.startsWith("nivel_")
             )
-            .map((column) => {
+            .map((column, index) => {
               const name =
                 item && item[column.accessorKey as keyof typeof item];
-              const filterId: any = [];
-              if (item) {
-                item.ids?.forEach((item_interno: any) => {
-                  filterId.push(item_interno);
-                });
-              }
+              const filterId = item.ids && item.ids[index];
+
+              console.log("ID de filterId:", filterId ? filterId.id : null);
+
               return {
-                id: filterId[0] ? filterId[0].id : null,
+                id: filterId ? filterId.id : null,
                 level: {
                   id: Number(column?.id?.slice(6, column.id?.length)),
                   name: column.header,
@@ -182,6 +180,7 @@ export const useConstructions = () => {
           errorMessage("Não foi possível adicionar área!");
         }
       });
+
       console.log({ areas: newList });
 
       await api.post(`constructions/${id}/areas/`, { areas: newList });

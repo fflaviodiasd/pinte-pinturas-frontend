@@ -53,7 +53,7 @@ const Locations = () => {
   const [listLocal, setListLocal] = useState<any>();
 
   useEffect(() => {
-    console.log("treco", listLocal);
+    console.log(listLocal);
   }, [listLocal]);
 
   // const listLocal = useMemo(() => {
@@ -85,7 +85,7 @@ const Locations = () => {
 
   useEffect(() => {
     setRowCount(listConstructionsLocations.length);
-    console.log("Mudou a ", listConstructionsLocations);
+    console.log("Mudou a lista ", listConstructionsLocations);
   }, [listConstructionsLocations]);
 
   useLayoutEffect(() => {
@@ -100,7 +100,7 @@ const Locations = () => {
   useEffect(() => {
     //ESSE EFFECT CONTROLA AS ATUALIZAÇÕES PENDENTES, ELE CHECA SE HÁ ALGUMA, E ENTÃO COLOCA ELA NA LISTA
     if (pendingUpdates.length > 0) {
-        setListConstructionsLocations((current) => [
+      setListConstructionsLocations((current) => [
         ...current,
         ...pendingUpdates,
       ]);
@@ -260,7 +260,7 @@ const Locations = () => {
 
   const addNewLine = () => {
     //ESSA FUNÇÃO AQUI CONTROLA UM ESTADO INTERMEDIÁRIO, PARA NÃO FAZER A ALTERAÇÃO DIRETO DENTRO DA LISTA, É TIPO UM PONTO DE PAUSA NO PROCESSO
-    setPendingUpdates((currentUpdates) => {
+    setPendingUpdates((currentUpdates: any) => {
       const control = {};
       dynamicColumns.forEach((column, index) => {
         if (index >= 2) control[column.id] = "";
