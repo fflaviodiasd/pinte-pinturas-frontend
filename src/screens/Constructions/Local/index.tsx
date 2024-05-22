@@ -52,6 +52,8 @@ const Locations = () => {
 
   const [listLocal, setListLocal] = useState<any>();
 
+  const [disabledButton, setDisabledButton] = useState(false);
+
   useEffect(() => {
     console.log(listLocal);
   }, [listLocal]);
@@ -278,6 +280,7 @@ const Locations = () => {
     selectedLocalIds.length === 1 ? "Remover local" : "Remover locais";
 
   const addNewLine = () => {
+    setDisabledButton(true);
     const code = generateNextId(listConstructionsLocations.length + 1);
     //ESSA FUNÇÃO AQUI CONTROLA UM ESTADO INTERMEDIÁRIO, PARA NÃO FAZER A ALTERAÇÃO DIRETO DENTRO DA LISTA, É TIPO UM PONTO DE PAUSA NO PROCESSO
     setPendingUpdates((currentUpdates: any) => {
@@ -288,6 +291,9 @@ const Locations = () => {
       const newLine = { checklist: 0, code: code, id: null, ...control };
       return [...currentUpdates, newLine];
     });
+    setTimeout(() => {
+      setDisabledButton(false);
+    }, 1000);
   };
   const table = useMaterialReactTable({
     columns: dynamicColumns,
@@ -344,13 +350,16 @@ const Locations = () => {
           </Typography>
           <div>
             <Button
-              variant="contained"
+              variant={disabledButton ? "outlined" : "contained"}
               onClick={addNewLine}
+              disabled={disabledButton}
               style={{
                 marginRight: "0.5rem",
                 textTransform: "capitalize",
                 fontFamily: "Open Sans",
                 fontWeight: 600,
+                color: disabledButton ? "#0076BE" : "",
+                border: disabledButton ? "1px solid #0076BE" : "",
               }}
             >
               Adicionar Linha
