@@ -178,7 +178,10 @@ const Locations = () => {
         ];
 
         data.forEach((level: any, index: any) => {
-          if (index === data.length - 1) {
+          {
+            /*
+
+                  if (index === data.length - 1) {
             newDynamicColumns.push({
               accessorKey: `nivel_${level.id}`,
               header: level.name,
@@ -205,6 +208,19 @@ const Locations = () => {
               }),
             });
           }
+        */
+          }
+          newDynamicColumns.push({
+            accessorKey: `nivel_${level.id}`,
+            header: level.name,
+            muiTableBodyCellProps: ({ cell }: any) => ({
+              onChange: (e: any) => {
+                setValueActual(e.target.value);
+                const newValue = e.target.value;
+                updateLocationData(cell, newValue);
+              },
+            }),
+          });
         });
         setDynamicColumns(newDynamicColumns);
       } catch (error) {
@@ -216,9 +232,12 @@ const Locations = () => {
   }, [valueActual, editState]);
 
   const handleCreateLocal = async () => {
-    const code = generateNextId(rowCount);
+    {
+      /*} const code = generateNextId(rowCount);
     listConstructionsLocations[listConstructionsLocations.length - 1].code =
       code;
+  */
+    }
     await addConstructionLocal(dynamicColumns, listConstructionsLocations);
   };
 
@@ -259,13 +278,14 @@ const Locations = () => {
     selectedLocalIds.length === 1 ? "Remover local" : "Remover locais";
 
   const addNewLine = () => {
+    const code = generateNextId(listConstructionsLocations.length + 1);
     //ESSA FUNÇÃO AQUI CONTROLA UM ESTADO INTERMEDIÁRIO, PARA NÃO FAZER A ALTERAÇÃO DIRETO DENTRO DA LISTA, É TIPO UM PONTO DE PAUSA NO PROCESSO
     setPendingUpdates((currentUpdates: any) => {
       const control = {};
       dynamicColumns.forEach((column, index) => {
         if (index >= 2) control[column.id] = "";
       });
-      const newLine = { checklist: 0, code: "", id: null, ...control };
+      const newLine = { checklist: 0, code: code, id: null, ...control };
       return [...currentUpdates, newLine];
     });
   };
