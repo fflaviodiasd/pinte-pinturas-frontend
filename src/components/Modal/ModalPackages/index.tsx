@@ -65,6 +65,7 @@ export const ModalPackages = ({
     console.log("ID do pacote selecionado ao submeter:", selectedPackageId);
     console.log("ID dos checklists selecionados:", selectedChecklists);
     await addDisciplinePackage(selectedPackageId, selectedChecklists);
+    handleClose();
   };
 
   const handleToggleChecklist = (checklistId: any) => {
