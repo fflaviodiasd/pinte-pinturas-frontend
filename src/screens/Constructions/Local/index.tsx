@@ -24,6 +24,7 @@ import { Info } from "@mui/icons-material";
 import { useStyles } from "./styles";
 import { GoPackage } from "react-icons/go";
 import { ModalPackages } from "../../../components/Modal/ModalPackages";
+import SelectLine from "../../../components/SelectLine";
 
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
@@ -280,22 +281,28 @@ const Locations = () => {
   const deleteIconMessage =
     selectedLocalIds.length === 1 ? "Remover local" : "Remover locais";
 
-  const addNewLine = () => {
+  const addNewLine = (numLines: number) => {
     setDisabledButton(true);
-    const code = generateNextId(listConstructionsLocations.length + 1);
-    //ESSA FUNÇÃO AQUI CONTROLA UM ESTADO INTERMEDIÁRIO, PARA NÃO FAZER A ALTERAÇÃO DIRETO DENTRO DA LISTA, É TIPO UM PONTO DE PAUSA NO PROCESSO
-    setPendingUpdates((currentUpdates: any) => {
+    const newLines: any = [];
+    for (let i = 0; i < numLines; i++) {
+      const code = generateNextId(listConstructionsLocations.length + i + 1);
       const control = {};
       dynamicColumns.forEach((column, index) => {
         if (index >= 2) control[column.id] = "";
       });
       const newLine = { checklist: 0, code: code, id: null, ...control };
-      return [...currentUpdates, newLine];
-    });
+      newLines.push(newLine);
+    }
+    // Adiciona as novas linhas de uma vez
+    setPendingUpdates((currentUpdates: any) => [
+      ...currentUpdates,
+      ...newLines,
+    ]);
     setTimeout(() => {
       setDisabledButton(false);
     }, 1000);
   };
+
   const table = useMaterialReactTable({
     columns: dynamicColumns,
     data: listConstructionsLocations,
@@ -349,22 +356,27 @@ const Locations = () => {
             <span className={classes.underlinedBorder}>Gerenc</span>
             iamento
           </Typography>
-          <div>
-            <Button
-              variant={disabledButton ? "outlined" : "contained"}
-              onClick={addNewLine}
-              disabled={disabledButton}
-              style={{
-                marginRight: "0.5rem",
-                textTransform: "capitalize",
-                fontFamily: "Open Sans",
-                fontWeight: 600,
-                color: disabledButton ? "#0076BE" : "",
-                border: disabledButton ? "1px solid #0076BE" : "",
-              }}
-            >
-              Adicionar Linha
-            </Button>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <SelectLine
+              addNewLine={addNewLine}
+              button={
+                <Button
+                  variant={disabledButton ? "outlined" : "contained"}
+                  onClick={() => addNewLine(1)}
+                  disabled={disabledButton}
+                  style={{
+                    marginRight: "0.5rem",
+                    textTransform: "capitalize",
+                    fontFamily: "Open Sans",
+                    fontWeight: 600,
+                    color: disabledButton ? "#0076BE" : "",
+                    border: disabledButton ? "1px solid #0076BE" : "",
+                  }}
+                >
+                  Adicionar Linha
+                </Button>
+              }
+            />
             <Button
               variant="contained"
               style={{
