@@ -1,46 +1,49 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useContext, useState } from "react";
-import {
-  useLocation,
-  // useNavigate
-} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Grid, IconButton, Typography } from "@mui/material";
 import { KeyboardArrowDownRounded as ArrowForwardIcon } from "@mui/icons-material/";
 
 import {
-  MeasurementsContext,
-  MeasurementsContextProvider,
-} from "../../contexts/MeasurementsContext";
-// import { MeasurementsServices } from "./Services";
+  DashboardContext,
+  DashboardContextProvider,
+} from "../../contexts/DashboardContext";
 
-import { ModalFilters } from "./components/ModalFilters";
-import { MeasurementsPackages } from "./Packages";
+import { ModalFilters } from "../Dashboard/components/ModalFilters";
+
+import { GeneralData } from "./GeneralData";
+import { FollowUp } from "./FollowUp";
+import { Layout } from "./Layout";
 
 import { Tab, useStyles } from "./styles";
 
-export const Measurements = () => {
+export const Dashboard = () => {
   return (
-    <MeasurementsContextProvider>
-      <MeasurementsComponent />
-    </MeasurementsContextProvider>
+    <DashboardContextProvider>
+      <DashboardComponent />
+    </DashboardContextProvider>
   );
 };
 
-function MeasurementsComponent() {
+function DashboardComponent() {
   const location = useLocation();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const { classes } = useStyles();
-  const { selectedConstruction } = useContext(MeasurementsContext);
 
-  // const displayContent = () => {
-  //   if (location.pathname.includes("pacotes")) {
-  //     return <MeasurementsPackages />;
-  //   } else {
-  //     return <MeasurementsServices />;
-  //   }
-  // };
+  const { selectedConstruction } = useContext(DashboardContext);
+
+  const displayContent = () => {
+    if (location.pathname.includes("acompanhamento")) {
+      return <FollowUp />;
+    } else if (location.pathname.includes("dados-gerais")) {
+      return <GeneralData />;
+    } else {
+      return <Layout />;
+    }
+  };
 
   const [open, setOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState<string>("scope");
+  const [selectedFilter, setSelectedFilter] = useState<string>("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -50,10 +53,14 @@ function MeasurementsComponent() {
     setOpen(false);
   };
 
+  const shouldBeActive = (path: string) => {
+    return location.pathname.includes(path);
+  };
+
   return (
     <Grid container>
       <Grid item sm={12} md={12} lg={12} className={classes.titleContainer}>
-        <Typography className={classes.title}>Medições</Typography>
+        <Typography className={classes.title}>Dashboard</Typography>
 
         <div className={classes.constructionFilterContainer}>
           <Typography
@@ -84,21 +91,36 @@ function MeasurementsComponent() {
         </div>
       </Grid>
       <Grid item sm={12} md={12} lg={12} className={classes.tabContainer}>
-        <Grid item sm={2} md={2} lg={2} style={{ display: "flex", gap: 8 }}>
-          {/* <Tab
-            text="Serviços"
-            isActive={!location.pathname.includes("pacotes")}
-            onClick={() => navigate(`/medicoes/`)}
-          /> */}
+        <Grid
+          item
+          sm={2}
+          md={1}
+          lg={3}
+          style={{
+            display: "flex",
+            gap: 8,
+          }}
+        >
           <Tab
-            text="Pacotes"
-            // isActive={location.pathname.includes("pacotes")}
-            isActive={location.pathname.includes("medicoes")}
-            // onClick={() => navigate(`/medicoes/pacotes`)}
-            onClick={() => {}}
+            text="Layout"
+            isActive={
+              !shouldBeActive("acompanhamento") &&
+              !shouldBeActive("dados-gerais")
+            }
+            onClick={() => navigate(`/dashboard`)}
+          />
+          <Tab
+            text="Acompanhamento"
+            isActive={shouldBeActive("acompanhamento")}
+            onClick={() => navigate(`/dashboard/acompanhamento`)}
+          />
+          <Tab
+            text="Dados Gerais"
+            isActive={shouldBeActive("dados-gerais")}
+            onClick={() => navigate(`/dashboard/dados-gerais`)}
           />
         </Grid>
-        <Grid item sm={2} md={2} lg={2} />
+        <Grid item sm={2} md={3} lg={1} />
         <Grid item sm={8} md={8} lg={8} className={classes.filterContainer}>
           {listFilters.map((filter) => (
             <Button
@@ -115,8 +137,7 @@ function MeasurementsComponent() {
         </Grid>
       </Grid>
 
-      {/* {displayContent()} */}
-      <MeasurementsPackages />
+      {displayContent()}
 
       <ModalFilters
         open={open}
@@ -128,9 +149,10 @@ function MeasurementsComponent() {
 }
 
 const listFilters = [
-  { text: "Diárias", filterName: "daily" },
-  { text: "Período", filterName: "period" },
+  { text: "Checklist", filterName: "checklist" },
   { text: "Pacotes", filterName: "package" },
-  { text: "Rentabilidade", filterName: "profitability" },
-  { text: "Disciplina", filterName: "discipline" },
+  { text: "Status", filterName: "status" },
+  { text: "Usuário", filterName: "user" },
+  { text: "Funcionário", filterName: "employee" },
+  { text: "Medição", filterName: "measurement" },
 ];

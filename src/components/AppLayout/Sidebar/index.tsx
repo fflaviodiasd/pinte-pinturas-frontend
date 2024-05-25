@@ -11,7 +11,12 @@ import {
   Collapse,
   Link,
 } from "@mui/material";
-import { ExpandLess, ExpandMore, Menu } from "@mui/icons-material";
+import {
+  ExpandLess,
+  ExpandMore,
+  Menu,
+  DashboardRounded as DashboardIcon,
+} from "@mui/icons-material";
 
 import { KEY_SIDEBAR } from "../../../utils/consts";
 
@@ -105,6 +110,11 @@ export const Sidebar = () => {
       text: "Medições",
       path: "medicoes",
       icon: <img src={MeasurementsIcon} alt="Medições" />,
+    },
+    {
+      text: "Dashboard",
+      path: "dashboard",
+      icon: <DashboardIcon />,
     },
   ];
 

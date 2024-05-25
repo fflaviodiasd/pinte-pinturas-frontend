@@ -19,6 +19,7 @@ import { FormConstructionsMultiStep } from "../screens/Constructions/FormConstru
 import { Measurements } from "../screens/Measurements";
 
 import { Settings } from "../screens/Settings";
+import { Dashboard } from "../screens/Dashboard";
 
 export const AppRoutes = () => {
   return (
@@ -72,6 +73,10 @@ export const AppRoutes = () => {
           {/* <Route path="/medicoes/pacotes" element={<Measurements />} /> */}
 
           <Route path="/configuracoes" element={<Settings />} />
+
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/acompanhamento" element={<Dashboard />} />
+          <Route path="/dashboard/dados-gerais" element={<Dashboard />} />
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
