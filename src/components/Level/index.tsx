@@ -158,6 +158,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
             onClick={() => handleChipClick(level.id)}
             editable={editingChipId === level.id}
             chipId={editingChipId}
+            setControl={setControl}
           />
         ))}
       </StyledGridLevel>
