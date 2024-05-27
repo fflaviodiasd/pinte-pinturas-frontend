@@ -94,6 +94,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
           console.log(response);
           setValueActual("");
           setEditingChipId(null);
+          setControl(response);
         } catch (error) {
           console.error("Erro ao editar o nível:", error);
         }
