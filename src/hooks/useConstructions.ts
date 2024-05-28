@@ -186,6 +186,7 @@ export const useConstructions = () => {
       await api.post(`constructions/${id}/areas/`, { areas: newList });
       successMessage("Área adicionada com sucesso!");
       setLoading(false);
+      getAllConstructionsLocations(dynamicColumns);
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível adicionar área!");
