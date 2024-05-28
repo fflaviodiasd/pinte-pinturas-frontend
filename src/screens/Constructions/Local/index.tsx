@@ -248,6 +248,7 @@ const Locations = () => {
   const handleDeleteSnackbar = () => {
     selectedLocalIds.forEach(async (id) => {
       await disableConstructionLocal([id]);
+      getAllConstructionsLocations(dynamicColumns);
     });
     setSelectedLocalIds([]);
     setSnackbarOpen(false);
