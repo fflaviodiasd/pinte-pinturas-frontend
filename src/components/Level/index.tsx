@@ -91,6 +91,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
           });
           setValueActual("");
           setEditingChipId(null);
+          setControl(response);
         } catch (error) {
           console.error("Erro ao editar o nível:", error);
         }
@@ -154,6 +155,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
             onClick={() => handleChipClick(level.id)}
             editable={editingChipId === level.id}
             chipId={editingChipId}
+            setControl={setControl}
           />
         ))}
       </StyledGridLevel>
