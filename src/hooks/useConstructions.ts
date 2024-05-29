@@ -496,8 +496,6 @@ export const useConstructions = () => {
           ...levelNames,
         };
       });
-      console.log(constructionLocalList);
-
       setListConstructionsLocations(constructionLocalList);
 
       setLoading(false);

@@ -55,8 +55,7 @@ export const ChipCustomLevel = ({
       onCreateLevel();
     } else {
       try {
-        const response = await api.delete(`level_area/${chipId}/`);
-        console.log(response);
+        await api.delete(`level_area/${chipId}/`);
         successMessage("Nível deletado com sucesso!");
       } catch (error) {
         errorMessage("Erro ao deletar nível!");
