@@ -9,7 +9,7 @@ import {
 } from "material-react-table";
 
 import { TeamsContext, TeamMember } from "../../../../contexts/TeamsContext";
-import { BackgroundAvatar } from "../../../../components/Avatar";
+import { BackgroundAvatar } from "../../../../components/BackgroundAvatar";
 
 import { useStyles } from "./styles";
 

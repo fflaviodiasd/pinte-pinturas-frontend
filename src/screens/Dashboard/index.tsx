@@ -122,18 +122,32 @@ function DashboardComponent() {
         </Grid>
         <Grid item sm={2} md={3} lg={1} />
         <Grid item sm={8} md={8} lg={8} className={classes.filterContainer}>
-          {listFilters.map((filter) => (
+          {shouldBeActive("dados-gerais") ? (
             <Button
-              key={filter.filterName}
               className={classes.filterButton}
               onClick={() => {
-                setSelectedFilter(filter.filterName);
+                setSelectedFilter("employee");
                 handleClickOpen();
               }}
             >
-              {filter.text}
+              Funcionário
             </Button>
-          ))}
+          ) : (
+            listFilters.map((filter) => {
+              return (
+                <Button
+                  key={filter.filterName}
+                  className={classes.filterButton}
+                  onClick={() => {
+                    setSelectedFilter(filter.filterName);
+                    handleClickOpen();
+                  }}
+                >
+                  {filter.text}
+                </Button>
+              );
+            })
+          )}
         </Grid>
       </Grid>
 

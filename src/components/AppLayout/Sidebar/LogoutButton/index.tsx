@@ -6,7 +6,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
-import { BackgroundAvatar } from "../../../Avatar";
+import { BackgroundAvatar } from "../../../BackgroundAvatar";
 import { UserContext } from "../../../../contexts/UserContext";
 
 export function LogoutButton() {

@@ -10,6 +10,7 @@ export const Container = styled.div`
 export const Content = styled.main`
   flex-grow: 1;
   height: 100%;
+  overflow-x: auto;
 `;
 
 export const useStyles = makeStyles()((theme) => {

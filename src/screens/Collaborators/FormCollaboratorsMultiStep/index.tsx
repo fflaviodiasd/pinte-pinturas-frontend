@@ -16,7 +16,7 @@ import {
 import { Field, Form, Formik, FormikConfig, FormikValues } from "formik";
 import { InputMask } from "../../../components/InputMask";
 import { useStyles } from "./styles";
-import { BackgroundAvatar } from "../../../components/Avatar";
+import { BackgroundAvatar } from "../../../components/BackgroundAvatar";
 import { useParams } from "react-router-dom";
 import { useCollaborators } from "../../../hooks/useCollaborators";
 import { ListCollaboratorsRelatedWorks } from "../ListCollaboratorsRelatedWorks";

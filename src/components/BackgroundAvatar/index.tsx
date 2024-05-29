@@ -1,7 +1,5 @@
 import { Settings } from "@mui/icons-material";
-import { Badge } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
+import { Badge, Avatar, Stack } from "@mui/material";
 
 function stringAvatar(avatarName: string) {
   const initials = avatarName
@@ -31,7 +29,15 @@ export function BackgroundAvatar({
         <Badge
           overlap="circular"
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          badgeContent={<Settings />}
+          badgeContent={
+            <Settings
+              style={{
+                color: "#0076BE",
+                backgroundColor: "#FFF",
+                borderRadius: 50,
+              }}
+            />
+          }
         >
           <Avatar {...stringAvatar(avatarName)} />
         </Badge>

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useMemo, useState } from "react";
 import {
   MaterialReactTable,
@@ -9,7 +11,7 @@ import { Chip, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { EditIcon } from "../../../components/EditIcon";
 
-import { BackgroundAvatar } from "../../../components/Avatar";
+import { BackgroundAvatar } from "../../../components/BackgroundAvatar";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { Navbar } from "../../../components/Navbar";
 import { Breadcrumb } from "../../../components/Breadcrumb";
@@ -166,7 +168,8 @@ export const ListConstructions = () => {
     columns,
     data: listConstructions,
     enableColumnFilterModes: true,
-
+    enablePagination: false,
+    enableBottomToolbar: false,
     initialState: { showColumnFilters: true, density: "compact" },
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
@@ -191,8 +194,6 @@ export const ListConstructions = () => {
       baseBackgroundColor: "#FFFFFF",
       draggingBorderColor: theme.palette.secondary.main,
     }),
-    enablePagination: false,
-    enableBottomToolbar: false,
   });
 
   return (

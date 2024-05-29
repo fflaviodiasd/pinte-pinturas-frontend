@@ -88,6 +88,9 @@ export const ExecutionGraph = () => {
         text: "Quantidade",
         position: "left" as const,
       },
+      legend: {
+        display: false,
+      },
     },
     scales: {
       y: {

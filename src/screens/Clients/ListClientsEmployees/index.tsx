@@ -7,7 +7,7 @@ import {
 import { Chip, Grid, useTheme } from "@mui/material";
 //import { useStyles } from "./styles";
 //import { useNavigate } from "react-router-dom";
-import { BackgroundAvatar } from "../../../components/Avatar";
+import { BackgroundAvatar } from "../../../components/BackgroundAvatar";
 import { useClients } from "../../../hooks/useClients";
 import { TablePagination } from "../../../components/Table/Pagination";
 

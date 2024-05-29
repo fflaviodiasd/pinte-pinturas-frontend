@@ -11,7 +11,7 @@ import { EditIcon } from "../../../components/EditIcon";
 import { TablePagination } from "../../../components/Table/Pagination";
 import { ModalDisable } from "../../../components/Table/ModalDisable";
 import { Delete } from "@mui/icons-material";
-import { BackgroundAvatar } from "../../../components/Avatar";
+import { BackgroundAvatar } from "../../../components/BackgroundAvatar";
 import { useCollaborators } from "../../../hooks/useCollaborators";
 import { Navbar } from "../../../components/Navbar";
 
