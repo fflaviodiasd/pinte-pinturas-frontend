@@ -12,7 +12,7 @@ export const useClients = () => {
   const { id } = useParams();
   const { user } = useContext(UserContext);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [clientData, setClientData] = useState<Client>({
     id: 0,
     name: "",

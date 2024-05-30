@@ -12,6 +12,7 @@ export function Tab({ text, isActive, onClick }: TabProps) {
       style={{
         backgroundColor: isActive ? "#0076BE" : "",
         borderRadius: "8px 8px 0 0",
+        padding: "4px 16px",
       }}
       onClick={onClick}
     >

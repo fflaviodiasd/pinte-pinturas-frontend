@@ -10,7 +10,7 @@ export function Breadcrumb({
   breadcrumbPath2,
   hrefBreadcrumbPath1,
 }: any) {
-  const { classes } = useStyles();
+  // const { classes } = useStyles();
 
   const breadcrumbs = [
     <Link
@@ -36,8 +36,8 @@ export function Breadcrumb({
   ];
 
   return (
-    <Stack spacing={2}>
-      <Box className={classes.breadcrumbContainer}>
+    <Stack>
+      <Box>
         <Breadcrumbs
           separator={<NavigateNextIcon fontSize="small" />}
           aria-label="breadcrumb"

@@ -4,8 +4,8 @@ import { AppLayout } from "../components/AppLayout";
 
 import { Home } from "../screens/Home";
 
-import { FormClientsMultiStep } from "../screens/Clients/FormClientsMultiStep";
 import { ListClients } from "../screens/Clients/ListClients";
+import { Client } from "../screens/Clients";
 
 import { FormCollaboratorsMultiStep } from "../screens/Collaborators/FormCollaboratorsMultiStep";
 import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
@@ -28,11 +28,8 @@ export const AppRoutes = () => {
         <Routes>
           <Route path="/home" element={<Home />} />
 
-          <Route
-            path="/clientes/cadastrar"
-            element={<FormClientsMultiStep />}
-          />
-          <Route path="/clientes/:id" element={<FormClientsMultiStep />} />
+          <Route path="/clientes/cadastrar" element={<Client />} />
+          <Route path="/clientes/:id" element={<Client />} />
           <Route path="/clientes/listagem" element={<ListClients />} />
 
           <Route

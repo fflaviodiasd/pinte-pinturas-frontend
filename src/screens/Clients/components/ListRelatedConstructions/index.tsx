@@ -1,17 +1,21 @@
-import { useEffect, useMemo, useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useMemo } from "react";
+import { Chip, Grid, Typography } from "@mui/material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Chip, Grid, useTheme } from "@mui/material";
-import { useClients } from "../../../hooks/useClients";
-//import { useStyles } from "./styles";
-//import { useNavigate } from "react-router-dom";
-import { TablePagination } from "../../../components/Table/Pagination";
 
-export const ListClientsRelatedWorks = () => {
-  //const { classes } = useStyles();
+import { EmptyTableText } from "../../../../components/Table/EmptyTableText";
+import { TablePagination } from "../../../../components/Table/Pagination";
+import { useClients } from "../../../../hooks/useClients";
+
+import { useStyles } from "../styles";
+
+export const ListRelatedConstructions = () => {
+  const { classes } = useStyles();
   //const navigate = useNavigate();
   const {
     listClientsRelatedWorks,
@@ -19,18 +23,6 @@ export const ListClientsRelatedWorks = () => {
     pagination,
     handleChangePagination,
   } = useClients();
-  const theme = useTheme();
-
-  const [selectedClientRelatedWorksId, setselectedClientRelatedWorksId] =
-    useState<number>(0);
-  const [modalOpen, setIsModalOpen] = useState(false);
-
-  const handleClose = () => {
-    setIsModalOpen(false);
-  };
-
-  const baseBackgroundColor =
-    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
     getAllClientsRelatedWorks();
@@ -70,7 +62,20 @@ export const ListClientsRelatedWorks = () => {
     columns,
     data: listClientsRelatedWorks,
     enableColumnFilterModes: true,
+    enablePagination: false,
+    enableBottomToolbar: false,
     initialState: { showColumnFilters: true },
+    muiFilterTextFieldProps: (props) => {
+      return {
+        placeholder: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
+    muiFilterCheckboxProps: (props) => {
+      return {
+        title: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
+    renderEmptyRowsFallback: () => <EmptyTableText />,
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;
@@ -83,33 +88,28 @@ export const ListClientsRelatedWorks = () => {
       elevation: 0,
     },
     muiTableBodyProps: {
-      sx: (theme) => ({
+      sx: {
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",
           },
-      }),
+      },
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
     }),
-    enablePagination: false,
-    enableBottomToolbar: false,
   });
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <MaterialReactTable table={table} />
-        {Boolean(listClientsRelatedWorks.length) && (
+    <Grid item lg={12} className={classes.tableContainer}>
+      <MaterialReactTable table={table} />
+      {/* {Boolean(listClientsRelatedWorks.length) && (
           <TablePagination
             count={pagination.pageQuantity}
             page={pagination.currentPage}
             onChange={handleChangePagination}
           />
-        )}
-      </Grid>
+        )} */}
     </Grid>
   );
 };

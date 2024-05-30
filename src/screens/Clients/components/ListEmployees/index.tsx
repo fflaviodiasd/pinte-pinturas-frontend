@@ -1,32 +1,28 @@
-import { useEffect, useMemo, useState } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useMemo } from "react";
+import { Chip, Grid } from "@mui/material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Chip, Grid, useTheme } from "@mui/material";
-//import { useStyles } from "./styles";
-//import { useNavigate } from "react-router-dom";
-import { BackgroundAvatar } from "../../../components/BackgroundAvatar";
-import { useClients } from "../../../hooks/useClients";
-import { TablePagination } from "../../../components/Table/Pagination";
 
-export const ListClientsEmployees = () => {
-  //const { classes } = useStyles();
-  //const navigate = useNavigate();
+import { EmptyTableText } from "../../../../components/Table/EmptyTableText";
+import { BackgroundAvatar } from "../../../../components/BackgroundAvatar";
+import { TablePagination } from "../../../../components/Table/Pagination";
+import { useClients } from "../../../../hooks/useClients";
+import { useStyles } from "../styles";
+
+export const ListEmployees = () => {
+  const { classes } = useStyles();
+
   const {
     listClientsEmployees,
     getAllClientsEmployees,
     pagination,
     handleChangePagination,
   } = useClients();
-  const theme = useTheme();
-
-  const [selectedClientEmployeeId, setselectedClientEmployeeId] =
-    useState<number>(0);
-
-  const baseBackgroundColor =
-    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
     getAllClientsEmployees();
@@ -95,6 +91,19 @@ export const ListClientsEmployees = () => {
     data: listClientsEmployees,
     enableColumnFilterModes: true,
     initialState: { showColumnFilters: true },
+    enablePagination: false,
+    enableBottomToolbar: false,
+    muiFilterTextFieldProps: (props) => {
+      return {
+        placeholder: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
+    muiFilterCheckboxProps: (props) => {
+      return {
+        title: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
+    renderEmptyRowsFallback: () => <EmptyTableText />,
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;
@@ -107,33 +116,28 @@ export const ListClientsEmployees = () => {
       elevation: 0,
     },
     muiTableBodyProps: {
-      sx: (theme) => ({
+      sx: {
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",
           },
-      }),
+      },
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
     }),
-    enablePagination: false,
-    enableBottomToolbar: false,
   });
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <MaterialReactTable table={table} />
-        {Boolean(listClientsEmployees.length) && (
-          <TablePagination
-            count={pagination.pageQuantity}
-            page={pagination.currentPage}
-            onChange={handleChangePagination}
-          />
-        )}
-      </Grid>
+    <Grid item lg={12} className={classes.tableContainer}>
+      <MaterialReactTable table={table} />
+      {/* {listClientsEmployees.length > 0 && (
+        <TablePagination
+          count={pagination.pageQuantity}
+          page={pagination.currentPage}
+          onChange={handleChangePagination}
+        />
+      )} */}
     </Grid>
   );
 };
