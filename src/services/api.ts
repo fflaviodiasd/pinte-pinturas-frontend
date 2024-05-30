@@ -1,5 +1,5 @@
 import axios from "axios";
-import { KEY_REFRESH_TOKEN, KEY_TOKEN } from "../utils/consts";
+import { KEY_REFRESH_TOKEN, KEY_SIGNED, KEY_TOKEN } from "../utils/consts";
 
 const baseApiURL = () => {
   if (process.env.NODE_ENV === "production") {
@@ -33,6 +33,7 @@ api.interceptors.response.use(
           "Looks like CORS might be the problem. " +
           "Sorry about this - we will get it fixed shortly."
       );
+      console.log("1");
       return Promise.reject(error);
     }
 
@@ -40,7 +41,9 @@ api.interceptors.response.use(
       error.response.status === 401 &&
       originalRequest.url === baseApiURL + "accounts/token/refresh/"
     ) {
-      window.location.href = "/#/login";
+      window.location.href = "/login";
+      console.log("2");
+      localStorage.removeItem(KEY_SIGNED);
       return Promise.reject(error);
     }
 
@@ -50,14 +53,15 @@ api.interceptors.response.use(
       error.response.statusText === "Unauthorized"
     ) {
       const refreshToken = localStorage.getItem(KEY_REFRESH_TOKEN);
-
+      console.log("3");
       if (refreshToken) {
         const tokenParts = JSON.parse(atob(refreshToken.split(".")[1]));
 
         const now = Math.ceil(Date.now() / 1000);
         console.log(tokenParts.exp);
-
+        console.log("4");
         if (tokenParts.exp > now) {
+          console.log("5");
           return api
             .post("accounts/token/refresh/", { refresh: refreshToken })
             .then((response) => {
@@ -76,11 +80,15 @@ api.interceptors.response.use(
             });
         } else {
           console.log("Refresh token is expired", tokenParts.exp, now);
-          window.location.href = "/#/login";
+          window.location.href = "/login";
+          console.log("6");
+          localStorage.removeItem(KEY_SIGNED);
         }
       } else {
         console.log("Refresh token not available.");
-        window.location.href = "/#/login";
+        console.log("7");
+        localStorage.removeItem(KEY_SIGNED);
+        window.location.href = "/login";
       }
     }
 
