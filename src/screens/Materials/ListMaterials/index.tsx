@@ -1,24 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+import { Button, Grid, Typography } from "@mui/material";
+import { Launch } from "@mui/icons-material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Grid, Paper, useTheme } from "@mui/material";
 
-import { useStyles } from "./styles";
-import { useNavigate } from "react-router-dom";
-import { TablePagination } from "../../../components/Table/Pagination";
-import { Launch } from "@mui/icons-material";
-import { useMaterials } from "../../../hooks/useMaterials";
 import { ModalMaterialGroups } from "../../../components/Modal/ModalMaterialGroups/ModalGroups";
 import { ModalRegisterMaterial } from "../../../components/Modal/ModalRegisterMaterial";
-import { Navbar } from "../../../components/Navbar";
-import { Button } from "../../../components/Button";
+import { TablePagination } from "../../../components/Table/Pagination";
+import { useMaterials } from "../../../hooks/useMaterials";
+// import { Button } from "../../../components/Button";
+
+import { useStyles } from "./styles";
 
 export const ListMaterials = () => {
   const { classes } = useStyles();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const {
     listMaterials,
     getAllMaterials,
@@ -26,7 +27,6 @@ export const ListMaterials = () => {
     pagination,
     handleChangePagination,
   } = useMaterials();
-  const theme = useTheme();
 
   const [selectedMaterialId, setselectedMaterialId] = useState<number>(0);
   const [modalOpen, setIsModalOpen] = useState(false);
@@ -40,9 +40,6 @@ export const ListMaterials = () => {
     disableMaterial(selectedMaterialId);
     setIsModalOpen(false);
   };
-
-  const baseBackgroundColor =
-    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
     getAllMaterials();
@@ -111,6 +108,11 @@ export const ListMaterials = () => {
     data: listMaterials,
     enableColumnFilterModes: true,
     initialState: { showColumnFilters: true },
+    muiFilterTextFieldProps: (props) => {
+      return {
+        placeholder: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;
@@ -123,7 +125,7 @@ export const ListMaterials = () => {
       elevation: 0,
     },
     muiTableBodyProps: {
-      sx: (theme) => ({
+      sx: () => ({
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",
@@ -131,7 +133,6 @@ export const ListMaterials = () => {
       }),
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
     }),
     enablePagination: false,
@@ -139,25 +140,27 @@ export const ListMaterials = () => {
   });
 
   return (
-    <Grid container spacing={2}>
-      <Navbar
-        title="Materiais"
-        button={
-          <div style={{ display: "flex", gap: "1rem" }}>
-            <ModalMaterialGroups />
+    <Grid container>
+      <Grid item sm={12} md={12} lg={12} className={classes.titleContainer}>
+        <Typography className={classes.title}>Materiais</Typography>
 
-            <Button
-              label="Cadastrar"
-              color="primary"
-              onClick={() => {
-                setIsModalOpen(true);
-                setModalMode("register");
-              }}
-            />
-          </div>
-        }
-      />
-      <Grid item xs={12} lg={12}>
+        <div style={{ display: "flex", marginRight: 12 }}>
+          <ModalMaterialGroups />
+
+          <Button
+            onClick={() => {
+              setIsModalOpen(true);
+              setModalMode("register");
+            }}
+            className={classes.registerButton}
+            variant="contained"
+          >
+            Cadastrar
+          </Button>
+        </div>
+      </Grid>
+
+      <Grid item xs={12} lg={12} className={classes.tableContainer}>
         <MaterialReactTable table={table} />
         {Boolean(listMaterials.length) && (
           <TablePagination
@@ -166,14 +169,15 @@ export const ListMaterials = () => {
             onChange={handleChangePagination}
           />
         )}
-        <ModalRegisterMaterial
-          modalOpen={modalOpen}
-          handleClose={handleClose}
-          mode={modalMode}
-          selectedMaterialId={selectedMaterialId}
-          handleDisable={handleDisable}
-        />
       </Grid>
+
+      <ModalRegisterMaterial
+        modalOpen={modalOpen}
+        handleClose={handleClose}
+        mode={modalMode}
+        selectedMaterialId={selectedMaterialId}
+        handleDisable={handleDisable}
+      />
     </Grid>
   );
 };
