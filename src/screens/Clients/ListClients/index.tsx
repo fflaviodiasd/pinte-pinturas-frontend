@@ -187,7 +187,7 @@ export const ListClients = () => {
         modalOpen={modalOpen}
         handleCloseModal={handleClose}
         handleDisable={handleDisable}
-        selectedTeamName={selectedTradingName}
+        selectedName={selectedTradingName}
       />
     </Grid>
   );

@@ -55,6 +55,6 @@ export const useStyles = makeStyles()(() => {
   };
 });
 
-export const SelectedTeamName = styled.span`
+export const SelectedName = styled.span`
   font-weight: 600;
 `;

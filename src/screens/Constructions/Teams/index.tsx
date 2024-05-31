@@ -94,7 +94,7 @@ const TeamsComponent = () => {
           modalOpen={modalOpen}
           handleDisable={handleDisable}
           handleCloseModal={handleCloseModal}
-          selectedTeamName={selectedTeam.name}
+          selectedName={selectedTeam.name}
         />
       </Grid>
     </Grid>

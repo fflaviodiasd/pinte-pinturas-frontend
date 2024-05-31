@@ -13,12 +13,12 @@ interface SelectRoleComponentProps {
   helperText?: string;
 }
 
-export const SelectRoleComponent: React.FC<SelectRoleComponentProps> = ({
+export const SelectRoleComponent = ({
   label,
   name,
   endpoint,
   error,
-}) => {
+}: SelectRoleComponentProps) => {
   const [field] = useField(name);
   const [options, setOptions] = useState<{ id: number; name: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

@@ -70,7 +70,7 @@ export const InputMask = (props: InputMaskProps) => {
         /\d/,
       ];
       break;
-      case "phone":
+    case "phone":
       maskInput = [
         "(",
         /[1-9]/,
@@ -96,6 +96,7 @@ export const InputMask = (props: InputMaskProps) => {
         /\d/,
         ")",
         " ",
+        /\d/,
         /\d/,
         /\d/,
         /\d/,

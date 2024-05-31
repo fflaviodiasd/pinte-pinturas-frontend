@@ -1,21 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Chip, Grid, Typography } from "@mui/material";
+import { Delete } from "@mui/icons-material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Chip, Grid, useTheme } from "@mui/material";
 
-import { useNavigate } from "react-router-dom";
-import { EditIcon } from "../../../components/EditIcon";
+import { useCollaborators } from "../../../hooks/useCollaborators";
+
+import { EmptyTableText } from "../../../components/Table/EmptyTableText";
+import { BackgroundAvatar } from "../../../components/BackgroundAvatar";
 import { TablePagination } from "../../../components/Table/Pagination";
 import { ModalDisable } from "../../../components/Table/ModalDisable";
-import { Delete } from "@mui/icons-material";
-import { BackgroundAvatar } from "../../../components/BackgroundAvatar";
-import { useCollaborators } from "../../../hooks/useCollaborators";
-import { Navbar } from "../../../components/Navbar";
+import { Breadcrumb } from "../../../components/Breadcrumb";
+import { EditIcon } from "../../../components/EditIcon";
+
+import { useStyles } from "./styles";
 
 export const ListCollaborators = () => {
+  const { classes } = useStyles();
   const navigate = useNavigate();
   const {
     listCollaborators,
@@ -24,7 +30,6 @@ export const ListCollaborators = () => {
     pagination,
     handleChangePagination,
   } = useCollaborators();
-  const theme = useTheme();
 
   const [selectedCollaboratorId, setselectedCollaboratorId] =
     useState<number>(0);
@@ -41,9 +46,6 @@ export const ListCollaborators = () => {
     disableCollaborator(selectedCollaboratorId);
     setIsModalOpen(false);
   };
-
-  const baseBackgroundColor =
-    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
     getAllCollaborators();
@@ -133,6 +135,17 @@ export const ListCollaborators = () => {
     data: listCollaborators,
     enableColumnFilterModes: true,
     initialState: { showColumnFilters: true },
+    muiFilterTextFieldProps: (props) => {
+      return {
+        placeholder: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
+    muiFilterCheckboxProps: (props) => {
+      return {
+        title: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
+    renderEmptyRowsFallback: () => <EmptyTableText />,
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;
@@ -145,15 +158,14 @@ export const ListCollaborators = () => {
       elevation: 0,
     },
     muiTableBodyProps: {
-      sx: (theme) => ({
+      sx: {
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",
           },
-      }),
+      },
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
     }),
     enablePagination: false,
@@ -161,10 +173,14 @@ export const ListCollaborators = () => {
   });
 
   return (
-    <Grid container spacing={2}>
-      <Navbar title="Funcionários" />
+    <Grid container>
+      <Grid item sm={12} md={12} lg={12} className={classes.headerContainer}>
+        <Breadcrumb breadcrumbPath1="Funcionários" breadcrumbPath2="Listagem" />
 
-      <Grid item xs={12} lg={12}>
+        <Typography className={classes.title}>Funcionários</Typography>
+      </Grid>
+
+      <Grid item xs={12} lg={12} className={classes.tableContainer}>
         <MaterialReactTable table={table} />
         {Boolean(listCollaborators.length) && (
           <TablePagination
@@ -173,13 +189,14 @@ export const ListCollaborators = () => {
             onChange={handleChangePagination}
           />
         )}
-        <ModalDisable
-          modalOpen={modalOpen}
-          handleClose={handleClose}
-          handleDisable={handleDisable}
-          selectedDisableName={selectedCollaboratorName}
-        />
       </Grid>
+
+      <ModalDisable
+        modalOpen={modalOpen}
+        handleCloseModal={handleClose}
+        handleDisable={handleDisable}
+        selectedName={selectedCollaboratorName}
+      />
     </Grid>
   );
 };

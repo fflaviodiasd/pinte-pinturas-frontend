@@ -4,16 +4,16 @@ import { AppLayout } from "../components/AppLayout";
 
 import { Home } from "../screens/Home";
 
-import { ListClients } from "../screens/Clients/ListClients";
 import { Client } from "../screens/Clients";
+import { ListClients } from "../screens/Clients/ListClients";
 
-import { FormCollaboratorsMultiStep } from "../screens/Collaborators/FormCollaboratorsMultiStep";
+import { Collaborators } from "../screens/Collaborators";
 import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
 
 import { ListMaterials } from "../screens/Materials/ListMaterials";
 
-import { ListConstructions } from "../screens/Constructions/ListConstructions";
 import { Constructions } from "../screens/Constructions";
+import { ListConstructions } from "../screens/Constructions/ListConstructions";
 import { FormConstructionsMultiStep } from "../screens/Constructions/FormConstructionsMultiStep";
 
 import { Measurements } from "../screens/Measurements";
@@ -32,23 +32,17 @@ export const AppRoutes = () => {
           <Route path="/clientes/:id" element={<Client />} />
           <Route path="/clientes/listagem" element={<ListClients />} />
 
-          <Route
-            path="/colaboradores/cadastrar"
-            element={<FormCollaboratorsMultiStep />}
-          />
-          <Route
-            path="/colaboradores/:id"
-            element={<FormCollaboratorsMultiStep />}
-          />
+          <Route path="/colaboradores/cadastrar" element={<Collaborators />} />
+          <Route path="/colaboradores/:id" element={<Collaborators />} />
           <Route
             path="/colaboradores/listagem"
             element={<ListCollaborators />}
           />
+
           <Route
             path="/obras/cadastrar"
             element={<FormConstructionsMultiStep />}
           />
-
           <Route path="/obras/listagem" element={<ListConstructions />} />
 
           <Route path="/obras/:id/materiais" element={<Constructions />} />
