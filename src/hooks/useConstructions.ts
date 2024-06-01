@@ -53,7 +53,7 @@ export const useConstructions = () => {
   const { id } = useParams();
   const { user } = useContext(UserContext);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [constructionData, setConstructionData] = useState<ConstructionData>({
     id: 0,
     name: "",

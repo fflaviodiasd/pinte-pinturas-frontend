@@ -20,6 +20,7 @@ import { Measurements } from "../screens/Measurements";
 
 import { Settings } from "../screens/Settings";
 import { Dashboard } from "../screens/Dashboard";
+import { RegisterConstruction } from "../screens/Constructions/RegisterConstruction";
 
 export const AppRoutes = () => {
   return (
@@ -39,10 +40,11 @@ export const AppRoutes = () => {
             element={<ListCollaborators />}
           />
 
-          <Route
+          <Route path="/obras/cadastrar" element={<RegisterConstruction />} />
+          {/* <Route
             path="/obras/cadastrar"
             element={<FormConstructionsMultiStep />}
-          />
+          /> */}
           <Route path="/obras/listagem" element={<ListConstructions />} />
 
           <Route path="/obras/:id/materiais" element={<Constructions />} />

@@ -138,6 +138,16 @@ export const TableMembers = ({
     onEditingRowSave: handleEditTeamMembers,
     enableEditing: true,
     editDisplayMode: "row",
+    muiFilterTextFieldProps: (props) => {
+      return {
+        placeholder: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
+    muiFilterCheckboxProps: (props) => {
+      return {
+        title: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;
@@ -161,15 +171,6 @@ export const TableMembers = ({
           },
       }),
     },
-
-    // muiTableBodyRowProps: ({ row }) => {
-    //   const isEven = Number(row.id) % 2 === 0;
-    //   return {
-    //     sx: {
-    //       backgroundColor: isEven ? "#FFF" : "#FAFAFA",
-    //     },
-    //   };
-    // },
   });
 
   return (

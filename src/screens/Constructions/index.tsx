@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 
 import { useConstructions } from "../../hooks/useConstructions";
 
 import { Breadcrumb } from "../../components/Breadcrumb";
-import { Navbar } from "../../components/Navbar";
+
 import { Tab } from "../../components/Tab";
 
 import { MeasurementsConstructions } from "./MeasurementsConstructions";
@@ -17,9 +17,10 @@ import { ListConstructionsMaterials } from "./Materials";
 import { ListLocal } from "./Local";
 import { Teams } from "./Teams";
 
-import { TabsContainer } from "./styles";
+import { useStyles } from "./styles";
 
 export const Constructions = () => {
+  const { classes } = useStyles();
   const location = useLocation();
   const navigate = useNavigate();
   const { id: constructionId } = useParams();
@@ -56,20 +57,19 @@ export const Constructions = () => {
   };
 
   return (
-    <Grid container sx={{ display: "flex", flexDirection: "column" }}>
-      <Navbar
-        title={constructionData.corporateName}
-        showBreadcrumb={true}
-        breadcrumb={
-          <Breadcrumb
-            breadcrumbPath1="Obras"
-            breadcrumbPath2="Edição"
-            hrefBreadcrumbPath1="/obras"
-          />
-        }
-      />
+    <Grid container>
+      <Grid item sm={12} md={12} lg={12} className={classes.headerContainer}>
+        <Breadcrumb
+          breadcrumbPath1="Obras"
+          breadcrumbPath2="Edição"
+          hrefBreadcrumbPath1="/obras"
+        />
+        <Typography className={classes.title}>
+          {constructionData.corporateName}
+        </Typography>
+      </Grid>
 
-      <TabsContainer>
+      <Grid item sm={12} md={12} lg={12} className={classes.tabsContainer}>
         <Tab
           text="Materiais"
           isActive={location.pathname.includes("materiais")}
@@ -119,9 +119,11 @@ export const Constructions = () => {
             navigate(`/obras/${constructionId}/encarregados-cliente`)
           }
         />
-      </TabsContainer>
+      </Grid>
 
-      {displayContent()}
+      <Grid item sm={12} md={12} lg={12} className={classes.contentContainer}>
+        {displayContent()}
+      </Grid>
     </Grid>
   );
 };

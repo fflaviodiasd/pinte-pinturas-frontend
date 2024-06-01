@@ -1,6 +1,9 @@
 import { makeStyles } from "tss-react/mui";
 
 export const useStyles = makeStyles()((theme) => ({
+  container: {
+    paddingBottom: theme.spacing(2),
+  },
   teamsTitle: {
     padding: "1rem",
     color: "#2E3132",

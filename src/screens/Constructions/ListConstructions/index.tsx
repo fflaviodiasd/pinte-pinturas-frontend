@@ -1,29 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Chip, Grid, Typography } from "@mui/material";
+import LinearProgress, {
+  linearProgressClasses,
+} from "@mui/material/LinearProgress";
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Chip, Grid } from "@mui/material";
 
-import { useNavigate } from "react-router-dom";
-import { EditIcon } from "../../../components/EditIcon";
-
+import { EmptyTableText } from "../../../components/Table/EmptyTableText";
 import { BackgroundAvatar } from "../../../components/BackgroundAvatar";
 import { useConstructions } from "../../../hooks/useConstructions";
-import { Navbar } from "../../../components/Navbar";
 import { Breadcrumb } from "../../../components/Breadcrumb";
-import LinearProgress, {
-  linearProgressClasses,
-} from "@mui/material/LinearProgress";
+import { EditIcon } from "../../../components/EditIcon";
+import { Navbar } from "../../../components/Navbar";
 import { styled } from "@mui/material/styles";
-import { numberToPercentage } from "../../../utils";
 
-interface responsible {
-  name: string | null;
-}
+import { useStyles } from "./styles";
+
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 15,
   borderRadius: 10,
@@ -37,15 +35,13 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
 }));
 
-// import { numberToPercentage } from "../../../utils";
-
 export const ListConstructions = () => {
+  const { classes } = useStyles();
   const navigate = useNavigate();
   const { listConstructions, getAllConstructions } = useConstructions();
 
   useEffect(() => {
     getAllConstructions();
-    console.log(listConstructions, "listConstructions");
   }, []);
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -54,20 +50,12 @@ export const ListConstructions = () => {
         id: "edit",
         header: "",
         columnDefType: "display",
+        size: 50,
         Cell: ({ cell }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <EditIcon
-              onClick={() =>
-                navigate(`/obras/${cell.row.original.id}/materiais`)
-              }
-              label="Editar"
-            />
-          </div>
+          <EditIcon
+            onClick={() => navigate(`/obras/${cell.row.original.id}/materiais`)}
+            label="Editar"
+          />
         ),
       },
       {
@@ -76,12 +64,12 @@ export const ListConstructions = () => {
         id: "active",
         accessorKey: "active",
         filterVariant: "checkbox",
+        size: 100,
         Cell: ({ cell }) => {
           const status = cell.getValue() === "true" ? "Ativo" : "Inativo";
           const chipColor = status === "Ativo" ? "success" : "error";
           return <Chip label={status} color={chipColor} />;
         },
-        size: 170,
       },
       {
         accessorKey: "corporateName",
@@ -92,15 +80,15 @@ export const ListConstructions = () => {
           <div
             style={{
               display: "flex",
-              gap: "0.5rem",
-
               alignItems: "center",
             }}
           >
             {cell.row.original.corporateName && (
               <BackgroundAvatar avatarName={cell.row.original.corporateName} />
             )}
-            {cell.row.original.corporateName}
+            <Typography style={{ marginLeft: 8 }}>
+              {cell.row.original.corporateName}
+            </Typography>
           </div>
         ),
       },
@@ -171,6 +159,17 @@ export const ListConstructions = () => {
     enablePagination: false,
     enableBottomToolbar: false,
     initialState: { showColumnFilters: true, density: "compact" },
+    muiFilterTextFieldProps: (props) => {
+      return {
+        placeholder: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
+    muiFilterCheckboxProps: (props) => {
+      return {
+        title: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
+    renderEmptyRowsFallback: () => <EmptyTableText />,
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;
@@ -183,29 +182,27 @@ export const ListConstructions = () => {
       elevation: 0,
     },
     muiTableBodyProps: {
-      sx: (theme) => ({
+      sx: {
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",
           },
-      }),
+      },
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: "#FFFFFF",
       draggingBorderColor: theme.palette.secondary.main,
     }),
   });
 
   return (
-    <Grid container spacing={2}>
-      <Navbar
-        title="Obras"
-        showBreadcrumb={true}
-        breadcrumb={
-          <Breadcrumb breadcrumbPath1="Obras" breadcrumbPath2="Listagem" />
-        }
-      />
-      <Grid item xs={12} lg={12}>
+    <Grid container>
+      <Grid item sm={12} md={12} lg={12} className={classes.headerContainer}>
+        <Breadcrumb breadcrumbPath1="Obras" breadcrumbPath2="Listagem" />
+
+        <Typography className={classes.title}>Obras</Typography>
+      </Grid>
+
+      <Grid item xs={12} lg={12} className={classes.tableContainer}>
         <MaterialReactTable table={table} />
       </Grid>
     </Grid>

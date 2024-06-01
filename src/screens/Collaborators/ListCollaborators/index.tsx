@@ -134,6 +134,8 @@ export const ListCollaborators = () => {
     columns,
     data: listCollaborators,
     enableColumnFilterModes: true,
+    enablePagination: false,
+    enableBottomToolbar: false,
     initialState: { showColumnFilters: true },
     muiFilterTextFieldProps: (props) => {
       return {
@@ -168,8 +170,6 @@ export const ListCollaborators = () => {
     mrtTheme: (theme) => ({
       draggingBorderColor: theme.palette.secondary.main,
     }),
-    enablePagination: false,
-    enableBottomToolbar: false,
   });
 
   return (

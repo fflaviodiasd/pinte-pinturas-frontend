@@ -112,6 +112,15 @@ export type Company = {
   neighborhood: string;
   city: string;
   cep: string;
+
+  complement: string;
+  state: string;
+  phone: string;
+  cno: string;
+  email: string;
+  municipal_registration: string;
+  state_registration: string;
+  active: boolean;
 };
 
 export type FilterOption = {

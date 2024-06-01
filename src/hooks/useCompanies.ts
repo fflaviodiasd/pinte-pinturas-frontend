@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { errorMessage, successMessage } from "../components/Messages";
+// import { useNavigate, useParams } from "react-router-dom";
+// import { errorMessage, successMessage } from "../components/Messages";
 import { Company } from "../types"; // Assegure-se que este tipo está importado corretamente
 import { api } from "../services/api";
 import { UserContext } from "../contexts/UserContext";
@@ -8,8 +9,8 @@ import { UserContext } from "../contexts/UserContext";
 const LIMIT = 10;
 
 export const useCompanies = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
+  // const navigate = useNavigate();
+  // const { id } = useParams();
   const { user } = useContext(UserContext);
 
   const [loading, setLoading] = useState(true);
@@ -25,6 +26,14 @@ export const useCompanies = () => {
     neighborhood: "",
     city: "",
     cep: "",
+    complement: "",
+    state: "",
+    phone: "",
+    cno: "",
+    email: "",
+    municipal_registration: "",
+    state_registration: "",
+    active: false,
   });
 
   const [listCompanies, setListCompanies] = useState<Company[]>([]);
@@ -52,7 +61,6 @@ export const useCompanies = () => {
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
-      // console.log(data.results, 'data.results')
       const allCompanies = data.results.map((result: any) => ({
         id: result.id,
         deleted: result.deleted,
@@ -66,6 +74,7 @@ export const useCompanies = () => {
         city: result.city,
         cep: result.cep,
       }));
+      console.log("allCompanies", data.results);
       setListCompanies(allCompanies);
       setLoading(false);
     } catch (error) {
