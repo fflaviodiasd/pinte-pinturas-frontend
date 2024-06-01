@@ -3,69 +3,171 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
-  type MRT_Row,
-  MRT_ToggleDensePaddingButton,
-  MRT_ToggleFullScreenButton,
-  MRT_ToggleFiltersButton,
-  MRT_ShowHideColumnsButton,
+  type MRT_TableOptions,
+
 } from "material-react-table";
-import { Box, Grid, Tooltip, Typography, IconButton, FormControl, InputLabel, Select, MenuItem, RadioGroup, FormControlLabel, Radio } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+
+import { Box, Grid, Tooltip, useTheme, Typography, FormControl, InputLabel, Select, MenuItem, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import { useParams, useNavigate } from "react-router-dom";
+import { useConstructions } from "../../../hooks/useConstructions";
 import { Download } from "@mui/icons-material";
-import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import { errorMessage } from "../../../components/Messages";
-import { data, type GeneralDataInfo } from './makeData';
-import { defaultColumns, localColumns } from "./columns";
 
+import { IconButton } from "@mui/material";
+import Papa from "papaparse";
+import { useConference } from "../../../hooks/useConference"; // Importe seu hook
+
+interface DropdownOption {
+  id: any;
+  name: any;
+  label: string;
+  value: any;
+}
+
+interface LocalData {
+  package_name: string;
+  initial_dt: string | null;
+  finish_dt: string | null;
+  valor_total_package: string;
+  levels: Record<string, string>;
+}
 export const GeneralMeasurements = () => {
+  const {
+    listConstructionsMeasurements,
+    getAllConstructionsMeasurements,
+    addConstructionMeasurements
+  } = useConstructions();
+
+  const { getConferenceData, listConferenceData } = useConference(); // Use seu hook
   const theme = useTheme();
+
   const [isSaving, setIsSaving] = useState(false);
+  const [filteredMeasurements, setFilteredMeasurements] = useState<any[]>([]);
   const [selectedMeasurement, setSelectedMeasurement] = useState("");
-  const [selectedService, setSelectedService] = useState("servico");
+  const [selectedService, setSelectedService] = useState("service");
 
-  const measurementOptions = ["M10", "M11", "M12"];
+  const { id } = useParams();
 
-  const baseBackgroundColor = theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
+  useEffect(() => {
+    if (id) {
+      getAllConstructionsMeasurements();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (listConstructionsMeasurements && listConstructionsMeasurements.length > 0) {
+      const filteredData = listConstructionsMeasurements.filter(
+        (measurement) => measurement.construction.toString() === id
+      );
+      setFilteredMeasurements(filteredData);
+    }
+  }, [listConstructionsMeasurements, id]);
+
+  useEffect(() => {
+    console.log(`${selectedMeasurement},${selectedService}`);
+    if (selectedMeasurement && selectedService) {
+      getConferenceData(selectedMeasurement, selectedService);
+    }
+  }, [selectedMeasurement, selectedService]);
+
+
+
+  const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
+    values,
+    table,
+  }) => {
+    await addConstructionMeasurements(values);
+    getAllConstructionsMeasurements();
+  };
+
+  const baseBackgroundColor =
+    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
+
+  const handleDownloadCsv = () => {
+    const flattenedData = listConferenceData.map((item) => {
+      if (selectedService === "service") {
+        return {
+          service_name: item.service_name,
+          step_service_name: item.step_service_name,
+          unit_service: item.unit_service,
+          registered_quantity: item.registered_quantity,
+          contract_amount: item.contract.amount,
+          contract_price_unit: item.contract.price_unit,
+          contract_total: item.contract.total,
+          previous_ac_qty: item.previous_ac_qty,
+          current_quantity: item.current_quantity,
+          accumulated: item.accumulated,
+          balance_measured: item.balance_measured,
+        };
+      } else {
+        return {
+          package_name: item.package_name,
+          initial_dt: item.initial_dt,
+          finish_dt: item.finish_dt,
+          valor_total_package: item.valor_total_package,
+          ...item.levels, 
+        };
+      }
+    });
+
+    const csv = Papa.unparse(flattenedData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "medicoes.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const serviceColumns: MRT_ColumnDef<any>[] = useMemo(() => [
+    { accessorKey: 'service_name', header: 'Nome do Serviço' },
+    { accessorKey: 'step_service_name', header: 'Etapa do Serviço' },
+    { accessorKey: 'unit_service', header: 'Unidade' },
+    { accessorKey: 'registered_quantity', header: 'Qtd. Cadastrada' },
+    { accessorKey: 'contract.amount', header: 'Qtd. Contrato', muiTableBodyCellProps: { sx: { backgroundColor: '#FFFACD' } } },
+    { accessorKey: 'contract.price_unit', header: 'Preço Unit.', muiTableBodyCellProps: { sx: { backgroundColor: '#FFFACD' } } },
+    { accessorKey: 'contract.total', header: 'Total', muiTableBodyCellProps: { sx: { backgroundColor: '#FFFACD' } } },
+    { accessorKey: 'previous_ac_qty', header: 'Qtd. Ac. Anterior' },
+    { accessorKey: 'current_quantity', header: 'Qtd. Atual' },
+    { accessorKey: 'accumulated', header: 'Qtd. Acumulada' },
+    { accessorKey: 'balance_measured', header: 'Saldo a Medir' },
+  ], []);
+
+  const generateLocalColumns = (data: LocalData[]) => {
+    const dynamicColumns: MRT_ColumnDef<any>[] = [];
+    const levels = data.length > 0 && data[0].levels ? Object.keys(data[0].levels) : [];
+
+    levels.forEach(level => {
+      dynamicColumns.push({ accessorKey: `levels.${level}`, header: level });
+    });
+
+    return [
+      { accessorKey: 'package_name', header: 'Nome do Pacote' },
+      { accessorKey: 'initial_dt', header: 'Data de Início' },
+      { accessorKey: 'finish_dt', header: 'Data Final' },
+      { accessorKey: 'valor_total_package', header: 'Valor Total' },
+      ...dynamicColumns
+    ];
+  };
 
   const columns = useMemo(() => {
-    return selectedService === "local" ? localColumns : defaultColumns;
-  }, [selectedService]);
-
-  const handleExportRows = (rows: MRT_Row<any>[]) => {
-    const doc = new jsPDF({
-      orientation: 'landscape' // Configura a orientação horizontal
-    });
-
-    const data = rows.map((row) => Object.values(row.original));
-    const tableHeaders = columns.map((c) => c.header);
-
-    autoTable(doc, {
-      head: [tableHeaders],
-      body: data,
-      styles: { fontSize: 2 }, // Ajusta o tamanho da fonte para caber mais dados
-      margin: { top: 20 },
-      theme: 'grid',
-      headStyles: { fillColor: [41, 128, 185] }, // Cor de fundo do cabeçalho
-    });
-
-    doc.save('dados-gerais-sistema.pdf');
-  };
+    if (selectedService === "local") {
+      return generateLocalColumns(listConferenceData);
+    } else {
+      return serviceColumns;
+    }
+  }, [selectedService, listConferenceData]);
 
   const table = useMaterialReactTable({
     columns,
-    data: data.length > 0 ? data : data,
+    data: listConferenceData,
     enableColumnFilterModes: true,
-    enableEditing: false,
-    enableExpanding: true,
-    createDisplayMode: 'row',
-    state: { isSaving },
-    enableGrouping: true,
-    initialState: {
-      density: 'compact',
-      expanded: true, //expand all groups by default
-      pagination: { pageIndex: 0, pageSize: 20 },
+    onCreatingRowSave: handleCreatePackages,
+    state: {
+      isSaving,
     },
+    initialState: { showColumnFilters: true },
     renderTopToolbar: ({ table }) => (
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', padding: 2 }}>
         <Box
@@ -83,9 +185,10 @@ export const GeneralMeasurements = () => {
           }}
         >
           <Typography variant="h5" component="div" gutterBottom>
-            Medições
+            Medição
           </Typography>
         </Box>
+        
         <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.5rem' }}>
             <Typography variant="body2" sx={{ fontSize: '0.75rem' }}>Legenda</Typography>
@@ -96,19 +199,18 @@ export const GeneralMeasurements = () => {
               <Typography variant="body2">Medições</Typography>
             </Box>
           </Box>
-          <FormControl sx={{ minWidth: 120 }}>
-            <InputLabel id="medicao-select-label">Medição</InputLabel>
+          <FormControl sx={{ minWidth: 200 }}>
+            <InputLabel id="measurement-select-label">Medição</InputLabel>
             <Select
-              labelId="medicao-select-label"
-              id="medicao-select"
+              labelId="measurement-select-label"
+              id="measurement-select"
               value={selectedMeasurement}
-              label="Medição"
+              label="Selecione Medição"
               onChange={(e) => setSelectedMeasurement(e.target.value)}
-              sx={{ height: '2.4rem' }}
             >
-              {measurementOptions.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
+              {listConstructionsMeasurements.map((measurement) => (
+                <MenuItem key={measurement.id} value={measurement.id}>
+                  {measurement.name}
                 </MenuItem>
               ))}
             </Select>
@@ -119,26 +221,22 @@ export const GeneralMeasurements = () => {
               aria-label="service-local"
               name="service-local"
               value={selectedService}
-              onChange={(e) => {
-                setSelectedService(e.target.value);
-              }}
+              onChange={(e) => setSelectedService(e.target.value)}
             >
-              <FormControlLabel value="servico" control={<Radio />} label="Serviço" />
+              <FormControlLabel value="service" control={<Radio />} label="Serviço" />
               <FormControlLabel value="local" control={<Radio />} label="Local" />
             </RadioGroup>
           </FormControl>
-          <MRT_ToggleFiltersButton table={table} sx={{ color: '#0076be', border: '1px solid #0076be', borderRadius: '4px' }} />
-          <MRT_ShowHideColumnsButton table={table} sx={{ color: '#0076be', border: '1px solid #0076be', borderRadius: '4px' }} />
-          <MRT_ToggleDensePaddingButton table={table} sx={{ color: '#0076be', border: '1px solid #0076be', borderRadius: '4px' }} />
-          <MRT_ToggleFullScreenButton table={table} sx={{ color: '#0076be', border: '1px solid #0076be', borderRadius: '4px' }} />
           <Tooltip title="Download da Tabela">
             <IconButton
-              onClick={() => handleExportRows(table.getRowModel().rows)}
+              onClick={handleDownloadCsv}
               sx={{
                 color: '#0076be',
                 border: '1px solid #0076be',
                 borderRadius: '4px',
-                "&:hover": { backgroundColor: 'rgba(0, 118, 190, 0.04)' },
+                "&:hover": {
+                  backgroundColor: 'rgba(0, 118, 190, 0.04)',
+                },
               }}
             >
               <Download />
@@ -155,13 +253,13 @@ export const GeneralMeasurements = () => {
     localization: {
       filterCustomFilterFn: "Custom Filter Fn",
     } as any,
-    muiTablePaperProps: { elevation: 0 },
-    muiTableBodyProps: {
-      sx: (theme) => ({
-        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td': {
-          backgroundColor: "#FAFAFA",
-        },
-      }),
+    muiTablePaperProps: {
+      elevation: 0,
+    },
+    muiTableContainerProps: {
+      sx: {
+        overflowX: 'auto',  
+      },
     },
     mrtTheme: (theme) => ({
       baseBackgroundColor: baseBackgroundColor,
@@ -173,8 +271,10 @@ export const GeneralMeasurements = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={12} paddingRight={10}>
-        <MaterialReactTable table={table} />
+      <Grid item xs={12} lg={12}>
+        <Box sx={{ overflowX: 'auto' }}>  
+          <MaterialReactTable table={table} />
+        </Box>
       </Grid>
     </Grid>
   );
