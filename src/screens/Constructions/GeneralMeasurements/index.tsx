@@ -272,7 +272,9 @@ export const GeneralMeasurements = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} lg={12}>
+      
         <Box sx={{ overflowX: 'auto' }}>  
+        
           <MaterialReactTable table={table} />
         </Box>
       </Grid>
