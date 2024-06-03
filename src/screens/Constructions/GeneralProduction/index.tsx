@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import {
   MaterialReactTable,
   useMaterialReactTable,
-  type MRT_ColumnDef,
   type MRT_Row,
-  type MRT_TableOptions,
+  type MRT_ColumnDef,
   MRT_ToggleDensePaddingButton,
   MRT_ToggleFullScreenButton,
   MRT_ToggleFiltersButton,
@@ -17,55 +16,117 @@ import { useParams } from "react-router-dom";
 import { Download } from "@mui/icons-material";
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { data, type ProjectData, medicaoOptions, funcionarioOptions, equipeOptions } from './makeData';
-import { columns } from "./columns";
+import { useConference } from "../../../hooks/useConference";
+import Papa from "papaparse";
 
 export const GeneralProduction = () => {
   const theme = useTheme();
+  const { id } = useParams<{ id: string }>();
+  const { 
+    loading,
+    setLoading,
+    getConferenceData,
+    listConferenceData,
+    listMeasurementsReports,
+    listEmployeesReports,
+    fetchMeasurements,
+    fetchEmployees,
+    fetchTeams,
+    getProductionData,
+    listTeamsReports,
+    listProductionData,
+    getReportsWithMeasurement,
+    listReportsWithMeasurements,
+    listReportsWithEmployees,
+    getReportsWithEmployee,
+  } = useConference();
   const [isSaving, setIsSaving] = useState(false);
-  const { id } = useParams();
 
   const [selectedMedicao, setSelectedMedicao] = useState('');
   const [selectedFuncionario, setSelectedFuncionario] = useState('');
   const [selectedEquipe, setSelectedEquipe] = useState('');
+  const [tableData, setTableData] = useState<any[]>([]);
 
-  const baseBackgroundColor = theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
+  useEffect(() => {
+    if (id) {
+      fetchMeasurements();
+      getProductionData().then(data => setTableData(data));
+    }
+  }, [id]);
 
-  const handleExportRows = (rows: MRT_Row<any>[]) => {
-    const doc = new jsPDF({ orientation: 'landscape' });
-    const data = rows.map((row) => Object.values(row.original));
-    const tableHeaders = columns.map((c) => c.header);
-
-    autoTable(doc, {
-      head: [tableHeaders],
-      body: data,
-      styles: { fontSize: 2 },
-      margin: { top: 20 },
-      theme: 'grid',
-      headStyles: { fillColor: [41, 128, 185] },
-    });
-
-    doc.save('dados-gerais-sistema.pdf');
-  };
-
-  const handleMedicaoChange = (event: any) => {
-    setSelectedMedicao(event.target.value);
+  const handleMedicaoChange = async (event: any) => {
+    const medicao = event.target.value;
+    setSelectedMedicao(medicao);
     setSelectedFuncionario('');
     setSelectedEquipe('');
+    if (medicao) {
+      await fetchEmployees(medicao);
+      const data = await getReportsWithMeasurement(medicao);
+      setTableData(data);
+    }
   };
 
-  const handleFuncionarioChange = (event: any) => {
-    setSelectedFuncionario(event.target.value);
+  const handleFuncionarioChange = async (event: any) => {
+    const funcionario = event.target.value;
+    setSelectedFuncionario(funcionario);
     setSelectedEquipe('');
+    if (selectedMedicao && funcionario) {
+      await fetchTeams(selectedMedicao, funcionario);
+      const data = await getReportsWithEmployee(funcionario);
+      setTableData(data);
+    }
   };
 
   const handleEquipeChange = (event: any) => {
     setSelectedEquipe(event.target.value);
   };
 
+  const handleDownloadCsv = () => {
+    const flattenedData = tableData.map((item) => {
+      return {
+        package_name: item.package_name,
+        initial_dt: item.initial_dt,
+        finish_dt: item.finish_dt,
+        total: item.total,
+        checklist: item.checklist,
+        ...item.levels,
+      };
+    });
+  
+    const csv = Papa.unparse(flattenedData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "production_data.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const generateProductionColumns = (data: any[]) => {
+    const dynamicColumns: MRT_ColumnDef<any>[] = [];
+    const levels = data && data.length > 0 && data[0].levels ? Object.keys(data[0].levels) : [];
+
+    levels.forEach(level => {
+      dynamicColumns.push({ accessorKey: `levels.${level}`, header: level });
+    });
+
+    return [
+      { accessorKey: 'package_name', header: 'Nome do Pacote' },
+      { accessorKey: 'initial_dt', header: 'Data de Início' },
+      { accessorKey: 'finish_dt', header: 'Data Final' },
+      { accessorKey: 'total', header: 'Valor Total' },
+      { accessorKey: 'checklist', header: 'Checklist' },
+      ...dynamicColumns
+    ];
+  };
+
+  const columns = useMemo(() => generateProductionColumns(tableData), [tableData]);
+
   const table = useMaterialReactTable({
     columns,
-    data: data.length > 0 ? data : data,
+    data: tableData,
     enableColumnFilterModes: true,
     enableEditing: false,
     enableExpanding: false,
@@ -103,9 +164,9 @@ export const GeneralProduction = () => {
                 value={selectedMedicao}
                 onChange={handleMedicaoChange}
               >
-                {medicaoOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+                {listMeasurementsReports.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -120,9 +181,9 @@ export const GeneralProduction = () => {
                 onChange={handleFuncionarioChange}
                 disabled={!selectedMedicao}
               >
-                {funcionarioOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+                {listEmployeesReports.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -137,9 +198,9 @@ export const GeneralProduction = () => {
                 onChange={handleEquipeChange}
                 disabled={!selectedFuncionario}
               >
-                {equipeOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+                {listTeamsReports.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -150,7 +211,7 @@ export const GeneralProduction = () => {
             <MRT_ToggleFullScreenButton table={table} sx={{ color: '#0076be', border: '1px solid #0076be', borderRadius: '4px' }} />
             <Tooltip title="Download da Tabela">
               <IconButton
-                onClick={() => handleExportRows(table.getRowModel().rows)}
+                onClick={handleDownloadCsv}
                 sx={{
                   color: '#0076be',
                   border: '1px solid #0076be',
@@ -182,7 +243,7 @@ export const GeneralProduction = () => {
       }),
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
+      baseBackgroundColor: theme.palette.background.default,
       draggingBorderColor: theme.palette.secondary.main,
     }),
     enablePagination: false,

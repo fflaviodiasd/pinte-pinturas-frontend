@@ -256,11 +256,11 @@ export const GeneralMeasurements = () => {
     muiTablePaperProps: {
       elevation: 0,
     },
-    muiTableContainerProps: {
-      sx: {
-        overflowX: 'auto',  
-      },
-    },
+    // muiTableContainerProps: {
+    //   sx: {
+    //     overflowX: 'auto',  
+    //   },
+    // },
     mrtTheme: (theme) => ({
       baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
@@ -272,11 +272,11 @@ export const GeneralMeasurements = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} lg={12}>
-      
-        <Box sx={{ overflowX: 'auto' }}>  
+      <MaterialReactTable table={table} />
+
+        {/* <Box sx={{ overflowX: 'auto' }}>  
         
-          <MaterialReactTable table={table} />
-        </Box>
+        </Box> */}
       </Grid>
     </Grid>
   );
