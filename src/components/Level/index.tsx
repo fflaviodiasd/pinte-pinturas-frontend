@@ -34,12 +34,11 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
       try {
         const response = await api.get(`constructions/${id}/level_area`);
         setLevel(
-          response.data.map((level: Level, index: number) => ({
+          response.data.map((level: Level) => ({
             ...level,
             color: level.is_last_level === true ? "black" : "white",
           }))
         );
-        console.log(response);
       } catch (error) {
         console.error("Erro ao buscar níveis:", error);
       }
@@ -65,7 +64,6 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
             name: valueActual,
             order: level.length + 1,
           });
-          console.log(response);
           const newLevel: Level = {
             ...response.data,
           };
@@ -88,12 +86,12 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
 
       if (valueActual.trim() !== "") {
         try {
-          const response = await api.put(`/level_area/${editingChipId}/`, {
+          await api.put(`/level_area/${editingChipId}/`, {
             name: valueActual,
           });
-          console.log(response);
           setValueActual("");
           setEditingChipId(null);
+          setControl(response);
         } catch (error) {
           console.error("Erro ao editar o nível:", error);
         }
@@ -157,6 +155,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
             onClick={() => handleChipClick(level.id)}
             editable={editingChipId === level.id}
             chipId={editingChipId}
+            setControl={setControl}
           />
         ))}
       </StyledGridLevel>

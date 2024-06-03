@@ -51,19 +51,7 @@ const Locations = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [valueActual, setValueActual] = useState();
   const [control, setControl] = useState();
-
-  const [listLocal, setListLocal] = useState<any>();
-
   const [disabledButton, setDisabledButton] = useState(false);
-
-  useEffect(() => {
-    console.log(listLocal);
-  }, [listLocal]);
-
-  // const listLocal = useMemo(() => {
-  //   console.log("Lista do memo", listConstructionsLocations);
-  //   return [listConstructionsLocations];
-  // }, [listConstructionsLocations]);
 
   type CustomMRT_ColumnDef<T> = MRT_ColumnDef<any> & {
     muiTableBodyCellProps?: (cell: MRT_Cell<any>) => {
@@ -89,7 +77,6 @@ const Locations = () => {
 
   useEffect(() => {
     setRowCount(listConstructionsLocations.length);
-    console.log("Mudou a lista ", listConstructionsLocations);
   }, [listConstructionsLocations]);
 
   useLayoutEffect(() => {
@@ -248,6 +235,7 @@ const Locations = () => {
   const handleDeleteSnackbar = () => {
     selectedLocalIds.forEach(async (id) => {
       await disableConstructionLocal([id]);
+      getAllConstructionsLocations(dynamicColumns);
     });
     setSelectedLocalIds([]);
     setSnackbarOpen(false);
@@ -302,6 +290,71 @@ const Locations = () => {
       setDisabledButton(false);
     }, 1000);
   };
+
+  useEffect(() => {
+    const fetchLevel = async () => {
+      try {
+        const { data } = await api.get(`constructions/${id}/level_area/`);
+        const newDynamicColumns: CustomMRT_ColumnDef<any>[] = [
+          {
+            accessorKey: "code",
+            header: "ID",
+            enableEditing: false,
+            Cell: ({ row }: any) => {
+              {
+                editState.rowId === row.id
+                  ? (row.original.code = generateNextId(rowCount))
+                  : null;
+              }
+              return (
+                <div>
+                  {editState.rowId === row.id
+                    ? row.original.code || generateNextId(rowCount)
+                    : row.original.code}
+                </div>
+              );
+            },
+          },
+          {
+            accessorKey: "checklist",
+            header: "Checklist",
+            enableEditing: false,
+            Cell: ({ cell }: any) => (
+              <div
+                style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                }}
+              >
+                <Tooltip title="Checklists">
+                  <Info fontSize="small" style={{ color: "#C5C7C8" }} />
+                </Tooltip>
+                {cell.row.original.checklist}
+              </div>
+            ),
+          },
+        ];
+
+        data.forEach((level: any, index: any) => {
+          newDynamicColumns.push({
+            accessorKey: `nivel_${level.id}`,
+            header: level.name,
+            muiTableBodyCellProps: ({ cell }: any) => ({
+              onChange: (e: any) => {
+                setValueActual(e.target.value);
+                const newValue = e.target.value;
+                updateLocationData(cell, newValue);
+              },
+            }),
+          });
+        });
+        getAllConstructionsLocations(newDynamicColumns);
+      } catch (error) {
+        console.error("Erro ao buscar os níveis:", error);
+      }
+    };
+    fetchLevel();
+  }, [control]);
 
   const table = useMaterialReactTable({
     columns: dynamicColumns,

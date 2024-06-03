@@ -99,6 +99,8 @@ export const Sidebar = () => {
       subItems: [
         { text: "• Cadastro", path: "/obras/cadastrar" },
         { text: "• Listagem", path: "/obras/listagem" },
+        { text: "• Funcionários", path: "/obras/funcionarios" },
+
       ],
     },
     {

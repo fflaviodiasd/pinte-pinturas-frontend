@@ -13,6 +13,9 @@ import { SupervisorConstructions } from "./SupervisorConstructions";
 import { ServicesConstructions } from "./ServicesConstructions";
 import { PackageConstructions } from "./PackageConstructions";
 import { CustomerSupervisor } from "./CustomerSupervisor";
+import { GeneralData } from "./GeneralData";
+import { GeneralProduction } from "./GeneralProduction";
+import { GeneralMeasurements } from "./GeneralMeasurements";
 import { ListConstructionsMaterials } from "./Materials";
 import { ListLocal } from "./Local";
 import { Teams } from "./Teams";
@@ -51,6 +54,12 @@ export const Constructions = () => {
         return <SupervisorConstructions />;
       case location.pathname.includes("encarregados-cliente"):
         return <CustomerSupervisor />;
+      case location.pathname.includes("conferencia-gerais-sistema"):
+        return <GeneralData />;
+      case location.pathname.includes("conferencia-dados-sistema"):
+        return <GeneralMeasurements />;
+      case location.pathname.includes("conferencia-producao-sistema"):
+        return <GeneralProduction />;
       default:
         return <ListConstructionsMaterials />;
     }
@@ -117,6 +126,27 @@ export const Constructions = () => {
           isActive={location.pathname.includes("encarregados-cliente")}
           onClick={() =>
             navigate(`/obras/${constructionId}/encarregados-cliente`)
+          }
+        />
+        <Tab
+          text="Dados Gerais do Sistema"
+          isActive={location.pathname.includes("conferencia-gerais-sistema")}
+          onClick={() =>
+            navigate(`/obras/${constructionId}/conferencia-gerais-sistema`)
+          }
+        />
+        <Tab
+          text="Medições do Sistema"
+          isActive={location.pathname.includes("conferencia-dados-sistema")}
+          onClick={() =>
+            navigate(`/obras/${constructionId}/conferencia-dados-sistema`)
+          }
+        />
+        <Tab
+          text="Produção do Sistema"
+          isActive={location.pathname.includes("conferencia-producao-sistema")}
+          onClick={() =>
+            navigate(`/obras/${constructionId}/conferencia-producao-sistema`)
           }
         />
       </Grid>

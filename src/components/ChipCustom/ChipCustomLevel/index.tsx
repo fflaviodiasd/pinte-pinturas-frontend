@@ -22,6 +22,7 @@ interface ChipCustomLevelProps {
   post?: boolean;
   chipId?: number | null;
   onCreateLevel?: () => void;
+  setControl?: any;
 }
 
 export const ChipCustomLevel = ({
@@ -38,9 +39,11 @@ export const ChipCustomLevel = ({
   post,
   onCreateLevel,
   chipId,
+  setControl,
 }: ChipCustomLevelProps) => {
   const [editingValue, setEditingValue] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEditingValue(event.target.value);
@@ -55,15 +58,20 @@ export const ChipCustomLevel = ({
       onCreateLevel();
     } else {
       try {
-        const response = await api.delete(`level_area/${chipId}/`);
-        console.log(response);
+        await api.delete(`level_area/${chipId}/`);
         successMessage("Nível deletado com sucesso!");
+        setIsDeleted(true);
+        setControl(response);
       } catch (error) {
         errorMessage("Erro ao deletar nível!");
         console.error("Erro ao deletar nivel:", error);
       }
     }
   };
+
+  if (isDeleted) {
+    return null;
+  }
 
   return (
     <StyledChipDiv onClick={onClick}>
