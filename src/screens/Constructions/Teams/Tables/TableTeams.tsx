@@ -123,14 +123,14 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
   const table = useMaterialReactTable({
     columns,
     data: listTeams,
+    editDisplayMode: "row",
+    createDisplayMode: "row",
+    enableEditing: true,
     enablePagination: false,
     enableBottomToolbar: false,
     enableColumnFilterModes: true,
     onCreatingRowSave: handleCreateTeam,
     onEditingRowSave: handleEditTeam,
-    enableEditing: true,
-    editDisplayMode: "row",
-    createDisplayMode: "row",
     renderEmptyRowsFallback: () => <EmptyTableText />,
     muiExpandButtonProps: ({ row, table }) => ({
       onClick: () => table.setExpanded({ [row.id]: !row.getIsExpanded() }),

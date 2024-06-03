@@ -2,15 +2,13 @@ import { makeStyles } from "tss-react/mui";
 
 export const useStyles = makeStyles()((theme) => {
   return {
-    paper: {
-      color: theme.palette.text.secondary,
-      flexGrow: 1,
+    container: {
+      paddingBottom: theme.spacing(2),
     },
-    searchBarContainer: {
+    headerTableContainer: {
       display: "flex",
-      flexDirection: "row",
+      justifyContent: "space-between",
       alignItems: "center",
-      justifyContent: "flex-end",
       padding: 16,
     },
     toolbarButton: {
