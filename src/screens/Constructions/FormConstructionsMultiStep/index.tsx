@@ -21,7 +21,7 @@ import { useStyles, IOSSwitch } from "./styles";
 // import { useCostumers } from "../../../hooks/useCustomers";
 import { useCompanies } from "../../../hooks/useCompanies";
 import { useConstructions } from "../../../hooks/useConstructions";
-import { BackgroundAvatar } from "../../../components/Avatar";
+import { BackgroundAvatar } from "../../../components/BackgroundAvatar";
 import { useParams } from "react-router-dom";
 import { Breadcrumb } from "../../../components/Breadcrumb";
 

@@ -5,11 +5,13 @@ import styled from "styled-components";
 export const Container = styled.div`
   display: flex;
   height: 100vh;
+  background-color: #eee;
 `;
 
 export const Content = styled.main`
   flex-grow: 1;
   height: 100%;
+  overflow-x: auto;
 `;
 
 export const useStyles = makeStyles()((theme) => {

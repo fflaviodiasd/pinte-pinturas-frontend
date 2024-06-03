@@ -1,15 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import { Grid, TextField } from "@mui/material";
-import { Field, Form, Formik } from "formik";
+import { Grid } from "@mui/material";
 
 import { ModalDisable } from "../../../components/Table/ModalDisable";
 import {
   TeamsContext,
   TeamsContextProvider,
 } from "../../../contexts/TeamsContext";
-import { Button } from "../../../components/Button";
 
 import { TableTeams } from "./Tables/TableTeams";
+import { useStyles } from "./styles";
 
 type SelectedTeam = {
   id: number;
@@ -25,14 +24,18 @@ export const Teams = () => {
 };
 
 const TeamsComponent = () => {
-  const { disableTeam, addTeam, listTeams, getAllTeams } =
-    useContext(TeamsContext);
+  const { classes } = useStyles();
+  const {
+    disableTeam,
+
+    listTeams,
+    getAllTeams,
+  } = useContext(TeamsContext);
   const [selectedTeam, setSelectedTeam] = useState<SelectedTeam>({
     id: 0,
     name: "",
   });
 
-  const [showAddTeamInput, setShowAddTeamInput] = useState(false);
   const [modalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -53,50 +56,16 @@ const TeamsComponent = () => {
     setIsModalOpen(false);
   };
 
-  const handleAddTeam = async (name: string) => {
-    addTeam(name);
-    setShowAddTeamInput(false);
-  };
-
   return (
-    <Grid container>
-      <Grid item xs={12} lg={12}>
-        {showAddTeamInput && (
-          <div style={{ padding: "1.5rem" }}>
-            <div>
-              <Formik
-                initialValues={{ name: "" }}
-                onSubmit={(values) => {
-                  handleAddTeam(values.name);
-                }}
-                enableReinitialize={true}
-              >
-                <Form>
-                  <div style={{ display: "flex", gap: "1rem" }}>
-                    <Field
-                      as={TextField}
-                      name="name"
-                      label="Nome da Equipe"
-                      variant="outlined"
-                      fullWidth
-                    />
-                    <Button label="Salvar" color="primary" />
-                  </div>
-                </Form>
-              </Formik>
-            </div>
-          </div>
-        )}
+    <Grid item lg={12} className={classes.container}>
+      <TableTeams listTeams={listTeams} handleOpenModal={handleOpenModal} />
 
-        <TableTeams listTeams={listTeams} handleOpenModal={handleOpenModal} />
-
-        <ModalDisable
-          modalOpen={modalOpen}
-          handleDisable={handleDisable}
-          handleCloseModal={handleCloseModal}
-          selectedTeamName={selectedTeam.name}
-        />
-      </Grid>
+      <ModalDisable
+        modalOpen={modalOpen}
+        handleDisable={handleDisable}
+        handleCloseModal={handleCloseModal}
+        selectedName={selectedTeam.name}
+      />
     </Grid>
   );
 };

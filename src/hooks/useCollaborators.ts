@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
@@ -10,7 +11,7 @@ export const useCollaborators = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [collaboratorData, setCollaboratorData] = useState<Collaborator>({
     id: 0,
     name: "",

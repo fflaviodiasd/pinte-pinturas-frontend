@@ -1,27 +1,30 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Box, Grid, Tooltip, IconButton } from "@mui/material";
+import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import {
-  MaterialReactTable,
-  useMaterialReactTable,
   type MRT_ColumnDef,
   type MRT_TableOptions,
-  MRT_ToggleDensePaddingButton,
-  MRT_ToggleFullScreenButton,
-  MRT_ToggleFiltersButton,
   MRT_ShowHideColumnsButton,
+  MRT_ToggleDensePaddingButton,
+  MRT_ToggleFiltersButton,
+  MRT_ToggleFullScreenButton,
+  MaterialReactTable,
+  useMaterialReactTable,
 } from "material-react-table";
 
-import { Box, Grid, Tooltip, useTheme, Typography } from "@mui/material";
-import { useStyles } from "./styles";
-import { useParams, useNavigate } from "react-router-dom";
 import { useConstructions } from "../../../hooks/useConstructions";
-import { ModalRegisterConstructionPackages } from "../../../components/Modal/ModalRegisterConstructionPackages";
-import { Add, Launch, Edit, Delete, Info } from "@mui/icons-material";
 
-import { IconButton } from "@mui/material";
-import ServiceStepTable from "./ServiceStepsTable";
 import { errorMessage, successMessage } from "../../../components/Messages";
+import { EmptyTableText } from "../../../components/Table/EmptyTableText";
+import { SectionTitle } from "../../../components/SectionTitle";
+
+import { ServiceStepTable } from "./ServiceStepsTable";
+
+import { useStyles } from "./styles";
+
 interface DropdownOption {
   id: any;
   name: any;
@@ -39,7 +42,6 @@ export const ServicesConstructions = () => {
     addConstructionService,
     getAllUnits,
   } = useConstructions();
-  const theme = useTheme();
 
   // const [selectedPackageConstructionId, setSelectedPackageConstructionId] =
   //   useState<number>(0);
@@ -148,9 +150,6 @@ export const ServicesConstructions = () => {
       await addConstructionService(adjustedValues);
       getAllConstructionServices();
     };
-
-  const baseBackgroundColor =
-    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -292,14 +291,19 @@ export const ServicesConstructions = () => {
   const table = useMaterialReactTable({
     columns,
     data: listConstructionServices,
-    enableColumnFilterModes: true,
-    onCreatingRowSave: handleCreatePackages,
-    onEditingRowSave: handleEditPackages,
-    enableEditing: true,
     editDisplayMode: "row",
     createDisplayMode: "row",
-    state: {
-      isSaving,
+    enableEditing: true,
+    enablePagination: false,
+    enableBottomToolbar: false,
+    onCreatingRowSave: handleCreatePackages,
+    onEditingRowSave: handleEditPackages,
+    initialState: { showColumnFilters: true },
+    renderEmptyRowsFallback: () => <EmptyTableText />,
+    muiFilterTextFieldProps: (props) => {
+      return {
+        placeholder: `Filtrar por ${props.column.columnDef.header}`,
+      };
     },
     renderRowActions: ({ row }) => (
       <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
@@ -308,53 +312,27 @@ export const ServicesConstructions = () => {
           onClick={() => handleDisable(row.original.id)}
           sx={{ color: "#C5C7C8" }}
         >
-          <Delete />
+          <DeleteIcon />
         </IconButton>
         {/* <IconButton
           aria-label="Editar"
           onClick={() => handleEditPackages(row.original.id)}
-          sx={{ color: "#C5C7C8" }} 
-        >
+          sx={{ color: "#C5C7C8" }}
+          >
           <Edit />
         </IconButton> */}
       </div>
     ),
-
-    initialState: { showColumnFilters: true },
     renderDetailPanel: ({ row }) => (
       <Box sx={{ padding: "1rem" }}>
         <ServiceStepTable order={row.original.id} />
       </Box>
     ),
     renderTopToolbar: ({ table }) => (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "1rem",
-          padding: 2,
-        }}
-      >
-        <Box
-          sx={{
-            position: "relative",
-            "&::after": {
-              content: '""',
-              display: "block",
-              width: "30%",
-              height: "3px",
-              backgroundColor: "#1976d2",
-              position: "absolute",
-              bottom: 0,
-            },
-          }}
-        >
-          <Typography variant="h5" component="div" gutterBottom>
-            Serviços Cadastrados
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+      <Grid item lg={12} className={classes.headerTableContainer}>
+        <SectionTitle title="Serviços Cadastrados" />
+
+        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
           <MRT_ToggleFiltersButton
             table={table}
             className={classes.toolbarButton}
@@ -371,27 +349,34 @@ export const ServicesConstructions = () => {
             table={table}
             className={classes.toolbarButton}
           />
-          <Tooltip title="Adicionar Pacote">
+          <Tooltip title="Adicionar Serviço">
             <IconButton
               onClick={() => {
                 table.setCreatingRow(true);
-                console.log("options:", unitOptions);
+                // console.log("options:", unitOptions);
               }}
-              sx={{
-                color: "#0076be",
-                border: "1px solid #0076be",
-                borderRadius: "4px",
-                "&:hover": {
-                  backgroundColor: "rgba(0, 118, 190, 0.04)",
-                },
-              }}
+              className={classes.toolbarButton}
             >
-              <Add />
+              <AddIcon />
             </IconButton>
           </Tooltip>
-        </Box>
-      </Box>
+        </div>
+      </Grid>
     ),
+    muiTablePaperProps: {
+      elevation: 0,
+    },
+    muiTableProps: {
+      style: {
+        paddingLeft: 16,
+        paddingRight: 16,
+      },
+    },
+    muiTableContainerProps: {
+      style: {
+        scrollbarWidth: "thin",
+      },
+    },
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;
@@ -400,33 +385,22 @@ export const ServicesConstructions = () => {
     localization: {
       filterCustomFilterFn: "Custom Filter Fn",
     } as any,
-    muiTablePaperProps: {
-      elevation: 0,
-    },
     muiTableBodyProps: {
-      sx: () => ({
+      sx: {
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",
           },
-      }),
+      },
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
     }),
-
-    enablePagination: false,
-    enableBottomToolbar: false,
   });
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={8} lg={12}>
-        <Box style={{ padding: 10, margin: 10 }}>
-          <MaterialReactTable table={table} />
-        </Box>
-      </Grid>
+    <Grid item lg={12} className={classes.container}>
+      <MaterialReactTable table={table} />
     </Grid>
   );
 };

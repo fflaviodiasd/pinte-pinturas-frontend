@@ -11,20 +11,20 @@ import {
 import { TransitionProps } from "@mui/material/transitions";
 import { Warning } from "@mui/icons-material";
 
-import { SelectedTeamName, useStyles } from "./styles";
+import { SelectedName, useStyles } from "./styles";
 
 type ModalDisableProps = {
   modalOpen: boolean;
   handleCloseModal: () => void;
   handleDisable: () => void;
-  selectedTeamName?: string;
+  selectedName?: string;
 };
 
 export const ModalDisable = ({
   modalOpen,
   handleCloseModal,
   handleDisable,
-  selectedTeamName,
+  selectedName,
 }: ModalDisableProps) => {
   const { classes } = useStyles();
 
@@ -43,7 +43,7 @@ export const ModalDisable = ({
         <Typography className={classes.successTitleMessage}>
           Tem certeza que deseja apagar
           <br />
-          <SelectedTeamName>{selectedTeamName}?</SelectedTeamName>
+          <SelectedName>{selectedName}?</SelectedName>
         </Typography>
       </DialogContent>
       <DialogActions>

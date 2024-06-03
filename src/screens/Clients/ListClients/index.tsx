@@ -1,22 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { Grid, Typography } from "@mui/material";
+import { Delete } from "@mui/icons-material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
 
-import { Grid, Paper, useTheme } from "@mui/material";
-import { useClients } from "../../../hooks/useClients";
-
-import { useStyles } from "./styles";
-import { useNavigate } from "react-router-dom";
-import { EditIcon } from "../../../components/EditIcon";
+import { EmptyTableText } from "../../../components/Table/EmptyTableText";
+import { BackgroundAvatar } from "../../../components/BackgroundAvatar";
 import { TablePagination } from "../../../components/Table/Pagination";
 import { ModalDisable } from "../../../components/Table/ModalDisable";
-import { Delete } from "@mui/icons-material";
-import { BackgroundAvatar } from "../../../components/Avatar";
-import { Navbar } from "../../../components/Navbar";
+import { Breadcrumb } from "../../../components/Breadcrumb";
+import { EditIcon } from "../../../components/EditIcon";
+import { useClients } from "../../../hooks/useClients";
+
+import { useStyles } from "../styles";
 
 export const ListClients = () => {
   const { classes } = useStyles();
@@ -28,7 +29,6 @@ export const ListClients = () => {
     pagination,
     handleChangePagination,
   } = useClients();
-  const theme = useTheme();
 
   const [selectedClientId, setselectedClientId] = useState<number>(0);
   const [selectedTradingName, setselectedTradingName] = useState<string>("");
@@ -43,9 +43,6 @@ export const ListClients = () => {
     disableClient(selectedClientId);
     setIsModalOpen(false);
   };
-
-  const baseBackgroundColor =
-    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
     getAllClients();
@@ -134,7 +131,15 @@ export const ListClients = () => {
     columns,
     data: listClients,
     enableColumnFilterModes: true,
+    enablePagination: false,
+    enableBottomToolbar: false,
     initialState: { showColumnFilters: true },
+    muiFilterTextFieldProps: (props) => {
+      return {
+        placeholder: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
+    renderEmptyRowsFallback: () => <EmptyTableText />,
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;
@@ -147,26 +152,27 @@ export const ListClients = () => {
       elevation: 0,
     },
     muiTableBodyProps: {
-      sx: (theme) => ({
+      sx: {
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",
           },
-      }),
+      },
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
     }),
-    enablePagination: false,
-    enableBottomToolbar: false,
   });
 
   return (
-    <Grid container spacing={2}>
-      <Navbar title="Clientes" />
+    <Grid container>
+      <Grid item sm={12} md={12} lg={12} className={classes.headerContainer}>
+        <Breadcrumb breadcrumbPath1="Clientes" breadcrumbPath2="Listagem" />
 
-      <Grid item xs={12} lg={12}>
+        <Typography className={classes.title}>Clientes</Typography>
+      </Grid>
+
+      <Grid item xs={12} lg={12} className={classes.tableContainer}>
         <MaterialReactTable table={table} />
         {Boolean(listClients.length) && (
           <TablePagination
@@ -175,13 +181,14 @@ export const ListClients = () => {
             onChange={handleChangePagination}
           />
         )}
-        <ModalDisable
-          modalOpen={modalOpen}
-          handleClose={handleClose}
-          handleDisable={handleDisable}
-          selectedDisableName={selectedTradingName}
-        />
       </Grid>
+
+      <ModalDisable
+        modalOpen={modalOpen}
+        handleCloseModal={handleClose}
+        handleDisable={handleDisable}
+        selectedName={selectedTradingName}
+      />
     </Grid>
   );
 };

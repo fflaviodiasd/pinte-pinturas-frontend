@@ -4,21 +4,23 @@ import { AppLayout } from "../components/AppLayout";
 
 import { Home } from "../screens/Home";
 
-import { FormClientsMultiStep } from "../screens/Clients/FormClientsMultiStep";
+import { Client } from "../screens/Clients";
 import { ListClients } from "../screens/Clients/ListClients";
 
-import { FormCollaboratorsMultiStep } from "../screens/Collaborators/FormCollaboratorsMultiStep";
+import { Collaborators } from "../screens/Collaborators";
 import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
 
 import { ListMaterials } from "../screens/Materials/ListMaterials";
 
-import { ListConstructions } from "../screens/Constructions/ListConstructions";
 import { Constructions } from "../screens/Constructions";
-import { FormConstructionsMultiStep } from "../screens/Constructions/FormConstructionsMultiStep";
+import { ListConstructions } from "../screens/Constructions/ListConstructions";
+// import { FormConstructionsMultiStep } from "../screens/Constructions/FormConstructionsMultiStep";
 import { Indicators } from "../screens/Constructions/Indicators";
 import { Measurements } from "../screens/Measurements";
 
 import { Settings } from "../screens/Settings";
+import { Dashboard } from "../screens/Dashboard";
+import { RegisterConstruction } from "../screens/Constructions/RegisterConstruction";
 
 export const AppRoutes = () => {
   return (
@@ -27,34 +29,24 @@ export const AppRoutes = () => {
         <Routes>
           <Route path="/home" element={<Home />} />
 
-          <Route
-            path="/clientes/cadastrar"
-            element={<FormClientsMultiStep />}
-          />
-          <Route path="/clientes/:id" element={<FormClientsMultiStep />} />
+          <Route path="/clientes/cadastrar" element={<Client />} />
+          <Route path="/clientes/:id" element={<Client />} />
           <Route path="/clientes/listagem" element={<ListClients />} />
 
-          <Route
-            path="/colaboradores/cadastrar"
-            element={<FormCollaboratorsMultiStep />}
-          />
-          <Route
-            path="/colaboradores/:id"
-            element={<FormCollaboratorsMultiStep />}
-          />
+          <Route path="/colaboradores/cadastrar" element={<Collaborators />} />
+          <Route path="/colaboradores/:id" element={<Collaborators />} />
           <Route
             path="/colaboradores/listagem"
             element={<ListCollaborators />}
           />
-          <Route
+
+          <Route path="/obras/cadastrar" element={<RegisterConstruction />} />
+          {/* <Route
             path="/obras/cadastrar"
             element={<FormConstructionsMultiStep />}
-          />
-          <Route
-            path="/obras/funcionarios"
-            element={<Indicators/>}
-          />
-          
+          /> */}
+
+          <Route path="/obras/funcionarios" element={<Indicators />} />
 
           <Route path="/obras/listagem" element={<ListConstructions />} />
           <Route path="/obras/:id/materiais" element={<Constructions />} />
@@ -88,6 +80,10 @@ export const AppRoutes = () => {
           {/* <Route path="/medicoes/pacotes" element={<Measurements />} /> */}
 
           <Route path="/configuracoes" element={<Settings />} />
+
+          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+          {/* <Route path="/dashboard/acompanhamento" element={<Dashboard />} /> */}
+          {/* <Route path="/dashboard/dados-gerais" element={<Dashboard />} /> */}
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

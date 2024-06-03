@@ -1,23 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
+import { Grid, IconButton, Tooltip } from "@mui/material";
+import { Add as AddIcon, Launch } from "@mui/icons-material";
 import {
+  MRT_ShowHideColumnsButton,
+  MRT_ToggleDensePaddingButton,
+  MRT_ToggleFiltersButton,
+  MRT_ToggleFullScreenButton,
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Box, Grid, Tooltip, useTheme } from "@mui/material";
-import { useConstructions } from "../../../hooks/useConstructions";
-import { ModalRegisterConstructionMaterial } from "../../../components/Modal/ModalRegisterConstructionMaterial";
-import { Add, Launch } from "@mui/icons-material";
 
-import { Button } from "../../../components/Button";
+import { useConstructions } from "../../../hooks/useConstructions";
+
+import { ModalRegisterConstructionMaterial } from "../../../components/Modal/ModalRegisterConstructionMaterial";
+import { EmptyTableText } from "../../../components/Table/EmptyTableText";
+
+import { useStyles } from "./styles";
+import { SectionTitle } from "../../../components/SectionTitle";
 
 export const ListConstructionsMaterials = () => {
+  const { classes } = useStyles();
+
   const {
     listConstructionsMaterials,
     getAllConstructionsMaterials,
     disableConstructionMaterial,
   } = useConstructions();
-  const theme = useTheme();
 
   const [selectedConstructionMaterialId, setselectedConstructionMaterialId] =
     useState<number>(0);
@@ -32,9 +42,6 @@ export const ListConstructionsMaterials = () => {
   const handleClose = () => {
     setIsModalOpen(false);
   };
-
-  const baseBackgroundColor =
-    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
 
   useEffect(() => {
     getAllConstructionsMaterials();
@@ -102,7 +109,15 @@ export const ListConstructionsMaterials = () => {
     columns,
     data: listConstructionsMaterials,
     enableColumnFilterModes: true,
+    enablePagination: false,
+    enableBottomToolbar: false,
     initialState: { showColumnFilters: true },
+    renderEmptyRowsFallback: () => <EmptyTableText />,
+    muiFilterTextFieldProps: (props) => {
+      return {
+        placeholder: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
         return row.getValue(id) === filterValue;
@@ -115,50 +130,64 @@ export const ListConstructionsMaterials = () => {
       elevation: 0,
     },
     muiTableBodyProps: {
-      sx: (theme) => ({
+      sx: {
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",
           },
-      }),
+      },
     },
+    renderTopToolbar: ({ table }) => (
+      <Grid item lg={12} className={classes.headerTableContainer}>
+        <SectionTitle title="Materiais" />
+
+        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+          <MRT_ToggleFiltersButton
+            table={table}
+            className={classes.toolbarButton}
+          />
+          <MRT_ShowHideColumnsButton
+            table={table}
+            className={classes.toolbarButton}
+          />
+          <MRT_ToggleDensePaddingButton
+            table={table}
+            className={classes.toolbarButton}
+          />
+          <MRT_ToggleFullScreenButton
+            table={table}
+            className={classes.toolbarButton}
+          />
+          <Tooltip title="Adicionar Material">
+            <IconButton
+              onClick={() => {
+                setIsModalOpen(true);
+                setModalMode("register");
+              }}
+              className={classes.toolbarButton}
+            >
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </Grid>
+    ),
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
     }),
-    enablePagination: false,
-    enableBottomToolbar: false,
   });
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <Box
-          sx={{ display: "flex", justifyContent: "right", marginRight: "1rem" }}
-        >
-          <Button
-            label={
-              <Tooltip title="Adicionar Material">
-                <Add />
-              </Tooltip>
-            }
-            color="secondary"
-            onClick={() => {
-              setIsModalOpen(true);
-              setModalMode("register");
-            }}
-          />
-        </Box>
+    <Grid item lg={12} className={classes.container}>
+      <MaterialReactTable table={table} />
 
-        <MaterialReactTable table={table} />
-        <ModalRegisterConstructionMaterial
-          modalOpen={modalOpen}
-          handleClose={handleClose}
-          mode={modalMode}
-          selectedConstructionMaterialId={selectedConstructionMaterialId}
-          handleDisable={handleDisable}
-        />
-      </Grid>
+      <ModalRegisterConstructionMaterial
+        modalOpen={modalOpen}
+        handleClose={handleClose}
+        mode={modalMode}
+        selectedConstructionMaterialId={selectedConstructionMaterialId}
+        handleDisable={handleDisable}
+      />
     </Grid>
   );
 };

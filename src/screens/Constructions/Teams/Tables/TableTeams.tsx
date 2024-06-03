@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useContext, useMemo } from "react";
 import {
-  Box,
   FormControlLabel,
+  Grid,
   IconButton,
   Switch,
   Tooltip,
@@ -21,6 +21,7 @@ import {
 
 import { TeamsContext, Team } from "../../../../contexts/TeamsContext";
 
+import { EmptyTableText } from "../../../../components/Table/EmptyTableText";
 import { SectionTitle } from "../../../../components/SectionTitle";
 import { ListTeamMembers } from "../ListTeamMembers";
 
@@ -122,15 +123,15 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
   const table = useMaterialReactTable({
     columns,
     data: listTeams,
-    enableExpandAll: true,
-    autoResetAll: true,
+    editDisplayMode: "row",
+    createDisplayMode: "row",
+    enableEditing: true,
     enablePagination: false,
+    enableBottomToolbar: false,
     enableColumnFilterModes: true,
     onCreatingRowSave: handleCreateTeam,
     onEditingRowSave: handleEditTeam,
-    enableEditing: true,
-    editDisplayMode: "row",
-    createDisplayMode: "row",
+    renderEmptyRowsFallback: () => <EmptyTableText />,
     muiExpandButtonProps: ({ row, table }) => ({
       onClick: () => table.setExpanded({ [row.id]: !row.getIsExpanded() }),
       sx: {
@@ -141,8 +142,14 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
     muiTablePaperProps: {
       elevation: 0,
     },
+    muiTableProps: {
+      style: {
+        paddingLeft: 16,
+        paddingRight: 16,
+      },
+    },
     muiTableBodyProps: {
-      sx: () => ({
+      sx: {
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FFF",
@@ -151,20 +158,13 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
           {
             backgroundColor: "#FAFAFA",
           },
-      }),
+      },
     },
     renderTopToolbar: ({ table }) => (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "1rem",
-          padding: 2,
-        }}
-      >
+      <Grid item lg={12} className={classes.headerTableContainer}>
         <SectionTitle title="Equipes" />
-        <Box sx={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+
+        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
           <MRT_ToggleFiltersButton
             table={table}
             className={classes.toolbarButton}
@@ -191,13 +191,17 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
               <AddIcon />
             </IconButton>
           </Tooltip>
-        </Box>
-      </Box>
+        </div>
+      </Grid>
     ),
     renderDetailPanel: ({ row }) => (
       <ListTeamMembers teamId={Number(row.original.id)} />
     ),
   });
 
-  return <MaterialReactTable table={table} />;
+  return (
+    <Grid item xs={12} lg={12} className={classes.tableContainer}>
+      <MaterialReactTable table={table} />
+    </Grid>
+  );
 };

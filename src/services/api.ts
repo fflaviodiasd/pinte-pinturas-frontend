@@ -1,5 +1,10 @@
 import axios from "axios";
-import { KEY_REFRESH_TOKEN, KEY_TOKEN } from "../utils/consts";
+import {
+  KEY_REFRESH_TOKEN,
+  KEY_SIGNED,
+  KEY_TOKEN,
+  KEY_USER,
+} from "../utils/consts";
 
 const baseApiURL = () => {
   if (process.env.NODE_ENV === "production") {
@@ -28,11 +33,12 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     if (typeof error.response === "undefined") {
-      alert(
-        "A server/network error occurred. " +
-          "Looks like CORS might be the problem. " +
-          "Sorry about this - we will get it fixed shortly."
-      );
+      // alert(
+      //   "A server/network error occurred. " +
+      //     "Looks like CORS might be the problem. " +
+      //     "Sorry about this - we will get it fixed shortly."
+      // );
+
       return Promise.reject(error);
     }
 
@@ -40,7 +46,8 @@ api.interceptors.response.use(
       error.response.status === 401 &&
       originalRequest.url === baseApiURL + "accounts/token/refresh/"
     ) {
-      window.location.href = "/#/login";
+      clearLogin();
+      window.location.href = "/login";
       return Promise.reject(error);
     }
 
@@ -76,11 +83,13 @@ api.interceptors.response.use(
             });
         } else {
           console.log("Refresh token is expired", tokenParts.exp, now);
-          window.location.href = "/#/login";
+          clearLogin();
+          window.location.href = "/login";
         }
       } else {
         console.log("Refresh token not available.");
-        window.location.href = "/#/login";
+        clearLogin();
+        window.location.href = "/login";
       }
     }
 
@@ -88,3 +97,10 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+const clearLogin = () => {
+  localStorage.removeItem(KEY_USER);
+  localStorage.removeItem(KEY_SIGNED);
+  localStorage.removeItem(KEY_TOKEN);
+  localStorage.removeItem(KEY_REFRESH_TOKEN);
+};
