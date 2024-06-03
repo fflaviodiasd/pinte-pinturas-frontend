@@ -81,9 +81,9 @@ export const AppRoutes = () => {
 
           <Route path="/configuracoes" element={<Settings />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/acompanhamento" element={<Dashboard />} />
-          <Route path="/dashboard/dados-gerais" element={<Dashboard />} />
+          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+          {/* <Route path="/dashboard/acompanhamento" element={<Dashboard />} /> */}
+          {/* <Route path="/dashboard/dados-gerais" element={<Dashboard />} /> */}
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
