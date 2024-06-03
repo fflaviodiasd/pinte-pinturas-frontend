@@ -21,7 +21,7 @@ import { errorMessage, successMessage } from "../../../components/Messages";
 import { EmptyTableText } from "../../../components/Table/EmptyTableText";
 import { SectionTitle } from "../../../components/SectionTitle";
 
-import ServiceStepTable from "./ServiceStepsTable";
+import { ServiceStepTable } from "./ServiceStepsTable";
 
 import { useStyles } from "./styles";
 
@@ -296,7 +296,6 @@ export const ServicesConstructions = () => {
     enableEditing: true,
     enablePagination: false,
     enableBottomToolbar: false,
-    enableColumnFilterModes: true,
     onCreatingRowSave: handleCreatePackages,
     onEditingRowSave: handleEditPackages,
     initialState: { showColumnFilters: true },
