@@ -1,9 +1,13 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { api } from "../../../../services/api";
-import { Chip } from "@mui/material";
+import { Chip, TextField } from "@mui/material";
+import { InputMask } from "../../../InputMask";
 
 export function HistoryInfo({ checklistId }: any) {
   const [checklistHistory, setChecklistHistory] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [editedDate, setEditedDate] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,6 +29,42 @@ export function HistoryInfo({ checklistId }: any) {
     INICIADA: "#4CAF50",
     FINALIZADA: "#2196F3",
     ENTREGUE: "#512DA8",
+  };
+
+  const handleEditClick = (item: any) => {
+    setSelectedItem(item);
+    setEditedDate(item.histories.written_date);
+    setEditMode(true);
+  };
+
+  const handleBlur = () => {
+    setEditMode(false);
+  };
+
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      console.log("STATUS:", selectedItem?.status);
+      console.log("DATA EDITADA:", editedDate);
+      setEditMode(false);
+      // Aqui você pode enviar a data editada para o backend, se necessário
+      await patchChecklistStatus(selectedItem?.status, editedDate);
+    }
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditedDate(e.target.value);
+  };
+
+  const patchChecklistStatus = async (status: string, date: string) => {
+    try {
+      const statusPatch = {
+        [status]: date,
+      };
+      await api.patch(`/checklists/${checklistId}/`, { status: statusPatch });
+      console.log("Patch enviado com sucesso.");
+    } catch (error) {
+      console.error("Erro ao enviar patch:", error);
+    }
   };
 
   return (
@@ -56,11 +96,28 @@ export function HistoryInfo({ checklistId }: any) {
               />
             </td>
             {checklistHistory.map(
-              (item: any) =>
+              (item: any, itemIndex: number) =>
                 item.status === status && (
-                  <>
+                  <React.Fragment key={itemIndex}>
                     <td>
-                      <span>{item.histories.written_date}</span>
+                      {editMode && selectedItem === item ? (
+                        <TextField
+                          style={{ width: "80%" }}
+                          value={editedDate}
+                          onChange={handleDateChange}
+                          onKeyDown={handleKeyDown}
+                          onBlur={handleBlur}
+                          variant="outlined"
+                          size="small"
+                          InputProps={{
+                            inputComponent: InputMask as any,
+                          }}
+                        />
+                      ) : (
+                        <span onClick={() => handleEditClick(item)}>
+                          {item.histories.written_date}
+                        </span>
+                      )}
                     </td>
                     <td>
                       <span>{item.histories.marking_action_date}</span>
@@ -68,7 +125,7 @@ export function HistoryInfo({ checklistId }: any) {
                     <td>
                       <span>{item.histories.responsible_action}</span>
                     </td>
-                  </>
+                  </React.Fragment>
                 )
             )}
           </tr>
