@@ -1,4 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useMemo, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { IconButton, Grid, Tooltip } from "@mui/material";
+import { Add as AddIcon, Delete } from "@mui/icons-material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -10,68 +15,52 @@ import {
   MRT_ShowHideColumnsButton,
 } from "material-react-table";
 
-import { Box, Grid, Tooltip, useTheme, Typography} from "@mui/material";
-import { useStyles } from "./styles";
-import { useParams, useNavigate } from "react-router-dom";
 import { useConstructions } from "../../../hooks/useConstructions";
-import { Add, Launch, Edit, Delete, Info } from "@mui/icons-material";
 
-import { IconButton } from "@mui/material";
-import { errorMessage, successMessage } from "../../../components/Messages";
-import { UserContext } from "../../../contexts/UserContext";
-interface DropdownOption {
-  id: any;
-  name: any;
-  label: string;
-  value: any; 
-}
+import { EmptyTableText } from "../../../components/Table/EmptyTableText";
+import { SectionTitle } from "../../../components/SectionTitle";
+import { errorMessage } from "../../../components/Messages";
 
+import { useStyles } from "./styles";
 
 export const MeasurementsConstructions = () => {
-  // const { classes } = useStyles();
-  // const navigate = useNavigate();
+  const { classes } = useStyles();
+  const { id } = useParams();
+
   const {
-  
     listConstructionsMeasurements,
     getAllConstructionsMeasurements,
     disableConstructionMeasurements,
-    addConstructionMeasurements
-
+    addConstructionMeasurements,
   } = useConstructions();
-  const theme = useTheme();
 
-  const [disciplineOptions, setDisciplineOptions] = useState<DropdownOption[]>([]);
-  const [isSaving, setIsSaving] = useState(false);
   const [filteredMeasurements, setFilteredMeasurements] = useState<any[]>([]);
 
-  const { id } = useParams();
-      // console.log('construction id pac: ', selectedPackageConstructionId)
-      console.log('listConstructionsMeasurements: ', listConstructionsMeasurements)
-
+  // console.log('construction id pac: ', selectedPackageConstructionId)
+  // console.log("listConstructionsMeasurements: ", listConstructionsMeasurements);
 
   useEffect(() => {
     if (id) {
       getAllConstructionsMeasurements();
     }
- 
   }, [id]);
 
-
-useEffect(() => {
-  if (listConstructionsMeasurements && listConstructionsMeasurements && listConstructionsMeasurements.length > 0) {
-    const filteredData = listConstructionsMeasurements.filter(
-      (measurement) => measurement.construction.toString() === id
-    );
-    setFilteredMeasurements(filteredData);
-  }
-}, [listConstructionsMeasurements, id]);
-
-  
-
+  useEffect(() => {
+    if (
+      listConstructionsMeasurements &&
+      listConstructionsMeasurements &&
+      listConstructionsMeasurements.length > 0
+    ) {
+      const filteredData = listConstructionsMeasurements.filter(
+        (measurement) => measurement.construction.toString() === id
+      );
+      setFilteredMeasurements(filteredData);
+    }
+  }, [listConstructionsMeasurements, id]);
 
   const handleDisable = async (measurementId: number) => {
     try {
-       await disableConstructionMeasurements(measurementId);
+      await disableConstructionMeasurements(measurementId);
       // successMessage("Medição apagada com sucesso!");
       getAllConstructionsMeasurements();
     } catch (error) {
@@ -79,143 +68,89 @@ useEffect(() => {
     }
   };
 
+  const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] =
+    async ({ values, table }) => {
+      // console.log("values for API:", values);
 
-  
-  
-  const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
-    values,
-    table,
-  }) => {
-  
-  
-    console.log('values for API:', values);
-  
-    await addConstructionMeasurements(values);
-    getAllConstructionsMeasurements();
-  };
-  
+      await addConstructionMeasurements(values);
+      getAllConstructionsMeasurements();
+    };
 
-  const baseBackgroundColor =
-    theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
-
- 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
-
       {
         accessorKey: "name",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Nome do Pacote",
-        enableEditing: true, 
+        enableEditing: true,
         muiEditTextFieldProps: {
           required: true,
         },
       },
-    
-    
-    ], []); 
+    ],
+    []
+  );
 
   const table = useMaterialReactTable({
     columns,
     data: filteredMeasurements,
-    enableColumnFilterModes: true,
     onCreatingRowSave: handleCreatePackages,
-    // onEditingRowSave: handleEditPackages,
-    enableEditing: true, 
-    // editDisplayMode: 'row', 
-    createDisplayMode: 'row', 
-    state: {
-      isSaving, 
+    createDisplayMode: "row",
+    enableEditing: true,
+    enablePagination: false,
+    enableBottomToolbar: false,
+    initialState: { showColumnFilters: true },
+    renderEmptyRowsFallback: () => <EmptyTableText />,
+    muiFilterTextFieldProps: (props) => {
+      return {
+        placeholder: `Filtrar por ${props.column.columnDef.header}`,
+      };
     },
-    renderRowActions: 
-    ({ row }) => (
+    renderRowActions: ({ row }) => (
       <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
         <IconButton
           aria-label="Excluir"
           onClick={() => handleDisable(row.original.id)}
-          sx={{ color: "#C5C7C8" }} 
+          sx={{ color: "#C5C7C8" }}
         >
           <Delete />
         </IconButton>
-        {/* <IconButton
-          aria-label="Editar"
-          onClick={() => handleEditPackages(row.original.id)}
-          sx={{ color: "#C5C7C8" }} 
-        >
-          <Edit />
-        </IconButton> */}
       </div>
     ),
-
-    initialState: { showColumnFilters: true },
-    // renderDetailPanel: ({ row }) => (
-    //   <Box sx={{ padding: '1rem' }}>
-    //     <ServiceStepTable order={row.original.id} />
-    //   </Box>
-    // ),
     renderTopToolbar: ({ table }) => (
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', padding: 2 }}>
-        <Box
-  sx={{
-    position: 'relative',
-    '&::after': {
-      content: '""',
-      display: 'block',
-      width: '30%', 
-      height: '3px',
-      backgroundColor: '#1976d2', 
-      position: 'absolute',
-      bottom: 0,
-    }
-  }}
->
-  <Typography variant="h5" component="div" gutterBottom>
-    Medição
-  </Typography>
-</Box>
-        <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <MRT_ToggleFiltersButton table={table} sx={{
-    color: '#0076be',
-    border: '1px solid #0076be',
-    borderRadius: '4px', 
-  }} />
-          <MRT_ShowHideColumnsButton table={table} sx={{
-    color: '#0076be',
-    border: '1px solid #0076be',
-    borderRadius: '4px', 
-  }} />
-          <MRT_ToggleDensePaddingButton table={table} sx={{
-    color: '#0076be',
-    border: '1px solid #0076be',
-    borderRadius: '4px', 
-  }}/>
-          <MRT_ToggleFullScreenButton table={table} sx={{
-    color: '#0076be',
-    border: '1px solid #0076be',
-    borderRadius: '4px',
-  }} />
-         <Tooltip title="Adicionar Pacote">
-  <IconButton
-   onClick={() => {
-    table.setCreatingRow(true);
-    console.log('options:', disciplineOptions);
-  }}
-    sx={{
-      color: '#0076be',
-      border: '1px solid #0076be',
-      borderRadius: '4px', 
-      "&:hover": { 
-        backgroundColor: 'rgba(0, 118, 190, 0.04)', 
-      },
-    }}
-  >
-    <Add />
-  </IconButton>
-</Tooltip>
+      <Grid item lg={12} className={classes.headerTableContainer}>
+        <SectionTitle title="Medição" />
 
-        </Box>
-      </Box>
+        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+          <MRT_ToggleFiltersButton
+            table={table}
+            className={classes.toolbarButton}
+          />
+          <MRT_ShowHideColumnsButton
+            table={table}
+            className={classes.toolbarButton}
+          />
+          <MRT_ToggleDensePaddingButton
+            table={table}
+            className={classes.toolbarButton}
+          />
+          <MRT_ToggleFullScreenButton
+            table={table}
+            className={classes.toolbarButton}
+          />
+          <Tooltip title="Adicionar Material">
+            <IconButton
+              onClick={() => {
+                table.setCreatingRow(true);
+              }}
+              className={classes.toolbarButton}
+            >
+              <AddIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </Grid>
     ),
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
@@ -228,30 +163,28 @@ useEffect(() => {
     muiTablePaperProps: {
       elevation: 0,
     },
+    muiTableProps: {
+      style: {
+        paddingLeft: 16,
+        paddingRight: 16,
+      },
+    },
     muiTableBodyProps: {
-      sx: (theme) => ({
+      sx: {
         '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
           {
             backgroundColor: "#FAFAFA",
           },
-      }),
+      },
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
     }),
-    
-    enablePagination: false,
-    enableBottomToolbar: false,
   });
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-
-        <MaterialReactTable table={table}/>
-
-      </Grid>
+    <Grid item lg={12} className={classes.container}>
+      <MaterialReactTable table={table} />
     </Grid>
   );
 };
