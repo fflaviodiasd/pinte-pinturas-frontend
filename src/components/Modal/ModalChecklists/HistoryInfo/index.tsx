@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { api } from "../../../../services/api";
 import { Chip, TextField } from "@mui/material";
 import { InputMask } from "../../../InputMask";
+import { errorMessage, successMessage } from "../../../Messages";
 
 export function HistoryInfo({ checklistId }: any) {
   const [checklistHistory, setChecklistHistory] = useState([]);
@@ -9,19 +10,19 @@ export function HistoryInfo({ checklistId }: any) {
   const [selectedItem, setSelectedItem] = useState(null);
   const [editedDate, setEditedDate] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await api.get(`checklists/${checklistId}/histories`);
-        const data = response.data;
-        setChecklistHistory(data);
-      } catch (error) {
-        console.error("Erro ao buscar dados do backend:", error);
-      }
-    };
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await api.get(`checklists/${checklistId}/histories`);
+      const data = response.data;
+      setChecklistHistory(data);
+    } catch (error) {
+      console.error("Erro ao buscar dados do backend:", error);
+    }
+  }, [checklistId]);
 
+  useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const STATUS_COLORS: { [key: string]: string } = {
     //"NÃO LIBERADA": "#F44336",
@@ -46,7 +47,6 @@ export function HistoryInfo({ checklistId }: any) {
       console.log("STATUS:", selectedItem?.status);
       console.log("DATA EDITADA:", editedDate);
       setEditMode(false);
-      // Aqui você pode enviar a data editada para o backend, se necessário
       await patchChecklistStatus(selectedItem?.status, editedDate);
     }
   };
@@ -61,9 +61,12 @@ export function HistoryInfo({ checklistId }: any) {
         [status]: date,
       };
       await api.patch(`/checklists/${checklistId}/`, { status: statusPatch });
-      console.log("Patch enviado com sucesso.");
+      console.log("Modal de checklists atualizado com sucesso!");
+      fetchData();
+      successMessage("Modal de checklists atualizado com sucesso!");
     } catch (error) {
-      console.error("Erro ao enviar patch:", error);
+      console.error("Erro ao atualizar modal de checklists!", error);
+      errorMessage("Erro ao atualizar modal de checklists!");
     }
   };
 
