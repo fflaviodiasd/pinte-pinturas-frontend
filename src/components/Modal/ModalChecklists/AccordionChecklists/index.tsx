@@ -56,7 +56,6 @@ export default function AccordionChecklists({ localId }: any) {
             </div>
           </AccordionSummary>
           <AccordionDetails>
-            <HistoryInfo checklistId={item.id} />
             <FormChecklists checklistId={item.id} />
           </AccordionDetails>
         </Accordion>
