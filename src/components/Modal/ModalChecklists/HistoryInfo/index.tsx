@@ -7,10 +7,10 @@ import { errorMessage, successMessage } from "../../../Messages";
 export function HistoryInfo({ checklistId }: any) {
   const [checklistHistory, setChecklistHistory] = useState([]);
   const [editMode, setEditMode] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
   const [editedDate, setEditedDate] = useState("");
 
-  const fetchData = useCallback(async () => {
+  const getChecklistsHistories = useCallback(async () => {
     try {
       const response = await api.get(`checklists/${checklistId}/histories`);
       const data = response.data;
@@ -21,8 +21,8 @@ export function HistoryInfo({ checklistId }: any) {
   }, [checklistId]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    getChecklistsHistories();
+  }, [getChecklistsHistories]);
 
   const STATUS_COLORS: { [key: string]: string } = {
     //"NÃO LIBERADA": "#F44336",
@@ -44,10 +44,8 @@ export function HistoryInfo({ checklistId }: any) {
 
   const handleKeyDown = async (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter") {
-      console.log("STATUS:", selectedItem?.status);
-      console.log("DATA EDITADA:", editedDate);
       setEditMode(false);
-      await patchChecklistStatus(selectedItem?.status, editedDate);
+      await updateChecklistStatus(selectedItem?.status, editedDate);
     }
   };
 
@@ -55,14 +53,14 @@ export function HistoryInfo({ checklistId }: any) {
     setEditedDate(e.target.value);
   };
 
-  const patchChecklistStatus = async (status: string, date: string) => {
+  const updateChecklistStatus = async (status: string, date: string) => {
     try {
       const statusPatch = {
         [status]: date,
       };
       await api.patch(`/checklists/${checklistId}/`, { status: statusPatch });
       console.log("Modal de checklists atualizado com sucesso!");
-      fetchData();
+      getChecklistsHistories();
       successMessage("Modal de checklists atualizado com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar modal de checklists!", error);
