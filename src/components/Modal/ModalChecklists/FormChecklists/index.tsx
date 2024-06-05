@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { SelectChecklists } from "../SelectChecklists";
 import { useConstructions } from "../../../../hooks/useConstructions";
 import { useEffect } from "react";
+import { HistoryInfo } from "../HistoryInfo";
 
 export const FormChecklists = ({ checklistId }: any) => {
   const { id } = useParams();
@@ -30,6 +31,7 @@ export const FormChecklists = ({ checklistId }: any) => {
         >
           {() => (
             <Form>
+              <HistoryInfo checklistId={checklistId} />
               <DialogContent
                 style={{
                   display: "flex",
