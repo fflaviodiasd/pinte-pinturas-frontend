@@ -14,6 +14,7 @@ import {
 import { api } from "../../../services/api";
 import { errorMessage, successMessage } from "../../Messages";
 import { Info, Search } from "@mui/icons-material";
+import { useParams } from "react-router-dom";
 
 interface Checklist {
   name: string;
@@ -30,10 +31,14 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [errorMessageVisible, setErrorMessageVisible] = useState(false);
 
+  const { id } = useParams();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get<{ areas: Area[] }>("areas/checklists");
+        const response = await api.get<{ areas: Area[] }>(
+          `constructions/${id}/checklists/`
+        );
         setAreas(response.data.areas);
       } catch (error) {
         console.error("Erro ao buscar os dados:", error);
