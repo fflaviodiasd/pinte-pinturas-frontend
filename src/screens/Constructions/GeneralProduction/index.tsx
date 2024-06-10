@@ -18,7 +18,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { useConference } from "../../../hooks/useConference";
 import Papa from "papaparse";
-
+import { Stack } from "@mui/material";
 export const GeneralProduction = () => {
   const theme = useTheme();
   const { id } = useParams<{ id: string }>();
@@ -38,19 +38,21 @@ export const GeneralProduction = () => {
     getReportsWithMeasurement,
     listReportsWithMeasurements,
     listReportsWithEmployees,
+    getReportsWithTeams,
     getReportsWithEmployee,
   } = useConference();
   const [isSaving, setIsSaving] = useState(false);
 
   const [selectedMedicao, setSelectedMedicao] = useState('');
   const [selectedFuncionario, setSelectedFuncionario] = useState('');
-  const [selectedEquipe, setSelectedEquipe] = useState('');
+  const [selectedEquipe, setSelectedEquipe] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any[]>([]);
 
   useEffect(() => {
     if (id) {
       fetchMeasurements();
       getProductionData().then(data => setTableData(data));
+
     }
   }, [id]);
 
@@ -58,10 +60,10 @@ export const GeneralProduction = () => {
     const medicao = event.target.value;
     setSelectedMedicao(medicao);
     setSelectedFuncionario('');
-    setSelectedEquipe('');
     if (medicao) {
       await fetchEmployees(medicao);
       const data = await getReportsWithMeasurement(medicao);
+      console.log("dataMedicao:", data);
       setTableData(data);
     }
   };
@@ -69,16 +71,27 @@ export const GeneralProduction = () => {
   const handleFuncionarioChange = async (event: any) => {
     const funcionario = event.target.value;
     setSelectedFuncionario(funcionario);
-    setSelectedEquipe('');
+    setSelectedEquipe(listTeamsReports);
+    
     if (selectedMedicao && funcionario) {
       await fetchTeams(selectedMedicao, funcionario);
+      console.log("selectedMedicao:", selectedMedicao);
+      console.log("funcionario:", funcionario);
       const data = await getReportsWithEmployee(funcionario);
+      console.log("dataFuncionario:", data);
       setTableData(data);
     }
   };
 
-  const handleEquipeChange = (event: any) => {
-    setSelectedEquipe(event.target.value);
+  const handleEquipeChange = async (event: any) => {
+    const equipe = event.target.value;
+    setSelectedEquipe(equipe);
+    if (selectedMedicao && selectedFuncionario && equipe) {
+      const data = await getReportsWithTeams(selectedFuncionario, equipe);
+      console.log("dataEquipe:", data);
+      setTableData(data);
+    }
+
   };
 
   const handleDownloadCsv = () => {
@@ -104,23 +117,72 @@ export const GeneralProduction = () => {
     document.body.removeChild(link);
   };
 
+  const parseMonetaryValue = (value: string) => {
+    console.log("value:", value);
+    const dado = parseFloat(value.replace(/[R$\s]/g, '').replace('.', '').replace(',', '.'));
+    console.log("dado:", dado);
+    return dado;
+  };  
+
+
   const generateProductionColumns = (data: any[]) => {
     const dynamicColumns: MRT_ColumnDef<any>[] = [];
     const levels = data && data.length > 0 && data[0].levels ? Object.keys(data[0].levels) : [];
-
+  
     levels.forEach(level => {
-      dynamicColumns.push({ accessorKey: `levels.${level}`, header: level });
+      dynamicColumns.push({
+        accessorKey: `levels.${level}`,
+        header: level,
+      });
     });
-
+  
     return [
-      { accessorKey: 'package_name', header: 'Nome do Pacote' },
-      { accessorKey: 'initial_dt', header: 'Data de Início' },
-      { accessorKey: 'finish_dt', header: 'Data Final' },
-      { accessorKey: 'total', header: 'Valor Total' },
-      { accessorKey: 'checklist', header: 'Checklist' },
+      {
+        accessorKey: 'package_name',
+        header: 'Nome do Pacote',
+      },
+      {
+        accessorKey: 'initial_dt',
+        header: 'Data de Início',
+      },
+      {
+        accessorKey: 'finish_dt',
+        header: 'Data Final',
+      },
+      {
+        accessorKey: 'total',
+        header: 'Valor Total',
+        aggregationFn: (columnId:any, leafRows:any) =>
+          leafRows.reduce((sum:any, row:any) => {
+            const value = parseMonetaryValue(row.original.total || "0");
+            return sum + value;
+          }, 0).toFixed(2).replace(".", ","),
+        AggregatedCell: ({ cell }: any) => (
+          <span>Somatória: <span style={{ color: 'green', fontWeight: 'bold' }}>R$ {cell.getValue()}</span></span>
+        ),
+        Footer: ({ table }: any) => {
+          const total = table.getFilteredRowModel().rows.reduce((sum:any, row:any) => {
+            const value = parseMonetaryValue(row.original.total || "0");
+            return sum + value;
+          }, 0);
+          return (
+            <Stack>
+              Total:
+              <Box sx={{ color: 'green', fontWeight: 'bold' }}>
+                R$ {total.toFixed(2).replace(".", ",")}
+              </Box>
+            </Stack>
+          );
+        },
+      },
+      {
+        accessorKey: 'checklist',
+        header: 'Checklist',
+      },
       ...dynamicColumns
     ];
   };
+  
 
   const columns = useMemo(() => generateProductionColumns(tableData), [tableData]);
 
