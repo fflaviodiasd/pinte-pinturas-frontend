@@ -11,67 +11,138 @@ import {
   MRT_ShowHideColumnsButton,
 } from "material-react-table";
 
-import { Box, Grid, Tooltip, Typography, Chip } from "@mui/material";
+import { Box, Grid, Tooltip, Typography, IconButton, Chip } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useParams } from "react-router-dom";
 import { Download } from "@mui/icons-material";
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { IconButton } from "@mui/material";
 import { errorMessage } from "../../../components/Messages";
-import { data, type GeneralDataInfo } from './makeData';
-import { columns } from "./columns";
-
+import { useConference } from "../../../hooks/useConference";
 
 export const GeneralData = () => {
-
   const theme = useTheme();
+  const { id } = useParams();
+  const { getGeneralReports, listGeneralReports, loading } = useConference();
+  const [data, setData] = useState<any[]>([]);
 
   const [isSaving, setIsSaving] = useState(false);
-  const { id } = useParams();
 
+  useEffect(() => {
+    getGeneralReports();
+    setData(listGeneralReports);
+  }, [id]);
 
-  const baseBackgroundColor = theme.palette.mode === "dark" ? "#FFFFFF" : "#FFFFFF";
-
-
-    const handleExportRows = (rows: MRT_Row<any>[]) => {
-      const doc = new jsPDF({
-        orientation: 'landscape' // Configura a orientação horizontal
-      });
-      
-      const data = rows.map((row) => Object.values(row.original));
-      const tableHeaders = columns.map((c) => c.header);
-    
-      autoTable(doc, {
-        head: [tableHeaders],
-        body: data,
-        styles: { fontSize: 2 }, // Ajusta o tamanho da fonte para caber mais dados
-        margin: { top: 20 },
-        theme: 'grid',
-        headStyles: { fillColor: [41, 128, 185] }, // Cor de fundo do cabeçalho
-      });
-    
-      doc.save('dados-gerais-sistema.pdf');
-    };
-    
-    
-
-    const table = useMaterialReactTable({
-      columns,
-      data: data.length > 0 ? data : data,
-      enableColumnFilterModes: true,
-      enableEditing: false,
-      enableExpanding: true,
-      createDisplayMode: 'row',
-      state: { isSaving },
-      enableGrouping: true,
-
-      initialState: {
-        density: 'compact',
-        expanded: true, //expand all groups by default
-        pagination: { pageIndex: 0, pageSize: 20 },
+  const columns = useMemo<MRT_ColumnDef<any>[]>(
+    () => [
+      {
+        accessorKey: "area_name",
+        header: "Área",
       },
-  
+      {
+        accessorKey: "checklist_name",
+        header: "Checklist",
+      },
+      {
+        accessorKey: "measurement_name",
+        header: "Medição",
+      },
+      {
+        accessorKey: "team_name",
+        header: "Equipe",
+      },
+      {
+        accessorKey: "discipline_name",
+        header: "Disciplina",
+      },
+      {
+        accessorKey: "package_name",
+        header: "Pacote",
+      },
+      {
+        accessorKey: "scope",
+        header: "Escopo",
+      },
+      {
+        accessorKey: "service_name",
+        header: "Serviço",
+      },
+      {
+        accessorKey: "step_service_name",
+        header: "Passo do Serviço",
+      },
+      {
+        accessorKey: "qnt_step_service",
+        header: "Qtd. Passo do Serviço",
+      },
+      {
+        accessorKey: "amount_to_receive_step",
+        header: "Valor a Receber",
+      },
+      {
+        accessorKey: "total_price_service",
+        header: "Preço Total do Serviço",
+      },
+      {
+        accessorKey: "amount_to_pay",
+        header: "Valor a Pagar",
+      },
+      {
+        accessorKey: "total_to_pay",
+        header: "Total a Pagar",
+      },
+      {
+        accessorKey: "employee_name",
+        header: "Funcionário",
+      },
+      // Colunas dinâmicas para os níveis
+      ...Array.from({ length: Math.max(...listGeneralReports.map(report => report.levels.length)) }).map((_, index) => ({
+        accessorKey: `levels.${index}`,
+        header: `Nível ${index + 1}`,
+        Cell: ({ row }: { row: MRT_Row<any> }) => {
+          const level = row.original.levels[index];
+          const key = Object.keys(level)[0];
+          return <span>{key}</span>;
+        },
+      })),
+    ],
+    [listGeneralReports]
+  );
+
+  const handleExportRows = (rows: MRT_Row<any>[]) => {
+    const doc = new jsPDF({
+      orientation: 'landscape', // Configura a orientação horizontal
+    });
+
+    // const data = rows.map((row) => Object.values(row.original));
+    const tableHeaders = columns.map((c) => c.header);
+
+    autoTable(doc, {
+      head: [tableHeaders],
+      body: data,
+      styles: { fontSize: 2 }, // Ajusta o tamanho da fonte para caber mais dados
+      margin: { top: 20 },
+      theme: 'grid',
+      headStyles: { fillColor: [41, 128, 185] }, // Cor de fundo do cabeçalho
+    });
+
+    doc.save('dados-gerais-sistema.pdf');
+  };
+
+  const table = useMaterialReactTable({
+    columns,
+    data: listGeneralReports,
+    enableColumnFilterModes: true,
+    enableEditing: false,
+    enableExpanding: true,
+    createDisplayMode: 'row',
+    state: { isSaving },
+    enableGrouping: true,
+    initialState: {
+      density: 'compact',
+      expanded: true, // Expandir todos os grupos por padrão
+      pagination: { pageIndex: 0, pageSize: 20 },
+    },
     renderTopToolbar: ({ table }) => (
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: 2 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
@@ -100,8 +171,7 @@ export const GeneralData = () => {
             <MRT_ToggleFullScreenButton table={table} sx={{ color: '#0076be', border: '1px solid #0076be', borderRadius: '4px' }} />
             <Tooltip title="Download da Tabela">
               <IconButton
-                               onClick={() => handleExportRows(table.getRowModel().rows)}
-
+                onClick={() => handleExportRows(table.getRowModel().rows)}
                 sx={{
                   color: '#0076be',
                   border: '1px solid #0076be',
@@ -114,16 +184,6 @@ export const GeneralData = () => {
             </Tooltip>
           </Box>
         </Box>
-        {/* <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Typography variant="body1">Agrupado por: </Typography>
-          {table.getState().grouping.map((groupedColumn, index) => (
-            <Chip
-              key={groupedColumn}
-              label={table.getColumn(groupedColumn).columnDef.header}
-              onDelete={() => table.getColumn(groupedColumn).toggleGrouping()}
-            />
-          ))}
-        </Box> */}
       </Box>
     ),
     filterFns: {
@@ -143,7 +203,7 @@ export const GeneralData = () => {
       }),
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
+      // baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
     }),
     enablePagination: false,
