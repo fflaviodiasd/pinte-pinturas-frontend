@@ -157,6 +157,26 @@ export const useConference = () => {
     }
   };
 
+  const getReportsWithTeams = async (employeeId: any, teamId: number) => {
+    if (!id) {
+      console.error("ID da construção não foi fornecido");
+      return [];
+    }
+
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/reports_conference/${id}/production/?employee=${employeeId}&?team=${teamId}`);
+      console.log("Reports with Employee data:", data);
+      setListReportsWithEmployees(data);
+      setLoading(false);
+      return data;
+    } catch (error) {
+      console.error("Erro ao obter relatórios com medições:", error);
+      setLoading(false);
+      return [];
+    }
+  };
+
   const getGeneralReports = async () => {
     if (!id) {
       console.error("ID da construção não foi fornecido");
@@ -196,6 +216,7 @@ export const useConference = () => {
     getReportsWithEmployee,
     listReportsWithEmployees,
     getGeneralReports, 
+    getReportsWithTeams,
     listGeneralReports
   };
 };
