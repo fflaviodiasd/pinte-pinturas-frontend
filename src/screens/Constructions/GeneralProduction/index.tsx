@@ -129,10 +129,10 @@ export const GeneralProduction = () => {
     data: tableData,
     enableColumnFilterModes: true,
     enableEditing: false,
-    enableExpanding: false,
+    enableExpanding: true,
     createDisplayMode: 'row',
     state: { isSaving },
-    enableGrouping: false,
+    enableGrouping: true,
     renderTopToolbar: ({ table }) => (
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: 2 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
