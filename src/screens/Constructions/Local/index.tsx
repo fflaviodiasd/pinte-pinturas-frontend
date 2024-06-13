@@ -367,7 +367,14 @@ const Locations = () => {
     setDisabledButton(true);
     const newLines: any = [];
     for (let i = 0; i < numLines; i++) {
-      const code = generateNextId(listConstructionsLocations.length + i + 1);
+      const lastItem = Number(
+        listConstructionsLocations[
+          listConstructionsLocations.length - 1
+        ].code.slice(-2)
+      );
+      console.log(lastItem);
+
+      const code = generateNextId(lastItem + i + 1);
       const control = {};
       dynamicColumns.forEach((column, index) => {
         if (index >= 2) control[column.id] = "";
