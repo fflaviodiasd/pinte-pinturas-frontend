@@ -23,6 +23,7 @@ interface ChipCustomLevelProps {
   chipId?: number | null;
   onCreateLevel?: () => void;
   setControl?: any;
+  setEditable?: any;
 }
 
 export const ChipCustomLevel = ({
@@ -36,6 +37,7 @@ export const ChipCustomLevel = ({
   setValueActual,
   onClick,
   editable = false,
+  setEditable,
   post,
   onCreateLevel,
   chipId,
@@ -90,11 +92,16 @@ export const ChipCustomLevel = ({
             bg={"#DEF4FF"}
             post={post}
             onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onBlur={() => {
+              setIsFocused(false);
+              setEditable(false);
+            }}
           />
-          <StyledChipButtonDel onClick={handleChipDeleteLevel}>
-            x
-          </StyledChipButtonDel>
+          {isFocused && (
+            <StyledChipButtonDel onClick={handleChipDeleteLevel}>
+              x
+            </StyledChipButtonDel>
+          )}
         </div>
       ) : (
         <StyledChip tabIndex={0} value={value} bg={bg} />
