@@ -1,0 +1,6 @@
+table .selected-row {
+  background-color: #fbf8c6fe !important;
+}
+table .selected-row-paste {
+  background-color: #c6d7fbfe !important;
+}

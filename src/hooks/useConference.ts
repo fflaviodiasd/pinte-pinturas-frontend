@@ -19,7 +19,9 @@ export const useConference = () => {
   const [listProductionData, setListProductionData] = useState<any[]>([]);
   const [listReportsWithMeasurements, setListReportsWithMeasurements] = useState<any[]>([]);
   const [listReportsWithEmployees, setListReportsWithEmployees] = useState<any[]>([]);
-  const getConferenceData = async (measurementId: string, disjunction: string) => {
+    const [listGeneralReports, setListGeneralReports] = useState<any[]>([]); 
+    const getConferenceData = async (measurementId: string, disjunction: string) => {
+
     if (!id) {
       console.error("ID da construção não foi fornecido");
       return;
@@ -155,6 +157,47 @@ export const useConference = () => {
     }
   };
 
+  const getReportsWithTeams = async (employeeId: any, teamId: number) => {
+    if (!id) {
+      console.error("ID da construção não foi fornecido");
+      return [];
+    }
+
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/reports_conference/${id}/production/?employee=${employeeId}&?team=${teamId}`);
+      console.log("Reports with Employee data:", data);
+      setListReportsWithEmployees(data);
+      setLoading(false);
+      return data;
+    } catch (error) {
+      console.error("Erro ao obter relatórios com medições:", error);
+      setLoading(false);
+      return [];
+    }
+  };
+
+  const getGeneralReports = async () => {
+    if (!id) {
+      console.error("ID da construção não foi fornecido");
+      return [];
+    }
+
+    setLoading(true);
+    try {
+      const { data } = await api.get(`/reports_conference/${id}/general/`);
+      console.log("General reports data:", data);
+      setListGeneralReports(data);
+      setLoading(false);
+      return data;
+    } catch (error) {
+      console.error("Erro ao obter relatórios gerais:", error);
+      setLoading(false);
+      return [];
+    }
+  };
+
+
   return {
     loading,
     setLoading,
@@ -171,6 +214,9 @@ export const useConference = () => {
     getReportsWithMeasurement,
     listReportsWithMeasurements,
     getReportsWithEmployee,
-    listReportsWithEmployees
+    listReportsWithEmployees,
+    getGeneralReports, 
+    getReportsWithTeams,
+    listGeneralReports
   };
 };

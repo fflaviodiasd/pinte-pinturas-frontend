@@ -25,7 +25,8 @@ import { useStyles } from "./styles";
 import { GoPackage } from "react-icons/go";
 import { ModalPackages } from "../../../components/Modal/ModalPackages";
 import SelectLine from "../../../components/SelectLine";
-
+import "./style.css";
+import { successMessage } from "../../../components/Messages";
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
@@ -45,6 +46,10 @@ const Locations = () => {
   } = useConstructions();
 
   const [selectedLocalIds, setSelectedLocalIds] = useState<number[]>([]);
+  const [selectedLocalIdsPaste, setSelectedLocalIdsPaste] = useState<number[]>(
+    []
+  );
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { classes } = useStyles();
   const [modalOpen, setIsModalOpen] = useState(false);
@@ -52,6 +57,9 @@ const Locations = () => {
   const [valueActual, setValueActual] = useState();
   const [control, setControl] = useState();
   const [disabledButton, setDisabledButton] = useState(false);
+  const [listChecked, setListChecked] = useState<any[]>([]);
+  const [listCheckedPaste, setListCheckedPaste] = useState<any[]>([]);
+  const [paste, setPaste] = useState<any>();
 
   type CustomMRT_ColumnDef<T> = MRT_ColumnDef<any> & {
     muiTableBodyCellProps?: (cell: MRT_Cell<any>) => {
@@ -103,7 +111,7 @@ const Locations = () => {
     //CRIEI UMA FUNÇÃO QUE ATUALIZA A CÉLULA EM VEZ DE ATUALIZAR DIRETO DENTRO DO CHANGE, NESSA EU USO UMA FUNÇÃO DE CALLBACK DO PRÓRPIO SET DO USESTATE PARA GARANTIR QUE VOU USAR A VERSÃO MAIS ATUALIZADA DA LISTA
     setListConstructionsLocations((currentLocations) => {
       return currentLocations.map((location) => {
-        if (location.code === cell.row.original.code) {
+        if (location.code === cell?.row?.original?.code) {
           //CRIO UMA NOVA COPIA DA LISTA PRA EVITAR QUE TENHA UMA MUTAÇÃO DIRETA
           const updatedLocation = { ...location, [cell.column.id]: newValue };
 
@@ -169,38 +177,6 @@ const Locations = () => {
         ];
 
         data.forEach((level: any, index: any) => {
-          {
-            /*
-
-                  if (index === data.length - 1) {
-            newDynamicColumns.push({
-              accessorKey: `nivel_${level.id}`,
-              header: level.name,
-              muiTableBodyCellProps: ({ cell }: any) => ({
-                onChange: (e: any) => {
-                  const newValue = e.target.value;
-                  const rowId = cell.row.id;
-                  setEditState({ rowId, value: newValue });
-                  setValueActual(e.target.value);
-                  updateLocationData(cell, newValue);
-                },
-              }),
-            });
-          } else {
-            newDynamicColumns.push({
-              accessorKey: `nivel_${level.id}`,
-              header: level.name,
-              muiTableBodyCellProps: ({ cell }: any) => ({
-                onChange: (e: any) => {
-                  setValueActual(e.target.value);
-                  const newValue = e.target.value;
-                  updateLocationData(cell, newValue);
-                },
-              }),
-            });
-          }
-        */
-          }
           newDynamicColumns.push({
             accessorKey: `nivel_${level.id}`,
             header: level.name,
@@ -225,9 +201,9 @@ const Locations = () => {
   const handleCreateLocal = async () => {
     {
       /*} const code = generateNextId(rowCount);
-    listConstructionsLocations[listConstructionsLocations.length - 1].code =
-      code;
-  */
+      listConstructionsLocations[listConstructionsLocations.length - 1].code =
+        code;
+    */
     }
     await addConstructionLocal(dynamicColumns, listConstructionsLocations);
   };
@@ -245,14 +221,121 @@ const Locations = () => {
     setSnackbarOpen(false);
   };
 
-  const handleCheckboxClick = (id: number) => {
-    const isSelected = selectedLocalIds.includes(id);
-    if (isSelected) {
-      setSelectedLocalIds(
-        selectedLocalIds.filter((existingId) => existingId !== id)
+  const [selectedRows, setSelectedRows] = useState(new Set<number>());
+  const [selectedRowsPaste, setSelectedRowsPaste] = useState(new Set<number>());
+  const [copyLines, setCopyLines] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (copyLines) {
+      successMessage("Selecione em qual linha você quer colar");
+    }
+  }, [copyLines]);
+
+  function updateArray(
+    originalArray: any[],
+    copiedItems: any[],
+    pasteItems: any[]
+  ) {
+    let copiedIndex = 0;
+
+    pasteItems.forEach((pasteItem) => {
+      const newItem = { ...copiedItems[copiedIndex] };
+      const originalItemIndex = originalArray.findIndex(
+        (item) => item.code === pasteItem.code
       );
+
+      if (originalItemIndex !== -1) {
+        const originalItem = originalArray[originalItemIndex];
+
+        for (const key in newItem) {
+          if (key !== "id" && key !== "code") {
+            originalItem[key] = newItem[key];
+          }
+        }
+        copiedIndex = (copiedIndex + 1) % copiedItems.length;
+      }
+    });
+
+    return originalArray;
+  }
+
+  function pasteLines() {
+    successMessage("Você colou a(s) linha(s)");
+    setCopyLines(false);
+    const newSetEmpty = new Set<number>();
+    setSelectedRows(newSetEmpty);
+    setSelectedLocalIds([]);
+    setListChecked([]);
+    const updatedArray = updateArray(
+      [...listConstructionsLocations],
+      listChecked,
+      listCheckedPaste
+    );
+    setListConstructionsLocations(updatedArray);
+  }
+
+  const handleCheckboxClick = (item: any) => {
+    if (copyLines) {
+      setPaste(true);
+      setListCheckedPaste((prev) => {
+        if (prev.includes(item)) {
+          return prev.filter((i) => i !== item);
+        } else {
+          const newItem = item.original;
+          newItem.id_false = newItem.id ? null : item.id;
+          newItem.index = item.index;
+          return [...prev, newItem];
+        }
+      });
+
+      setSelectedRowsPaste((prev) => {
+        const newSet = new Set(prev);
+        if (newSet.has(+item.id)) {
+          newSet.delete(+item.id);
+        } else {
+          newSet.add(+item.id);
+        }
+        return newSet;
+      });
+
+      const isSelectedPaste = selectedLocalIdsPaste.includes(+item.id);
+      if (isSelectedPaste) {
+        setSelectedLocalIdsPaste(
+          selectedLocalIdsPaste.filter((existingId) => existingId !== +item.id)
+        );
+      } else {
+        setSelectedLocalIdsPaste([...selectedLocalIdsPaste, +item.id]);
+      }
     } else {
-      setSelectedLocalIds([...selectedLocalIds, id]);
+      setPaste(false);
+      setListChecked((prev) => {
+        if (prev.includes(item)) {
+          return prev.filter((i) => i !== item);
+        } else {
+          const newItem = item.original;
+          newItem.id_false = newItem.id ? null : item.id;
+          return [...prev, newItem];
+        }
+      });
+
+      setSelectedRows((prev) => {
+        const newSet = new Set(prev);
+        if (newSet.has(+item.id)) {
+          newSet.delete(+item.id);
+        } else {
+          newSet.add(+item.id);
+        }
+        return newSet;
+      });
+
+      const isSelected = selectedLocalIds.includes(+item.id);
+      if (isSelected) {
+        setSelectedLocalIds(
+          selectedLocalIds.filter((existingId) => existingId !== +item.id)
+        );
+      } else {
+        setSelectedLocalIds([...selectedLocalIds, +item.id]);
+      }
     }
     setSnackbarOpen(true);
   };
@@ -263,8 +346,19 @@ const Locations = () => {
 
   const snackbarMessage =
     selectedLocalIds.length === 1
-      ? `${selectedLocalIds.length} Local Selecionado`
-      : `${selectedLocalIds.length} Locais Selecionados`;
+      ? `${selectedLocalIds.length} ${
+          copyLines ? "Local Copiado" : "Local Selecionado"
+        }`
+      : `${selectedLocalIds.length} ${
+          copyLines ? "Locais Copiados" : "Locais Selecionados"
+        }`;
+
+  const snackbarMessagePaste =
+    selectedLocalIdsPaste.length === 1
+      ? ` ${selectedLocalIdsPaste.length} Local Selecionado para colar `
+      : selectedLocalIdsPaste.length > 1
+      ? ` ${selectedLocalIdsPaste.length} Locais Selecionados para colar`
+      : null;
 
   const deleteIconMessage =
     selectedLocalIds.length === 1 ? "Remover local" : "Remover locais";
@@ -273,7 +367,14 @@ const Locations = () => {
     setDisabledButton(true);
     const newLines: any = [];
     for (let i = 0; i < numLines; i++) {
-      const code = generateNextId(listConstructionsLocations.length + i + 1);
+      const lastItem = Number(
+        listConstructionsLocations[
+          listConstructionsLocations.length - 1
+        ].code.slice(-2)
+      );
+      console.log(lastItem);
+
+      const code = generateNextId(lastItem + i + 1);
       const control = {};
       dynamicColumns.forEach((column, index) => {
         if (index >= 2) control[column.id] = "";
@@ -335,7 +436,7 @@ const Locations = () => {
           },
         ];
 
-        data.forEach((level: any, index: any) => {
+        data.forEach((level: any) => {
           newDynamicColumns.push({
             accessorKey: `nivel_${level.id}`,
             header: level.name,
@@ -382,8 +483,12 @@ const Locations = () => {
     renderRowActions: ({ row }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
         <Checkbox
+          checked={
+            selectedLocalIds.includes(+row.id) ||
+            selectedLocalIdsPaste.includes(+row.id)
+          }
           sx={{ cursor: "pointer", color: "#C5C7C8" }}
-          onClick={() => handleCheckboxClick(row.original.id)}
+          onClick={() => handleCheckboxClick(row)}
         />
       </Box>
     ),
@@ -392,12 +497,16 @@ const Locations = () => {
         snackbarOpen={snackbarOpen}
         handleCloseSnackbar={handleCloseSnackbar}
         message={snackbarMessage}
+        messagePaste={snackbarMessagePaste}
         checklistButton={
           <ChecklistIcon
             title={"Duplicar nomes de checklists cadastrados"}
             handleClick={handleOpenChecklistsDrawer}
           />
         }
+        copyLine={() => (copyLines ? setCopyLines(false) : setCopyLines(true))}
+        paste={paste}
+        pasteLines={pasteLines}
         deleteButton={<SnackbarDeleteIcon title={deleteIconMessage} />}
         handleDeleteSnackbar={handleDeleteSnackbar}
       />
@@ -464,6 +573,18 @@ const Locations = () => {
         <LevelComponent setControl={setControl} />
       </div>
     ),
+    muiTableBodyRowProps: ({ row }) => {
+      let className = "";
+      if (copyLines && selectedRows.has(+row.id)) {
+        className = "selected-row";
+      }
+      if (selectedRowsPaste.has(+row.id)) {
+        className += " selected-row-paste";
+      }
+      return {
+        className,
+      };
+    },
   });
 
   return (

@@ -14,8 +14,10 @@ import {
 import { api } from "../../../services/api";
 import { errorMessage, successMessage } from "../../Messages";
 import { Info, Search } from "@mui/icons-material";
+import { useParams } from "react-router-dom";
 
 interface Checklist {
+  id: string;
   name: string;
 }
 
@@ -30,10 +32,14 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [errorMessageVisible, setErrorMessageVisible] = useState(false);
 
+  const { id } = useParams();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get<{ areas: Area[] }>("areas/checklists");
+        const response = await api.get<{ areas: Area[] }>(
+          `constructions/${id}/checklists/`
+        );
         setAreas(response.data.areas);
       } catch (error) {
         console.error("Erro ao buscar os dados:", error);
@@ -42,6 +48,17 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
 
     fetchData();
   }, []);
+
+  const findChecklistNameById = (checklistId: string): string => {
+    for (const area of areas) {
+      for (const checklist of area.checklists) {
+        if (checklist.id === checklistId) {
+          return checklist.name;
+        }
+      }
+    }
+    return "";
+  };
 
   const handleCopy = async () => {
     if (selectedChecklists.length === 0) {
@@ -58,7 +75,10 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
                 : 0;
 
             await Promise.all(
-              selectedChecklists.map(async (checklistName, index) => {
+              selectedChecklists.map(async (checklistId, index) => {
+                // Encontrar o nome do checklist pelo id
+                const checklistName = findChecklistNameById(checklistId);
+
                 await api.post(`/areas/${localId}/checklist/`, {
                   name: checklistName,
                   order: lastOrder + index + 1,
@@ -85,13 +105,13 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
     }
   };
 
-  const handleToggleChecklist = (checklistName: string) => {
-    if (selectedChecklists.includes(checklistName)) {
+  const handleToggleChecklist = (checklistId: string) => {
+    if (selectedChecklists.includes(checklistId)) {
       setSelectedChecklists(
-        selectedChecklists.filter((name) => name !== checklistName)
+        selectedChecklists.filter((id) => id !== checklistId)
       );
     } else {
-      setSelectedChecklists([...selectedChecklists, checklistName]);
+      setSelectedChecklists([...selectedChecklists, checklistId]);
     }
   };
 
@@ -185,11 +205,11 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
                     <ListItem
                       key={`${areaIndex}-${checklistIndex}`}
                       button
-                      onClick={() => handleToggleChecklist(checklist.name)}
+                      onClick={() => handleToggleChecklist(checklist.id)} // Passando o id do checklist
                     >
                       <Checkbox
                         edge="start"
-                        checked={selectedChecklists.includes(checklist.name)}
+                        checked={selectedChecklists.includes(checklist.id)} // Verificando se o id está na lista de selecionados
                         tabIndex={-1}
                         disableRipple
                       />

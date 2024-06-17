@@ -47,6 +47,12 @@ export const ModalChecklists = ({
       TransitionComponent={Transition}
       keepMounted
       onClose={handleClose}
+      PaperProps={{
+        style: {
+          width: "60%",
+          maxWidth: "none"
+        }
+      }}
     >
       <div style={{ padding: "1rem" }}>
         <span
@@ -54,7 +60,7 @@ export const ModalChecklists = ({
         >
           {area}
         </span>
-        <div style={{ paddingTop: "0.5rem" }}>
+        <div style={{ paddingTop: "0.5rem", paddingBottom: "1rem" }}>
           <TextField
             type="text"
             //value={searchTerm}

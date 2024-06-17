@@ -86,7 +86,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
 
       if (valueActual.trim() !== "") {
         try {
-          await api.put(`/level_area/${editingChipId}/`, {
+          const response = await api.put(`/level_area/${editingChipId}/`, {
             name: valueActual,
           });
           setValueActual("");
@@ -154,6 +154,7 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
             subtmitData={updateLevelInputKeyDown}
             onClick={() => handleChipClick(level.id)}
             editable={editingChipId === level.id}
+            setEditable={setEditingChipId}
             chipId={editingChipId}
             setControl={setControl}
           />

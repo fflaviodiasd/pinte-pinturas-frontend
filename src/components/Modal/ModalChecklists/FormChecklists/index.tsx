@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { SelectChecklists } from "../SelectChecklists";
 import { useConstructions } from "../../../../hooks/useConstructions";
 import { useEffect } from "react";
+import { HistoryInfo } from "../HistoryInfo";
 
 export const FormChecklists = ({ checklistId }: any) => {
   const { id } = useParams();
@@ -30,6 +31,7 @@ export const FormChecklists = ({ checklistId }: any) => {
         >
           {() => (
             <Form>
+              <HistoryInfo checklistId={checklistId} />
               <DialogContent
                 style={{
                   display: "flex",
@@ -37,32 +39,6 @@ export const FormChecklists = ({ checklistId }: any) => {
                   gap: "1rem",
                 }}
               >
-                <div style={{ display: "flex", gap: "1rem" }}>
-                  <SelectChecklists
-                    name="team"
-                    label="Equipe"
-                    endpoint={`/constructions/${id}/teams/`}
-                    optionKey="id"
-                    optionValueKey="id"
-                    optionLabelKey="name"
-                  />
-                  <SelectChecklists
-                    name="measurement"
-                    label="Medição"
-                    endpoint={`/constructions/${id}/measurements/`}
-                    optionKey="id"
-                    optionValueKey="id"
-                    optionLabelKey="name"
-                  />
-                  <SelectChecklists
-                    name="package"
-                    label="Pacote"
-                    endpoint={`/constructions/${id}/packages/`}
-                    optionKey="id"
-                    optionValueKey="id"
-                    optionLabelKey="name"
-                  />
-                </div>
                 <div style={{ display: "flex", gap: "1rem" }}>
                   <Field name="number">
                     {({ field, form }: any) => (
@@ -92,6 +68,32 @@ export const FormChecklists = ({ checklistId }: any) => {
                       />
                     )}
                   </Field>
+                </div>
+                <div style={{ display: "flex", gap: "1rem" }}>
+                  <SelectChecklists
+                    name="team"
+                    label="Equipe"
+                    endpoint={`/constructions/${id}/teams/`}
+                    optionKey="id"
+                    optionValueKey="id"
+                    optionLabelKey="name"
+                  />
+                  <SelectChecklists
+                    name="measurement"
+                    label="Medição"
+                    endpoint={`/constructions/${id}/measurements/`}
+                    optionKey="id"
+                    optionValueKey="id"
+                    optionLabelKey="name"
+                  />
+                  <SelectChecklists
+                    name="package"
+                    label="Pacote"
+                    endpoint={`/constructions/${id}/packages/`}
+                    optionKey="id"
+                    optionValueKey="id"
+                    optionLabelKey="name"
+                  />
                 </div>
                 <div
                   style={{

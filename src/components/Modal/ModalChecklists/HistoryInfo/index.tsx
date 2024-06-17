@@ -1,23 +1,28 @@
-import { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { api } from "../../../../services/api";
-import { Chip } from "@mui/material";
+import { Chip, TextField } from "@mui/material";
+import { InputMask } from "../../../InputMask";
+import { errorMessage, successMessage } from "../../../Messages";
 
 export function HistoryInfo({ checklistId }: any) {
   const [checklistHistory, setChecklistHistory] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [editedDate, setEditedDate] = useState("");
+
+  const getChecklistsHistories = useCallback(async () => {
+    try {
+      const response = await api.get(`checklists/${checklistId}/histories`);
+      const data = response.data;
+      setChecklistHistory(data);
+    } catch (error) {
+      console.error("Erro ao buscar dados do backend:", error);
+    }
+  }, [checklistId]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await api.get(`checklists/${checklistId}/histories`);
-        const data = response.data;
-        setChecklistHistory(data);
-      } catch (error) {
-        console.error("Erro ao buscar dados do backend:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+    getChecklistsHistories();
+  }, [getChecklistsHistories]);
 
   const STATUS_COLORS: { [key: string]: string } = {
     //"NÃO LIBERADA": "#F44336",
@@ -25,6 +30,42 @@ export function HistoryInfo({ checklistId }: any) {
     INICIADA: "#4CAF50",
     FINALIZADA: "#2196F3",
     ENTREGUE: "#512DA8",
+  };
+
+  const handleEditClick = (item: any) => {
+    setSelectedItem(item);
+    setEditedDate(item.histories.written_date);
+    setEditMode(true);
+  };
+
+  const handleBlur = () => {
+    setEditMode(false);
+  };
+
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      setEditMode(false);
+      await updateChecklistStatus(selectedItem?.status, editedDate);
+    }
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditedDate(e.target.value);
+  };
+
+  const updateChecklistStatus = async (status: string, date: string) => {
+    try {
+      const statusPatch = {
+        [status]: date,
+      };
+      await api.patch(`/checklists/${checklistId}/`, { status: statusPatch });
+      console.log("Modal de checklists atualizado com sucesso!");
+      getChecklistsHistories();
+      successMessage("Modal de checklists atualizado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao atualizar modal de checklists!", error);
+      errorMessage("Erro ao atualizar modal de checklists!");
+    }
   };
 
   return (
@@ -56,11 +97,28 @@ export function HistoryInfo({ checklistId }: any) {
               />
             </td>
             {checklistHistory.map(
-              (item: any) =>
+              (item: any, itemIndex: number) =>
                 item.status === status && (
-                  <>
+                  <React.Fragment key={itemIndex}>
                     <td>
-                      <span>{item.histories.written_date}</span>
+                      {editMode && selectedItem === item ? (
+                        <TextField
+                          style={{ width: "80%" }}
+                          value={editedDate}
+                          onChange={handleDateChange}
+                          onKeyDown={handleKeyDown}
+                          onBlur={handleBlur}
+                          variant="outlined"
+                          size="small"
+                          InputProps={{
+                            inputComponent: InputMask as any,
+                          }}
+                        />
+                      ) : (
+                        <span onClick={() => handleEditClick(item)}>
+                          {item.histories.written_date}
+                        </span>
+                      )}
                     </td>
                     <td>
                       <span>{item.histories.marking_action_date}</span>
@@ -68,7 +126,7 @@ export function HistoryInfo({ checklistId }: any) {
                     <td>
                       <span>{item.histories.responsible_action}</span>
                     </td>
-                  </>
+                  </React.Fragment>
                 )
             )}
           </tr>

@@ -7,8 +7,12 @@ export default function SnackbarComponent({
   handleCloseSnackbar,
   handleDeleteSnackbar,
   message,
+  messagePaste,
   deleteButton,
   checklistButton,
+  copyLine,
+  pasteLines,
+  paste,
 }: any) {
   return (
     <div>
@@ -17,18 +21,25 @@ export default function SnackbarComponent({
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        message={message}
+        message={messagePaste ? `${message} e ${messagePaste}` : message}
         action={
-          <React.Fragment>
-            {checklistButton}
-            <Button
-              color="secondary"
-              size="small"
-              onClick={handleDeleteSnackbar}
-            >
-              {deleteButton}
-            </Button>
-          </React.Fragment>
+          <>
+            {paste ? (
+              <Button onClick={pasteLines}>Colar</Button>
+            ) : (
+              <>
+                <Button onClick={copyLine}>Copiar</Button>
+                {checklistButton}
+                <Button
+                  color="secondary"
+                  size="small"
+                  onClick={handleDeleteSnackbar}
+                >
+                  {deleteButton}
+                </Button>
+              </>
+            )}
+          </>
         }
       />
     </div>

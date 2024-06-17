@@ -38,7 +38,7 @@ export default function AccordionChecklists({ localId }: any) {
   return (
     <div>
       {checklistName.map((item: any, index) => (
-        <Accordion key={item.id}>
+        <Accordion sx={{marginBottom: "1rem" }} key={item.id}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <div
               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
@@ -56,7 +56,6 @@ export default function AccordionChecklists({ localId }: any) {
             </div>
           </AccordionSummary>
           <AccordionDetails>
-            <HistoryInfo checklistId={item.id} />
             <FormChecklists checklistId={item.id} />
           </AccordionDetails>
         </Accordion>
