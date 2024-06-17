@@ -295,7 +295,7 @@ export const ServiceStepTable = ({ order }: any) => {
     ),
     renderTopToolbar: ({ table }) => (
       <Box
-        sx={{ display: "flex", alignItems: "center", gap: "1rem", padding: 2 }}
+        sx={{ display: "flex", alignItems: "center", gap: "1rem", padding: 2, flexDirection: "row-reverse" }}
       >
         <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
           <Typography component="div" fontWeight={500}>
