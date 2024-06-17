@@ -40,32 +40,6 @@ export const FormChecklists = ({ checklistId }: any) => {
                 }}
               >
                 <div style={{ display: "flex", gap: "1rem" }}>
-                  <SelectChecklists
-                    name="team"
-                    label="Equipe"
-                    endpoint={`/constructions/${id}/teams/`}
-                    optionKey="id"
-                    optionValueKey="id"
-                    optionLabelKey="name"
-                  />
-                  <SelectChecklists
-                    name="measurement"
-                    label="Medição"
-                    endpoint={`/constructions/${id}/measurements/`}
-                    optionKey="id"
-                    optionValueKey="id"
-                    optionLabelKey="name"
-                  />
-                  <SelectChecklists
-                    name="package"
-                    label="Pacote"
-                    endpoint={`/constructions/${id}/packages/`}
-                    optionKey="id"
-                    optionValueKey="id"
-                    optionLabelKey="name"
-                  />
-                </div>
-                <div style={{ display: "flex", gap: "1rem" }}>
                   <Field name="number">
                     {({ field, form }: any) => (
                       <TextField
@@ -94,6 +68,32 @@ export const FormChecklists = ({ checklistId }: any) => {
                       />
                     )}
                   </Field>
+                </div>
+                <div style={{ display: "flex", gap: "1rem" }}>
+                  <SelectChecklists
+                    name="team"
+                    label="Equipe"
+                    endpoint={`/constructions/${id}/teams/`}
+                    optionKey="id"
+                    optionValueKey="id"
+                    optionLabelKey="name"
+                  />
+                  <SelectChecklists
+                    name="measurement"
+                    label="Medição"
+                    endpoint={`/constructions/${id}/measurements/`}
+                    optionKey="id"
+                    optionValueKey="id"
+                    optionLabelKey="name"
+                  />
+                  <SelectChecklists
+                    name="package"
+                    label="Pacote"
+                    endpoint={`/constructions/${id}/packages/`}
+                    optionKey="id"
+                    optionValueKey="id"
+                    optionLabelKey="name"
+                  />
                 </div>
                 <div
                   style={{

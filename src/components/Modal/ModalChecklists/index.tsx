@@ -47,6 +47,12 @@ export const ModalChecklists = ({
       TransitionComponent={Transition}
       keepMounted
       onClose={handleClose}
+      PaperProps={{
+        style: {
+          width: "60%",
+          maxWidth: "none"
+        }
+      }}
     >
       <div style={{ padding: "1rem" }}>
         <span
