@@ -60,7 +60,7 @@ export const ModalChecklists = ({
         >
           {area}
         </span>
-        <div style={{ paddingTop: "0.5rem" }}>
+        <div style={{ paddingTop: "0.5rem", paddingBottom: "1rem" }}>
           <TextField
             type="text"
             //value={searchTerm}
