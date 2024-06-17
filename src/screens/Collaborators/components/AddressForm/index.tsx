@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Grid, TextField } from "@mui/material";
 
+import { NumberInput } from "../../../../components/NumberInput";
 import { InputMask } from "../../../../components/InputMask";
 import { Collaborator } from "../../../../types";
 
@@ -101,7 +102,9 @@ export const AddressForm = ({ values, handleChange }: AddressFormProps) => {
           variant="outlined"
           size="small"
           fullWidth
-          type="number"
+          InputProps={{
+            inputComponent: NumberInput as any,
+          }}
         />
       </Grid>
     </Grid>

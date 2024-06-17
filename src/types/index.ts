@@ -123,6 +123,63 @@ export type Company = {
   active: boolean;
 };
 
+export type ConstructionData = {
+  id: number;
+  fantasy_name: string;
+  customer: string;
+  phone: string;
+  corporate_name: string;
+  cnpj: string;
+  cno: string;
+  email: string;
+  municipal_registration: string;
+  state_registration: string;
+  active: boolean;
+
+  cep: string;
+  state: string;
+  city: string;
+  neighborhood: string;
+  public_place: string;
+  complement: string;
+  number: string;
+
+  name: string;
+  deleted: boolean;
+  responsible: string;
+  status: string;
+  percentageCompleted: number;
+  type: string;
+  areas: string[];
+  teamName: string;
+  team: string;
+  measurement: string;
+  package: string;
+  checklistName: string;
+};
+
+export type ConstructionRegister = {
+  id: number;
+  fantasy_name: string;
+  customer: string;
+  phone: string;
+  corporate_name: string;
+  cnpj: string;
+  cno: string;
+  email: string;
+  municipal_registration: string;
+  state_registration: string;
+  active: boolean;
+
+  cep: string;
+  state: string;
+  county: string;
+  neighborhood: string;
+  public_place: string;
+  complement: string;
+  number: string;
+};
+
 export type FilterOption = {
   name: string;
   checked: boolean;

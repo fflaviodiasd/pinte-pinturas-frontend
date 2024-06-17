@@ -58,6 +58,9 @@ export const Sidebar = () => {
 
   const handleDrawer = () => {
     setOpenSidebar(!openSidebar);
+    setOpenClientsItemMenu(false);
+    setOpenEmployeesItemMenu(false);
+    setOpenConstructionsItemMenu(false);
     localStorage.setItem(KEY_SIDEBAR, String(!openSidebar));
   };
 
@@ -97,10 +100,9 @@ export const Sidebar = () => {
       path: "obras",
       icon: <img src={ConstructionsIcon} alt="Obras" />,
       subItems: [
-        { text: "• Cadastro", path: "/obras/cadastrar" },
+        { text: "• Cadastro", path: "/obras/cadastrar/dados-gerais" },
         { text: "• Listagem", path: "/obras/listagem" },
         { text: "• Funcionários", path: "/obras/funcionarios" },
-
       ],
     },
     {
@@ -115,7 +117,7 @@ export const Sidebar = () => {
     },
     {
       text: "Dashboard",
-      path: "dashboard",
+      path: "dashboard/acompanhamento",
       icon: <DashboardIcon />,
     },
   ];

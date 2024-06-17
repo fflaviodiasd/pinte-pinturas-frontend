@@ -32,13 +32,21 @@ function DashboardComponent() {
 
   const { selectedConstruction } = useContext(DashboardContext);
 
+  // const displayContent = () => {
+  //   if (location.pathname.includes("acompanhamento")) {
+  //     return <FollowUp />;
+  //   } else if (location.pathname.includes("dados-gerais")) {
+  //     return <GeneralData />;
+  //   } else {
+  //     return <Layout />;
+  //   }
+  // };
+
   const displayContent = () => {
-    if (location.pathname.includes("acompanhamento")) {
-      return <FollowUp />;
-    } else if (location.pathname.includes("dados-gerais")) {
+    if (location.pathname.includes("dados-gerais")) {
       return <GeneralData />;
     } else {
-      return <Layout />;
+      return <FollowUp />;
     }
   };
 
@@ -101,14 +109,14 @@ function DashboardComponent() {
             gap: 8,
           }}
         >
-          <Tab
+          {/* <Tab
             text="Layout"
             isActive={
               !shouldBeActive("acompanhamento") &&
               !shouldBeActive("dados-gerais")
             }
             onClick={() => navigate(`/dashboard`)}
-          />
+          /> */}
           <Tab
             text="Acompanhamento"
             isActive={shouldBeActive("acompanhamento")}

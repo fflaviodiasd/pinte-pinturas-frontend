@@ -7,13 +7,13 @@ import {
   SetStateAction,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
 // import { errorMessage } from "../components/Messages";
 
 import { api } from "../services/api";
-import { User } from "../types";
 
 import { UserContext } from "./UserContext";
 
@@ -25,6 +25,98 @@ type Item = {
   name: string;
   id: number;
 };
+
+type StatusChecklist = {
+  liberado: number;
+  finalizado: number;
+  iniciado: number;
+  entregue: number;
+  nao_liberado: number;
+  entregue_porcentagem: number;
+  finalizado_porcentagem: number;
+  iniciado_porcentagem: number;
+  liberado_porcentagem: number;
+  nao_liberado_porcentagem: number;
+  total: number;
+};
+
+type Execution = {
+  measurement: string;
+  status: {
+    liberado: number;
+    finalizado: number;
+    iniciado: number;
+    entregue: number;
+    nao_liberado: number;
+  };
+}[];
+
+type ConstructionUpdate = {
+  id: number;
+  status: string;
+  area: string;
+  checklist: string;
+  team: string;
+  time: string;
+  responsible: string;
+}[];
+
+type Interaction = {
+  responsible_action: string;
+  status: {
+    entregue: number;
+    finalizada: number;
+    iniciada: number;
+    liberada: number;
+  };
+};
+
+interface Levels {
+  [key: string]: string;
+}
+
+type GeneralDataTable = {
+  id: number;
+  construction: string;
+  area: string;
+  levels: Levels;
+  checklist: string;
+  package: string;
+  measurement: string;
+  levels_construction: {
+    [key: string]: any;
+  };
+  team: string;
+  released_typed: string;
+  released_system: string;
+  released_user: string;
+  started_system: string;
+  started_typed: string;
+  finished_typed: string;
+  delivered_typed: string;
+}[];
+
+interface FlattenedObject {
+  id: number;
+  construction: string;
+  area: string;
+  levels: Levels;
+  checklist: string;
+  package: string;
+  measurement: string;
+  levels_construction: {
+    [key: string]: any;
+  };
+  team: string;
+  released_typed: string;
+  released_system: string;
+  released_user: string;
+  started_system: string;
+  started_typed: string;
+  finished_typed: string;
+  delivered_typed: string;
+  [key: string]: any;
+}
 
 type DashboardContextProps = {
   listConstructions: Item[];
@@ -41,6 +133,12 @@ type DashboardContextProps = {
       name: string;
     }>
   >;
+  dashboardChecklist: StatusChecklist;
+  dashboardExecution: Execution;
+  dashboardGeneralData: GeneralDataTable;
+  dashboardConstructionUpdate: ConstructionUpdate;
+  variableLevels: string[];
+  listInteractions: Interaction[];
 };
 
 const DashboardContext = createContext<DashboardContextProps>(
@@ -67,7 +165,6 @@ const DashboardContextProvider = ({
         id: construction.id,
         name: construction.corporate_name,
       }));
-      // console.log("constructionList", constructionList);
       setListConstructions(constructionList);
     } catch (error) {
       console.log(error);
@@ -90,6 +187,168 @@ const DashboardContextProvider = ({
     }
   };
 
+  const [dashboardChecklist, setDashboardChecklist] = useState<StatusChecklist>(
+    {
+      entregue: 0,
+      entregue_porcentagem: 0,
+      finalizado: 0,
+      finalizado_porcentagem: 0,
+      iniciado: 0,
+      iniciado_porcentagem: 0,
+      liberado: 0,
+      liberado_porcentagem: 0,
+      nao_liberado: 0,
+      nao_liberado_porcentagem: 0,
+      total: 0,
+    }
+  );
+  const getDashboardChecklist = async (constructionId: number) => {
+    try {
+      const { data } = await api.get(
+        `/reports_construction/${constructionId}/checklist/`
+      );
+      const checklistData = {
+        entregue: data.entregue,
+        entregue_porcentagem: data.entregue_porcentagem,
+        finalizado: data.finalizado,
+        finalizado_porcentagem: data.finalizado_porcentagem,
+        iniciado: data.iniciado,
+        iniciado_porcentagem: data.iniciado_porcentagem,
+        liberado: data.liberado,
+        liberado_porcentagem: data.liberado_porcentagem,
+        nao_liberado: data.nao_liberado,
+        nao_liberado_porcentagem: data.nao_liberado_porcentagem,
+        total: data.total,
+      };
+      setDashboardChecklist(checklistData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [dashboardExecution, setDashboardExecution] = useState<Execution>([]);
+  const getDashboardExecution = async (constructionId: number) => {
+    try {
+      const { data } = await api.get(
+        `/reports_construction/${constructionId}/execution/`
+      );
+      setDashboardExecution(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [listInteractions, setListInteractions] = useState<Interaction[]>([]);
+  const getInteractions = async (constructionId: number) => {
+    try {
+      const { data } = await api.get(
+        `/reports_construction/${constructionId}/interaction/`
+      );
+
+      setListInteractions(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [variableLevels, setVariableLevels] = useState<string[]>([]);
+  // function checkLevels<T>(...arrays: T[][]): T[] {
+  //   return Array.from(new Set(arrays.flat()));
+  // }
+
+  // const variableColumns: MRT_ColumnDef<any>[] = variableLevels.map(
+  //   (item, index) => ({
+  //     accessorKey: item,
+  //     header: `Nível ${variableLevels.length - index}`,
+  //     size: 200,
+  //   })
+  // );
+
+  const [dashboardGeneralData, setDashboardGeneralData] =
+    useState<GeneralDataTable>([]);
+  const getDashboardGeneralData = async (constructionId: number) => {
+    try {
+      const { data } = await api.get(
+        `/reports_construction/${constructionId}/general_data/`
+      );
+
+      const generalData = data.map((item: any) => {
+        const test = {
+          id: item.id,
+          construction: item.construction || "",
+          area: item.area || "",
+          checklist: item.checklist || "",
+          package: item.package || "",
+          levels: item.levels,
+          levels_construction: item.levels_construction,
+          measurement: item.measurement || "",
+          team: item.team || "",
+          released_typed: item.released.released_typed || "",
+          released_system: item.released.released_system || "",
+          released_user: item.released.responsible || "",
+          started_system: item.started_system || "",
+          started_typed: item.started_typed || "",
+          finished_typed: item.finished_typed || "",
+          delivered_typed: item.delivered_typed || "",
+          link: item.link || "",
+        };
+
+        const flattenedObject: FlattenedObject = {
+          ...test,
+        };
+
+        Object.keys(test.levels).forEach((key) => {
+          const newKey = key.split(" ")[0];
+          flattenedObject[newKey] = test.levels[key];
+        });
+
+        delete flattenedObject.levels;
+
+        return flattenedObject;
+      });
+
+      setDashboardGeneralData(generalData);
+
+      const levelsList = data[0].levels_construction.map(
+        (key: any) => key.split(" ")[0]
+      );
+
+      setVariableLevels(levelsList || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [dashboardConstructionUpdate, setDashboardConstructionUpdate] =
+    useState<ConstructionUpdate>([]);
+  const getDashboardConstructionUpdate = async (constructionId: number) => {
+    try {
+      const { data } = await api.get(
+        `/reports_construction/${constructionId}/work_update/`
+      );
+      const constructionUpdateList = data.map((item: any) => ({
+        id: item.id,
+        area: item.area,
+        checklist: item.checklist,
+        responsible: item.responsible,
+        status: item.status,
+        team: item.team || "Sem Equipe",
+        time: item.time,
+      }));
+      setDashboardConstructionUpdate(constructionUpdateList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getInteractions(selectedConstruction.id);
+    getDashboardChecklist(selectedConstruction.id);
+    getDashboardExecution(selectedConstruction.id);
+    getDashboardGeneralData(selectedConstruction.id);
+    getDashboardConstructionUpdate(selectedConstruction.id);
+  }, [selectedConstruction]);
+
   return (
     <DashboardContext.Provider
       value={{
@@ -99,6 +358,12 @@ const DashboardContextProvider = ({
         getAllConstructions,
         listPackages,
         getAllPackages,
+        dashboardChecklist,
+        dashboardExecution,
+        dashboardGeneralData,
+        dashboardConstructionUpdate,
+        variableLevels,
+        listInteractions,
       }}
     >
       {children}

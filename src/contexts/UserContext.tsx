@@ -3,6 +3,7 @@ import {
   Dispatch,
   ReactNode,
   SetStateAction,
+  useEffect,
   useState,
 } from "react";
 
@@ -77,6 +78,10 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
     };
   };
   const [user, setUser] = useState<User>(loadUser());
+
+  useEffect(() => {
+    loadUser();
+  }, []);
 
   const loadStorage = () => {
     const storageIsAuthenticated = localStorage.getItem(KEY_SIGNED);

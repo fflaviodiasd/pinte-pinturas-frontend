@@ -1,28 +1,59 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { Button, Grid, Typography } from "@mui/material";
 import { Formik, Form as FormikForm } from "formik";
+
+import { useNewConstructions } from "../../../hooks/useNewConstruction";
+import { ConstructionRegister } from "../../../types";
+
+import { BackgroundAvatar } from "../../../components/BackgroundAvatar";
+import { Breadcrumb } from "../../../components/Breadcrumb";
+import { Loading } from "../../../components/Loading";
+import { Tab } from "../../../components/Tab";
+
+import { MeasurementsConstructions } from "../MeasurementsConstructions";
+import { SupervisorConstructions } from "../SupervisorConstructions";
+import { ServicesConstructions } from "../ServicesConstructions";
+import { PackageConstructions } from "../PackageConstructions";
+import { CustomerSupervisor } from "../CustomerSupervisor";
+import { ListConstructionsMaterials } from "../Materials";
+import { ListLocal } from "../Local";
+import { Teams } from "../Teams";
+
+import { GeneralMeasurements } from "../GeneralMeasurements";
+import { GeneralProduction } from "../GeneralProduction";
+import { GeneralData } from "../GeneralData";
 
 import { GeneralDataForm } from "./components/GeneralDataForm";
 import { AddressForm } from "./components/AddressForm";
 
 import { TabsContainer, useStyles } from "./styles";
-import { useConstructions } from "../../../hooks/useConstructions";
-import { useCompanies } from "../../../hooks/useCompanies";
-import { Company } from "../../../types";
-import { Breadcrumb } from "../../../components/Breadcrumb";
-import { Loading } from "../../../components/Loading";
-import { Tab } from "../../../components/Tab";
+
+type HandleChange = {
+  (e: React.ChangeEvent<any>): void;
+  <T = string | React.ChangeEvent<any>>(
+    field: T
+  ): T extends React.ChangeEvent<any>
+    ? void
+    : (e: string | React.ChangeEvent<any>) => void;
+};
 
 export const RegisterConstruction = () => {
-  const { id: clientId } = useParams();
-  const isEditScreen = clientId;
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { id: constructionId } = useParams();
+  const isEditScreen = constructionId;
   const { classes } = useStyles();
-  const { constructData, getAllCompanyCustomers } = useCompanies();
-  const { addCompaniesConstruction, loading } = useConstructions();
-  const [selectedClientId, setSelectedClientId] = useState(""); // Estado para guardar o ID do cliente selecionado
+
+  const {
+    loading,
+    getConstruction,
+    addConstruction,
+    updateConstruction,
+    constructionRegister,
+  } = useNewConstructions();
 
   const [selectedTab, setSelectedTab] = useState(1);
 
@@ -30,22 +61,83 @@ export const RegisterConstruction = () => {
     setSelectedTab(index);
   };
 
-  const handleSubmit = async (values: Company) => {
-    const valuesToSend = {
-      ...values,
-      customer: selectedClientId,
-    };
-    addCompaniesConstruction(valuesToSend);
+  const handleSubmit = async (values: ConstructionRegister) => {
+    if (isEditScreen) {
+      updateConstruction(values);
+    } else {
+      addConstruction(values);
+    }
   };
 
   useEffect(() => {
-    getAllCompanyCustomers();
-  }, []);
+    if (constructionId) {
+      getConstruction(constructionId);
+    }
+  }, [constructionId]);
+
+  const isCreation =
+    location.pathname.includes("cadastrar/dados-gerais") ||
+    location.pathname.includes("cadastrar/endereco");
+
+  const displayContent = (
+    values: ConstructionRegister,
+    handleChange: HandleChange
+  ) => {
+    if (isCreation) {
+      switch (true) {
+        case location.pathname.includes("cadastrar/dados-gerais"):
+          return (
+            <GeneralDataForm values={values} handleChange={handleChange} />
+          );
+        case location.pathname.includes("cadastrar/endereco"):
+          return <AddressForm values={values} handleChange={handleChange} />;
+      }
+    } else {
+      switch (true) {
+        case location.pathname.includes("locais"):
+          return <ListLocal />;
+        case location.pathname.includes("dados-gerais"):
+          return (
+            <GeneralDataForm values={values} handleChange={handleChange} />
+          );
+        case location.pathname.includes("endereco"):
+          return <AddressForm values={values} handleChange={handleChange} />;
+        case location.pathname.includes("cadastrar/dados-gerais"):
+          return (
+            <GeneralDataForm values={values} handleChange={handleChange} />
+          );
+        case location.pathname.includes("cadastrar/endereco"):
+          return <AddressForm values={values} handleChange={handleChange} />;
+        case location.pathname.includes("supervisores"):
+          return <SupervisorConstructions />;
+        case location.pathname.includes("encarregados-cliente"):
+          return <CustomerSupervisor />;
+        case location.pathname.includes("materiais"):
+          return <ListConstructionsMaterials />;
+        case location.pathname.includes("equipes"):
+          return <Teams />;
+        case location.pathname.includes("servicos"):
+          return <ServicesConstructions />;
+        case location.pathname.includes("pacotes"):
+          return <PackageConstructions />;
+        case location.pathname.includes("medicoes"):
+          return <MeasurementsConstructions />;
+        case location.pathname.includes("conferencia-gerais-sistema"):
+          return <GeneralData />;
+        case location.pathname.includes("conferencia-dados-sistema"):
+          return <GeneralMeasurements />;
+        case location.pathname.includes("conferencia-producao-sistema"):
+          return <GeneralProduction />;
+      }
+    }
+  };
 
   return (
     <Formik
       enableReinitialize
-      initialValues={constructData}
+      initialValues={
+        isEditScreen ? constructionRegister : constructionFormValues
+      }
       onSubmit={(values) => {
         handleSubmit(values);
       }}
@@ -75,55 +167,67 @@ export const RegisterConstruction = () => {
               </div>
 
               <div className={classes.titleContainer}>
-                {/* {values.tradingName ? (
+                {values.fantasy_name ? (
                   <div className={classes.nameContainer}>
-                    {values.tradingName && (
-                      <BackgroundAvatar avatarName={values.tradingName} />
+                    {values.fantasy_name && (
+                      <BackgroundAvatar avatarName={values.fantasy_name} />
                     )}
                     <Typography className={classes.nameText}>
-                      {values.tradingName}
+                      {values.fantasy_name}
                     </Typography>
                   </div>
-                ) : ( */}
-                <Typography className={classes.title}>Nova Obra</Typography>
-                {/* )} */}
+                ) : (
+                  <Typography className={classes.title}>Nova Obra</Typography>
+                )}
 
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  className={classes.buttonSave}
-                >
-                  {isEditScreen ? "Salvar" : "Cadastrar"}
-                </Button>
+                {selectedTab === 2 || selectedTab === 3 ? (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    className={classes.buttonSave}
+                  >
+                    {isEditScreen ? "Salvar" : "Cadastrar"}
+                  </Button>
+                ) : null}
               </div>
             </Grid>
 
             <Grid item sm={12} md={12} lg={12}>
               <TabsContainer>
-                <Tab
-                  text="Dados Gerais"
-                  isActive={selectedTab === 1}
-                  onClick={() => handleSelectTab(1)}
-                />
-                <Tab
-                  text="Endereço"
-                  isActive={selectedTab === 2}
-                  onClick={() => handleSelectTab(2)}
-                />
+                {isCreation ? (
+                  <>
+                    <Tab
+                      text="Dados Gerais"
+                      isActive={location.pathname.includes(
+                        "cadastrar/dados-gerais"
+                      )}
+                      onClick={() => navigate("/obras/cadastrar/dados-gerais")}
+                    />
+                    <Tab
+                      text="Endereço"
+                      isActive={location.pathname.includes(
+                        "cadastrar/endereco"
+                      )}
+                      onClick={() => navigate("/obras/cadastrar/endereco")}
+                    />
+                  </>
+                ) : (
+                  list.map((tab) => (
+                    <Tab
+                      key={tab.text}
+                      text={tab.text}
+                      isActive={location.pathname.includes(tab.path)}
+                      onClick={() =>
+                        navigate(`/obras/${constructionId}/${tab.path}`)
+                      }
+                    />
+                  ))
+                )}
               </TabsContainer>
             </Grid>
 
-            {selectedTab === 1 && (
-              <GeneralDataForm
-                values={values}
-                handleChange={handleChange}
-                setSelectedClientId={setSelectedClientId}
-              />
-            )}
-            {selectedTab === 2 && (
-              <AddressForm values={values} handleChange={handleChange} />
-            )}
+            {displayContent(values, handleChange)}
 
             <Loading isLoading={loading} />
           </Grid>
@@ -132,3 +236,41 @@ export const RegisterConstruction = () => {
     </Formik>
   );
 };
+
+const constructionFormValues = {
+  id: 0,
+  fantasy_name: "",
+  customer: "",
+  phone: "",
+  corporate_name: "",
+  cnpj: "",
+  cno: "",
+  email: "",
+  municipal_registration: "",
+  state_registration: "",
+  active: true,
+
+  cep: "",
+  state: "",
+  county: "",
+  neighborhood: "",
+  public_place: "",
+  complement: "",
+  number: "",
+};
+
+const list = [
+  { text: "Locais", path: "locais" },
+  { text: "Dados Gerais", path: "dados-gerais" },
+  { text: "Endereço", path: "endereco" },
+  { text: "Encarregados", path: "supervisores" },
+  { text: "Encarregados do Cliente", path: "encarregados-cliente" },
+  { text: "Materiais", path: "materiais" },
+  { text: "Equipes", path: "equipes" },
+  { text: "Serviços", path: "servicos" },
+  { text: "Pacotes", path: "pacotes" },
+  { text: "Medições", path: "medicoes" },
+  { text: "Dados Gerais do Sistema", path: "conferencia-gerais-sistema" },
+  { text: "Medições do Sistema", path: "conferencia-dados-sistema" },
+  { text: "Produção do Sistema", path: "conferencia-producao-sistema" },
+];

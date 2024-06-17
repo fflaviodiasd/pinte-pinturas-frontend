@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 
 import { AppLayout } from "../components/AppLayout";
@@ -12,15 +13,14 @@ import { ListCollaborators } from "../screens/Collaborators/ListCollaborators";
 
 import { ListMaterials } from "../screens/Materials/ListMaterials";
 
-import { Constructions } from "../screens/Constructions";
+import { RegisterConstruction } from "../screens/Constructions/RegisterConstruction/";
 import { ListConstructions } from "../screens/Constructions/ListConstructions";
-// import { FormConstructionsMultiStep } from "../screens/Constructions/FormConstructionsMultiStep";
+
 import { Indicators } from "../screens/Constructions/Indicators";
 import { Measurements } from "../screens/Measurements";
 
 import { Settings } from "../screens/Settings";
 import { Dashboard } from "../screens/Dashboard";
-import { RegisterConstruction } from "../screens/Constructions/RegisterConstruction";
 
 export const AppRoutes = () => {
   return (
@@ -40,38 +40,61 @@ export const AppRoutes = () => {
             element={<ListCollaborators />}
           />
 
-          <Route path="/obras/cadastrar" element={<RegisterConstruction />} />
-          {/* <Route
-            path="/obras/cadastrar"
-            element={<FormConstructionsMultiStep />}
-          /> */}
+          <Route
+            path="/obras/cadastrar/dados-gerais"
+            element={<RegisterConstruction />}
+          />
+          <Route
+            path="/obras/cadastrar/endereco"
+            element={<RegisterConstruction />}
+          />
 
-          <Route path="/obras/funcionarios" element={<Indicators />} />
-
-          <Route path="/obras/listagem" element={<ListConstructions />} />
-          <Route path="/obras/:id/materiais" element={<Constructions />} />
-          <Route path="/obras/:id/equipes" element={<Constructions />} />
-          <Route path="/obras/:id/locais" element={<Constructions />} />
-          <Route path="/obras/:id/servicos" element={<Constructions />} />
-          <Route path="/obras/:id/pacotes" element={<Constructions />} />
-          <Route path="/obras/:id/medicoes" element={<Constructions />} />
-          <Route path="/obras/:id/supervisores" element={<Constructions />} />
+          <Route path="/obras/:id/locais" element={<RegisterConstruction />} />
+          <Route
+            path="/obras/:id/dados-gerais"
+            element={<RegisterConstruction />}
+          />
+          <Route
+            path="/obras/:id/endereco"
+            element={<RegisterConstruction />}
+          />
+          <Route
+            path="/obras/:id/supervisores"
+            element={<RegisterConstruction />}
+          />
           <Route
             path="/obras/:id/encarregados-cliente"
-            element={<Constructions />}
+            element={<RegisterConstruction />}
+          />
+          <Route
+            path="/obras/:id/materiais"
+            element={<RegisterConstruction />}
+          />
+          <Route path="/obras/:id/equipes" element={<RegisterConstruction />} />
+          <Route
+            path="/obras/:id/servicos"
+            element={<RegisterConstruction />}
+          />
+          <Route path="/obras/:id/pacotes" element={<RegisterConstruction />} />
+          <Route
+            path="/obras/:id/medicoes"
+            element={<RegisterConstruction />}
           />
           <Route
             path="/obras/:id/conferencia-gerais-sistema"
-            element={<Constructions />}
+            element={<RegisterConstruction />}
           />
           <Route
             path="/obras/:id/conferencia-dados-sistema"
-            element={<Constructions />}
+            element={<RegisterConstruction />}
           />
           <Route
             path="/obras/:id/conferencia-producao-sistema"
-            element={<Constructions />}
+            element={<RegisterConstruction />}
           />
+
+          <Route path="/obras/funcionarios" element={<Indicators />} />
+          <Route path="/obras/listagem" element={<ListConstructions />} />
 
           <Route path="/materiais" element={<ListMaterials />} />
 
@@ -81,7 +104,7 @@ export const AppRoutes = () => {
 
           <Route path="/configuracoes" element={<Settings />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
+          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
           <Route path="/dashboard/acompanhamento" element={<Dashboard />} />
           <Route path="/dashboard/dados-gerais" element={<Dashboard />} />
 

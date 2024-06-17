@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-useless-catch */
 
-import { useContext, useEffect, useCallback, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { errorMessage, successMessage } from "../components/Messages";
-import { api } from "../services/api";
-import { Construction } from "../types";
-import { UserContext } from "../contexts/UserContext";
 import { MRT_ColumnDef } from "material-react-table";
-import { LevelComponent } from "../components/Level";
+
+import { UserContext } from "../contexts/UserContext";
+
+import { Construction, ConstructionData, ConstructionRegister } from "../types";
+import { api } from "../services/api";
+
+import { errorMessage, successMessage } from "../components/Messages";
 
 type ConstructionPackage = {
   id: number;
@@ -26,22 +28,22 @@ type ConstructionService = {
   package_workmanship: string;
 };
 
-type ConstructionData = {
-  id: number;
-  name: string;
-  responsible: string;
-  status: string;
-  percentageCompleted: number;
-  type: string;
-  areas: string[];
-  teamName: string;
-  corporateName: string;
-  team: string;
-  measurement: string;
-  package: string;
-  number: string;
-  checklistName: string;
-};
+// type ConstructionData = {
+//   id: number;
+//   name: string;
+//   responsible: string;
+//   status: string;
+//   percentageCompleted: number;
+//   type: string;
+//   areas: string[];
+//   teamName: string;
+//   corporate_name: string;
+//   team: string;
+//   measurement: string;
+//   package: string;
+//   number: string;
+//   checklistName: string;
+// };
 
 interface Supervisor {
   id: number;
@@ -63,35 +65,34 @@ export const useConstructions = () => {
     type: "",
     areas: [],
     teamName: "",
-    corporateName: "",
+    corporate_name: "",
     team: "",
     measurement: "",
     package: "",
     number: "",
     checklistName: "",
+    customer: "",
+    deleted: false,
+
+    fantasy_name: "",
+    cnpj: "",
+    public_place: "",
+
+    neighborhood: "",
+    city: "",
+    cep: "",
+    complement: "",
+    state: "",
+    phone: "",
+    cno: "",
+    email: "",
+    municipal_registration: "",
+    state_registration: "",
+    active: true,
   });
 
   const [constructInfoData, setConstructInfoData] = useState<any>({});
   const [companiesSupervisorList, setCompaniesSupervisor] = useState<any>([]);
-
-  const getConstruction = async (id: string) => {
-    setLoading(true);
-    try {
-      const { data } = await api.get(`constructions/${id}`);
-      setConstructionData({
-        ...constructionData,
-        id: data.id,
-        name: data.name,
-        corporateName: data.corporate_name,
-      });
-      // console.log('constructInfoDataAPI', data)
-      setConstructInfoData(data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
 
   // const getCompaniesSupervisorList = async () => {
   //   setLoading(true);
@@ -226,25 +227,6 @@ export const useConstructions = () => {
     }
   };
 
-  const addCompaniesConstruction = async (constructionData: any) => {
-    setLoading(true);
-    console.log("constructionData:", constructionData);
-    console.log("userInfo", user);
-    try {
-      await api.post(
-        `companies/${user.company}/constructions/`,
-        constructionData
-      );
-      successMessage("Obra adicionada com sucesso!");
-      setLoading(false);
-      navigate("/obras");
-    } catch (error) {
-      console.log(error);
-      errorMessage("Não foi possível adicionar obra!");
-      setLoading(false);
-    }
-  };
-
   const addConstructionTeam = async (constructionData: any) => {
     setLoading(true);
     try {
@@ -319,20 +301,6 @@ export const useConstructions = () => {
     } catch (error) {
       console.log(error);
       errorMessage("Não foi possível atualizar checklist!");
-      setLoading(false);
-    }
-  };
-
-  const updateConstruction = async (constructionData: any) => {
-    setLoading(true);
-    try {
-      await api.patch(`constructions/${id}/`, { name: constructionData.name });
-      successMessage("Obra atualizada com sucesso!");
-      setLoading(false);
-      navigate("/obras");
-    } catch (error) {
-      console.log(error);
-      errorMessage("Não foi possível atualizar obra!");
       setLoading(false);
     }
   };
@@ -415,51 +383,51 @@ export const useConstructions = () => {
     }
   };
 
-  const [listConstructionsTeams, setListConstructionsTeams] = useState<any[]>(
-    []
-  );
+  // const [listConstructionsTeams, setListConstructionsTeams] = useState<any[]>(
+  //   []
+  // );
 
-  const getAllConstructionsTeams = async () => {
-    setLoading(true);
-    try {
-      const { data } = await api.get(`constructions/${id}/teams`);
-      const constructionTeamsList = data.map((result: any) => ({
-        id: result.id,
-        active: result.active,
-        teams: result.name,
-        collaborators: result.member_count,
-      }));
-      console.log(data);
-      setListConstructionsTeams(constructionTeamsList);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
+  // const getAllConstructionsTeams = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const { data } = await api.get(`constructions/${id}/teams`);
+  //     const constructionTeamsList = data.map((result: any) => ({
+  //       id: result.id,
+  //       active: result.active,
+  //       teams: result.name,
+  //       collaborators: result.member_count,
+  //     }));
+  //     console.log(data);
+  //     setListConstructionsTeams(constructionTeamsList);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //     setLoading(false);
+  //   }
+  // };
 
-  const [listConstructionsTeamMembers, setListConstructionsTeamMembers] =
-    useState<any[]>([]);
-  const getAllConstructionsTeamMembers = async (teamId: any) => {
-    setLoading(true);
-    try {
-      const { data } = await api.get(`teams/${teamId}`);
-      const constructionTeamMembersList = data.members.map((result: any) => ({
-        id: result.id,
-        active: result.active,
-        avatar: result.avatar,
-        name: result.name,
-        role: result.office,
-        profile: result.profile,
-        cellPhone: result.cell_phone,
-      }));
-      setListConstructionsTeamMembers(constructionTeamMembersList);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
+  // const [listConstructionsTeamMembers, setListConstructionsTeamMembers] =
+  //   useState<any[]>([]);
+  // const getAllConstructionsTeamMembers = async (teamId: any) => {
+  //   setLoading(true);
+  //   try {
+  //     const { data } = await api.get(`teams/${teamId}`);
+  //     const constructionTeamMembersList = data.members.map((result: any) => ({
+  //       id: result.id,
+  //       active: result.active,
+  //       avatar: result.avatar,
+  //       name: result.name,
+  //       role: result.office,
+  //       profile: result.profile,
+  //       cellPhone: result.cell_phone,
+  //     }));
+  //     // setListConstructionsTeamMembers(constructionTeamMembersList);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //     setLoading(false);
+  //   }
+  // };
 
   const getAllConstructionsLocations = async (
     dynamicColumns: MRT_ColumnDef<any>[]
@@ -509,7 +477,7 @@ export const useConstructions = () => {
   type ConstructionItem = {
     id: number;
     active: boolean;
-    corporateName: string;
+    corporate_name: string;
     customer: string;
     supervisor: string;
     execution: number;
@@ -528,12 +496,13 @@ export const useConstructions = () => {
         (construction: any) => ({
           id: construction.id,
           active: construction.active,
-          corporateName: construction.corporate_name,
+          corporate_name: construction.corporate_name,
           customer: construction.customer.name || "",
           supervisor: construction.supervisor.name || "",
           execution: construction.execution,
         })
       );
+      console.log("ahahaa", constructionList);
       setListConstructions(constructionList);
       setLoading(false);
     } catch (error) {
@@ -890,6 +859,127 @@ export const useConstructions = () => {
     setLoading(false);
   };
 
+  // Dados da Construção
+  const [constructionRegister, setConstructionRegister] =
+    useState<ConstructionRegister>({
+      id: 0,
+      fantasy_name: "",
+      customer: "",
+      phone: "",
+      corporate_name: "",
+      cnpj: "",
+      cno: "",
+      email: "",
+      municipal_registration: "",
+      state_registration: "",
+      active: true,
+
+      cep: "",
+      state: "",
+      county: "",
+      neighborhood: "",
+      public_place: "",
+      complement: "",
+      number: "",
+    });
+
+  const getConstruction = async (id: string) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(`constructions/${id}`);
+      setConstructionRegister({
+        id: data.id,
+        corporate_name: data.corporate_name,
+        fantasy_name: data.fantasy_name,
+        customer: data.customer.id,
+        phone: data.phone,
+        cnpj: data.cnpj,
+        cno: data.cno,
+        email: data.email,
+        municipal_registration: data.municipal_registration,
+        state_registration: data.state_registration,
+        active: data.active,
+
+        cep: data.cep,
+        state: data.state,
+        county: data.county,
+        neighborhood: data.neighborhood,
+        public_place: data.public_place,
+        complement: data.complement,
+        number: data.number,
+      });
+      setConstructInfoData(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addCompaniesConstruction = async (
+    constructionData: ConstructionRegister
+  ) => {
+    setLoading(true);
+    console.log("constructionData para backend", constructionData);
+    // console.log("userInfo", user);
+    try {
+      await api.post(
+        `companies/${user.company}/constructions/`,
+        constructionData
+      );
+      successMessage("Obra adicionada com sucesso!");
+      navigate("/obras");
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível adicionar obra!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateConstruction = async (constructionData: ConstructionRegister) => {
+    setLoading(true);
+    console.log("getConstruction", constructionData.public_place);
+    try {
+      await api.patch(`constructions/${id}/`, constructionData);
+      successMessage("Obra atualizada com sucesso!");
+      navigate("/obras/listagem");
+    } catch (error) {
+      console.log(error);
+      errorMessage("Não foi possível atualizar obra!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Clientes de uma empresa
+  type CompanyClientItem = {
+    id: number;
+    name: string;
+  };
+
+  const [listCompanyClients, setListCompanyClients] = useState<
+    CompanyClientItem[]
+  >([]);
+
+  const getAllCompanyClients = async () => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(
+        `/companies/${user.company}/select_customer/`
+      );
+      const companyClients = data.map((result: any) => ({
+        id: result.id,
+        name: result.name,
+      }));
+      setListCompanyClients(companyClients);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     setLoading,
@@ -944,5 +1034,9 @@ export const useConstructions = () => {
     disableConstructionMeasurements,
     addConstructionMeasurements,
     setListConstructionsLocations,
+
+    listCompanyClients,
+    getAllCompanyClients,
+    constructionRegister,
   };
 };

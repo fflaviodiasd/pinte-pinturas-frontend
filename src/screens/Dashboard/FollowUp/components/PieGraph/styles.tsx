@@ -53,7 +53,7 @@ export const useStyles = makeStyles()(() => {
       display: "flex",
       flexDirection: "column",
       justifyContent: "space-evenly",
-      marginLeft: 24,
+      marginLeft: 18,
     },
     label: {
       display: "flex",
