@@ -494,6 +494,7 @@ export const useConstructions = () => {
           code: result.code,
           checklist: result.checklist_count,
           ids: levelNamesWithId,
+          lastLevelIsBlank: result.last_level_is_blank,
           ...levelNames,
         };
       });
