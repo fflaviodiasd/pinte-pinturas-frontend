@@ -7,7 +7,14 @@ import {
   useMaterialReactTable,
   MRT_Cell,
 } from "material-react-table";
-import { Box, Button, Checkbox, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Chip,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useConstructions } from "../../../hooks/useConstructions";
@@ -475,8 +482,18 @@ const Locations = () => {
         transition: "transform 0.2s",
       },
     }),
-    renderDetailPanel: ({ row }) =>
-      row.original ? <ChecklistComponent localId={row.original.id} /> : null,
+    renderDetailPanel: ({ row }) => {
+      const shouldRenderChecklist =
+        row.original && !row.original.lastLevelIsBlank;
+
+      return (
+        <div>
+          {shouldRenderChecklist && (
+            <ChecklistComponent localId={row.original.id} />
+          )}
+        </div>
+      );
+    },
     getRowId: (row) => row.id,
     onCreatingRowCancel: () => setValidationErrors({}),
     // onCreatingRowSave: handleCreateLocal,
