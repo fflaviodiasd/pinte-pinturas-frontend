@@ -5,7 +5,26 @@ import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../services/api";
 import { UserContext } from "../contexts/UserContext";
-
+interface ReportNotation {
+  general: {
+    ranking: number;
+    total_checklist: number;
+    total_packages: number;
+    total_price_company: string;
+    total_price_employee: string;
+    teammates: string[];
+  };
+  details: {
+    service_name: string;
+    stpe_service_name: string;
+    amount_execution: number;
+    amount_media: number;
+    price_unit: string;
+    total_step: string;
+    production_value: string;
+    total_production_value: string;
+  }[];
+}
 export const useConference = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -20,6 +39,26 @@ export const useConference = () => {
   const [listReportsWithMeasurements, setListReportsWithMeasurements] = useState<any[]>([]);
   const [listReportsWithEmployees, setListReportsWithEmployees] = useState<any[]>([]);
     const [listGeneralReports, setListGeneralReports] = useState<any[]>([]); 
+    const [listReportsWithTeams, setListReportsWithTeams] = useState<any[]>([]);
+    const [listReportsNotation, setListReportsNotation] = useState<ReportNotation>();
+
+
+
+    const getReportsNotation = async (disjunction: string = "service", employeeId: string) => {
+   
+      try {
+        const { data } = await api.get(`/reports_notation/${employeeId}/general/?disjunction=${disjunction}`);
+        console.log("Reports Notation data:", data);
+        setListReportsNotation(data);
+        setLoading(false);
+        return data;
+      } catch (error) {
+        console.error("Erro ao obter relatórios de notação:", error);
+        setLoading(false);
+        return [];
+      }
+    };
+
     const getConferenceData = async (measurementId: string, disjunction: string) => {
 
     if (!id) {
@@ -75,7 +114,7 @@ export const useConference = () => {
     }
   };
 
-  const fetchTeams = async (measurementId: string, employeeId: number) => {
+  const fetchTeams = async (measurementId: number, employeeId: number) => {
     if (!id) {
       console.error("ID da construção não foi fornecido");
       return;
@@ -137,7 +176,7 @@ export const useConference = () => {
     }
   };
 
-  const getReportsWithEmployee = async (employeeId: number) => {
+  const getReportsWithEmployee = async (measurementId: number, employeeId: number) => {
     if (!id) {
       console.error("ID da construção não foi fornecido");
       return [];
@@ -145,7 +184,7 @@ export const useConference = () => {
 
     setLoading(true);
     try {
-      const { data } = await api.get(`/reports_conference/${id}/production/?employee=${employeeId}`);
+      const { data } = await api.get(`/reports_conference/${id}/production/?measurement=${measurementId}&?employee=${employeeId}`);
       console.log("Reports with Employee data:", data);
       setListReportsWithEmployees(data);
       setLoading(false);
@@ -157,7 +196,7 @@ export const useConference = () => {
     }
   };
 
-  const getReportsWithTeams = async (employeeId: any, teamId: number) => {
+  const getReportsWithTeams = async (measurementId: number, employeeId: any, teamId: number) => {
     if (!id) {
       console.error("ID da construção não foi fornecido");
       return [];
@@ -165,7 +204,7 @@ export const useConference = () => {
 
     setLoading(true);
     try {
-      const { data } = await api.get(`/reports_conference/${id}/production/?employee=${employeeId}&?team=${teamId}`);
+      const { data } = await api.get(`/reports_conference/${id}/production/?measurement=${measurementId}&?employee=${employeeId}&?team=${teamId}`);
       console.log("Reports with Employee data:", data);
       setListReportsWithEmployees(data);
       setLoading(false);
@@ -217,6 +256,8 @@ export const useConference = () => {
     listReportsWithEmployees,
     getGeneralReports, 
     getReportsWithTeams,
-    listGeneralReports
+    listGeneralReports,
+    getReportsNotation,
+    listReportsNotation
   };
 };

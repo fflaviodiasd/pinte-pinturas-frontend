@@ -1,41 +1,31 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Box, Grid, Tooltip, IconButton } from "@mui/material";
-import { Add as AddIcon, Delete } from "@mui/icons-material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
+  type MRT_ColumnDef,
+  type MRT_TableOptions,
   MRT_ToggleDensePaddingButton,
   MRT_ToggleFullScreenButton,
   MRT_ToggleFiltersButton,
   MRT_ShowHideColumnsButton,
-  type MRT_ColumnDef,
-  type MRT_TableOptions,
 } from "material-react-table";
 
+import { Box, Grid, Tooltip, useTheme, Typography, IconButton, MenuItem, Select, TextField } from "@mui/material";
+import { useParams } from "react-router-dom";
 import { useConstructions } from "../../../hooks/useConstructions";
-
+import { Add, Delete } from "@mui/icons-material";
 import { errorMessage, successMessage } from "../../../components/Messages";
-import { EmptyTableText } from "../../../components/Table/EmptyTableText";
-import { SectionTitle } from "../../../components/SectionTitle";
-
-import { ServiceStepTable } from "./ServiceStepsTable";
-
-import { useStyles } from "./styles";
+import {ServiceStepTable} from "./ServiceStepsTable";
 
 interface DropdownOption {
   id: any;
   name: any;
   label: string;
-  value: any;
+  value: any; 
 }
 
 export const PackageConstructions = () => {
-  const { classes } = useStyles();
-  const { id } = useParams();
-  const navigate = useNavigate();
+
   const {
     listConstructionPackages,
     getAllConstructionPackages,
@@ -43,10 +33,13 @@ export const PackageConstructions = () => {
     addConstructionPackage,
     getAllDisciplines,
   } = useConstructions();
+  const theme = useTheme();
 
-  const [disciplineOptions, setDisciplineOptions] = useState<DropdownOption[]>(
-    []
-  );
+  const [disciplineOptions, setDisciplineOptions] = useState<any []>([]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isAddingDiscipline, setIsAddingDiscipline] = useState(false);
+  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
+  const { id } = useParams();
 
   useEffect(() => {
     if (id) {
@@ -54,34 +47,43 @@ export const PackageConstructions = () => {
     }
   }, [id]);
 
-  const fetchDisciplines = async () => {
-    try {
-      const data = await getAllDisciplines();
-      if (data && Array.isArray(data.results)) {
-        const options: DropdownOption[] = data.results.map(
-          (d: { name: any }) => ({
+  useEffect(() => {
+    const fetchDisciplines = async () => {
+      try {
+        const data = await getAllDisciplines();
+        if (data && Array.isArray(data.results)) {
+          const options: DropdownOption[] = data.results.map((d: { name: any; }) => ({
             label: d.name,
             value: d.name,
-          })
-        );
-        setDisciplineOptions(options);
-      } else {
-        console.error("Formato inesperado da resposta:", data);
+          }));
+          setDisciplineOptions(options);
+          console.log('Discipline options fetched:', options);
+        } else {
+          console.error("Formato inesperado da resposta:", data);
+          setDisciplineOptions([]);
+        }
+      } catch (error) {
+        errorMessage("Não foi possível carregar disciplinas!");
         setDisciplineOptions([]);
       }
-    } catch (error) {
-      errorMessage("Não foi possível carregar disciplinas!");
-      setDisciplineOptions([]);
-    }
-  };
-
-  useEffect(() => {
+    };
     fetchDisciplines();
   }, []);
 
-  useEffect(() => {
-    console.log("disciplineOptions atualizado:", disciplineOptions);
-  }, [disciplineOptions]);
+  const handleAddNewDiscipline = (newDiscipline:any) => {
+    const newOption = { label: newDiscipline, value: newDiscipline };
+    setDisciplineOptions([...disciplineOptions, newOption]);
+    setSelectedDiscipline(newOption.value);  // Ensure new option is set correctly
+    setIsAddingDiscipline(false);
+    console.log('New discipline added:', newOption);
+  };
+
+  const handleSelectChange = (e:any) => {
+    const value = e.target.value;
+    setSelectedDiscipline(value);
+    handleAddNewDiscipline(value);
+    console.log('Selected discipline:', value);
+  };
 
   const handleDisable = async (packageId: number) => {
     try {
@@ -93,88 +95,48 @@ export const PackageConstructions = () => {
     }
   };
 
-  // const handleEditPackages: MRT_TableOptions<any>["onEditingRowSave"] = async ({
-  //   exitEditingMode, // Função para sair do modo de edição
-  //   row, // A linha sendo editada
-  //   values, // Os valores editados
-  // }) => {
-  //   console.log('Salvando edição', values);
-  //   // Supondo uma função de atualização async genérica 'updateConstructionPackage'
-  //   // await updateConstructionPackage(row.original.id, values);
-  //   getAllConstructionPackages();
-  //   exitEditingMode(); // Sai do modo de edição após a atualização
-  // };
-
-  const handleEditPackages: MRT_TableOptions<any>["onEditingRowSave"] = async ({
+  const handleEditPackages: MRT_TableOptions<any>['onEditingRowSave'] = async ({
     exitEditingMode,
     row,
     values,
   }) => {
     if (!row?.original?.id) {
-      errorMessage("Não foi possível identificar o pacote para atualização.");
+      errorMessage('Não foi possível identificar o pacote para atualização.');
       return;
     }
 
     try {
-      console.log("Salvando edições para o pacote:", values);
+      console.log('Salvando edições para o pacote:', values);
 
-      // const updatedPackage = await updateConstructionPackage(row.original.id, values);
-
-      // setListConstructionPackages(prevPackages =>
-      //   prevPackages.map(pkg => (pkg.id === row.original.id ? { ...pkg, ...updatedPackage } : pkg))
-      // );
-
-      successMessage("Pacote atualizado com sucesso.");
-      exitEditingMode();
+      successMessage('Pacote atualizado com sucesso.');
+      exitEditingMode(); 
     } catch (error) {
-      errorMessage("Erro ao atualizar o pacote.");
-      console.error("Erro ao salvar as edições:", error);
+      errorMessage('Erro ao atualizar o pacote.');
+      console.error('Erro ao salvar as edições:', error);
     }
   };
 
-  const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] =
-    async ({ values, table }) => {
-      const { "discipline.name": disciplineName, id, ...restOfValues } = values;
+  const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
+    values,
+    table,
+  }) => {
+    const { 'discipline.name': disciplineName, id, ...restOfValues } = values;
 
-      const adjustedValues = {
-        ...restOfValues,
-        discipline: disciplineName,
-      };
-
-      console.log("Adjusted values for API:", adjustedValues);
-
-      await addConstructionPackage(adjustedValues);
-      getAllConstructionPackages();
+    const adjustedValues = {
+      ...restOfValues,
+      discipline: disciplineName, 
     };
 
+    console.log('Adjusted values for API:', adjustedValues);
+
+    await addConstructionPackage(adjustedValues);
+    getAllConstructionPackages();
+    setIsAddingDiscipline(false);
+  };
+
+  const baseBackgroundColor = theme.palette.mode === "dark" ? "#121212" : "#fff";
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
-      // {
-      //   id: "actions",
-      //   header: "",
-      //   columnDefType: "display",
-      //   Cell: ({ cell }) => (
-      //     <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-
-      //       <IconButton
-      //         aria-label="Excluir"
-      //         onClick={() => handleDisable(cell.row.original.id)}
-      //         sx={{ color: "#C5C7C8" }}
-      //       >
-      //         <Delete />
-      //       </IconButton>
-      //       <IconButton
-      //         aria-label="Editar"
-      //         onClick={() => {
-      //           setSelectedPackageConstructionId(cell.row.original.id);
-      //         }}
-      //         sx={{ color: "#C5C7C8" }}
-      //       >
-      //         <Edit />
-      //       </IconButton>
-      //     </div>
-      //   ),
-      // },
       {
         accessorKey: "id",
         enableColumnFilterModes: false,
@@ -187,7 +149,7 @@ export const PackageConstructions = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Ordem",
-        enableEditing: true,
+        enableEditing: true, 
         muiEditTextFieldProps: {
           required: true,
           type: "number",
@@ -198,7 +160,7 @@ export const PackageConstructions = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Nome do Pacote",
-        enableEditing: true,
+        enableEditing: true, 
         muiEditTextFieldProps: {
           required: true,
         },
@@ -206,11 +168,49 @@ export const PackageConstructions = () => {
       {
         accessorKey: "discipline.name",
         header: "Disciplina",
+        required: true,
         enableEditing: true,
-        editVariant: "select",
+        editVariant: isAddingDiscipline ? 'text' : 'select',
         editSelectOptions: disciplineOptions,
-        muiEditSelectFieldProps: {
-          required: true,
+        editSelectValue: selectedDiscipline,
+        editSelectOnChange: handleSelectChange,
+        muiEditTextFieldProps: {
+          onClick: () => {
+            setIsAddingDiscipline(true);
+          },
+          onChange: (e) => {
+            if (e.target.value) {
+              console.log('Text field value:', e.target.value);
+            }
+          },
+          onBlur: (e) => {
+            if (e.target.value) {
+              handleAddNewDiscipline(e.target.value);
+            }
+            setIsAddingDiscipline(false);
+          },
+        },
+        muiEditSelectProps: {
+          renderValue: (value:any) => value,
+          onChange: handleSelectChange,
+          onBlur: (e:any) => {
+            if (e.target.value) {
+              handleAddNewDiscipline(e.target.value);
+            }
+            setIsAddingDiscipline(false);
+          },
+          displayEmpty: true,
+          MenuProps: {
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "left",
+            },
+            transformOrigin: {
+              vertical: "top",
+              horizontal: "left",
+            },
+            getContentAnchorEl: null,
+          },
         },
       },
       {
@@ -234,77 +234,99 @@ export const PackageConstructions = () => {
         header: "M.O/Total",
         enableEditing: false,
       },
-    ],
-    [disciplineOptions]
+    ], [disciplineOptions, isAddingDiscipline, selectedDiscipline]
   );
 
   const table = useMaterialReactTable({
     columns,
     data: listConstructionPackages,
-    editDisplayMode: "row",
-    createDisplayMode: "row",
-    enableEditing: true,
-    enablePagination: false,
-    enableBottomToolbar: false,
+    enableColumnFilterModes: true,
     onCreatingRowSave: handleCreatePackages,
     onEditingRowSave: handleEditPackages,
-    initialState: { showColumnFilters: true },
-    renderEmptyRowsFallback: () => <EmptyTableText />,
-    muiFilterTextFieldProps: (props) => {
-      return {
-        placeholder: `Filtrar por ${props.column.columnDef.header}`,
-      };
+    enableEditing: true,
+    editDisplayMode: 'row',
+    createDisplayMode: 'row',
+    state: {
+      isSaving, 
     },
     renderRowActions: ({ row }) => (
       <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
         <IconButton
           aria-label="Excluir"
           onClick={() => handleDisable(row.original.id)}
-          sx={{ color: "#C5C7C8" }}
+          sx={{ color: "#C5C7C8" }} 
         >
           <Delete />
         </IconButton>
       </div>
     ),
+    initialState: { showColumnFilters: true },
     renderDetailPanel: ({ row }) => (
-      <Box sx={{ padding: "1rem" }}>
+      <Box sx={{ padding: '1rem' }}>
         <ServiceStepTable order={row.original.id} />
       </Box>
     ),
     renderTopToolbar: ({ table }) => (
-      <Grid item lg={12} className={classes.headerTableContainer}>
-        <SectionTitle title="Pacotes Cadastrados" />
-
-        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <MRT_ToggleFiltersButton
-            table={table}
-            className={classes.toolbarButton}
-          />
-          <MRT_ShowHideColumnsButton
-            table={table}
-            className={classes.toolbarButton}
-          />
-          <MRT_ToggleDensePaddingButton
-            table={table}
-            className={classes.toolbarButton}
-          />
-          <MRT_ToggleFullScreenButton
-            table={table}
-            className={classes.toolbarButton}
-          />
-          <Tooltip title="Adicionar pacote">
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', padding: 2 }}>
+        <Box
+          sx={{
+            position: 'relative',
+            '&::after': {
+              content: '""',
+              display: 'block',
+              width: '30%', 
+              height: '3px',
+              backgroundColor: '#1976d2', 
+              position: 'absolute',
+              bottom: 0,
+            }
+          }}
+        >
+          <Typography variant="h5" component="div" gutterBottom>
+            Pacotes Cadastrados
+          </Typography>
+        </Box>
+        <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <MRT_ToggleFiltersButton table={table} sx={{
+            color: '#0076be',
+            border: '1px solid #0076be',
+            borderRadius: '4px', 
+          }} />
+          <MRT_ShowHideColumnsButton table={table} sx={{
+            color: '#0076be',
+            border: '1px solid #0076be',
+            borderRadius: '4px', 
+          }} />
+          <MRT_ToggleDensePaddingButton table={table} sx={{
+            color: '#0076be',
+            border: '1px solid #0076be',
+            borderRadius: '4px', 
+          }} />
+          <MRT_ToggleFullScreenButton table={table} sx={{
+            color: '#0076be',
+            border: '1px solid #0076be',
+            borderRadius: '4px',
+          }} />
+          <Tooltip title="Adicionar Pacote">
             <IconButton
               onClick={() => {
                 table.setCreatingRow(true);
-                console.log("options:", disciplineOptions);
+                console.log('Creating new row with options:', disciplineOptions);
               }}
-              className={classes.toolbarButton}
+              sx={{
+                color: '#0076be',
+                border: '1px solid #0076be',
+                borderRadius: '4px', 
+                "&:hover": { 
+                  backgroundColor: 'rgba(0, 118, 190, 0.04)', 
+                },
+              }}
             >
-              <AddIcon />
+              <Add />
             </IconButton>
           </Tooltip>
-        </div>
-      </Grid>
+        </Box>
+      </Box>
     ),
     filterFns: {
       customFilterFn: (row, id, filterValue) => {
@@ -317,33 +339,26 @@ export const PackageConstructions = () => {
     muiTablePaperProps: {
       elevation: 0,
     },
-    muiTableProps: {
-      style: {
-        paddingLeft: 16,
-        paddingRight: 16,
-      },
-    },
-    muiTableContainerProps: {
-      style: {
-        scrollbarWidth: "thin",
-      },
-    },
     muiTableBodyProps: {
-      sx: {
-        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
-          {
-            backgroundColor: "#FAFAFA",
-          },
-      },
+      sx: (theme) => ({
+        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td': {
+          backgroundColor: "#FAFAFA",
+        },
+      }),
     },
     mrtTheme: (theme) => ({
+      baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
     }),
+    enablePagination: false,
+    enableBottomToolbar: false,
   });
 
   return (
-    <Grid item lg={12} className={classes.container}>
-      <MaterialReactTable table={table} />
+    <Grid container spacing={2}>
+      <Grid item xs={12} lg={12}>
+        <MaterialReactTable table={table} />
+      </Grid>
     </Grid>
   );
 };
