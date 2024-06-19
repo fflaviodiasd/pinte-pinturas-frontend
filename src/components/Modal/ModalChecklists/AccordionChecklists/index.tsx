@@ -2,15 +2,15 @@ import { useState, useEffect } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
-import Chip from "@mui/material/Chip";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { FormChecklists } from "../FormChecklists";
 import { api } from "../../../../services/api";
-import { HistoryInfo } from "../HistoryInfo";
 
 export default function AccordionChecklists({ localId }: any) {
   const [checklistName, setChecklistName] = useState([]);
   const [area, setArea] = useState("");
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,8 +37,23 @@ export default function AccordionChecklists({ localId }: any) {
 
   return (
     <div>
+      <button
+        style={{
+          cursor: "pointer",
+          border: "none",
+          backgroundColor: "#FFFFFF",
+        }}
+        onClick={() => setExpanded(!expanded)}
+      >
+        {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+      </button>
       {checklistName.map((item: any, index) => (
-        <Accordion sx={{marginBottom: "1rem" }} key={item.id}>
+        <Accordion
+          expanded={expanded}
+          onChange={() => setExpanded(!expanded)}
+          sx={{ marginBottom: "1rem" }}
+          key={item.id}
+        >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <div
               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
