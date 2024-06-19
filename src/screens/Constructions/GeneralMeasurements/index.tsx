@@ -267,7 +267,7 @@ export const GeneralMeasurements = () => {
     onCreatingRowSave: handleCreatePackages,
     state: {
       isSaving,
-      grouping: ['service_name', 'step_service_name', 'unit_service', "package_name", ...group],
+      grouping: ['service_name', ...group],
     },
     initialState: { 
       showColumnFilters: true,
