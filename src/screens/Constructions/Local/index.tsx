@@ -255,13 +255,20 @@ const Locations = () => {
         const originalItem = originalArray[originalItemIndex];
 
         for (const key in newItem) {
-          if (key !== "id" && key !== "code") {
+          if (key === "ids") {
+            originalItem[key].forEach((item: any, index) => {
+              originalItem.ids[index].name = newItem.ids[index].name;
+            });
+          }
+
+          if (key !== "id" && key !== "code" && key !== "ids") {
             originalItem[key] = newItem[key];
           }
         }
         copiedIndex = (copiedIndex + 1) % copiedItems.length;
       }
     });
+    console.log(originalArray);
 
     return originalArray;
   }
@@ -379,7 +386,6 @@ const Locations = () => {
           listConstructionsLocations.length - 1
         ].code.slice(-2)
       );
-      console.log(lastItem);
 
       const code = generateNextId(lastItem + i + 1);
       const control = {};
