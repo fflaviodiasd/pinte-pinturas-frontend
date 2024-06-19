@@ -15,7 +15,6 @@ import { useConstructions } from "../../../hooks/useConstructions";
 import { Download } from "@mui/icons-material";
 import Papa from "papaparse";
 import { useConference } from "../../../hooks/useConference"; // Importe seu hook
-import { useConferenceLocal } from "../../../hooks/useConferenceLocal";
 
 interface LocalData {
   package_name: string;
@@ -33,7 +32,6 @@ export const GeneralMeasurements = () => {
   } = useConstructions();
 
   const { getConferenceData, listConferenceData } = useConference(); // Use seu hook
-  const { getConferenceDataLocal, listConferenceDataLocal } = useConferenceLocal(); // Use seu hook
 
   const theme = useTheme();
   const [isSaving, setIsSaving] = useState(false);
@@ -69,12 +67,7 @@ export const GeneralMeasurements = () => {
       getConferenceData(selectedMeasurement, selectedService);
     }
   }, [selectedMeasurement, selectedService]);
-  
-  useEffect(() => {
-    if (selectedMeasurement) {
-      getConferenceDataLocal(selectedMeasurement, "local");
-    }
-  }, [selectedMeasurement]);
+
   
   const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
     values,
@@ -250,7 +243,7 @@ export const GeneralMeasurements = () => {
     ];
   };
   
-  const levels = listConferenceDataLocal.length > 0 && listConferenceDataLocal[0].levels ? Object.keys(listConferenceDataLocal[0].levels) : [];
+  const levels = listConferenceData.length > 0 && listConferenceData[0].levels ? Object.keys(listConferenceData[0].levels) : [];
   const group: string[] = levels.flatMap(level => [
     `levels.${level}`
   ]);
@@ -274,11 +267,11 @@ export const GeneralMeasurements = () => {
     onCreatingRowSave: handleCreatePackages,
     state: {
       isSaving,
+      grouping: ['service_name', 'step_service_name', 'unit_service', "package_name", ...group],
     },
     initialState: { 
       showColumnFilters: true,
       expanded: true,
-      grouping: ['service_name', 'step_service_name', 'unit_service', 'package_name', 'levels.nivel 3', 'levels.nivel 2', 'levels.Nivel Teste'],
     },
     renderTopToolbar: ({ table }) => (
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', padding: 2 }}>
