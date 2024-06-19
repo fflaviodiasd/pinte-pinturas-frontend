@@ -293,6 +293,7 @@ export const GeneralData = () => {
     enableGrouping: true,
     initialState: {
       density: 'compact',
+      grouping: ['checklist_name', 'area_name', 'measurement_name'],
       expanded: true, // Expandir todos os grupos por padrão
       pagination: { pageIndex: 0, pageSize: 20 },
     },
