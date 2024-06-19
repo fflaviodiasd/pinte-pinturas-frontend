@@ -36,7 +36,7 @@ export const ChipCustomLevel = ({
   subtmitData,
   setValueActual,
   onClick,
-  editable = false,
+  editable,
   setEditable,
   post,
   onCreateLevel,
@@ -44,7 +44,6 @@ export const ChipCustomLevel = ({
   setControl,
 }: ChipCustomLevelProps) => {
   const [editingValue, setEditingValue] = useState(value);
-  const [isFocused, setIsFocused] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,20 +90,32 @@ export const ChipCustomLevel = ({
             onClick={onClick}
             bg={"#DEF4FF"}
             post={post}
-            onFocus={() => setIsFocused(true)}
             onBlur={() => {
-              setIsFocused(false);
-              setEditable(false);
+              const time = setTimeout(() => {
+                setEditable(false);
+                clearInterval(time);
+              }, 200);
+              console.log("Perdeu o foco");
             }}
           />
-          {isFocused && (
-            <StyledChipButtonDel onClick={handleChipDeleteLevel}>
-              x
-            </StyledChipButtonDel>
-          )}
+          <StyledChipButtonDel onClick={handleChipDeleteLevel}>
+            x
+          </StyledChipButtonDel>
         </div>
       ) : (
-        <StyledChip tabIndex={0} value={value} bg={bg} />
+        <StyledChip
+          autoFocus
+          type="text"
+          name={name}
+          id={id}
+          value={editingValue}
+          onChange={handleChange}
+          onKeyDown={subtmitData}
+          placeholder={placeholder}
+          onClick={onClick}
+          bg={bg}
+          post={post}
+        />
       )}
       {number && (
         <StyledChipLabelNumber bg={bg}>{number}º</StyledChipLabelNumber>
