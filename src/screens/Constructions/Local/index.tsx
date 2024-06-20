@@ -240,6 +240,10 @@ const Locations = () => {
     setSnackbarOpen(false);
   };
 
+  const handleOpenSnackbar = () => {
+    setSnackbarOpen(true);
+  };
+
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
@@ -611,6 +615,7 @@ const Locations = () => {
         </div>
         <LevelComponent setControl={setControl} />
         <Checkbox
+          onClick={handleOpenSnackbar}
           checked={selectAllChecked}
           onChange={handleSelectAll}
           sx={{ cursor: "pointer", color: "#C5C7C8" }}
