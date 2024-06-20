@@ -20,12 +20,15 @@ export default function SnackbarComponent({
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={snackbarOpen}
         autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
+        //onClose={handleCloseSnackbar}
         message={messagePaste ? `${message} e ${messagePaste}` : message}
         action={
           <>
             {paste ? (
-              <Button onClick={pasteLines}>Colar</Button>
+              <div>
+                <Button onClick={pasteLines}>Colar</Button>
+                <Button onClick={handleCloseSnackbar}>Fechar</Button>
+              </div>
             ) : (
               <>
                 <Button onClick={copyLine}>Copiar</Button>
@@ -37,6 +40,7 @@ export default function SnackbarComponent({
                 >
                   {deleteButton}
                 </Button>
+                <Button onClick={handleCloseSnackbar}>Fechar</Button>
               </>
             )}
           </>
