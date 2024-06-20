@@ -68,6 +68,22 @@ const Locations = () => {
   const [listCheckedPaste, setListCheckedPaste] = useState<any[]>([]);
   const [paste, setPaste] = useState<any>();
 
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+
+  const handleSelectAll = () => {
+    if (selectAllChecked) {
+      setSelectedLocalIds([]);
+      setListChecked([]);
+      setSelectedRows(new Set());
+    } else {
+      const newSelectedIds = listConstructionsLocations.map((item) => item.id);
+      setSelectedLocalIds(newSelectedIds);
+      setListChecked(listConstructionsLocations);
+      setSelectedRows(new Set(newSelectedIds));
+    }
+    setSelectAllChecked(!selectAllChecked);
+  };
+
   type CustomMRT_ColumnDef<T> = MRT_ColumnDef<any> & {
     muiTableBodyCellProps?: (cell: MRT_Cell<any>) => {
       onChange: (e: any) => void;
@@ -222,6 +238,10 @@ const Locations = () => {
     });
     setSelectedLocalIds([]);
     setSnackbarOpen(false);
+  };
+
+  const handleOpenSnackbar = () => {
+    setSnackbarOpen(true);
   };
 
   const handleCloseSnackbar = () => {
@@ -594,6 +614,12 @@ const Locations = () => {
           <StatusPanel />
         </div>
         <LevelComponent setControl={setControl} />
+        <Checkbox
+          onClick={handleOpenSnackbar}
+          checked={selectAllChecked}
+          onChange={handleSelectAll}
+          sx={{ cursor: "pointer", color: "#C5C7C8" }}
+        />
       </div>
     ),
     muiTableBodyRowProps: ({ row }) => {
