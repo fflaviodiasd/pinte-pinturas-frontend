@@ -15,7 +15,13 @@ import {
   ExpandLess,
   ExpandMore,
   Menu,
+  BadgeRounded as EmployeesIcon,
   DashboardRounded as DashboardIcon,
+  InsightsRounded as InsightsIcon,
+  LeaderboardRounded as MeasurementsIcon,
+  ApartmentRounded as ConstructionsIcon,
+  GroupsRounded as ClientsIcon,
+  ConstructionRounded as MaterialsIcon,
 } from "@mui/icons-material";
 
 import { KEY_SIDEBAR } from "../../../utils/consts";
@@ -24,11 +30,11 @@ import { LogoutButton } from "./LogoutButton";
 
 import { Drawer, DrawerHeader } from "./styles";
 
-import ConstructionsIcon from "../../../assets/images/constructions.svg";
-import MeasurementsIcon from "../../../assets/images/measurements.svg";
-import EmployeesIcon from "../../../assets/images/employees.svg";
-import MaterialsIcon from "../../../assets/images/materials.svg";
-import ClientsIcon from "../../../assets/images/clients.svg";
+// import ConstructionsIcon from "../../../assets/images/constructions.svg";
+// import MeasurementsIcon from "../../../assets/images/measurements.svg";
+// import EmployeesIcon from "../../../assets/images/employees.svg";
+// import MaterialsIcon from "../../../assets/images/materials.svg";
+// import ClientsIcon from "../../../assets/images/clients.svg";
 import logoImage from "../../../assets/images/logo.png";
 
 interface NavItem {
@@ -58,6 +64,9 @@ export const Sidebar = () => {
 
   const handleDrawer = () => {
     setOpenSidebar(!openSidebar);
+    setOpenClientsItemMenu(false);
+    setOpenEmployeesItemMenu(false);
+    setOpenConstructionsItemMenu(false);
     localStorage.setItem(KEY_SIDEBAR, String(!openSidebar));
   };
 
@@ -77,7 +86,8 @@ export const Sidebar = () => {
     {
       text: "Clientes",
       path: "clientes",
-      icon: <img src={ClientsIcon} alt="Clientes" />,
+      // icon: <img src={ClientsIcon} alt="Clientes" />,
+      icon: <ClientsIcon />,
       subItems: [
         { text: "• Cadastro", path: "/clientes/cadastrar" },
         { text: "• Listagem", path: "/clientes/listagem" },
@@ -86,7 +96,8 @@ export const Sidebar = () => {
     {
       text: "Funcionários",
       path: "colaboradores",
-      icon: <img src={EmployeesIcon} alt="Funcionários" />,
+      // icon: <img src={EmployeesIcon} alt="Funcionários" />,
+      icon: <EmployeesIcon />,
       subItems: [
         { text: "• Cadastro", path: "/colaboradores/cadastrar" },
         { text: "• Listagem", path: "/colaboradores/listagem" },
@@ -95,28 +106,35 @@ export const Sidebar = () => {
     {
       text: "Obras",
       path: "obras",
-      icon: <img src={ConstructionsIcon} alt="Obras" />,
+      // icon: <img src={ConstructionsIcon} alt="Obras" />,
+      icon: <ConstructionsIcon />,
       subItems: [
-        { text: "• Cadastro", path: "/obras/cadastrar" },
+        { text: "• Cadastro", path: "/obras/cadastrar/dados-gerais" },
         { text: "• Listagem", path: "/obras/listagem" },
         { text: "• Funcionários", path: "/obras/funcionarios" },
-
       ],
     },
     {
       text: "Materiais",
       path: "materiais",
-      icon: <img src={MaterialsIcon} alt="Materiais" />,
+      // icon: <img src={MaterialsIcon} alt="Materiais" />,
+      icon: <MaterialsIcon />,
     },
     {
       text: "Medições",
       path: "medicoes",
-      icon: <img src={MeasurementsIcon} alt="Medições" />,
+      // icon: <img src={MeasurementsIcon} alt="Medições" />,
+      icon: <MeasurementsIcon />,
     },
     {
       text: "Dashboard",
-      path: "dashboard",
+      path: "dashboard/acompanhamento",
       icon: <DashboardIcon />,
+    },
+    {
+      text: "Apontamentos",
+      path: "apontamentos/dados-do-sistema",
+      icon: <InsightsIcon />,
     },
   ];
 
@@ -129,6 +147,12 @@ export const Sidebar = () => {
 
   const verifyPathname = (pathname: string) => {
     if (location.pathname) {
+      const rootPath = pathname.split("/").filter((item) => {
+        if (item) {
+          return item;
+        }
+      })[0];
+
       return location.pathname
         .split("/")
         .filter((item) => {
@@ -136,7 +160,7 @@ export const Sidebar = () => {
             return item;
           }
         })[0]
-        ?.includes(pathname);
+        ?.includes(rootPath);
     }
   };
 

@@ -5,18 +5,22 @@ import {
   TextField,
   FormControlLabel,
   Switch,
-  MenuItem,
+  // MenuItem,
 } from "@mui/material";
 
-import { useCompanies } from "../../../../../hooks/useCompanies";
-import { Company } from "../../../../../types";
+import { useConstructions } from "../../../../../hooks/useConstructions";
+import {
+  // ConstructionData,
+  ConstructionRegister,
+} from "../../../../../types";
 
+import { SelectClientComponent } from "../../../../../components/Select/Client";
 import { InputMask } from "../../../../../components/InputMask";
 
 import { useStyles } from "../styles";
 
 type GeneralDataFormProps = {
-  values: Company;
+  values: ConstructionRegister;
   handleChange: {
     (e: React.ChangeEvent<any>): void;
     <T = string | React.ChangeEvent<any>>(
@@ -25,24 +29,22 @@ type GeneralDataFormProps = {
       ? void
       : (e: string | React.ChangeEvent<any>) => void;
   };
-  setSelectedClientId: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export const GeneralDataForm = ({
   values,
   handleChange,
-  setSelectedClientId,
 }: GeneralDataFormProps) => {
   const { classes } = useStyles();
 
-  const { listCompanyCustomers, getAllCompanyCustomers } = useCompanies();
+  const { listCompanyClients, getAllCompanyClients } = useConstructions();
 
   useEffect(() => {
-    getAllCompanyCustomers();
+    getAllCompanyClients();
   }, []);
 
   return (
-    <Grid container sm={12} md={12} lg={12} className={classes.formContainer}>
+    <Grid container className={classes.formContainer}>
       <Grid item xs={12} lg={5} className={classes.fieldContainer}>
         <TextField
           name="fantasy_name"
@@ -56,25 +58,11 @@ export const GeneralDataForm = ({
         />
       </Grid>
       <Grid item xs={12} lg={5} className={classes.fieldContainer}>
-        <TextField
-          select
+        <SelectClientComponent
           name="customer"
           label="Cliente"
-          variant="outlined"
-          placeholder="Cliente"
-          size="small"
-          fullWidth
-          onChange={(event: any) => {
-            const { value } = event.target;
-            setSelectedClientId(value);
-          }}
-        >
-          {listCompanyCustomers.map((client) => (
-            <MenuItem key={client.id} value={client.id}>
-              {client.name}
-            </MenuItem>
-          ))}
-        </TextField>
+          options={listCompanyClients}
+        />
       </Grid>
 
       <Grid item xs={12} lg={2} className={classes.fieldContainer}>
@@ -101,9 +89,6 @@ export const GeneralDataForm = ({
           size="small"
           fullWidth
           required
-          InputProps={{
-            inputComponent: InputMask as any,
-          }}
         />
       </Grid>
       <Grid item xs={12} lg={3} className={classes.fieldContainer}>

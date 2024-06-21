@@ -53,6 +53,10 @@ export const useStyles = makeStyles()(() => {
       fontFamily: "Open Sans",
       color: "#999",
     },
+    sectionTitleContainer: {
+      paddingTop: 12,
+      paddingLeft: 12,
+    },
   };
 });
 
@@ -73,6 +77,7 @@ export const TableContainer = styled.div`
     font-weight: 600;
     color: #2e3132;
     text-align: left;
+    padding-left: 2px;
   }
 
   td {

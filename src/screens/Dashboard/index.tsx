@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useContext, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Grid, IconButton, Typography } from "@mui/material";
 import { KeyboardArrowDownRounded as ArrowForwardIcon } from "@mui/icons-material/";
@@ -30,15 +30,28 @@ function DashboardComponent() {
   const navigate = useNavigate();
   const { classes } = useStyles();
 
-  const { selectedConstruction } = useContext(DashboardContext);
+  const { selectedConstruction, variableLevels } = useContext(DashboardContext);
+
+  // const displayContent = () => {
+  //   if (location.pathname.includes("acompanhamento")) {
+  //     return <FollowUp />;
+  //   } else if (location.pathname.includes("dados-gerais")) {
+  //     return <GeneralData />;
+  //   } else {
+  //     return <Layout />;
+  //   }
+  // };
+
+  const newFilters = variableLevels.map((level) => ({
+    text: level,
+    filterName: level,
+  }));
 
   const displayContent = () => {
-    if (location.pathname.includes("acompanhamento")) {
-      return <FollowUp />;
-    } else if (location.pathname.includes("dados-gerais")) {
+    if (location.pathname.includes("dados-gerais")) {
       return <GeneralData />;
     } else {
-      return <Layout />;
+      return <FollowUp />;
     }
   };
 
@@ -62,32 +75,49 @@ function DashboardComponent() {
       <Grid item sm={12} md={12} lg={12} className={classes.titleContainer}>
         <Typography className={classes.title}>Dashboard</Typography>
 
-        <div className={classes.constructionFilterContainer}>
-          <Typography
-            className={classes.constructionFilterText}
-            onClick={() => {
-              setSelectedFilter("construction");
-              handleClickOpen();
-            }}
-          >
-            {selectedConstruction.name
-              ? selectedConstruction.name
-              : "Selecionar Obra"}
-          </Typography>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="close"
-            onClick={() => {
-              setSelectedFilter("construction");
-              handleClickOpen();
-            }}
-          >
-            <ArrowForwardIcon
-              className={classes.openFilterButton}
-              fontSize="small"
-            />
-          </IconButton>
+        <div className={classes.headerFilterContainer}>
+          <div className={classes.constructionFilterContainer}>
+            <Typography
+              className={classes.constructionFilterText}
+              onClick={() => {
+                setSelectedFilter("construction");
+                handleClickOpen();
+              }}
+            >
+              {selectedConstruction.name
+                ? selectedConstruction.name
+                : "Selecionar Obra"}
+            </Typography>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="close"
+              onClick={() => {
+                setSelectedFilter("construction");
+                handleClickOpen();
+              }}
+            >
+              <ArrowForwardIcon
+                className={classes.openFilterButton}
+                fontSize="small"
+              />
+            </IconButton>
+          </div>
+          <div className={classes.levelFilterContainer}>
+            {variableLevels.map((level, index) => (
+              <Fragment key={level}>
+                <div className={classes.levelFilterContent}>
+                  <Typography className={classes.levelIndicator}>{`${
+                    variableLevels.length - index
+                  }º`}</Typography>
+                  <Typography className={classes.levelText}>{level}</Typography>
+                </div>
+                {variableLevels.length - 1 !== index ? (
+                  <Typography className={classes.levelSeparator}>|</Typography>
+                ) : null}
+              </Fragment>
+            ))}
+          </div>
         </div>
       </Grid>
       <Grid item sm={12} md={12} lg={12} className={classes.tabContainer}>
@@ -101,14 +131,14 @@ function DashboardComponent() {
             gap: 8,
           }}
         >
-          <Tab
+          {/* <Tab
             text="Layout"
             isActive={
               !shouldBeActive("acompanhamento") &&
               !shouldBeActive("dados-gerais")
             }
             onClick={() => navigate(`/dashboard`)}
-          />
+          /> */}
           <Tab
             text="Acompanhamento"
             isActive={shouldBeActive("acompanhamento")}
@@ -121,7 +151,7 @@ function DashboardComponent() {
           />
         </Grid>
         <Grid item sm={2} md={3} lg={1} />
-        <Grid item sm={8} md={8} lg={8} className={classes.filterContainer}>
+        {/* <Grid item sm={8} md={8} lg={8} className={classes.filterContainer}>
           {shouldBeActive("dados-gerais") ? (
             <Button
               className={classes.filterButton}
@@ -148,7 +178,7 @@ function DashboardComponent() {
               );
             })
           )}
-        </Grid>
+        </Grid> */}
       </Grid>
 
       {displayContent()}

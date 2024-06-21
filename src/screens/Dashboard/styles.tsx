@@ -10,11 +10,17 @@ export const useStyles = makeStyles()((theme: Theme) => {
       alignItems: "center",
       backgroundColor: "#FAFAFA",
     },
+    headerFilterContainer: {
+      display: "flex",
+      flexDirection: "column",
+    },
     constructionFilterContainer: {
       display: "flex",
-      justifyContent: "space-between",
+      justifyContent: "flex-end",
       alignItems: "center",
       marginRight: 12,
+      marginTop: 4,
+      marginBottom: 4,
     },
     constructionFilterText: {
       marginRight: 12,
@@ -25,6 +31,40 @@ export const useStyles = makeStyles()((theme: Theme) => {
     },
     openFilterButton: {
       color: "#0076BE",
+    },
+    levelFilterContainer: {
+      display: "flex",
+      marginRight: 4,
+    },
+    levelFilterContent: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 8,
+      cursor: "pointer",
+    },
+    levelIndicator: {
+      marginRight: 4,
+      backgroundColor: "#0076be",
+      color: "#fff",
+      paddingTop: 3,
+      paddingBottom: 3,
+      paddingLeft: 6,
+      paddingRight: 6,
+      borderRadius: 50,
+      fontSize: 12,
+    },
+    levelText: {
+      color: "#0076be",
+      fontFamily: "Open Sans",
+      fontWeight: 600,
+      fontSize: 18,
+    },
+    levelSeparator: {
+      marginRight: 4,
+      marginLeft: 4,
+      color: "#757779",
+      fontSize: 18,
     },
     title: {
       color: "#2E3132",
@@ -74,6 +114,7 @@ export function Tab({ text, isActive, onClick }: TabProps) {
         backgroundColor: isActive ? "#0076BE" : "",
         borderRadius: "8px",
         padding: "4px 16px",
+        height: 35,
       }}
       onClick={onClick}
     >

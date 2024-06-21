@@ -17,7 +17,7 @@ import { BackgroundAvatar } from "../../../components/BackgroundAvatar";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { Breadcrumb } from "../../../components/Breadcrumb";
 import { EditIcon } from "../../../components/EditIcon";
-import { Navbar } from "../../../components/Navbar";
+
 import { styled } from "@mui/material/styles";
 
 import { useStyles } from "./styles";
@@ -53,7 +53,7 @@ export const ListConstructions = () => {
         size: 50,
         Cell: ({ cell }) => (
           <EditIcon
-            onClick={() => navigate(`/obras/${cell.row.original.id}/materiais`)}
+            onClick={() => navigate(`/obras/${cell.row.original.id}/locais`)}
             label="Editar"
           />
         ),
@@ -72,7 +72,7 @@ export const ListConstructions = () => {
         },
       },
       {
-        accessorKey: "corporateName",
+        accessorKey: "corporate_name",
         header: "Nome da Obra",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
@@ -83,11 +83,11 @@ export const ListConstructions = () => {
               alignItems: "center",
             }}
           >
-            {cell.row.original.corporateName && (
-              <BackgroundAvatar avatarName={cell.row.original.corporateName} />
+            {cell.row.original.corporate_name && (
+              <BackgroundAvatar avatarName={cell.row.original.corporate_name} />
             )}
             <Typography style={{ marginLeft: 8 }}>
-              {cell.row.original.corporateName}
+              {cell.row.original.corporate_name}
             </Typography>
           </div>
         ),

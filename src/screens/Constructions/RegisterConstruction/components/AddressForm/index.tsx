@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Grid, TextField } from "@mui/material";
 
+import { NumberInput } from "../../../../../components/NumberInput";
 import { InputMask } from "../../../../../components/InputMask";
-import { Company } from "../../../../../types";
+import { ConstructionRegister } from "../../../../../types";
 
 import { useStyles } from "../styles";
 
 type AddressFormProps = {
-  values: Company;
+  values: ConstructionRegister;
   handleChange: {
     (e: React.ChangeEvent<any>): void;
     <T = string | React.ChangeEvent<any>>(
@@ -22,7 +23,7 @@ export const AddressForm = ({ values, handleChange }: AddressFormProps) => {
   const { classes } = useStyles();
 
   return (
-    <Grid container sm={12} md={12} lg={12} className={classes.formContainer}>
+    <Grid container className={classes.formContainer}>
       <Grid item xs={12} lg={1} className={classes.fieldContainer}>
         <TextField
           name="cep"
@@ -50,9 +51,9 @@ export const AddressForm = ({ values, handleChange }: AddressFormProps) => {
       </Grid>
       <Grid item xs={12} lg={5} className={classes.fieldContainer}>
         <TextField
-          name="city"
+          name="county"
           label="Cidade"
-          value={values.city}
+          value={values.county}
           onChange={handleChange}
           variant="outlined"
           size="small"
@@ -101,7 +102,9 @@ export const AddressForm = ({ values, handleChange }: AddressFormProps) => {
           variant="outlined"
           size="small"
           fullWidth
-          type="number"
+          InputProps={{
+            inputComponent: NumberInput as any,
+          }}
         />
       </Grid>
     </Grid>

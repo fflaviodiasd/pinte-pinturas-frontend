@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { Grid, Typography } from "@mui/material";
 import {
   Chart as ChartJS,
@@ -11,11 +12,14 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
-import { LabelColor, useStyles } from "./styles";
+import { DashboardContext } from "../../../../../contexts/DashboardContext";
 import { SectionTitle } from "../../../../../components/SectionTitle";
+
+import { LabelColor, useStyles } from "./styles";
 
 export function BarGraph() {
   const { classes } = useStyles();
+  const { dashboardExecution } = useContext(DashboardContext);
 
   ChartJS.register(
     CategoryScale,
@@ -47,32 +51,45 @@ export function BarGraph() {
     },
   };
 
-  function generateRandomNumbers() {
-    return Array.from({ length: 15 }, () => Math.floor(Math.random() * 101));
-  }
+  const labels = dashboardExecution.map((execution) => execution.measurement);
+  const liberados = dashboardExecution.map(
+    (execution) => execution.status.liberado
+  );
+  const iniciados = dashboardExecution.map(
+    (execution) => execution.status.iniciado
+  );
+  const finalizados = dashboardExecution.map(
+    (execution) => execution.status.finalizado
+  );
+  const entregues = dashboardExecution.map(
+    (execution) => execution.status.entregue
+  );
+  const nao_liberados = dashboardExecution.map(
+    (execution) => execution.status.nao_liberado
+  );
 
   const data = {
     labels,
     datasets: [
       {
-        data: generateRandomNumbers(),
+        data: liberados,
         backgroundColor: "rgb(255,152,0)",
       },
       {
-        data: generateRandomNumbers(),
+        data: iniciados,
         backgroundColor: "rgb(76,175,80)",
       },
       {
-        data: generateRandomNumbers(),
+        data: finalizados,
         backgroundColor: "rgb(33,150,243)",
       },
       {
-        data: generateRandomNumbers(),
+        data: entregues,
         backgroundColor: "rgb(103,58,183)",
       },
       {
-        data: generateRandomNumbers(),
-        backgroundColor: "rgb(96,125,139)",
+        data: nao_liberados,
+        backgroundColor: "rgb(244,67,54)",
       },
     ],
   };
@@ -94,29 +111,13 @@ export function BarGraph() {
             ))}
           </div>
         </div>
-        <Bar options={options} data={data} />
+        <div className={classes.graphContainer}>
+          <Bar options={options} data={data} style={{ height: "100%" }} />
+        </div>
       </div>
     </Grid>
   );
 }
-
-const labels = [
-  "M01",
-  "M02",
-  "M03",
-  "M04",
-  "M05",
-  "M06",
-  "M07",
-  "M08",
-  "M09",
-  "M10",
-  "M11",
-  "M12",
-  "M13",
-  "M14",
-  "M15",
-];
 
 const labelsList = [
   {
@@ -137,6 +138,6 @@ const labelsList = [
   },
   {
     name: "Não Liberado",
-    color: "rgb(96,125,139)",
+    color: "rgb(244,67,54)",
   },
 ];

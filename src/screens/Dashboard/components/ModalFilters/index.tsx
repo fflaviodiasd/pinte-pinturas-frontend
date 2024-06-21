@@ -12,6 +12,7 @@ import { StatusFilter } from "../Filters/StatusFilter";
 import { UserFilter } from "../Filters/UserFilter";
 
 import { useStyles } from "./styles";
+import { TeamFilter } from "../Filters/TeamFilter";
 
 type ModalFiltersProps = {
   open: boolean;
@@ -70,6 +71,8 @@ const displayFilterTitle = (filter: string) => {
       return "Usuário";
     case "employee":
       return "Funcionário";
+    case "team":
+      return "Equipe";
     default:
       return "Medição";
   }
@@ -89,6 +92,8 @@ const displayFilterContent = (filter: string, handleClose: () => void) => {
       return <UserFilter handleClose={handleClose} />;
     case "employee":
       return <EmployeeFilter handleClose={handleClose} />;
+    case "team":
+      return <TeamFilter handleClose={handleClose} />;
     default:
       return <MeasurementFilter handleClose={handleClose} />;
   }

@@ -17,7 +17,16 @@ export const useStyles = makeStyles()(() => {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      padding: 4,
+      paddingLeft: 12,
+      paddingTop: 12,
+      paddingRight: 12,
+    },
+    graphContainer: {
+      height: 500,
+      marginTop: 18,
+      paddingRight: 16,
+      display: "flex",
+      alignItems: "center",
     },
     labelContainer: {
       display: "flex",

@@ -1,21 +1,27 @@
+import { useContext } from "react";
 import { Grid, Tooltip, Typography } from "@mui/material";
 
-import { LabelColor, TableContainer, useStyles } from "./styles";
+import { DashboardContext } from "../../../../../contexts/DashboardContext";
 import { SectionTitle } from "../../../../../components/SectionTitle";
+
+import { LabelColor, TableContainer, useStyles } from "./styles";
 
 export function FollowUpTable() {
   const { classes } = useStyles();
+  const { dashboardConstructionUpdate } = useContext(DashboardContext);
 
-  const hasDataTable = dataTable.length > 0;
+  const hasDataTable = dashboardConstructionUpdate.length > 0;
 
   const statusColor = (status: string) => {
     switch (status) {
-      case "Liberado":
+      case "Liberada":
         return "#FF9800";
       case "Entregue":
         return "#673AB7";
-      case "Finalizado":
+      case "Finalizada":
         return "#2196F3";
+      case "Não liberada":
+        return "#f44336";
       default:
         return "#4CAF50";
     }
@@ -24,7 +30,9 @@ export function FollowUpTable() {
   return (
     <Grid lg={12} className={classes.container}>
       <div className={classes.content}>
-        <SectionTitle title="Atualizações da Obra" />
+        <div className={classes.sectionTitleContainer}>
+          <SectionTitle title="Atualizações da Obra" />
+        </div>
         <div className={classes.dataTableContainer}>
           {hasDataTable ? (
             <>
@@ -41,8 +49,8 @@ export function FollowUpTable() {
                     </tr>
                   </thead>
                   <tbody>
-                    {dataTable.map((item, index) => (
-                      <tr key={`${item.user}-${index}`}>
+                    {dashboardConstructionUpdate.map((construction) => (
+                      <tr key={construction.id}>
                         <td className={classes.cell}>
                           <div
                             style={{
@@ -51,8 +59,10 @@ export function FollowUpTable() {
                               alignItems: "center",
                             }}
                           >
-                            <LabelColor color={statusColor(item.status)} />
-                            {item.status}
+                            <LabelColor
+                              color={statusColor(construction.status)}
+                            />
+                            {construction.status}
                           </div>
                         </td>
                         <td className={classes.cell}>
@@ -69,14 +79,18 @@ export function FollowUpTable() {
                                 cursor: "pointer",
                               }}
                             >
-                              {item.local}
+                              {construction.area}
                             </Typography>
                           </Tooltip>
                         </td>
-                        <td className={classes.cell}>{item.checklist}</td>
-                        <td className={classes.cell}>{item.team}</td>
-                        <td className={classes.cell}>{item.hour}</td>
-                        <td className={classes.cell}>{item.user}</td>
+                        <td className={classes.cell}>
+                          {construction.checklist}
+                        </td>
+                        <td className={classes.cell}>{construction.team}</td>
+                        <td className={classes.cell}>{construction.time}</td>
+                        <td className={classes.cell}>
+                          {construction.responsible}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -98,94 +112,3 @@ export function FollowUpTable() {
     </Grid>
   );
 }
-
-const dataTable = [
-  {
-    status: "Liberado",
-    local: "L0065 | T02 PAV01 C02",
-    checklist: "Interna Aptos - Tetos ",
-    team: "EQ001",
-    hour: "24/01/24 12:30",
-    user: "Olavo Gomes Bianco",
-  },
-  {
-    status: "Entregue",
-    local: "L0065 | T02 PAV01 C02",
-    checklist: "Interna Aptos - Tetos ",
-    team: "EQ001",
-    hour: "24/01/24 12:30",
-    user: "Olavo Gomes Bianco",
-  },
-  {
-    status: "Finalizado",
-    local: "L0065 | T02 PAV01 C02",
-    checklist: "Interna Aptos - Tetos ",
-    team: "EQ001",
-    hour: "24/01/24 12:30",
-    user: "Olavo Gomes Bianco",
-  },
-  {
-    status: "Iniciado",
-    local: "L0065 | T02 PAV01 C02",
-    checklist: "Interna Aptos - Tetos ",
-    team: "EQ001",
-    hour: "24/01/24 12:30",
-    user: "Olavo Gomes Bianco",
-  },
-  {
-    status: "Iniciado",
-    local: "L0065 | T02 PAV01 C02",
-    checklist: "Interna Aptos - Tetos ",
-    team: "EQ001",
-    hour: "24/01/24 12:30",
-    user: "Olavo Gomes Bianco",
-  },
-  {
-    status: "Iniciado",
-    local: "L0065 | T02 PAV01 C02",
-    checklist: "Interna Aptos - Tetos ",
-    team: "EQ001",
-    hour: "24/01/24 12:30",
-    user: "Olavo Gomes Bianco",
-  },
-  {
-    status: "Iniciado",
-    local: "L0065 | T02 PAV01 C02",
-    checklist: "Interna Aptos - Tetos ",
-    team: "EQ001",
-    hour: "24/01/24 12:30",
-    user: "Olavo Gomes Bianco",
-  },
-  {
-    status: "Iniciado",
-    local: "L0065 | T02 PAV01 C02",
-    checklist: "Interna Aptos - Tetos ",
-    team: "EQ001",
-    hour: "24/01/24 12:30",
-    user: "Olavo Gomes Bianco",
-  },
-  {
-    status: "Iniciado",
-    local: "L0065 | T02 PAV01 C02",
-    checklist: "Interna Aptos - Tetos ",
-    team: "EQ001",
-    hour: "24/01/24 12:30",
-    user: "Olavo Gomes Bianco",
-  },
-  {
-    status: "Iniciado",
-    local: "L0065 | T02 PAV01 C02",
-    checklist: "Interna Aptos - Tetos ",
-    team: "EQ001",
-    hour: "24/01/24 12:30",
-    user: "Olavo Gomes Bianco",
-  },
-  {
-    status: "Iniciado",
-    local: "L0065 | T02 PAV01 C02",
-    checklist: "Interna Aptos - Tetos ",
-    team: "EQ001",
-    hour: "24/01/24 12:30",
-    user: "Olavo Gomes Bianco",
-  },
-];
