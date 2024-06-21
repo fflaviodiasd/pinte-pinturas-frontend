@@ -71,6 +71,9 @@ export const MeasurementsSystem = () => {
       );
       setFilteredMeasurements(filteredData);
     }
+    if (listMeasurements.length > 0) {
+      setSelectedMeasurement(listMeasurements[0]?.id || "");
+    }
   }, [listMeasurements, selectedConstruction.id]);
 
   useEffect(() => {
@@ -365,6 +368,12 @@ export const MeasurementsSystem = () => {
     ];
   };
 
+  const levels =
+    listConferenceData.length > 0 && listConferenceData[0].levels
+      ? Object.keys(listConferenceData[0].levels)
+      : [];
+  const group: string[] = levels.flatMap((level) => [`levels.${level}`]);
+
   const columns = useMemo(() => {
     if (selectedService === "local") {
       return generateLocalColumns(listConferenceData);
@@ -385,8 +394,12 @@ export const MeasurementsSystem = () => {
     createDisplayMode: "row",
     state: {
       isSaving,
+      grouping: ["service_name", ...group],
     },
-    initialState: { showColumnFilters: true },
+    initialState: {
+      showColumnFilters: true,
+      expanded: true,
+    },
     onCreatingRowSave: handleCreatePackages,
     muiFilterTextFieldProps: (props) => {
       return {

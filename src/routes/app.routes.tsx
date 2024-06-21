@@ -81,18 +81,6 @@ export const AppRoutes = () => {
             path="/obras/:id/medicoes"
             element={<RegisterConstruction />}
           />
-          <Route
-            path="/obras/:id/conferencia-gerais-sistema"
-            element={<RegisterConstruction />}
-          />
-          <Route
-            path="/obras/:id/conferencia-dados-sistema"
-            element={<RegisterConstruction />}
-          />
-          <Route
-            path="/obras/:id/conferencia-producao-sistema"
-            element={<RegisterConstruction />}
-          />
 
           <Route path="/obras/funcionarios" element={<Indicators />} />
           <Route path="/obras/listagem" element={<ListConstructions />} />

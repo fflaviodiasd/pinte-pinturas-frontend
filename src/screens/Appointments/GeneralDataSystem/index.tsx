@@ -417,6 +417,7 @@ export const GeneralDataSystem = () => {
     initialState: {
       density: "compact",
       expanded: true, // Expandir todos os grupos por padrão
+      grouping: ["checklist_name", "area_name", "measurement_name"],
       pagination: { pageIndex: 0, pageSize: 20 },
     },
     muiFilterTextFieldProps: (props) => {

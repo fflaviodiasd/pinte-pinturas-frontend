@@ -22,10 +22,6 @@ import { ListConstructionsMaterials } from "../Materials";
 import { ListLocal } from "../Local";
 import { Teams } from "../Teams";
 
-import { GeneralMeasurements } from "../GeneralMeasurements";
-import { GeneralProduction } from "../GeneralProduction";
-import { GeneralData } from "../GeneralData";
-
 import { GeneralDataForm } from "./components/GeneralDataForm";
 import { AddressForm } from "./components/AddressForm";
 
@@ -122,12 +118,6 @@ export const RegisterConstruction = () => {
           return <PackageConstructions />;
         case location.pathname.includes("medicoes"):
           return <MeasurementsConstructions />;
-        case location.pathname.includes("conferencia-gerais-sistema"):
-          return <GeneralData />;
-        case location.pathname.includes("conferencia-dados-sistema"):
-          return <GeneralMeasurements />;
-        case location.pathname.includes("conferencia-producao-sistema"):
-          return <GeneralProduction />;
       }
     }
   };
@@ -270,7 +260,4 @@ const list = [
   { text: "Serviços", path: "servicos" },
   { text: "Pacotes", path: "pacotes" },
   { text: "Medições", path: "medicoes" },
-  { text: "Dados Gerais do Sistema", path: "conferencia-gerais-sistema" },
-  { text: "Medições do Sistema", path: "conferencia-dados-sistema" },
-  { text: "Produção do Sistema", path: "conferencia-producao-sistema" },
 ];

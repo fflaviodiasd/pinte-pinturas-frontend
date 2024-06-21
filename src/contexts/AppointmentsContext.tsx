@@ -42,21 +42,54 @@ type AppointmentsContextProps = {
   listGeneralReports: any[];
   getGeneralReports: () => Promise<any>;
   getProductionData: () => Promise<any>;
-  getReportsWithEmployee: (employeeId: number) => Promise<any>;
+  getReportsWithEmployee: (
+    measurementId: number,
+    employeeId: number
+  ) => Promise<any>;
   fetchEmployees: (measurementId: number) => Promise<void>;
   listEmployeesReports: any[];
-  getReportsWithTeams: (employeeId: any, teamId: number) => Promise<any>;
-  fetchTeams: (measurementId: string, employeeId: number) => Promise<void>;
+  getReportsWithTeams: (
+    measurementId: number,
+    employeeId: any,
+    teamId: number
+  ) => Promise<any>;
+  fetchTeams: (measurementId: number, employeeId: number) => Promise<void>;
   listTeamsReports: any[];
   getReportsWithMeasurement: (measurementId: number) => Promise<any>;
   fetchMeasurements: () => Promise<void>;
   listMeasurementsReports: any[];
+  listReportsNotation: ReportNotation | undefined;
+  getReportsNotation: (
+    disjunction: string | undefined,
+    employeeId: string
+  ) => Promise<any>;
 };
 
 type Construction = {
   name: string;
   id: number;
 };
+
+interface ReportNotation {
+  general: {
+    ranking: number;
+    total_checklist: number;
+    total_packages: number;
+    total_price_company: string;
+    total_price_employee: string;
+    teammates: string[];
+  };
+  details: {
+    service_name: string;
+    stpe_service_name: string;
+    amount_execution: number;
+    amount_media: number;
+    price_unit: string;
+    total_step: string;
+    production_value: string;
+    total_production_value: string;
+  }[];
+}
 
 const AppointmentsContext = createContext<AppointmentsContextProps>(
   {} as AppointmentsContextProps
@@ -141,11 +174,14 @@ const AppointmentsContextProvider = ({
   };
 
   const [listEmployeesReports, setListEmployeesReports] = useState<any[]>([]);
-  const getReportsWithEmployee = async (employeeId: number) => {
+  const getReportsWithEmployee = async (
+    measurementId: number,
+    employeeId: number
+  ) => {
     setLoading(true);
     try {
       const { data } = await api.get(
-        `/reports_conference/${selectedConstruction.id}/production/?employee=${employeeId}`
+        `/reports_conference/${selectedConstruction.id}/production/?measurement=${measurementId}&?employee=${employeeId}`
       );
       return data;
     } catch (error) {
@@ -170,11 +206,15 @@ const AppointmentsContextProvider = ({
   };
 
   const [listTeamsReports, setListTeamsReports] = useState<any[]>([]);
-  const getReportsWithTeams = async (employeeId: any, teamId: number) => {
+  const getReportsWithTeams = async (
+    measurementId: number,
+    employeeId: any,
+    teamId: number
+  ) => {
     setLoading(true);
     try {
       const { data } = await api.get(
-        `/reports_conference/${selectedConstruction.id}/production/?employee=${employeeId}&?team=${teamId}`
+        `/reports_conference/${selectedConstruction.id}/production/?measurement=${measurementId}&?employee=${employeeId}&?team=${teamId}`
       );
       return data;
     } catch (error) {
@@ -183,7 +223,7 @@ const AppointmentsContextProvider = ({
       setLoading(false);
     }
   };
-  const fetchTeams = async (measurementId: string, employeeId: number) => {
+  const fetchTeams = async (measurementId: number, employeeId: number) => {
     setLoading(true);
     try {
       const { data } = await api.post(
@@ -263,6 +303,27 @@ const AppointmentsContextProvider = ({
     }
   };
 
+  const [listReportsNotation, setListReportsNotation] =
+    useState<ReportNotation>();
+  const getReportsNotation = async (
+    disjunction: string = "service",
+    employeeId: string
+  ) => {
+    try {
+      const { data } = await api.get(
+        `/reports_notation/${employeeId}/general/?disjunction=${disjunction}`
+      );
+
+      setListReportsNotation(data);
+      return data;
+    } catch (error) {
+      console.error("Erro ao obter relatórios de notação:", error);
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AppointmentsContext.Provider
       value={{
@@ -287,6 +348,8 @@ const AppointmentsContextProvider = ({
         getProductionData,
         getGeneralReports,
         listGeneralReports,
+        listReportsNotation,
+        getReportsNotation,
       }}
     >
       {children}
