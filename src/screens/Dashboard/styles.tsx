@@ -114,6 +114,7 @@ export function Tab({ text, isActive, onClick }: TabProps) {
         backgroundColor: isActive ? "#0076BE" : "",
         borderRadius: "8px",
         padding: "4px 16px",
+        height: 35,
       }}
       onClick={onClick}
     >

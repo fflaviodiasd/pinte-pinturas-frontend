@@ -151,7 +151,7 @@ function DashboardComponent() {
           />
         </Grid>
         <Grid item sm={2} md={3} lg={1} />
-        <Grid item sm={8} md={8} lg={8} className={classes.filterContainer}>
+        {/* <Grid item sm={8} md={8} lg={8} className={classes.filterContainer}>
           {shouldBeActive("dados-gerais") ? (
             <Button
               className={classes.filterButton}
@@ -178,7 +178,7 @@ function DashboardComponent() {
               );
             })
           )}
-        </Grid>
+        </Grid> */}
       </Grid>
 
       {displayContent()}
