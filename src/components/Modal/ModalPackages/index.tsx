@@ -51,7 +51,9 @@ export const ModalPackages = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get<{ areas: Area[] }>("areas/checklists");
+        const response = await api.get<{ areas: Area[] }>(
+          `/constructions/${id}/checklists/`
+        );
         setAreas(response.data.areas);
       } catch (error) {
         console.error("Erro ao buscar os dados:", error);
