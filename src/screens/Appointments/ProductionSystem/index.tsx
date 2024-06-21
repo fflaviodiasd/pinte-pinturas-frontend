@@ -1,15 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-  type MRT_Row,
-  type MRT_ColumnDef,
-  MRT_ToggleDensePaddingButton,
-  MRT_ToggleFullScreenButton,
-  MRT_ToggleFiltersButton,
-  MRT_ShowHideColumnsButton,
-} from "material-react-table";
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useContext, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Grid,
@@ -20,19 +11,32 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Stack,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import { useParams } from "react-router-dom";
 import { Download } from "@mui/icons-material";
-import { jsPDF } from "jspdf";
-import autoTable from "jspdf-autotable";
-import { useConference } from "../../../hooks/useConference";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+  type MRT_Row,
+  type MRT_ColumnDef,
+  MRT_ToggleDensePaddingButton,
+  MRT_ToggleFullScreenButton,
+  MRT_ToggleFiltersButton,
+  MRT_ShowHideColumnsButton,
+} from "material-react-table";
 import Papa from "papaparse";
-import { Stack } from "@mui/material";
-export const GeneralProduction = () => {
-  const theme = useTheme();
-  const { id } = useParams<{ id: string }>();
+
+import { AppointmentsContext } from "../../../contexts/AppointmentsContext";
+
+import { EmptyTableText } from "../../../components/Table/EmptyTableText";
+
+import { useStyles } from "./styles";
+
+export const ProductionSystem = () => {
+  const { classes } = useStyles();
+
   const {
+    selectedConstruction,
     listMeasurementsReports,
     listEmployeesReports,
     fetchMeasurements,
@@ -40,15 +44,12 @@ export const GeneralProduction = () => {
     fetchTeams,
     getProductionData,
     listTeamsReports,
-
     getReportsWithMeasurement,
-
     getReportsWithTeams,
     getReportsWithEmployee,
-  } = useConference();
-  const [isSaving, setIsSaving] = useState(false);
+  } = useContext(AppointmentsContext);
 
-  console.log("listEmployeesReports", listEmployeesReports);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [selectedMedicao, setSelectedMedicao] = useState("");
   const [selectedFuncionario, setSelectedFuncionario] = useState("");
@@ -56,11 +57,11 @@ export const GeneralProduction = () => {
   const [tableData, setTableData] = useState<any[]>([]);
 
   useEffect(() => {
-    if (id) {
+    if (selectedConstruction.id) {
       fetchMeasurements();
       getProductionData().then((data) => setTableData(data));
     }
-  }, [id]);
+  }, [selectedConstruction.id]);
 
   const handleMedicaoChange = async (event: any) => {
     const medicao = event.target.value;
@@ -69,7 +70,7 @@ export const GeneralProduction = () => {
     if (medicao) {
       await fetchEmployees(medicao);
       const data = await getReportsWithMeasurement(medicao);
-      console.log("dataMedicao:", data);
+      // console.log("dataMedicao:", data);
       setTableData(data);
     }
   };
@@ -81,10 +82,10 @@ export const GeneralProduction = () => {
 
     if (selectedMedicao && funcionario) {
       await fetchTeams(selectedMedicao, funcionario);
-      console.log("selectedMedicao:", selectedMedicao);
-      console.log("funcionario:", funcionario);
+      // console.log("selectedMedicao:", selectedMedicao);
+      // console.log("funcionario:", funcionario);
       const data = await getReportsWithEmployee(funcionario);
-      console.log("dataFuncionario:", data);
+      // console.log("dataFuncionario:", data);
       setTableData(data);
     }
   };
@@ -94,7 +95,7 @@ export const GeneralProduction = () => {
     setSelectedEquipe(equipe);
     if (selectedMedicao && selectedFuncionario && equipe) {
       const data = await getReportsWithTeams(selectedFuncionario, equipe);
-      console.log("dataEquipe:", data);
+      // console.log("dataEquipe:", data);
       setTableData(data);
     }
   };
@@ -123,14 +124,14 @@ export const GeneralProduction = () => {
   };
 
   const parseMonetaryValue = (value: string) => {
-    console.log("value:", value);
+    // console.log("value:", value);
     const dado = parseFloat(
       value
         .replace(/[R$\s]/g, "")
         .replace(".", "")
         .replace(",", ".")
     );
-    console.log("dado:", dado);
+    // console.log("dado:", dado);
     return dado;
   };
 
@@ -213,12 +214,37 @@ export const GeneralProduction = () => {
   const table = useMaterialReactTable({
     columns,
     data: tableData,
-    enableColumnFilterModes: true,
     enableEditing: false,
+    enableGrouping: true,
     enableExpanding: true,
+    enablePagination: false,
+    enableBottomToolbar: false,
+    enableColumnFilterModes: false,
     createDisplayMode: "row",
     state: { isSaving },
-    enableGrouping: true,
+    muiFilterTextFieldProps: (props) => {
+      return {
+        placeholder: `Filtrar por ${props.column.columnDef.header}`,
+      };
+    },
+    filterFns: {
+      customFilterFn: (row, id, filterValue) => {
+        return row.getValue(id) === filterValue;
+      },
+    },
+    localization: {
+      filterCustomFilterFn: "Custom Filter Fn",
+    } as any,
+    muiTableBodyProps: {
+      sx: {
+        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
+          {
+            backgroundColor: "#FAFAFA",
+          },
+      },
+    },
+    muiTablePaperProps: { elevation: 0 },
+    renderEmptyRowsFallback: () => <EmptyTableText />,
     renderTopToolbar: ({ table }) => (
       <Box
         sx={{
@@ -354,36 +380,15 @@ export const GeneralProduction = () => {
         </Box>
       </Box>
     ),
-    filterFns: {
-      customFilterFn: (row, id, filterValue) => {
-        return row.getValue(id) === filterValue;
-      },
-    },
-    localization: {
-      filterCustomFilterFn: "Custom Filter Fn",
-    } as any,
-    muiTablePaperProps: { elevation: 0 },
-    muiTableBodyProps: {
-      sx: (theme) => ({
-        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
-          {
-            backgroundColor: "#FAFAFA",
-          },
-      }),
-    },
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.background.default,
       draggingBorderColor: theme.palette.secondary.main,
     }),
-    enablePagination: false,
-    enableBottomToolbar: false,
   });
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} lg={12} paddingRight={10}>
-        <MaterialReactTable table={table} />
-      </Grid>
+    <Grid item lg={12} className={classes.container}>
+      <MaterialReactTable table={table} />
     </Grid>
   );
 };

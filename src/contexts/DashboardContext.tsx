@@ -202,11 +202,13 @@ const DashboardContextProvider = ({
       total: 0,
     }
   );
-  const getDashboardChecklist = async (constructionId: number) => {
+  const getDashboardChecklist = async (filters?: string) => {
+    let url = `/reports_construction/${selectedConstruction.id}/checklist/`;
+    if (filters) {
+      url = `/reports_construction/${selectedConstruction.id}/checklist/?${filters}`;
+    }
     try {
-      const { data } = await api.get(
-        `/reports_construction/${constructionId}/checklist/`
-      );
+      const { data } = await api.get(url);
       const checklistData = {
         entregue: data.entregue,
         entregue_porcentagem: data.entregue_porcentagem,
@@ -227,11 +229,13 @@ const DashboardContextProvider = ({
   };
 
   const [dashboardExecution, setDashboardExecution] = useState<Execution>([]);
-  const getDashboardExecution = async (constructionId: number) => {
+  const getDashboardExecution = async (filters?: string) => {
+    let url = `/reports_construction/${selectedConstruction.id}/execution/`;
+    if (filters) {
+      url = `/reports_construction/${selectedConstruction.id}/execution/?${filters}`;
+    }
     try {
-      const { data } = await api.get(
-        `/reports_construction/${constructionId}/execution/`
-      );
+      const { data } = await api.get(url);
       setDashboardExecution(data);
     } catch (error) {
       console.log(error);
@@ -239,12 +243,13 @@ const DashboardContextProvider = ({
   };
 
   const [listInteractions, setListInteractions] = useState<Interaction[]>([]);
-  const getInteractions = async (constructionId: number) => {
+  const getInteractions = async (filters?: string) => {
+    let url = `/reports_construction/${selectedConstruction.id}/interaction/`;
+    if (filters) {
+      url = `/reports_construction/${selectedConstruction.id}/interaction/?${filters}`;
+    }
     try {
-      const { data } = await api.get(
-        `/reports_construction/${constructionId}/interaction/`
-      );
-
+      const { data } = await api.get(url);
       setListInteractions(data);
     } catch (error) {
       console.log(error);
@@ -266,12 +271,13 @@ const DashboardContextProvider = ({
 
   const [dashboardGeneralData, setDashboardGeneralData] =
     useState<GeneralDataTable>([]);
-  const getDashboardGeneralData = async (constructionId: number) => {
+  const getDashboardGeneralData = async (filters?: string) => {
+    let url = `/reports_construction/${selectedConstruction.id}/general_data/`;
+    if (filters) {
+      url = `/reports_construction/${selectedConstruction.id}/general_data/?${filters}`;
+    }
     try {
-      const { data } = await api.get(
-        `/reports_construction/${constructionId}/general_data/`
-      );
-
+      const { data } = await api.get(url);
       const generalData = data.map((item: any) => {
         const test = {
           id: item.id,
@@ -321,11 +327,13 @@ const DashboardContextProvider = ({
 
   const [dashboardConstructionUpdate, setDashboardConstructionUpdate] =
     useState<ConstructionUpdate>([]);
-  const getDashboardConstructionUpdate = async (constructionId: number) => {
+  const getDashboardConstructionUpdate = async (filters?: string) => {
+    let url = `/reports_construction/${selectedConstruction.id}/work_update/`;
+    if (filters) {
+      url = `/reports_construction/${selectedConstruction.id}/work_update/?${filters}`;
+    }
     try {
-      const { data } = await api.get(
-        `/reports_construction/${constructionId}/work_update/`
-      );
+      const { data } = await api.get(url);
       const constructionUpdateList = data.map((item: any) => ({
         id: item.id,
         area: item.area,
@@ -342,11 +350,13 @@ const DashboardContextProvider = ({
   };
 
   useEffect(() => {
-    getInteractions(selectedConstruction.id);
-    getDashboardChecklist(selectedConstruction.id);
-    getDashboardExecution(selectedConstruction.id);
-    getDashboardGeneralData(selectedConstruction.id);
-    getDashboardConstructionUpdate(selectedConstruction.id);
+    if (selectedConstruction.id !== 0) {
+      getInteractions();
+      getDashboardChecklist();
+      getDashboardExecution();
+      getDashboardGeneralData();
+      getDashboardConstructionUpdate();
+    }
   }, [selectedConstruction]);
 
   return (

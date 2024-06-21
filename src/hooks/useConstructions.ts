@@ -502,7 +502,7 @@ export const useConstructions = () => {
           execution: construction.execution,
         })
       );
-      console.log("ahahaa", constructionList);
+
       setListConstructions(constructionList);
       setLoading(false);
     } catch (error) {

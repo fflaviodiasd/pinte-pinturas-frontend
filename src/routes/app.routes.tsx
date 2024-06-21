@@ -21,6 +21,7 @@ import { Measurements } from "../screens/Measurements";
 
 import { Settings } from "../screens/Settings";
 import { Dashboard } from "../screens/Dashboard";
+import { Appointments } from "../screens/Appointments";
 
 export const AppRoutes = () => {
   return (
@@ -107,6 +108,19 @@ export const AppRoutes = () => {
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
           <Route path="/dashboard/acompanhamento" element={<Dashboard />} />
           <Route path="/dashboard/dados-gerais" element={<Dashboard />} />
+
+          <Route
+            path="/apontamentos/dados-do-sistema"
+            element={<Appointments />}
+          />
+          <Route
+            path="/apontamentos/medicoes-do-sistema"
+            element={<Appointments />}
+          />
+          <Route
+            path="/apontamentos/producao-do-sistema"
+            element={<Appointments />}
+          />
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

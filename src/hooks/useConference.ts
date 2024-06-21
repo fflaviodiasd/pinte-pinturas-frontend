@@ -13,15 +13,22 @@ export const useConference = () => {
 
   const [loading, setLoading] = useState(true);
   const [listConferenceData, setListConferenceData] = useState<any[]>([]);
-  const [listMeasurementsReports, setListMeasurementsReports] = useState<any[]>([]);
+  const [listMeasurementsReports, setListMeasurementsReports] = useState<any[]>(
+    []
+  );
   const [listEmployeesReports, setListEmployeesReports] = useState<any[]>([]);
   const [listTeamsReports, setListTeamsReports] = useState<any[]>([]);
   const [listProductionData, setListProductionData] = useState<any[]>([]);
-  const [listReportsWithMeasurements, setListReportsWithMeasurements] = useState<any[]>([]);
-  const [listReportsWithEmployees, setListReportsWithEmployees] = useState<any[]>([]);
-    const [listGeneralReports, setListGeneralReports] = useState<any[]>([]); 
-    const getConferenceData = async (measurementId: string, disjunction: string) => {
-
+  const [listReportsWithMeasurements, setListReportsWithMeasurements] =
+    useState<any[]>([]);
+  const [listReportsWithEmployees, setListReportsWithEmployees] = useState<
+    any[]
+  >([]);
+  const [listGeneralReports, setListGeneralReports] = useState<any[]>([]);
+  const getConferenceData = async (
+    measurementId: string,
+    disjunction: string
+  ) => {
     if (!id) {
       console.error("ID da construção não foi fornecido");
       return;
@@ -29,7 +36,9 @@ export const useConference = () => {
 
     setLoading(true);
     try {
-      const { data } = await api.get(`/reports_conference/${id}/measurements/?measurement=${measurementId}&disjunction=${disjunction}`);
+      const { data } = await api.get(
+        `/reports_conference/${id}/measurements/?measurement=${measurementId}&disjunction=${disjunction}`
+      );
       console.log("data:", data);
       setListConferenceData(data);
       setLoading(false);
@@ -47,7 +56,10 @@ export const useConference = () => {
 
     setLoading(true);
     try {
-      const { data } = await api.post(`/reports_conference/production/filter/`, { construction: id });
+      const { data } = await api.post(
+        `/reports_conference/production/filter/`,
+        { construction: id }
+      );
       console.log("Measurements data:", data);
       setListMeasurementsReports(data.measurement);
       setLoading(false);
@@ -65,7 +77,10 @@ export const useConference = () => {
 
     setLoading(true);
     try {
-      const { data } = await api.post(`/reports_conference/production/filter/`, { construction: id, measurement: measurementId });
+      const { data } = await api.post(
+        `/reports_conference/production/filter/`,
+        { construction: id, measurement: measurementId }
+      );
       console.log("Employees data:", data);
       setListEmployeesReports(data.employees);
       setLoading(false);
@@ -83,13 +98,16 @@ export const useConference = () => {
 
     setLoading(true);
     try {
-      const { data } = await api.post(`/reports_conference/production/filter/`, {
-        construction: id,
-        measurement: measurementId,
-        employee: employeeId
-      });
+      const { data } = await api.post(
+        `/reports_conference/production/filter/`,
+        {
+          construction: id,
+          measurement: measurementId,
+          employee: employeeId,
+        }
+      );
       console.log("Teams data:", data);
-      setListTeamsReports(data.teams); 
+      setListTeamsReports(data.teams);
       setLoading(false);
     } catch (error) {
       console.error("Erro ao obter times:", error);
@@ -125,7 +143,9 @@ export const useConference = () => {
 
     setLoading(true);
     try {
-      const { data } = await api.get(`/reports_conference/${id}/production/?measurement=${measurementId}`);
+      const { data } = await api.get(
+        `/reports_conference/${id}/production/?measurement=${measurementId}`
+      );
       console.log("Reports with Measurement data:", data);
       setListReportsWithMeasurements(data);
       setLoading(false);
@@ -145,7 +165,9 @@ export const useConference = () => {
 
     setLoading(true);
     try {
-      const { data } = await api.get(`/reports_conference/${id}/production/?employee=${employeeId}`);
+      const { data } = await api.get(
+        `/reports_conference/${id}/production/?employee=${employeeId}`
+      );
       console.log("Reports with Employee data:", data);
       setListReportsWithEmployees(data);
       setLoading(false);
@@ -165,7 +187,9 @@ export const useConference = () => {
 
     setLoading(true);
     try {
-      const { data } = await api.get(`/reports_conference/${id}/production/?employee=${employeeId}&?team=${teamId}`);
+      const { data } = await api.get(
+        `/reports_conference/${id}/production/?employee=${employeeId}&?team=${teamId}`
+      );
       console.log("Reports with Employee data:", data);
       setListReportsWithEmployees(data);
       setLoading(false);
@@ -197,7 +221,6 @@ export const useConference = () => {
     }
   };
 
-
   return {
     loading,
     setLoading,
@@ -215,8 +238,8 @@ export const useConference = () => {
     listReportsWithMeasurements,
     getReportsWithEmployee,
     listReportsWithEmployees,
-    getGeneralReports, 
+    getGeneralReports,
     getReportsWithTeams,
-    listGeneralReports
+    listGeneralReports,
   };
 };

@@ -89,7 +89,7 @@ export function BarGraph() {
       },
       {
         data: nao_liberados,
-        backgroundColor: "rgb(96,125,139)",
+        backgroundColor: "rgb(244,67,54)",
       },
     ],
   };
@@ -138,6 +138,6 @@ const labelsList = [
   },
   {
     name: "Não Liberado",
-    color: "rgb(96,125,139)",
+    color: "rgb(244,67,54)",
   },
 ];

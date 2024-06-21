@@ -30,7 +30,9 @@ export function FollowUpTable() {
   return (
     <Grid lg={12} className={classes.container}>
       <div className={classes.content}>
-        <SectionTitle title="Atualizações da Obra" />
+        <div className={classes.sectionTitleContainer}>
+          <SectionTitle title="Atualizações da Obra" />
+        </div>
         <div className={classes.dataTableContainer}>
           {hasDataTable ? (
             <>
