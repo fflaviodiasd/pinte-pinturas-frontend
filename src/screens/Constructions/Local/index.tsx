@@ -7,7 +7,14 @@ import {
   useMaterialReactTable,
   MRT_Cell,
 } from "material-react-table";
-import { Box, Button, Checkbox, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Chip,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useConstructions } from "../../../hooks/useConstructions";
@@ -60,6 +67,22 @@ const Locations = () => {
   const [listChecked, setListChecked] = useState<any[]>([]);
   const [listCheckedPaste, setListCheckedPaste] = useState<any[]>([]);
   const [paste, setPaste] = useState<any>();
+
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+
+  const handleSelectAll = () => {
+    if (selectAllChecked) {
+      setSelectedLocalIds([]);
+      setListChecked([]);
+      setSelectedRows(new Set());
+    } else {
+      const newSelectedIds = listConstructionsLocations.map((item) => item.id);
+      setSelectedLocalIds(newSelectedIds);
+      setListChecked(listConstructionsLocations);
+      setSelectedRows(new Set(newSelectedIds));
+    }
+    setSelectAllChecked(!selectAllChecked);
+  };
 
   type CustomMRT_ColumnDef<T> = MRT_ColumnDef<any> & {
     muiTableBodyCellProps?: (cell: MRT_Cell<any>) => {
@@ -217,6 +240,10 @@ const Locations = () => {
     setSnackbarOpen(false);
   };
 
+  const handleOpenSnackbar = () => {
+    setSnackbarOpen(true);
+  };
+
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
@@ -248,13 +275,20 @@ const Locations = () => {
         const originalItem = originalArray[originalItemIndex];
 
         for (const key in newItem) {
-          if (key !== "id" && key !== "code") {
+          if (key === "ids") {
+            originalItem[key].forEach((item: any, index) => {
+              originalItem.ids[index].name = newItem.ids[index].name;
+            });
+          }
+
+          if (key !== "id" && key !== "code" && key !== "ids") {
             originalItem[key] = newItem[key];
           }
         }
         copiedIndex = (copiedIndex + 1) % copiedItems.length;
       }
     });
+    console.log(originalArray);
 
     return originalArray;
   }
@@ -372,7 +406,6 @@ const Locations = () => {
           listConstructionsLocations.length - 1
         ].code.slice(-2)
       );
-      console.log(lastItem);
 
       const code = generateNextId(lastItem + i + 1);
       const control = {};
@@ -475,8 +508,18 @@ const Locations = () => {
         transition: "transform 0.2s",
       },
     }),
-    renderDetailPanel: ({ row }) =>
-      row.original ? <ChecklistComponent localId={row.original.id} /> : null,
+    renderDetailPanel: ({ row }) => {
+      const shouldRenderChecklist =
+        row.original && !row.original.lastLevelIsBlank;
+
+      return (
+        <div>
+          {shouldRenderChecklist && (
+            <ChecklistComponent localId={row.original.id} />
+          )}
+        </div>
+      );
+    },
     getRowId: (row) => row.id,
     onCreatingRowCancel: () => setValidationErrors({}),
     // onCreatingRowSave: handleCreateLocal,
@@ -571,6 +614,12 @@ const Locations = () => {
           <StatusPanel />
         </div>
         <LevelComponent setControl={setControl} />
+        <Checkbox
+          onClick={handleOpenSnackbar}
+          checked={selectAllChecked}
+          onChange={handleSelectAll}
+          sx={{ cursor: "pointer", color: "#C5C7C8" }}
+        />
       </div>
     ),
     muiTableBodyRowProps: ({ row }) => {

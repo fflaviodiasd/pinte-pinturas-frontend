@@ -32,21 +32,27 @@ export const GeneralMeasurements = () => {
   } = useConstructions();
 
   const { getConferenceData, listConferenceData } = useConference(); // Use seu hook
-  const theme = useTheme();
 
+  const theme = useTheme();
   const [isSaving, setIsSaving] = useState(false);
   const [filteredMeasurements, setFilteredMeasurements] = useState<any[]>([]);
   const [selectedMeasurement, setSelectedMeasurement] = useState("");
   const [selectedService, setSelectedService] = useState("service");
-
   const { id } = useParams();
-
+  
   useEffect(() => {
     if (id) {
       getAllConstructionsMeasurements();
     }
   }, [id]);
-
+  
+  useEffect(() => {
+    if (listConstructionsMeasurements.length > 0) {
+      setSelectedMeasurement(listConstructionsMeasurements[0]?.id || "");
+    }
+  }, [listConstructionsMeasurements]);
+  
+  
   useEffect(() => {
     if (listConstructionsMeasurements && listConstructionsMeasurements.length > 0) {
       const filteredData = listConstructionsMeasurements.filter(
@@ -55,13 +61,14 @@ export const GeneralMeasurements = () => {
       setFilteredMeasurements(filteredData);
     }
   }, [listConstructionsMeasurements, id]);
-
+  
   useEffect(() => {
     if (selectedMeasurement && selectedService) {
       getConferenceData(selectedMeasurement, selectedService);
     }
   }, [selectedMeasurement, selectedService]);
 
+  
   const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
     values,
     table,
@@ -69,7 +76,7 @@ export const GeneralMeasurements = () => {
     await addConstructionMeasurements(values);
     getAllConstructionsMeasurements();
   };
-
+  
   const handleDownloadCsv = () => {
     const flattenedData = listConferenceData.map((item) => {
       if (selectedService === "service") {
@@ -112,43 +119,43 @@ export const GeneralMeasurements = () => {
   const parseMonetaryValue = (value: string): number => {
     return parseFloat(value.replace("R$", "").replace(".", "").replace(",", ".").trim()) || 0;
   };
-
-
+  
+  
   const serviceColumns: MRT_ColumnDef<any>[] = useMemo(() => [
     { accessorKey: 'service_name', header: 'Nome do Serviço' },
     { accessorKey: 'step_service_name', header: 'Etapa do Serviço' },
     { accessorKey: 'unit_service', header: 'Unidade' },
     { accessorKey: 'registered_quantity', header: 'Qtd. Cadastrada', aggregationFn: 'sum', Footer: ({ table }) => {
-        const total = table.getFilteredRowModel().rows.reduce(
-          (sum, row) => sum + (row.original.registered_quantity || 0),
-          0
-        );
+      const total = table.getFilteredRowModel().rows.reduce(
+        (sum, row) => sum + (row.original.registered_quantity || 0),
+        0
+      );
         return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
       },
     },
     { accessorKey: 'contract.amount', header: 'Qtd. Contrato', muiTableBodyCellProps: { sx: { backgroundColor: '#FFFACD' } }, aggregationFn: 'sum', Footer: ({ table }) => {
-        const total = table.getFilteredRowModel().rows.reduce(
-          (sum, row) => sum + (row.original.contract?.amount || 0),
-          0
-        );
-        return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
-      },
+      const total = table.getFilteredRowModel().rows.reduce(
+        (sum, row) => sum + (row.original.contract?.amount || 0),
+        0
+      );
+      return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
+    },
     },
     { accessorKey: 'contract.price_unit', header: 'Preço Unit.', muiTableBodyCellProps: { sx: { backgroundColor: '#FFFACD' } }, aggregationFn: 'sum', Footer: ({ table }) => {
-        const total = table.getFilteredRowModel().rows.reduce(
-          (sum, row) => sum + (row.original.contract?.price_unit || 0),
-          0
-        );
-        return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
-      },
+      const total = table.getFilteredRowModel().rows.reduce(
+        (sum, row) => sum + (row.original.contract?.price_unit || 0),
+        0
+      );
+      return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
     },
-    { accessorKey: 'contract.total', header: 'Total', muiTableBodyCellProps: { sx: { backgroundColor: '#FFFACD' } }, aggregationFn: (columnId, leafRows) => leafRows.reduce((sum, row) => sum + parseMonetaryValue(row.original.contract?.total || "0"), 0), AggregatedCell: ({ cell }:any) => <span>Somatória: <span style={{ color: 'green', fontWeight: 'bold' }}>R$ {cell.getValue()}</span></span>, Footer: ({ table }) => {
-        const total = table.getFilteredRowModel().rows.reduce(
-          (sum, row) => sum + parseMonetaryValue(row.original.contract?.total || "0"),
-          0
-        );
-        return (
-          <Stack>
+  },
+  { accessorKey: 'contract.total', header: 'Total', muiTableBodyCellProps: { sx: { backgroundColor: '#FFFACD' } }, aggregationFn: (columnId, leafRows) => leafRows.reduce((sum, row) => sum + parseMonetaryValue(row.original.contract?.total || "0"), 0), AggregatedCell: ({ cell }:any) => <span>Somatória: <span style={{ color: 'green', fontWeight: 'bold' }}>R$ {cell.getValue()}</span></span>, Footer: ({ table }) => {
+    const total = table.getFilteredRowModel().rows.reduce(
+      (sum, row) => sum + parseMonetaryValue(row.original.contract?.total || "0"),
+      0
+    );
+    return (
+      <Stack>
             Total:
             <Box sx={{ color: 'green', fontWeight: 'bold' }}>
               R$ {total.toFixed(2).replace(".", ",")}
@@ -158,57 +165,57 @@ export const GeneralMeasurements = () => {
       },
     },
     { accessorKey: 'previous_ac_qty', header: 'Qtd. Ac. Anterior', aggregationFn: 'sum', Footer: ({ table }) => {
-        const total = table.getFilteredRowModel().rows.reduce(
-          (sum, row) => sum + (row.original.previous_ac_qty || 0),
-          0
-        );
-        return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
-      },
+      const total = table.getFilteredRowModel().rows.reduce(
+        (sum, row) => sum + (row.original.previous_ac_qty || 0),
+        0
+      );
+      return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
     },
-    { accessorKey: 'current_quantity', header: 'Qtd. Atual', aggregationFn: 'sum', Footer: ({ table }) => {
-        const total = table.getFilteredRowModel().rows.reduce(
-          (sum, row) => sum + (row.original.current_quantity || 0),
-          0
-        );
-        return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
-      },
-    },
-    { accessorKey: 'accumulated', header: 'Qtd. Acumulada', aggregationFn: 'sum', Footer: ({ table }) => {
-        const total = table.getFilteredRowModel().rows.reduce(
-          (sum, row) => sum + (row.original.accumulated || 0),
-          0
-        );
-        return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
-      },
-    },
-    { accessorKey: 'balance_measured', header: 'Saldo a Medir', aggregationFn: 'sum', Footer: ({ table }) => {
-        const total = table.getFilteredRowModel().rows.reduce(
-          (sum, row) => sum + (row.original.balance_measured || 0),
-          0
-        );
-        return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
-      },
+  },
+  { accessorKey: 'current_quantity', header: 'Qtd. Atual', aggregationFn: 'sum', Footer: ({ table }) => {
+    const total = table.getFilteredRowModel().rows.reduce(
+      (sum, row) => sum + (row.original.current_quantity || 0),
+      0
+    );
+    return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
+  },
+},
+{ accessorKey: 'accumulated', header: 'Qtd. Acumulada', aggregationFn: 'sum', Footer: ({ table }) => {
+  const total = table.getFilteredRowModel().rows.reduce(
+    (sum, row) => sum + (row.original.accumulated || 0),
+    0
+  );
+  return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
+},
+},
+{ accessorKey: 'balance_measured', header: 'Saldo a Medir', aggregationFn: 'sum', Footer: ({ table }) => {
+  const total = table.getFilteredRowModel().rows.reduce(
+    (sum, row) => sum + (row.original.balance_measured || 0),
+    0
+  );
+  return <Box sx={{ fontWeight: 'bold' }}>Total: {total}</Box>;
+},
     },
   ], []);
   
   const generateLocalColumns = (data: LocalData[]) => {
     const dynamicColumns: MRT_ColumnDef<any>[] = [];
     const levels = data.length > 0 && data[0].levels ? Object.keys(data[0].levels) : [];
-  
+    
     levels.forEach(level => {
       dynamicColumns.push({ accessorKey: `levels.${level}`, header: level });
     });
-  
+    
     return [
       { accessorKey: 'package_name', header: 'Nome do Pacote' },
       { accessorKey: 'initial_dt', header: 'Data de Início' },
       { accessorKey: 'finish_dt', header: 'Data Final', Footer: ({ table }:any) => {
-          const maxDate = table.getFilteredRowModel().rows.reduce((max:any, row:any) => {
-            const date = new Date(row.original.finish_dt || 0);
-            return date > max ? date : max;
-          }, new Date(0));
-          return (
-            <Stack>
+        const maxDate = table.getFilteredRowModel().rows.reduce((max:any, row:any) => {
+          const date = new Date(row.original.finish_dt || 0);
+          return date > max ? date : max;
+        }, new Date(0));
+        return (
+          <Stack>
               Última Data:
               <Box sx={{ color: 'success.main', fontWeight: 'bold' }}>
                 {maxDate.getTime() !== new Date(0).getTime() ? maxDate.toLocaleDateString() : ''}
@@ -218,12 +225,12 @@ export const GeneralMeasurements = () => {
         },
       },
       { accessorKey: 'valor_total_package', header: 'Valor Total', aggregationFn: (columnId:any, leafRows:any) => leafRows.reduce((sum:any, row:any) => sum + parseMonetaryValue(row.original.valor_total_package || "0"), 0), AggregatedCell: ({ cell }:any) => <span>Somatória: <span style={{ color: 'green', fontWeight: 'bold' }}>R$ {cell.getValue()}</span></span>, Footer: ({ table }:any) => {
-          const total = table.getFilteredRowModel().rows.reduce(
-            (sum:any, row:any) => sum + parseMonetaryValue(row.original.valor_total_package || "0"),
-            0
-          );
-          return (
-            <Stack>
+        const total = table.getFilteredRowModel().rows.reduce(
+          (sum:any, row:any) => sum + parseMonetaryValue(row.original.valor_total_package || "0"),
+          0
+        );
+        return (
+          <Stack>
               Total:
               <Box sx={{ color: 'green', fontWeight: 'bold' }}>
                 R$ {total.toFixed(2).replace(".", ",")}
@@ -236,6 +243,10 @@ export const GeneralMeasurements = () => {
     ];
   };
   
+  const levels = listConferenceData.length > 0 && listConferenceData[0].levels ? Object.keys(listConferenceData[0].levels) : [];
+  const group: string[] = levels.flatMap(level => [
+    `levels.${level}`
+  ]);
 
   const columns = useMemo(() => {
     if (selectedService === "local") {
@@ -244,7 +255,7 @@ export const GeneralMeasurements = () => {
       return serviceColumns;
     }
   }, [selectedService, listConferenceData]);
-
+  
   const table = useMaterialReactTable({
     columns,
     data: listConferenceData,
@@ -256,8 +267,12 @@ export const GeneralMeasurements = () => {
     onCreatingRowSave: handleCreatePackages,
     state: {
       isSaving,
+      grouping: ['service_name', ...group],
     },
-    initialState: { showColumnFilters: true },
+    initialState: { 
+      showColumnFilters: true,
+      expanded: true,
+    },
     renderTopToolbar: ({ table }) => (
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', padding: 2 }}>
         <Box
@@ -273,7 +288,7 @@ export const GeneralMeasurements = () => {
               bottom: 0,
             },
           }}
-        >
+          >
           <Typography variant="h5" component="div" gutterBottom>
             Medição
           </Typography>
@@ -297,7 +312,7 @@ export const GeneralMeasurements = () => {
               value={selectedMeasurement}
               label="Selecione Medição"
               onChange={(e) => setSelectedMeasurement(e.target.value)}
-            >
+              >
               {listConstructionsMeasurements.map((measurement) => (
                 <MenuItem key={measurement.id} value={measurement.id}>
                   {measurement.name}
@@ -312,7 +327,7 @@ export const GeneralMeasurements = () => {
               name="service-local"
               value={selectedService}
               onChange={(e) => setSelectedService(e.target.value)}
-            >
+              >
               <FormControlLabel value="service" control={<Radio />} label="Serviço" />
               <FormControlLabel value="local" control={<Radio />} label="Local" />
             </RadioGroup>
@@ -328,7 +343,7 @@ export const GeneralMeasurements = () => {
                   backgroundColor: 'rgba(0, 118, 190, 0.04)',
                 },
               }}
-            >
+              >
               <Download />
             </IconButton>
           </Tooltip>
@@ -353,7 +368,7 @@ export const GeneralMeasurements = () => {
     enablePagination: false,
     enableBottomToolbar: false,
   });
-
+  
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} lg={12}>

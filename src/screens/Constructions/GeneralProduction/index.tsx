@@ -48,9 +48,7 @@ export const GeneralProduction = () => {
   } = useConference();
   const [isSaving, setIsSaving] = useState(false);
 
-  console.log("listEmployeesReports", listEmployeesReports);
-
-  const [selectedMedicao, setSelectedMedicao] = useState("");
+  const [selectedMedicao, setSelectedMedicao] = useState<number>();
   const [selectedFuncionario, setSelectedFuncionario] = useState("");
   const [selectedEquipe, setSelectedEquipe] = useState<any[]>([]);
   const [tableData, setTableData] = useState<any[]>([]);
@@ -83,7 +81,7 @@ export const GeneralProduction = () => {
       await fetchTeams(selectedMedicao, funcionario);
       console.log("selectedMedicao:", selectedMedicao);
       console.log("funcionario:", funcionario);
-      const data = await getReportsWithEmployee(funcionario);
+      const data = await getReportsWithEmployee(selectedMedicao, funcionario);
       console.log("dataFuncionario:", data);
       setTableData(data);
     }
@@ -91,9 +89,18 @@ export const GeneralProduction = () => {
 
   const handleEquipeChange = async (event: any) => {
     const equipe = event.target.value;
+    console.log(">>>>>>>", equipe);
     setSelectedEquipe(equipe);
+    console.log("selectedEquipe:", selectedEquipe);
+    console.log("selectedFuncionario:", selectedFuncionario);
+    console.log("selectedMedicao:", selectedMedicao);
+
     if (selectedMedicao && selectedFuncionario && equipe) {
-      const data = await getReportsWithTeams(selectedFuncionario, equipe);
+      const data = await getReportsWithTeams(
+        selectedMedicao,
+        selectedFuncionario,
+        equipe
+      );
       console.log("dataEquipe:", data);
       setTableData(data);
     }
