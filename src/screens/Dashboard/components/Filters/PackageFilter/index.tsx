@@ -27,7 +27,14 @@ interface PackageOption {
 
 export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
   const { classes } = useStyles();
-  const { listPackages, getAllPackages } = useContext(DashboardContext);
+  const {
+    listPackages,
+    getAllPackages,
+    getDashboardChecklist,
+    getDashboardExecution,
+    getDashboardConstructionUpdate,
+    getInteractions,
+  } = useContext(DashboardContext);
 
   useEffect(() => {
     getAllPackages();
@@ -66,15 +73,16 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
   const selectedOptions = options.filter((option) => option.checked === true);
 
   const queryParams = selectedOptions
-    .map((option) => `package_name=${option.name}`)
+    .map((option) => `packages=${option.name}`)
     .join("&");
 
   const disableApplyButton = !Boolean(selectedOptions.length);
 
   const handleApply = () => {
-    // console.log(queryParams);
-    // getProfitability(queryParams);
-    // getDataTable(queryParams);
+    getDashboardChecklist(queryParams);
+    getDashboardExecution(queryParams);
+    getDashboardConstructionUpdate(queryParams);
+    getInteractions(queryParams);
     setStorageOptions();
     handleClose();
   };

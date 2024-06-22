@@ -80,7 +80,7 @@ export const GeneralDataForm = ({
         <TextField
           name="dateOfBirth"
           label="Data de Nascimento"
-          value={values.phoneNumber}
+          value={values.dateOfBirth}
           onChange={handleChange}
           variant="outlined"
           size="small"
