@@ -1,36 +1,87 @@
-import { useState } from "react";
-import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+/* eslint-disable no-extra-boolean-cast */
+import { useContext, useEffect, useState } from "react";
+import {
+  Autocomplete,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  TextField,
+} from "@mui/material";
 
-import { useStyles } from "../filterStyles";
+import { DashboardContext } from "../../../../../contexts/DashboardContext";
+
+import { KEY_DASHBOARD_USER_OPTIONS } from "../../../../../utils/consts";
+import { FilterOption } from "../../../../../types";
+
 import { ActionButtons } from "../components/ActionButtons";
+import { useStyles } from "../filterStyles";
 
 type UserFilterProps = {
   handleClose: () => void;
 };
 
+interface UserOption {
+  id: number;
+  name: string;
+}
+
 export const UserFilter = ({ handleClose }: UserFilterProps) => {
   const { classes } = useStyles();
+  const {
+    listUsers,
+    getAllUsers,
+    getDashboardChecklist,
+    getDashboardExecution,
+    getDashboardConstructionUpdate,
+    getInteractions,
+  } = useContext(DashboardContext);
 
-  const [options, setOptions] = useState({
-    option1: false,
-    option2: false,
-    option3: false,
-    option4: false,
-    option5: false,
-  });
+  useEffect(() => {
+    getAllUsers();
+  }, []);
 
-  const clearValues = () => {
-    setOptions({
-      option1: false,
-      option2: false,
-      option3: false,
-      option4: false,
-      option5: false,
-    });
+  const getStoredOptions = () => {
+    const userOptionsStorage = localStorage.getItem(KEY_DASHBOARD_USER_OPTIONS);
+    if (userOptionsStorage) {
+      const userOptionsParsed = JSON.parse(userOptionsStorage);
+      return userOptionsParsed;
+    }
+    return [];
   };
 
+  const defaultProps = {
+    options: listUsers,
+    getOptionLabel: (option: UserOption) => option.name,
+  };
+
+  const setStorageOptions = () => {
+    const userOptions = JSON.stringify(options);
+    localStorage.setItem(KEY_DASHBOARD_USER_OPTIONS, userOptions);
+  };
+
+  const [options, setOptions] = useState<FilterOption[]>(getStoredOptions());
+  const [value, setValue] = useState<UserOption | null>(null);
+
+  const clearValues = () => {
+    setOptions([]);
+    setValue(null);
+    localStorage.removeItem(KEY_DASHBOARD_USER_OPTIONS);
+  };
+
+  const selectedOptions = options.filter((option) => option.checked === true);
+
+  const queryParams = selectedOptions
+    .map((option) => `user_names=${option.name}`)
+    .join("&");
+
+  const disableApplyButton = !Boolean(selectedOptions.length);
+
   const handleApply = () => {
-    console.log(options);
+    getDashboardChecklist(queryParams);
+    getDashboardExecution(queryParams);
+    getDashboardConstructionUpdate(queryParams);
+    getInteractions(queryParams);
+    setStorageOptions();
     handleClose();
   };
 
@@ -38,84 +89,79 @@ export const UserFilter = ({ handleClose }: UserFilterProps) => {
     clearValues();
   };
 
+  const onSelectedOption = (value: UserOption | null) => {
+    if (value === null) {
+      setValue(value);
+      return;
+    }
+    setOptions((prevState) => {
+      const alreadyExist =
+        prevState.filter((option) => option.name === value.name).length > 0;
+      if (alreadyExist) {
+        return prevState;
+      }
+      return [
+        ...prevState,
+        {
+          name: value!.name,
+          checked: true,
+        },
+      ];
+    });
+    setValue(null);
+  };
+
   return (
     <div className={classes.container}>
       <div className={classes.content}>
+        <Autocomplete
+          {...defaultProps}
+          value={value}
+          onChange={(_, newValue: UserOption | null) => {
+            onSelectedOption(newValue);
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Pesquisar"
+              variant="outlined"
+              size="small"
+            />
+          )}
+          noOptionsText="Não há opções"
+          style={{ margin: "4px 0" }}
+        />
+
         <FormGroup>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={options.option1}
-                onChange={(e) =>
-                  setOptions((prevState) => ({
-                    ...prevState,
-                    option1: e.target.checked,
-                  }))
-                }
-              />
-            }
-            label="Pintura 01"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={options.option2}
-                onChange={(e) =>
-                  setOptions((prevState) => ({
-                    ...prevState,
-                    option2: e.target.checked,
-                  }))
-                }
-              />
-            }
-            label="Pintura 02"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={options.option3}
-                onChange={(e) =>
-                  setOptions((prevState) => ({
-                    ...prevState,
-                    option3: e.target.checked,
-                  }))
-                }
-              />
-            }
-            label="Pintura 03"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={options.option4}
-                onChange={(e) =>
-                  setOptions((prevState) => ({
-                    ...prevState,
-                    option4: e.target.checked,
-                  }))
-                }
-              />
-            }
-            label="Pintura 04"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={options.option5}
-                onChange={(e) =>
-                  setOptions((prevState) => ({
-                    ...prevState,
-                    option5: e.target.checked,
-                  }))
-                }
-              />
-            }
-            label="Pintura 05"
-          />
+          {options.map((option, index) => (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={option.checked}
+                  onChange={(e) =>
+                    setOptions((prevState) => {
+                      return prevState.map((prevItem, prevIndex) => {
+                        if (prevIndex === index) {
+                          return { ...prevItem, checked: e.target.checked };
+                        } else {
+                          return prevItem;
+                        }
+                      });
+                    })
+                  }
+                />
+              }
+              label={option.name}
+            />
+          ))}
         </FormGroup>
       </div>
 
-      <ActionButtons onApply={handleApply} onClear={handleClear} />
+      <ActionButtons
+        onApply={handleApply}
+        onClear={handleClear}
+        disableApply={disableApplyButton}
+      />
     </div>
   );
 };
