@@ -133,6 +133,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
       localStorage.setItem(KEY_SIGNED, JSON.stringify(true));
       setIsSigned(true);
       setLoading(false);
+
       return false;
     } catch (error) {
       console.log(error);

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import {
   MaterialReactTable,
@@ -12,6 +14,7 @@ import {
   Button,
   Checkbox,
   Chip,
+  Grid,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -34,6 +37,16 @@ import { ModalPackages } from "../../../components/Modal/ModalPackages";
 import SelectLine from "../../../components/SelectLine";
 import "./style.css";
 import { successMessage } from "../../../components/Messages";
+import { EmptyTableText } from "../../../components/Table/EmptyTableText";
+
+const queryClient = new QueryClient();
+
+export const ListLocal = () => (
+  <QueryClientProvider client={queryClient}>
+    <Locations />
+  </QueryClientProvider>
+);
+
 const Locations = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
@@ -501,6 +514,7 @@ const Locations = () => {
     enableRowActions: true,
     enableExpandAll: true,
     enablePagination: false,
+    renderEmptyRowsFallback: () => <EmptyTableText />,
     muiExpandButtonProps: ({ row, table }) => ({
       onClick: () => table.setExpanded({ [row.id]: !row.getIsExpanded() }),
       sx: {
@@ -637,7 +651,7 @@ const Locations = () => {
   });
 
   return (
-    <>
+    <Grid item lg={12} className={classes.container}>
       <MaterialReactTable table={table} />
       <ChecklistDrawer
         open={isDrawerOpen}
@@ -645,14 +659,6 @@ const Locations = () => {
         selectedLocalIds={selectedLocalIds}
       />
       <ModalPackages modalOpen={modalOpen} handleClose={handleClose} />
-    </>
+    </Grid>
   );
 };
-
-const queryClient = new QueryClient();
-
-export const ListLocal = () => (
-  <QueryClientProvider client={queryClient}>
-    <Locations />
-  </QueryClientProvider>
-);
