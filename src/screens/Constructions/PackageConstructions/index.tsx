@@ -10,7 +10,7 @@ import {
   MRT_ShowHideColumnsButton,
 } from "material-react-table";
 
-import { Box, Grid, Tooltip, useTheme, Typography, IconButton, MenuItem, Select, TextField } from "@mui/material";
+import { Box, Grid, Tooltip, useTheme, Typography, IconButton, TextField, Autocomplete } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { Add, Delete } from "@mui/icons-material";
@@ -39,6 +39,7 @@ export const PackageConstructions = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isAddingDiscipline, setIsAddingDiscipline] = useState(false);
   const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState<string>(''); 
   const { id } = useParams();
 
   useEffect(() => {
@@ -73,17 +74,28 @@ export const PackageConstructions = () => {
   const handleAddNewDiscipline = (newDiscipline:any) => {
     const newOption = { label: newDiscipline, value: newDiscipline };
     setDisciplineOptions([...disciplineOptions, newOption]);
-    setSelectedDiscipline(newOption.value);  // Ensure new option is set correctly
+    setSelectedDiscipline(newDiscipline);
     setIsAddingDiscipline(false);
-    console.log('New discipline added:', newOption);
   };
 
+
   const handleSelectChange = (e:any) => {
-    const value = e.target.value;
-    setSelectedDiscipline(value);
-    handleAddNewDiscipline(value);
-    console.log('Selected discipline:', value);
+    if(e){
+      const value = e.value;
+      setSelectedDiscipline(value);
+      handleAddNewDiscipline(value);
+    }
   };
+
+  const handleValueChange = (e:any) => {
+    if(e){
+      const value = e;
+      setSelectedDiscipline(value);
+      handleAddNewDiscipline(value);
+      console.log('Selected discipline:', value);
+    }
+  };
+  
 
   const handleDisable = async (packageId: number) => {
     try {
@@ -99,6 +111,7 @@ export const PackageConstructions = () => {
     exitEditingMode,
     row,
     values,
+    table
   }) => {
     if (!row?.original?.id) {
       errorMessage('Não foi possível identificar o pacote para atualização.');
@@ -120,18 +133,16 @@ export const PackageConstructions = () => {
     values,
     table,
   }) => {
-    const { 'discipline.name': disciplineName, id, ...restOfValues } = values;
+    const { id, ...restOfValues } = values;
 
     const adjustedValues = {
       ...restOfValues,
-      discipline: disciplineName, 
+      discipline: selectedDiscipline, 
     };
-
-    console.log('Adjusted values for API:', adjustedValues);
-
     await addConstructionPackage(adjustedValues);
     getAllConstructionPackages();
-    setIsAddingDiscipline(false);
+    setSelectedDiscipline(null)
+    table.setCreatingRow(null)
   };
 
   const baseBackgroundColor = theme.palette.mode === "dark" ? "#121212" : "#fff";
@@ -170,48 +181,22 @@ export const PackageConstructions = () => {
         header: "Disciplina",
         required: true,
         enableEditing: true,
-        editVariant: isAddingDiscipline ? 'text' : 'select',
-        editSelectOptions: disciplineOptions,
-        editSelectValue: selectedDiscipline,
-        editSelectOnChange: handleSelectChange,
-        muiEditTextFieldProps: {
-          onClick: () => {
-            setIsAddingDiscipline(true);
-          },
-          onChange: (e) => {
-            if (e.target.value) {
-              console.log('Text field value:', e.target.value);
-            }
-          },
-          onBlur: (e) => {
-            if (e.target.value) {
-              handleAddNewDiscipline(e.target.value);
-            }
-            setIsAddingDiscipline(false);
-          },
-        },
-        muiEditSelectProps: {
-          renderValue: (value:any) => value,
-          onChange: handleSelectChange,
-          onBlur: (e:any) => {
-            if (e.target.value) {
-              handleAddNewDiscipline(e.target.value);
-            }
-            setIsAddingDiscipline(false);
-          },
-          displayEmpty: true,
-          MenuProps: {
-            anchorOrigin: {
-              vertical: "bottom",
-              horizontal: "left",
-            },
-            transformOrigin: {
-              vertical: "top",
-              horizontal: "left",
-            },
-            getContentAnchorEl: null,
-          },
-        },
+        Edit: () => {
+          return disciplineOptions.length > 0 && <Autocomplete
+            disablePortal
+            value={selectedDiscipline}
+            onChange={(event: any, newValue: string | null) => {
+              handleSelectChange(newValue);
+            }}
+            onInputChange={(event: any, newValue: string | null) => {
+              handleValueChange(newValue);
+            }}
+            freeSolo
+            options={disciplineOptions}
+            sx={{ marginBottom: "16px"}}
+            renderInput={(params) => <TextField {...params}  label="Disciplina" variant="standard" />}
+          />;
+        }
       },
       {
         accessorKey: "package_value",
@@ -234,7 +219,7 @@ export const PackageConstructions = () => {
         header: "M.O/Total",
         enableEditing: false,
       },
-    ], [disciplineOptions, isAddingDiscipline, selectedDiscipline]
+    ], [disciplineOptions, selectedDiscipline]
   );
 
   const table = useMaterialReactTable({
@@ -311,7 +296,6 @@ export const PackageConstructions = () => {
             <IconButton
               onClick={() => {
                 table.setCreatingRow(true);
-                console.log('Creating new row with options:', disciplineOptions);
               }}
               sx={{
                 color: '#0076be',
