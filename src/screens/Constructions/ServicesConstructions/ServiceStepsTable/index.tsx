@@ -77,6 +77,7 @@ export const ServiceStepTable = ({ order }: any) => {
   const handleAddNewStep: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
     values,
     table,
+    exitCreatingMode
   }) => {
     try {
       const updatedValues = {
@@ -91,6 +92,7 @@ export const ServiceStepTable = ({ order }: any) => {
       console.error("Erro ao adicionar nova etapa:", error);
     }
     fetchPackageSteps();
+    exitCreatingMode();
   };
 
   const handleDeleteStep = async (stepId: number) => {
