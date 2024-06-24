@@ -170,7 +170,8 @@ export const RegisterConstruction = () => {
                   <Typography className={classes.title}>Nova Obra</Typography>
                 )}
 
-                {selectedTab === 2 || selectedTab === 3 ? (
+                {location.pathname.includes("dados-gerais") ||
+                location.pathname.includes("endereco") ? (
                   <Button
                     variant="contained"
                     color="primary"
