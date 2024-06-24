@@ -137,7 +137,7 @@ export const ServicesConstructions = () => {
   };
 
   const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] =
-    async ({ values }) => {
+    async ({ values, exitCreatingMode}) => {
       const { "unit.name": unitName, ...restOfValues } = values;
 
       const adjustedValues = {
@@ -149,6 +149,8 @@ export const ServicesConstructions = () => {
 
       await addConstructionService(adjustedValues);
       getAllConstructionServices();
+      exitCreatingMode();
+
     };
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(

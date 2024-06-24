@@ -69,11 +69,13 @@ export const MeasurementsConstructions = () => {
   };
 
   const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] =
-    async ({ values, table }) => {
+    async ({ values, table, exitCreatingMode }) => {
       // console.log("values for API:", values);
 
       await addConstructionMeasurements(values);
-      getAllConstructionsMeasurements();
+      getAllConstructionsMeasurements();  
+      exitCreatingMode();
+
     };
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
