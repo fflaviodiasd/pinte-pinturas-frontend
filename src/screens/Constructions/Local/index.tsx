@@ -256,10 +256,18 @@ const Locations = () => {
 
         for (const key in newItem) {
           if (key === "ids") {
-            originalItem[key].forEach((item: any, index) => {
-              originalItem.ids[index].name = newItem.ids[index].name;
-            });
+            if (originalItem[key]) {
+              originalItem[key].forEach((item: any, index) => {
+                originalItem.ids[index].name = newItem.ids[index].name;
+              });
+            } else {
+              originalItem.ids = newItem.ids;
+              originalItem.ids.forEach((item: any, index: number) => {
+                originalItem.ids[index].id = null;
+              });
+            }
           }
+          console.log(originalItem);
 
           if (key !== "id" && key !== "code" && key !== "ids") {
             originalItem[key] = newItem[key];
