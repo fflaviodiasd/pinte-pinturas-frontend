@@ -30,11 +30,8 @@ export const EmployeeFilter = ({ handleClose }: EmployeeFilterProps) => {
   const {
     listEmployees,
     getAllEmployees,
-    getDashboardChecklist,
-    getDashboardExecution,
     getDashboardConstructionUpdate,
-    getDashboardGeneralData,
-    getInteractions,
+    setAllQueriesFilters,
   } = useContext(DashboardContext);
 
   useEffect(() => {
@@ -80,11 +77,12 @@ export const EmployeeFilter = ({ handleClose }: EmployeeFilterProps) => {
   const disableApplyButton = !Boolean(selectedOptions.length);
 
   const handleApply = () => {
-    getDashboardChecklist(queryParams);
-    getDashboardExecution(queryParams);
+    setAllQueriesFilters((prevState) => ({
+      ...prevState,
+      employee: queryParams,
+    }));
+
     getDashboardConstructionUpdate(queryParams);
-    getDashboardGeneralData(queryParams);
-    getInteractions(queryParams);
     setStorageOptions();
     handleClose();
   };

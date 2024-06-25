@@ -27,14 +27,8 @@ interface MeasurementOption {
 
 export const MeasurementFilter = ({ handleClose }: MeasurementFilterProps) => {
   const { classes } = useStyles();
-  const {
-    listMeasurements,
-    getAllMeasurements,
-    getDashboardChecklist,
-    getDashboardExecution,
-    getDashboardConstructionUpdate,
-    getInteractions,
-  } = useContext(DashboardContext);
+  const { listMeasurements, getAllMeasurements, setAllQueriesFilters } =
+    useContext(DashboardContext);
 
   useEffect(() => {
     getAllMeasurements();
@@ -79,10 +73,11 @@ export const MeasurementFilter = ({ handleClose }: MeasurementFilterProps) => {
   const disableApplyButton = !Boolean(selectedOptions.length);
 
   const handleApply = () => {
-    getDashboardChecklist(queryParams);
-    getDashboardExecution(queryParams);
-    getDashboardConstructionUpdate(queryParams);
-    getInteractions(queryParams);
+    setAllQueriesFilters((prevState) => ({
+      ...prevState,
+      measurement: queryParams,
+    }));
+
     setStorageOptions();
     handleClose();
   };

@@ -40,12 +40,7 @@ type StatusFormValues = {
 
 export const StatusFilter = ({ handleClose }: StatusFilterProps) => {
   const { classes } = useStyles();
-  const {
-    getDashboardChecklist,
-    getDashboardExecution,
-    getDashboardConstructionUpdate,
-    getInteractions,
-  } = useContext(DashboardContext);
+  const { setAllQueriesFilters } = useContext(DashboardContext);
 
   const handleApply = (values: StatusFormValues) => {
     const statusOptionsFormatted = {
@@ -137,10 +132,11 @@ export const StatusFilter = ({ handleClose }: StatusFilterProps) => {
       .filter((query) => query)
       .join("&");
 
-    getDashboardChecklist(allQueries);
-    getDashboardExecution(allQueries);
-    getDashboardConstructionUpdate(allQueries);
-    getInteractions(allQueries);
+    setAllQueriesFilters((prevState) => ({
+      ...prevState,
+      status: allQueries,
+    }));
+
     handleClose();
   };
 

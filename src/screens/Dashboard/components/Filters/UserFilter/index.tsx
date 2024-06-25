@@ -27,14 +27,8 @@ interface UserOption {
 
 export const UserFilter = ({ handleClose }: UserFilterProps) => {
   const { classes } = useStyles();
-  const {
-    listUsers,
-    getAllUsers,
-    getDashboardChecklist,
-    getDashboardExecution,
-    getDashboardConstructionUpdate,
-    getInteractions,
-  } = useContext(DashboardContext);
+  const { listUsers, getAllUsers, setAllQueriesFilters } =
+    useContext(DashboardContext);
 
   useEffect(() => {
     getAllUsers();
@@ -77,10 +71,11 @@ export const UserFilter = ({ handleClose }: UserFilterProps) => {
   const disableApplyButton = !Boolean(selectedOptions.length);
 
   const handleApply = () => {
-    getDashboardChecklist(queryParams);
-    getDashboardExecution(queryParams);
-    getDashboardConstructionUpdate(queryParams);
-    getInteractions(queryParams);
+    setAllQueriesFilters((prevState) => ({
+      ...prevState,
+      user: queryParams,
+    }));
+
     setStorageOptions();
     handleClose();
   };
