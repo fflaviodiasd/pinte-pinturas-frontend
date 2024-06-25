@@ -27,14 +27,8 @@ interface PackageOption {
 
 export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
   const { classes } = useStyles();
-  const {
-    listPackages,
-    getAllPackages,
-    getDashboardChecklist,
-    getDashboardExecution,
-    getDashboardConstructionUpdate,
-    getInteractions,
-  } = useContext(DashboardContext);
+  const { listPackages, getAllPackages, setAllQueriesFilters } =
+    useContext(DashboardContext);
 
   useEffect(() => {
     getAllPackages();
@@ -79,10 +73,11 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
   const disableApplyButton = !Boolean(selectedOptions.length);
 
   const handleApply = () => {
-    getDashboardChecklist(queryParams);
-    getDashboardExecution(queryParams);
-    getDashboardConstructionUpdate(queryParams);
-    getInteractions(queryParams);
+    setAllQueriesFilters((prevState) => ({
+      ...prevState,
+      package: queryParams,
+    }));
+
     setStorageOptions();
     handleClose();
   };

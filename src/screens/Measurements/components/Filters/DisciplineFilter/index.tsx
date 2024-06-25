@@ -26,7 +26,7 @@ interface DisciplineOption {
 
 export const DisciplineFilter = ({ handleClose }: DisciplineFilterProps) => {
   const { classes } = useStyles();
-  const { listDisciplines, getAllDisciplines, getDataTable, getProfitability } =
+  const { listDisciplines, getAllDisciplines, setAllQueriesFilters } =
     useContext(MeasurementsContext);
 
   useEffect(() => {
@@ -72,9 +72,10 @@ export const DisciplineFilter = ({ handleClose }: DisciplineFilterProps) => {
   const disableApplyButton = !Boolean(selectedOptions.length);
 
   const handleApply = () => {
-    // console.log(queryParams);
-    getProfitability(queryParams);
-    getDataTable(queryParams);
+    setAllQueriesFilters((prevState) => ({
+      ...prevState,
+      discipline: queryParams,
+    }));
     setStorageOptions();
     handleClose();
   };

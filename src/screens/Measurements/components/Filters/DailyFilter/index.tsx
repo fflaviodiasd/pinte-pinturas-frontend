@@ -23,7 +23,7 @@ type DailyFilterProps = {
 
 export const DailyFilter = ({ handleClose }: DailyFilterProps) => {
   const { classes } = useStyles();
-  const { getDataTable, getProfitability } = useContext(MeasurementsContext);
+  const { setAllQueriesFilters } = useContext(MeasurementsContext);
 
   const [days, setDays] = useState("");
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,9 +55,11 @@ export const DailyFilter = ({ handleClose }: DailyFilterProps) => {
   const disableApplyButton = !Boolean(selectedOptions.length);
 
   const handleApply = () => {
-    // console.log(queryParams);
-    getProfitability(queryParams);
-    getDataTable(queryParams);
+    setAllQueriesFilters((prevState) => ({
+      ...prevState,
+      days: queryParams,
+    }));
+
     setStorageOptions();
     handleClose();
   };

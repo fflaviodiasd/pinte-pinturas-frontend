@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
 import {
   MaterialReactTable,
@@ -10,21 +12,31 @@ import {
   MRT_ShowHideColumnsButton,
 } from "material-react-table";
 
-import { Box, Grid, Tooltip, useTheme, Typography, IconButton, TextField, Autocomplete } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Tooltip,
+  Typography,
+  IconButton,
+  TextField,
+  Autocomplete,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useConstructions } from "../../../hooks/useConstructions";
 import { Add, Delete } from "@mui/icons-material";
 import { errorMessage, successMessage } from "../../../components/Messages";
-import {ServiceStepTable} from "./ServiceStepsTable";
+import { ServiceStepTable } from "./ServiceStepsTable";
+import { useStyles } from "./styles";
 
 interface DropdownOption {
   id: any;
   name: any;
   label: string;
-  value: any; 
+  value: any;
 }
 
 export const PackageConstructions = () => {
+  const { classes } = useStyles();
 
   const {
     listConstructionPackages,
@@ -33,13 +45,14 @@ export const PackageConstructions = () => {
     addConstructionPackage,
     getAllDisciplines,
   } = useConstructions();
-  const theme = useTheme();
 
-  const [disciplineOptions, setDisciplineOptions] = useState<any []>([]);
+  const [disciplineOptions, setDisciplineOptions] = useState<any[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isAddingDiscipline, setIsAddingDiscipline] = useState(false);
-  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
-  const [inputValue, setInputValue] = useState<string>(''); 
+  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(
+    null
+  );
+  const [inputValue, setInputValue] = useState<string>("");
   const { id } = useParams();
 
   useEffect(() => {
@@ -53,12 +66,14 @@ export const PackageConstructions = () => {
       try {
         const data = await getAllDisciplines();
         if (data && Array.isArray(data.results)) {
-          const options: DropdownOption[] = data.results.map((d: { name: any; }) => ({
-            label: d.name,
-            value: d.name,
-          }));
+          const options: DropdownOption[] = data.results.map(
+            (d: { name: any }) => ({
+              label: d.name,
+              value: d.name,
+            })
+          );
           setDisciplineOptions(options);
-          console.log('Discipline options fetched:', options);
+          console.log("Discipline options fetched:", options);
         } else {
           console.error("Formato inesperado da resposta:", data);
           setDisciplineOptions([]);
@@ -71,31 +86,29 @@ export const PackageConstructions = () => {
     fetchDisciplines();
   }, []);
 
-  const handleAddNewDiscipline = (newDiscipline:any) => {
+  const handleAddNewDiscipline = (newDiscipline: any) => {
     const newOption = { label: newDiscipline, value: newDiscipline };
     setDisciplineOptions([...disciplineOptions, newOption]);
     setSelectedDiscipline(newDiscipline);
     setIsAddingDiscipline(false);
   };
 
-
-  const handleSelectChange = (e:any) => {
-    if(e){
+  const handleSelectChange = (e: any) => {
+    if (e) {
       const value = e.value;
       setSelectedDiscipline(value);
       handleAddNewDiscipline(value);
     }
   };
 
-  const handleValueChange = (e:any) => {
-    if(e){
+  const handleValueChange = (e: any) => {
+    if (e) {
       const value = e;
       setSelectedDiscipline(value);
       handleAddNewDiscipline(value);
-      console.log('Selected discipline:', value);
+      console.log("Selected discipline:", value);
     }
   };
-  
 
   const handleDisable = async (packageId: number) => {
     try {
@@ -107,45 +120,42 @@ export const PackageConstructions = () => {
     }
   };
 
-  const handleEditPackages: MRT_TableOptions<any>['onEditingRowSave'] = async ({
+  const handleEditPackages: MRT_TableOptions<any>["onEditingRowSave"] = async ({
     exitEditingMode,
     row,
     values,
-    table
+    table,
   }) => {
     if (!row?.original?.id) {
-      errorMessage('Não foi possível identificar o pacote para atualização.');
+      errorMessage("Não foi possível identificar o pacote para atualização.");
       return;
     }
 
     try {
-      console.log('Salvando edições para o pacote:', values);
+      console.log("Salvando edições para o pacote:", values);
 
-      successMessage('Pacote atualizado com sucesso.');
-      exitEditingMode(); 
+      successMessage("Pacote atualizado com sucesso.");
+      exitEditingMode();
     } catch (error) {
-      errorMessage('Erro ao atualizar o pacote.');
-      console.error('Erro ao salvar as edições:', error);
+      errorMessage("Erro ao atualizar o pacote.");
+      console.error("Erro ao salvar as edições:", error);
     }
   };
 
-  const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] = async ({
-    values,
-    table,
-  }) => {
-    const { id, ...restOfValues } = values;
+  const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] =
+    async ({ values, table }) => {
+      const { id, ...restOfValues } = values;
 
-    const adjustedValues = {
-      ...restOfValues,
-      discipline: selectedDiscipline, 
+      const adjustedValues = {
+        ...restOfValues,
+        discipline: selectedDiscipline,
+      };
+      await addConstructionPackage(adjustedValues);
+      getAllConstructionPackages();
+      setSelectedDiscipline(null);
+      table.setCreatingRow(null);
     };
-    await addConstructionPackage(adjustedValues);
-    getAllConstructionPackages();
-    setSelectedDiscipline(null)
-    table.setCreatingRow(null)
-  };
 
-  const baseBackgroundColor = theme.palette.mode === "dark" ? "#121212" : "#fff";
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
@@ -160,7 +170,7 @@ export const PackageConstructions = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Ordem",
-        enableEditing: true, 
+        enableEditing: true,
         muiEditTextFieldProps: {
           required: true,
           type: "number",
@@ -171,7 +181,7 @@ export const PackageConstructions = () => {
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Nome do Pacote",
-        enableEditing: true, 
+        enableEditing: true,
         muiEditTextFieldProps: {
           required: true,
         },
@@ -182,21 +192,31 @@ export const PackageConstructions = () => {
         required: true,
         enableEditing: true,
         Edit: () => {
-          return disciplineOptions.length > 0 && <Autocomplete
-            disablePortal
-            value={selectedDiscipline}
-            onChange={(event: any, newValue: string | null) => {
-              handleSelectChange(newValue);
-            }}
-            onInputChange={(event: any, newValue: string | null) => {
-              handleValueChange(newValue);
-            }}
-            freeSolo
-            options={disciplineOptions}
-            sx={{ marginBottom: "16px"}}
-            renderInput={(params) => <TextField {...params}  label="Disciplina" variant="standard" />}
-          />;
-        }
+          return (
+            disciplineOptions.length > 0 && (
+              <Autocomplete
+                disablePortal
+                value={selectedDiscipline}
+                onChange={(event: any, newValue: string | null) => {
+                  handleSelectChange(newValue);
+                }}
+                onInputChange={(event: any, newValue: string | null) => {
+                  handleValueChange(newValue);
+                }}
+                freeSolo
+                options={disciplineOptions}
+                sx={{ marginBottom: "16px" }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Disciplina"
+                    variant="standard"
+                  />
+                )}
+              />
+            )
+          );
+        },
       },
       {
         accessorKey: "package_value",
@@ -219,7 +239,8 @@ export const PackageConstructions = () => {
         header: "M.O/Total",
         enableEditing: false,
       },
-    ], [disciplineOptions, selectedDiscipline]
+    ],
+    [disciplineOptions, selectedDiscipline]
   );
 
   const table = useMaterialReactTable({
@@ -229,17 +250,17 @@ export const PackageConstructions = () => {
     onCreatingRowSave: handleCreatePackages,
     onEditingRowSave: handleEditPackages,
     enableEditing: true,
-    editDisplayMode: 'row',
-    createDisplayMode: 'row',
+    editDisplayMode: "row",
+    createDisplayMode: "row",
     state: {
-      isSaving, 
+      isSaving,
     },
     renderRowActions: ({ row }) => (
       <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
         <IconButton
           aria-label="Excluir"
           onClick={() => handleDisable(row.original.id)}
-          sx={{ color: "#C5C7C8" }} 
+          sx={{ color: "#C5C7C8" }}
         >
           <Delete />
         </IconButton>
@@ -247,62 +268,82 @@ export const PackageConstructions = () => {
     ),
     initialState: { showColumnFilters: true },
     renderDetailPanel: ({ row }) => (
-      <Box sx={{ padding: '1rem' }}>
+      <Box sx={{ padding: "1rem" }}>
         <ServiceStepTable order={row.original.id} />
       </Box>
     ),
     renderTopToolbar: ({ table }) => (
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', padding: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "1rem",
+          padding: 2,
+        }}
+      >
         <Box
           sx={{
-            position: 'relative',
-            '&::after': {
+            position: "relative",
+            "&::after": {
               content: '""',
-              display: 'block',
-              width: '30%', 
-              height: '3px',
-              backgroundColor: '#1976d2', 
-              position: 'absolute',
+              display: "block",
+              width: "30%",
+              height: "3px",
+              backgroundColor: "#1976d2",
+              position: "absolute",
               bottom: 0,
-            }
+            },
           }}
         >
           <Typography variant="h5" component="div" gutterBottom>
             Pacotes Cadastrados
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <MRT_ToggleFiltersButton table={table} sx={{
-            color: '#0076be',
-            border: '1px solid #0076be',
-            borderRadius: '4px', 
-          }} />
-          <MRT_ShowHideColumnsButton table={table} sx={{
-            color: '#0076be',
-            border: '1px solid #0076be',
-            borderRadius: '4px', 
-          }} />
-          <MRT_ToggleDensePaddingButton table={table} sx={{
-            color: '#0076be',
-            border: '1px solid #0076be',
-            borderRadius: '4px', 
-          }} />
-          <MRT_ToggleFullScreenButton table={table} sx={{
-            color: '#0076be',
-            border: '1px solid #0076be',
-            borderRadius: '4px',
-          }} />
+        <Box sx={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+          <MRT_ToggleFiltersButton
+            table={table}
+            sx={{
+              color: "#0076be",
+              border: "1px solid #0076be",
+              borderRadius: "4px",
+            }}
+          />
+          <MRT_ShowHideColumnsButton
+            table={table}
+            sx={{
+              color: "#0076be",
+              border: "1px solid #0076be",
+              borderRadius: "4px",
+            }}
+          />
+          <MRT_ToggleDensePaddingButton
+            table={table}
+            sx={{
+              color: "#0076be",
+              border: "1px solid #0076be",
+              borderRadius: "4px",
+            }}
+          />
+          <MRT_ToggleFullScreenButton
+            table={table}
+            sx={{
+              color: "#0076be",
+              border: "1px solid #0076be",
+              borderRadius: "4px",
+            }}
+          />
           <Tooltip title="Adicionar Pacote">
             <IconButton
               onClick={() => {
                 table.setCreatingRow(true);
               }}
               sx={{
-                color: '#0076be',
-                border: '1px solid #0076be',
-                borderRadius: '4px', 
-                "&:hover": { 
-                  backgroundColor: 'rgba(0, 118, 190, 0.04)', 
+                color: "#0076be",
+                border: "1px solid #0076be",
+                borderRadius: "4px",
+                "&:hover": {
+                  backgroundColor: "rgba(0, 118, 190, 0.04)",
                 },
               }}
             >
@@ -324,14 +365,14 @@ export const PackageConstructions = () => {
       elevation: 0,
     },
     muiTableBodyProps: {
-      sx: (theme) => ({
-        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td': {
-          backgroundColor: "#FAFAFA",
-        },
-      }),
+      sx: {
+        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
+          {
+            backgroundColor: "#FAFAFA",
+          },
+      },
     },
     mrtTheme: (theme) => ({
-      baseBackgroundColor: baseBackgroundColor,
       draggingBorderColor: theme.palette.secondary.main,
     }),
     enablePagination: false,
@@ -339,10 +380,8 @@ export const PackageConstructions = () => {
   });
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} lg={12}>
-        <MaterialReactTable table={table} />
-      </Grid>
+    <Grid item lg={12} className={classes.container}>
+      <MaterialReactTable table={table} />
     </Grid>
   );
 };

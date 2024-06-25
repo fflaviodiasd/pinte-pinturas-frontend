@@ -9,6 +9,13 @@ export const useStyles = makeStyles()((theme) => {
     formContainer: {
       padding: theme.spacing(1),
     },
+    headerContainer: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      backgroundColor: "#FFF",
+      padding: theme.spacing(2),
+    },
     actionBar: {
       display: "flex",
       flexDirection: "row",

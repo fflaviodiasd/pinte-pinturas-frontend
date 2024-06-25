@@ -26,14 +26,8 @@ interface ChecklistOption {
 
 export const ChecklistFilter = ({ handleClose }: ChecklistFilterProps) => {
   const { classes } = useStyles();
-  const {
-    listChecklists,
-    getAllChecklists,
-    getDashboardChecklist,
-    getDashboardExecution,
-    getDashboardConstructionUpdate,
-    getInteractions,
-  } = useContext(DashboardContext);
+  const { listChecklists, getAllChecklists, setAllQueriesFilters } =
+    useContext(DashboardContext);
 
   useEffect(() => {
     getAllChecklists();
@@ -78,10 +72,11 @@ export const ChecklistFilter = ({ handleClose }: ChecklistFilterProps) => {
   const disableApplyButton = !Boolean(selectedOptions.length);
 
   const handleApply = () => {
-    getDashboardChecklist(queryParams);
-    getDashboardExecution(queryParams);
-    getDashboardConstructionUpdate(queryParams);
-    getInteractions(queryParams);
+    setAllQueriesFilters((prevState) => ({
+      ...prevState,
+      checklist: queryParams,
+    }));
+
     setStorageOptions();
     handleClose();
   };

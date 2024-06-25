@@ -17,7 +17,7 @@ import { useParams } from "react-router-dom";
 import { Breadcrumb } from "../../../components/Breadcrumb";
 import { useStyles } from "./styles";
 import { useCollaborators } from "../../../hooks/useCollaborators";
-import MoreVertIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from "@mui/icons-material/ExpandMore";
 import { Details } from "./Details";
 interface Collaborator {
   id: number;
@@ -49,8 +49,8 @@ const mockData = {
     "Antônio Carlos - EQ01 | EQ02",
     "João Carlos - EQ01 | EQ02",
     "Olavo Gomes - EQ01 | EQ02",
-    "Daniel Oliveira - EQ01"
-  ]
+    "Daniel Oliveira - EQ01",
+  ],
 };
 
 export function Indicators() {
@@ -59,7 +59,8 @@ export function Indicators() {
   const { classes } = useStyles();
   const { collaboratorData } = useCollaborators();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator>(mockCollaborators[0]);
+  const [selectedCollaborator, setSelectedCollaborator] =
+    useState<Collaborator>(mockCollaborators[0]);
   const [searchText, setSearchText] = useState<string>("");
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -76,45 +77,26 @@ export function Indicators() {
   };
 
   const filteredCollaborators = useMemo(() => {
-    return mockCollaborators.filter(collaborator =>
+    return mockCollaborators.filter((collaborator) =>
       collaborator.name.toLowerCase().includes(searchText.toLowerCase())
     );
   }, [searchText]);
 
   return (
-    <Card
-      variant="outlined"
-      sx={{ width: "100%", backgroundColor: "#eff1f3", borderBottom: "none" }}
+    <FormikStepper
+      initialValues={collaboratorData}
+      onSubmit={async (values) => {
+        console.log(values);
+      }}
     >
-      <CardContent>
-        <FormikStepper
-          initialValues={collaboratorData}
-          onSubmit={async (values) => {
-            console.log(values);
-          }}
-        >
-          <FormikStep label="Geral">
-            <Grid item xs={12} lg={12}>
-              <Paper className={classes.paper}>
-                <Grid container spacing={1} className={classes.formContainer}>
-                  <Details />
-                </Grid>
-              </Paper>
-            </Grid>
-          </FormikStep>
+      <FormikStep label="Geral">
+        <Details />
+      </FormikStep>
 
-          <FormikStep label="Checklist">
-            <Grid item xs={12} lg={12}>
-              <Paper className={classes.paper}>
-                <Grid container spacing={1} className={classes.formContainer}>
-                  {/* Conteúdo da aba Checklist */}
-                </Grid>
-              </Paper>
-            </Grid>
-          </FormikStep>
-        </FormikStepper>
-      </CardContent>
-    </Card>
+      <FormikStep label="Checklist">
+        {/* Conteúdo da aba Checklist */}
+      </FormikStep>
+    </FormikStepper>
   );
 }
 
@@ -142,7 +124,8 @@ export function FormikStepper({
   const { id: collaboratorId } = useParams<{ id: string }>();
   const isEditScreen = Boolean(collaboratorId);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator>(mockCollaborators[0]);
+  const [selectedCollaborator, setSelectedCollaborator] =
+    useState<Collaborator>(mockCollaborators[0]);
   const [searchText, setSearchText] = useState<string>("");
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -159,7 +142,7 @@ export function FormikStepper({
   };
 
   const filteredCollaborators = useMemo(() => {
-    return mockCollaborators.filter(collaborator =>
+    return mockCollaborators.filter((collaborator) =>
       collaborator.name.toLowerCase().includes(searchText.toLowerCase())
     );
   }, [searchText]);
@@ -179,13 +162,19 @@ export function FormikStepper({
     >
       {() => (
         <Form autoComplete="off">
-          <Grid item xs={12} lg={12}>
-            <Paper className={classes.paper}>
+          <Grid container>
+            <Grid
+              item
+              sm={12}
+              md={12}
+              lg={12}
+              className={classes.headerContainer}
+            >
               <Breadcrumb
-                breadcrumbPath1={"Obras"}
-                breadcrumbPath2={"Funcionários"}
-                breadcrumbPath3={"Indicadores"}
+                breadcrumbPath1="Obras"
+                breadcrumbPath2="Funcionários"
               />
+
               <div className={classes.actionBar}>
                 <div className={classes.actionBarLeftContent}>
                   <Typography
@@ -222,60 +211,193 @@ export function FormikStepper({
                   </Menu>
                 </div>
               </div>
-            </Paper>
-          </Grid>
+            </Grid>
 
-          <Grid container spacing={2} sx={{ marginTop: 1 }}>
-            <Grid item xs={12} sm={3} md={1}>
-            <Paper elevation={3} sx={{ padding: '8px' }}>
-              <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                  <Box sx={{ display: "flex", flexDirection: "column", paddingLeft: 2, textAlign: 'center'  }}>
-                    <Typography variant="subtitle2" fontWeight={600} color={"#a1a1a1"}>Ranking</Typography>
-                    <Typography variant="h6" fontWeight={700}>{mockData.ranking}</Typography>
-                    <Typography variant="body2" color={"#a1a1a1"}>Atual</Typography>
+            <Grid item xs={12} sm={3} md={1} lg={1} style={{ padding: 12 }}>
+              <Paper elevation={3} sx={{ padding: "8px" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      paddingLeft: 2,
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight={600}
+                      color={"#a1a1a1"}
+                    >
+                      Ranking
+                    </Typography>
+                    <Typography variant="h6" fontWeight={700}>
+                      {mockData.ranking}
+                    </Typography>
+                    <Typography variant="body2" color={"#a1a1a1"}>
+                      Atual
+                    </Typography>
                   </Box>
                 </Box>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={5} md={3}>
-              <Paper elevation={3} sx={{ padding: '8px' }}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                  <Box sx={{ display: "flex", flexDirection: "column", borderRight: '1px solid #ccc', paddingRight: 2, textAlign: 'center' }}>
-                    <Typography variant="subtitle2" fontWeight={600} color={"#a1a1a1"}>Empresa</Typography>
-                    <Typography variant="h6" fontWeight={700}>{mockData.company}</Typography>
-                    <Typography variant="body2" color={"#a1a1a1"}>{mockData.companyAvg}</Typography>
+
+            <Grid item xs={12} sm={5} md={3} lg={3} style={{ padding: 12 }}>
+              <Paper elevation={3} sx={{ padding: "8px" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      borderRight: "1px solid #ccc",
+                      paddingRight: 2,
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight={600}
+                      color={"#a1a1a1"}
+                    >
+                      Empresa
+                    </Typography>
+                    <Typography variant="h6" fontWeight={700}>
+                      {mockData.company}
+                    </Typography>
+                    <Typography variant="body2" color={"#a1a1a1"}>
+                      {mockData.companyAvg}
+                    </Typography>
                   </Box>
-                  <Box sx={{ display: "flex", flexDirection: "column", paddingLeft: 2, textAlign: 'center'  }}>
-                    <Typography variant="subtitle2" fontWeight={600} color={"#a1a1a1"}>Funcionário</Typography>
-                    <Typography variant="h6" fontWeight={700}>{mockData.employee}</Typography>
-                    <Typography variant="body2" color={"#a1a1a1"}>{mockData.employeeAvg}</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      paddingLeft: 2,
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight={600}
+                      color={"#a1a1a1"}
+                    >
+                      Funcionário
+                    </Typography>
+                    <Typography variant="h6" fontWeight={700}>
+                      {mockData.employee}
+                    </Typography>
+                    <Typography variant="body2" color={"#a1a1a1"}>
+                      {mockData.employeeAvg}
+                    </Typography>
                   </Box>
                 </Box>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={5} md={2}>
-              <Paper elevation={3} sx={{ padding: '8px' }}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                  <Box sx={{ display: "flex", flexDirection: "column", borderRight: '1px solid #ccc', paddingRight: 2, textAlign: 'center'  }}>
-                    <Typography variant="subtitle2" fontWeight={600} color={"#a1a1a1"}>Checklists</Typography>
-                    <Typography variant="h6" fontWeight={700}>{mockData.checklists}</Typography>
-                    <Typography variant="body2" color={"#a1a1a1"}>{mockData.checklistsAvg}</Typography>
+
+            <Grid item xs={12} sm={5} md={2} lg={2} style={{ padding: 12 }}>
+              <Paper elevation={3} sx={{ padding: "8px" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      borderRight: "1px solid #ccc",
+                      paddingRight: 2,
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight={600}
+                      color={"#a1a1a1"}
+                    >
+                      Checklists
+                    </Typography>
+                    <Typography variant="h6" fontWeight={700}>
+                      {mockData.checklists}
+                    </Typography>
+                    <Typography variant="body2" color={"#a1a1a1"}>
+                      {mockData.checklistsAvg}
+                    </Typography>
                   </Box>
-                  <Box sx={{ display: "flex", flexDirection: "column", paddingLeft: 2, textAlign: 'center' }}>
-                    <Typography variant="subtitle2" fontWeight={600} color={"#a1a1a1"}>Pacotes</Typography>
-                    <Typography variant="h6" fontWeight={700}>{mockData.packages}</Typography>
-                    <Typography variant="body2" color={"#a1a1a1"}>{mockData.packagesAvg}</Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      paddingLeft: 2,
+                      textAlign: "center",
+                    }}
+                  >
+                    <Typography
+                      variant="subtitle2"
+                      fontWeight={600}
+                      color={"#a1a1a1"}
+                    >
+                      Pacotes
+                    </Typography>
+                    <Typography variant="h6" fontWeight={700}>
+                      {mockData.packages}
+                    </Typography>
+                    <Typography variant="body2" color={"#a1a1a1"}>
+                      {mockData.packagesAvg}
+                    </Typography>
                   </Box>
                 </Box>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={6} md={6}>
-              <Paper elevation={3} sx={{ padding: '8px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <CardContent sx={{ padding: "8px", maxHeight: '100px', overflow: 'auto' }}>
-                  <Typography variant="subtitle2"  color={"#a1a1a1"}>Companheiros de Equipe</Typography>
-                  <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', maxHeight: '100px', overflowX: 'auto' }}>
+
+            <Grid item xs={12} sm={6} md={6} lg={6} style={{ padding: 12 }}>
+              <Paper
+                elevation={3}
+                sx={{
+                  padding: "8px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <CardContent
+                  sx={{ padding: "8px", maxHeight: "100px", overflow: "auto" }}
+                >
+                  <Typography variant="subtitle2" color={"#a1a1a1"}>
+                    Companheiros de Equipe
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      maxHeight: "100px",
+                      overflowX: "auto",
+                    }}
+                  >
                     {mockData.teamMembers.map((member, index) => (
-                      <Typography key={index} variant="body2" fontWeight={300}sx={{ marginRight: 2, whiteSpace: 'nowrap' }}>•{member}</Typography>
+                      <Typography
+                        key={index}
+                        variant="body2"
+                        fontWeight={300}
+                        sx={{ marginRight: 2, whiteSpace: "nowrap" }}
+                      >
+                        •{member}
+                      </Typography>
                     ))}
                   </Box>
                 </CardContent>
@@ -283,12 +405,11 @@ export function FormikStepper({
             </Grid>
           </Grid>
 
-          <Box sx={{ display: "flex", margin: "1rem" }}>
+          <Grid item lg={12} style={{ display: "flex", paddingLeft: 12 }}>
             {childrenArray.map((child, index) => (
               <Box
                 key={child.props.label}
                 sx={{
-                  margin: "1rem",
                   height: "100%",
                   borderRadius: "0.5rem 0.5rem 0px 0px",
                   padding: "0.25rem 1rem",
@@ -305,7 +426,7 @@ export function FormikStepper({
                 {child.props.label}
               </Box>
             ))}
-          </Box>
+          </Grid>
           {currentChild}
         </Form>
       )}

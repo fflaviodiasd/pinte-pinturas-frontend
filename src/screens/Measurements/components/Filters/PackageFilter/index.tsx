@@ -26,7 +26,7 @@ interface PackageOption {
 
 export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
   const { classes } = useStyles();
-  const { listPackages, getAllPackages, getDataTable, getProfitability } =
+  const { listPackages, getAllPackages, setAllQueriesFilters } =
     useContext(MeasurementsContext);
 
   useEffect(() => {
@@ -70,9 +70,10 @@ export const PackageFilter = ({ handleClose }: PackageFilterProps) => {
   const disableApplyButton = !Boolean(selectedOptions.length);
 
   const handleApply = () => {
-    // console.log(queryParams);
-    getProfitability(queryParams);
-    getDataTable(queryParams);
+    setAllQueriesFilters((prevState) => ({
+      ...prevState,
+      package: queryParams,
+    }));
     setStorageOptions();
     handleClose();
   };

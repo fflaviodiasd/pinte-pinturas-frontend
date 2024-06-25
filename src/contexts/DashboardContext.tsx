@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
@@ -153,6 +154,16 @@ type DashboardContextProps = {
   listInteractions: Interaction[];
   getInteractions: (filters?: string) => Promise<void>;
   variableLevels: string[];
+  setAllQueriesFilters: Dispatch<
+    SetStateAction<{
+      checklist: string;
+      measurement: string;
+      package: string;
+      status: string;
+      user: string;
+      employee: string;
+    }>
+  >;
 };
 
 const DashboardContext = createContext<DashboardContextProps>(
@@ -183,6 +194,27 @@ const DashboardContextProvider = ({
           name: "",
         }
   );
+
+  const [allQueriesFilters, setAllQueriesFilters] = useState({
+    checklist: "",
+    measurement: "",
+    package: "",
+    status: "",
+    user: "",
+    employee: "",
+  });
+
+  useEffect(() => {
+    const joinedQueries = Object.values(allQueriesFilters)
+      .filter((query) => query)
+      .join("&");
+    // console.log("joinedQueries", joinedQueries);
+
+    getDashboardChecklist(joinedQueries);
+    getDashboardExecution(joinedQueries);
+    getDashboardConstructionUpdate(joinedQueries);
+    getInteractions(joinedQueries);
+  }, [allQueriesFilters]);
 
   const [listConstructions, setListConstructions] = useState<Item[]>([]);
   const getAllConstructions = async () => {
@@ -490,6 +522,7 @@ const DashboardContextProvider = ({
         listInteractions,
         getInteractions,
         variableLevels,
+        setAllQueriesFilters,
       }}
     >
       {children}

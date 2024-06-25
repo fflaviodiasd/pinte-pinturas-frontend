@@ -24,7 +24,7 @@ export const ProfitabilityFilter = ({
   handleClose,
 }: ProfitabilityFilterProps) => {
   const { classes } = useStyles();
-  const { getDataTable, getProfitability } = useContext(MeasurementsContext);
+  const { setAllQueriesFilters } = useContext(MeasurementsContext);
 
   const [fieldType, setFieldType] = useState(1);
 
@@ -83,8 +83,10 @@ export const ProfitabilityFilter = ({
   };
 
   const handleApply = () => {
-    getProfitability(getQueryParams());
-    getDataTable(getQueryParams());
+    setAllQueriesFilters((prevState) => ({
+      ...prevState,
+      profitability: getQueryParams(),
+    }));
     handleClose();
   };
 

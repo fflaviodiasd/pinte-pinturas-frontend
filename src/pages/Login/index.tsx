@@ -34,8 +34,13 @@ export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const signIn = async (values: LoginData) => {
-    const shouldOpen = await login(values);
-    setIsModalOpen(shouldOpen);
+    try {
+      const shouldOpen = await login(values);
+      navigate("/obras/listagem");
+      setIsModalOpen(shouldOpen);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

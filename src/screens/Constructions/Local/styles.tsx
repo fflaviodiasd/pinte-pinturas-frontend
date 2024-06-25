@@ -1,6 +1,6 @@
 import { makeStyles } from "tss-react/mui";
 
-export const useStyles = makeStyles()(() => ({
+export const useStyles = makeStyles()((theme) => ({
   underlinedTitle: {
     padding: "1rem",
     color: "#2E3132",
@@ -11,5 +11,10 @@ export const useStyles = makeStyles()(() => ({
   },
   underlinedBorder: {
     borderBottom: "2px solid #0076BE",
+  },
+  container: {
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
 }));

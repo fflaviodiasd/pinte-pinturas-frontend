@@ -20,7 +20,7 @@ type PeriodFilterProps = {
 
 export const PeriodFilter = ({ handleClose }: PeriodFilterProps) => {
   const { classes } = useStyles();
-  const { getDataTable, getProfitability } = useContext(MeasurementsContext);
+  const { setAllQueriesFilters } = useContext(MeasurementsContext);
 
   const [value, onChange] = useState<Value>([new Date(), new Date()]);
 
@@ -33,8 +33,10 @@ export const PeriodFilter = ({ handleClose }: PeriodFilterProps) => {
         startDate
       )}&end_date=${formatDate(endDate)}`;
 
-      getProfitability(queryParams);
-      getDataTable(queryParams);
+      setAllQueriesFilters((prevState) => ({
+        ...prevState,
+        period: queryParams,
+      }));
       handleClose();
     }
   };
