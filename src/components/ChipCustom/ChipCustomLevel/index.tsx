@@ -63,8 +63,8 @@ export const ChipCustomLevel = ({
         successMessage("Nível deletado com sucesso!");
         setIsDeleted(true);
         setControl(response);
-      } catch (error) {
-        errorMessage("Erro ao deletar nível!");
+      } catch (error: any) {
+        errorMessage(error?.response.data.detail);
         console.error("Erro ao deletar nivel:", error);
       }
     }
@@ -95,7 +95,6 @@ export const ChipCustomLevel = ({
                 setEditable(false);
                 clearInterval(time);
               }, 200);
-              console.log("Perdeu o foco");
             }}
           />
           <StyledChipButtonDel onClick={handleChipDeleteLevel}>
