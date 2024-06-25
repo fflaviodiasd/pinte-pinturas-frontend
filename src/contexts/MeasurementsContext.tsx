@@ -43,6 +43,15 @@ type MeasurementsContextProps = {
       name: string;
     }>
   >;
+  setAllQueriesFilters: Dispatch<
+    SetStateAction<{
+      days: string;
+      discipline: string;
+      package: string;
+      period: string;
+      profitability: string;
+    }>
+  >;
 };
 
 type Construction = {
@@ -106,6 +115,24 @@ const MeasurementsContextProvider = ({
       getProfitability();
     }
   }, [selectedConstruction]);
+
+  const [allQueriesFilters, setAllQueriesFilters] = useState({
+    days: "",
+    discipline: "",
+    package: "",
+    period: "",
+    profitability: "",
+  });
+
+  useEffect(() => {
+    const joinedQueries = Object.values(allQueriesFilters)
+      .filter((query) => query)
+      .join("&");
+    // console.log("joinedQueries", joinedQueries);
+
+    getProfitability(joinedQueries);
+    getDataTable(joinedQueries);
+  }, [allQueriesFilters]);
 
   const [listConstructions, setListConstructions] = useState<Construction[]>(
     []
@@ -263,6 +290,7 @@ const MeasurementsContextProvider = ({
         getAllPackages,
         listDisciplines,
         getAllDisciplines,
+        setAllQueriesFilters,
       }}
     >
       {children}
