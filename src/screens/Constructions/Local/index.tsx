@@ -425,10 +425,10 @@ const Locations = () => {
       const lastItem = Number(
         listConstructionsLocations[
           listConstructionsLocations.length - 1
-        ].code.slice(-2)
+        ]?.code.slice(-2)
       );
 
-      const code = generateNextId(lastItem + i + 1);
+      const code = generateNextId(lastItem ? lastItem + i + 1 : 1);
       const control = {};
       dynamicColumns.forEach((column, index) => {
         if (index >= 2) control[column.id] = "";
