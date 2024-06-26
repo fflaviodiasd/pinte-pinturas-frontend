@@ -96,6 +96,7 @@ export const AppRoutes = () => {
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
           <Route path="/dashboard/acompanhamento" element={<Dashboard />} />
           <Route path="/dashboard/dados-gerais" element={<Dashboard />} />
+          <Route path="/dashboard/layout" element={<Dashboard />} />
 
           <Route
             path="/apontamentos/dados-do-sistema"
