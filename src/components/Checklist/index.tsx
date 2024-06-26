@@ -18,6 +18,8 @@ interface Checklist {
 interface ChecklistComponentProps {
   getChecklistEndpoint?: string;
   postChecklistEndpoint?: string;
+  control?: ay;
+  setControl?: any;
   localId?: number;
 }
 
@@ -32,6 +34,8 @@ const STATUS_COLORS: { [key: string]: string } = {
 export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
   getChecklistEndpoint,
   localId,
+  setControl,
+  control,
 }) => {
   const [checklist, setChecklist] = useState<Checklist[]>([]);
   const [isInputVisible, setIsInputVisible] = useState(false);
@@ -64,7 +68,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
     };
 
     fetchChecklist();
-  }, [getChecklistEndpoint, localId, valueActual]);
+  }, [getChecklistEndpoint, localId, valueActual, control]);
 
   useEffect(() => {
     const fetchTooltipData = async () => {
@@ -226,6 +230,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
                 chipId={editingChipId}
                 hideOrdinal={true}
                 checklistPackage={checklist.package?.id}
+                setControl={setControl}
               />
             </div>
           </Tooltip>

@@ -43,6 +43,7 @@ export const StyledChipLabelNumber = styled.input<Props>`
   width: 22px;
   border: none;
   padding-left: 7px;
+  outline: none;
 `;
 
 export const StyledChipButtonDel = styled.button`

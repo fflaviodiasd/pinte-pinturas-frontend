@@ -16,12 +16,14 @@ interface Level {
 interface LevelComponentProps {
   getLevelEndpoint?: string;
   postLevelEndpoint?: string;
+  control?: any;
   setControl?: any;
 }
 
 export const LevelComponent: React.FC<LevelComponentProps> = ({
   getLevelEndpoint,
   setControl,
+  control,
 }) => {
   const [level, setLevel] = useState<Level[]>([]);
   const [isInputVisible, setIsInputVisible] = useState(false);
@@ -43,9 +45,8 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
         console.error("Erro ao buscar níveis:", error);
       }
     };
-
     fetchLevel();
-  }, [getLevelEndpoint, id, valueActual]);
+  }, [getLevelEndpoint, id, valueActual, control]);
 
   const handleAddLevelClick = () => {
     setIsInputVisible(true);

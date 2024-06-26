@@ -537,7 +537,11 @@ const Locations = () => {
       return (
         <div>
           {shouldRenderChecklist && (
-            <ChecklistComponent localId={row.original.id} />
+            <ChecklistComponent
+              setControl={setControl}
+              control={control}
+              localId={row.original.id}
+            />
           )}
         </div>
       );
@@ -636,7 +640,7 @@ const Locations = () => {
         <div style={{ display: "flex", justifyContent: "right" }}>
           <StatusPanel />
         </div>
-        <LevelComponent setControl={setControl} />
+        <LevelComponent setControl={setControl} control={control} />
         <Checkbox
           onClick={handleOpenSnackbar}
           checked={selectAllChecked}

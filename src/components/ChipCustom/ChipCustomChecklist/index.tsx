@@ -25,6 +25,7 @@ interface ChipCustomChecklistProps {
   chipId?: number | null;
   hideOrdinal?: boolean;
   checklistPackage?: any;
+  setControl?: any;
   onCreateChecklist?: () => void;
 }
 
@@ -44,6 +45,7 @@ export const ChipCustomChecklist = ({
   hideOrdinal = false,
   checklistPackage,
   onCreateChecklist,
+  setControl,
 }: ChipCustomChecklistProps) => {
   const [editingValue, setEditingValue] = useState(value);
   const [isFocused, setIsFocused] = useState(false);
@@ -65,7 +67,7 @@ export const ChipCustomChecklist = ({
     } else {
       try {
         const response = await api.delete(`checklists/${chipId}/`);
-        console.log(response);
+        setControl(response);
         successMessage("Checklist deletado com sucesso!");
       } catch (error) {
         errorMessage("Erro ao deletar checklist!");
@@ -81,6 +83,7 @@ export const ChipCustomChecklist = ({
       try {
         await api.put(`checklists/${chipId}/`, { order: orderValue });
         successMessage("Ordem do checklist atualizada com sucesso!");
+        event.target.blur();
       } catch (error) {
         errorMessage("Erro ao atualizar ordem do checklist!");
         console.error("Erro ao atualizar ordem do checklist:", error);
@@ -107,7 +110,10 @@ export const ChipCustomChecklist = ({
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
           />
-          <StyledChipButtonDel onClick={handleChipDeleteChecklist}>
+          <StyledChipButtonDel
+            type="button"
+            onClick={handleChipDeleteChecklist}
+          >
             x
           </StyledChipButtonDel>
         </div>
