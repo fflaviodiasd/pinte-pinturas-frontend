@@ -97,7 +97,7 @@ export const ChipCustomLevel = ({
               }, 200);
             }}
           />
-          <StyledChipButtonDel onClick={handleChipDeleteLevel}>
+          <StyledChipButtonDel type="button" onClick={handleChipDeleteLevel}>
             x
           </StyledChipButtonDel>
         </div>
