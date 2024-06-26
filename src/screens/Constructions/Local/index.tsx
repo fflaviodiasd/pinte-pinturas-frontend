@@ -443,7 +443,7 @@ const Locations = () => {
     ]);
     setTimeout(() => {
       setDisabledButton(false);
-    }, 1000);
+    }, 300);
   };
 
   useEffect(() => {
@@ -598,6 +598,7 @@ const Locations = () => {
                     fontWeight: 600,
                     color: disabledButton ? "#0076BE" : "",
                     border: disabledButton ? "1px solid #0076BE" : "",
+                    transition: "0.3s ease-in-out",
                   }}
                 >
                   Adicionar Linha
