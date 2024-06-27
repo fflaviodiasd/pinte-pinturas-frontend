@@ -4,11 +4,20 @@ import { Chip, TextField } from "@mui/material";
 import { InputMask } from "../../../InputMask";
 import { errorMessage, successMessage } from "../../../Messages";
 
-export function HistoryInfo({ checklistId }: any) {
-  const [checklistHistory, setChecklistHistory] = useState([]);
+interface ChecklistItem {
+  status: string;
+  histories: string;
+}
+
+interface HistoryInfoProps {
+  checklistId: string;
+}
+
+export function HistoryInfo({ checklistId }: HistoryInfoProps) {
+  const [checklistHistory, setChecklistHistory] = useState<ChecklistItem[]>([]);
   const [editMode, setEditMode] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [editedDate, setEditedDate] = useState("");
+  const [selectedItem, setSelectedItem] = useState<ChecklistItem | null>(null);
+  const [editedDates, setEditedDates] = useState<{ [key: string]: string }>({});
 
   const getChecklistsHistories = useCallback(async () => {
     try {
@@ -32,9 +41,13 @@ export function HistoryInfo({ checklistId }: any) {
     ENTREGUE: "#512DA8",
   };
 
-  const handleEditClick = (item: any) => {
+  const handleEditClick = (item: ChecklistItem, status: string) => {
     setSelectedItem(item);
-    setEditedDate(item.histories.written_date);
+    const newEditedDates = {
+      ...editedDates,
+      [status]: item.histories.written_date || "",
+    };
+    setEditedDates(newEditedDates);
     setEditMode(true);
   };
 
@@ -42,15 +55,23 @@ export function HistoryInfo({ checklistId }: any) {
     setEditMode(false);
   };
 
-  const handleKeyDown = async (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = async (
+    e: React.KeyboardEvent<HTMLDivElement>,
+    status: string
+  ) => {
     if (e.key === "Enter") {
       setEditMode(false);
-      await updateChecklistStatus(selectedItem?.status, editedDate);
+      await updateChecklistStatus(status, editedDates[status]);
     }
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditedDate(e.target.value);
+  const handleDateChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    status: string
+  ) => {
+    const newDate = e.target.value;
+    const newEditedDates = { ...editedDates, [status]: newDate };
+    setEditedDates(newEditedDates);
   };
 
   const updateChecklistStatus = async (status: string, date: string) => {
@@ -71,11 +92,7 @@ export function HistoryInfo({ checklistId }: any) {
   return (
     <table>
       <thead>
-        <tr
-          style={{
-            color: "#2E3132",
-          }}
-        >
+        <tr style={{ color: "#2E3132" }}>
           <th>Etapa</th>
           <th>Digitada</th>
           <th>Sistema</th>
@@ -83,54 +100,82 @@ export function HistoryInfo({ checklistId }: any) {
         </tr>
       </thead>
       <tbody>
-        {Object.keys(STATUS_COLORS).map((status: string, index: number) => (
-          <tr key={index}>
-            <td>
-              <Chip
-                label={status}
-                style={{
-                  backgroundColor: STATUS_COLORS[status],
-                  color: "#FFFFFF",
-                  fontFamily: "Open Sans",
-                  fontWeight: 600,
-                }}
-              />
-            </td>
-            {checklistHistory.map(
-              (item: any, itemIndex: number) =>
-                item.status === status && (
-                  <React.Fragment key={itemIndex}>
-                    <td>
-                      {editMode && selectedItem === item ? (
-                        <TextField
-                          style={{ width: "80%" }}
-                          value={editedDate}
-                          onChange={handleDateChange}
-                          onKeyDown={handleKeyDown}
-                          onBlur={handleBlur}
-                          variant="outlined"
-                          size="small"
-                          InputProps={{
-                            inputComponent: InputMask as any,
-                          }}
-                        />
-                      ) : (
-                        <span onClick={() => handleEditClick(item)}>
-                          {item.histories.written_date}
-                        </span>
-                      )}
-                    </td>
-                    <td>
-                      <span>{item.histories.marking_action_date}</span>
-                    </td>
-                    <td>
-                      <span>{item.histories.responsible_action}</span>
-                    </td>
-                  </React.Fragment>
-                )
-            )}
-          </tr>
-        ))}
+        {Object.keys(STATUS_COLORS).map((status: string, index: number) => {
+          const filteredItems = checklistHistory.filter(
+            (item: ChecklistItem) => item.status === status
+          );
+
+          return (
+            <tr key={index}>
+              <td>
+                <Chip
+                  label={status}
+                  style={{
+                    backgroundColor: STATUS_COLORS[status],
+                    color: "#FFFFFF",
+                    fontFamily: "Open Sans",
+                    fontWeight: 600,
+                  }}
+                />
+              </td>
+              <td>
+                {filteredItems.length > 0 ? (
+                  filteredItems.map(
+                    (item: ChecklistItem, itemIndex: number) => (
+                      <React.Fragment key={itemIndex}>
+                        {editMode && selectedItem === item ? (
+                          <TextField
+                            style={{ width: "80%" }}
+                            value={editedDates[status] || ""}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>
+                            ) => handleDateChange(e, status)}
+                            onKeyDown={(e) => handleKeyDown(e, status)}
+                            onBlur={handleBlur}
+                            variant="outlined"
+                            size="small"
+                            InputProps={{
+                              inputComponent: InputMask as any,
+                            }}
+                          />
+                        ) : (
+                          <span onClick={() => handleEditClick(item, status)}>
+                            {item.histories.written_date || ""}
+                          </span>
+                        )}
+                      </React.Fragment>
+                    )
+                  )
+                ) : (
+                  <TextField
+                    style={{ width: "80%" }}
+                    value={editedDates[status] || ""}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleDateChange(e, status)
+                    }
+                    onKeyDown={(e) => handleKeyDown(e, status)}
+                    onBlur={handleBlur}
+                    variant="outlined"
+                    size="small"
+                    InputProps={{
+                      inputComponent: InputMask as any,
+                    }}
+                  />
+                )}
+              </td>
+              <td>
+                {filteredItems.length > 0 && (
+                  <span>{filteredItems[0].histories.marking_action_date}</span>
+                )}
+              </td>
+              <td>
+                {filteredItems.length > 0 && (
+                  <span>{filteredItems[0].histories.responsible_action}</span>
+                )}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
