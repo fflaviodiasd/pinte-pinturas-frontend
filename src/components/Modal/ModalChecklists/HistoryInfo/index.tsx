@@ -4,9 +4,15 @@ import { Chip, TextField } from "@mui/material";
 import { InputMask } from "../../../InputMask";
 import { errorMessage, successMessage } from "../../../Messages";
 
+interface History {
+  written_date: string;
+  marking_action_date: string;
+  responsible_action: string;
+}
+
 interface ChecklistItem {
   status: string;
-  histories: string;
+  histories: History;
 }
 
 interface HistoryInfoProps {
