@@ -72,6 +72,7 @@ export function Indicators() {
     setSelectedCollaborator(collaborator);
     setAnchorEl(null);
     await getReportsNotation(reportType, collaborator.id.toString());
+    await getReportsNotationChecklist(collaborator.id.toString());
   };
 
   const handleReportTypeChange = async (value: string) => {
