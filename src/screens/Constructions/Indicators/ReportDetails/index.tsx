@@ -70,6 +70,7 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({ details, onReportTypeChan
         columns={columns as MRT_ColumnDef<Detail>[]}
         data={details}
         enableColumnFilters
+        enableGrouping
         initialState={{ showColumnFilters: true }}
         renderTopToolbar={({ table }) => (
           <Box

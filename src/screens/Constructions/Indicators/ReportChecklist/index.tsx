@@ -51,6 +51,7 @@ const ReportChecklist: React.FC<ReportChecklistProps> = ({ checklist }) => {
       data: checklist,
       enableColumnFilters: true,
       initialState: { showColumnFilters: true },
+      enableGrouping: true,
       renderTopToolbar: () => (
         <Box
           sx={{
