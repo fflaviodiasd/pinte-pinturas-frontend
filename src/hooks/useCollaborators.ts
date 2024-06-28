@@ -269,6 +269,31 @@ export const useCollaborators = () => {
       setLoading(false);
     }
   };
+  
+  const getAllCollaboratorsWithoutPagination = async (currentPage: number = 0) => {
+    setLoading(true);
+    try {
+      const { data } = await api.get(
+        `employees/`
+      );
+
+      const allCollaborators = data.results.map((result: any) => ({
+        id: result.id,
+        name: result.name,
+        cell_phone: result.cell_phone,
+        profile: result.profile.name,
+        email: result.email,
+        role: result.office.name,
+        active: result.active,
+      }));
+      setListCollaborators(allCollaborators);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+  
 
   return {
     loading,
@@ -287,5 +312,6 @@ export const useCollaborators = () => {
     getAllCollaboratorsHistory,
     getAllCollaboratorsRelatedWorks,
     getCollaboratorBySearch,
+    getAllCollaboratorsWithoutPagination
   };
 };

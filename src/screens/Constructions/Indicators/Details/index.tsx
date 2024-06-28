@@ -214,7 +214,7 @@ export const Details = () => {
             Detalhes
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+        {/* <Box sx={{ display: "flex", gap: "1rem", alignItems: "center" }}>
           <Tooltip title="Periodo">
             <IconButton
               onClick={() => {
@@ -292,7 +292,7 @@ export const Details = () => {
               borderRadius: "4px",
             }}
           />
-        </Box>
+        </Box> */}
       </Box>
     ),
     renderDetailPanel: ({ row }) => (
