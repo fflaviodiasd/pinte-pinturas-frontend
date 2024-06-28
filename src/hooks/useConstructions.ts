@@ -178,19 +178,19 @@ export const useConstructions = () => {
             levels: levels,
           };
         } else {
-          errorMessage("Não foi possível adicionar área!");
+          errorMessage("Não foi possível atualizar área!");
         }
       });
 
       console.log({ areas: newList });
 
       await api.post(`constructions/${id}/areas/`, { areas: newList });
-      successMessage("Área adicionada com sucesso!");
+      successMessage("Área atualizada com sucesso!");
       setLoading(false);
       getAllConstructionsLocations(dynamicColumns);
     } catch (error) {
       console.log(error);
-      errorMessage("Não foi possível adicionar área!");
+      errorMessage("Não foi possível atualizar área!");
       setLoading(false);
     }
   };
