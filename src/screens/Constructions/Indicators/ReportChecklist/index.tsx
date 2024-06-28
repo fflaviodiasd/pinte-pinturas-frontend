@@ -19,6 +19,12 @@ interface ReportChecklistProps {
   checklist: ChecklistItem[];
 }
 
+const parseCurrency = (value: string): number => {
+  if (!value) return 0;
+  const numericValue = parseFloat(value.replace(/[^0-9,-]+/g, "").replace(",", "."));
+  return isNaN(numericValue) ? 0 : numericValue;
+};
+
 const ReportChecklist: React.FC<ReportChecklistProps> = ({ checklist }) => {
   const columns = useMemo<MRT_ColumnDef<ChecklistItem>[]>(
     () => {
@@ -37,8 +43,44 @@ const ReportChecklist: React.FC<ReportChecklistProps> = ({ checklist }) => {
         { accessorKey: 'checklist_name', header: 'Checklist' },
         { accessorKey: 'inital_dt', header: 'Data de Início' },
         { accessorKey: 'finish_dt', header: 'Data de Final' },
-        { accessorKey: 'value_total', header: 'Valor Total' },
-        { accessorKey: 'value_production', header: 'Valor Produção' },
+        {
+          accessorKey: 'value_total',
+          header: 'Valor Total',
+          aggregationFn: (columnId, rows) => {
+            const sum = rows.reduce((acc, row) => acc + parseCurrency(row.getValue<string>('value_total')), 0);
+            console.log('value_total rows:', rows.map(row => row.getValue<string>('value_total')), 'sum:', sum);
+            return sum;
+          },
+          AggregatedCell: ({ cell }) => (
+            <>
+              Total: <span style={{ color: 'green' }}>{cell.getValue<number>().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+            </>
+          ),
+          Footer: ({ table }) => (
+            <>
+              Total: <span style={{ color: 'green' }}>{table.getFilteredRowModel().rows.reduce((sum, row) => sum + parseCurrency(row.getValue<string>('value_total')), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+            </>
+          ),
+        },
+        {
+          accessorKey: 'value_production',
+          header: 'Valor Produção',
+          aggregationFn: (columnId, rows) => {
+            const sum = rows.reduce((acc, row) => acc + parseCurrency(row.getValue<string>('value_production')), 0);
+            console.log('value_production rows:', rows.map(row => row.getValue<string>('value_production')), 'sum:', sum);
+            return sum;
+          },
+          AggregatedCell: ({ cell }) => (
+            <>
+              Total: <span style={{ color: 'green' }}>{cell.getValue<number>().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+            </>
+          ),
+          Footer: ({ table }) => (
+            <>
+              Total: <span style={{ color: 'green' }}>{table.getFilteredRowModel().rows.reduce((sum, row) => sum + parseCurrency(row.getValue<string>('value_production')), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+            </>
+          ),
+        },
         { accessorKey: 'package_name', header: 'Pacote' },
       ];
     },
@@ -89,7 +131,7 @@ const ReportChecklist: React.FC<ReportChecklistProps> = ({ checklist }) => {
   );
 
   return (
-    <Grid item xs={12} lg={12} sx={{padding: 1}}>
+    <Grid item xs={12} lg={12} sx={{ padding: 1 }}>
       <MaterialReactTable {...table} />
     </Grid>
   );

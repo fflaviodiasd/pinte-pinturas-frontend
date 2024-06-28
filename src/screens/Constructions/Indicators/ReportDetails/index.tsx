@@ -34,17 +34,114 @@ interface ReportDetailsProps {
   reportType: string;
 }
 
+const parseCurrency = (value: string): number => {
+  if (!value) return 0;
+  const numericValue = parseFloat(value.replace(/[^0-9,-]+/g, "").replace(",", "."));
+  return isNaN(numericValue) ? 0 : numericValue;
+};
+
 const ReportDetails: React.FC<ReportDetailsProps> = ({ details, onReportTypeChange, reportType }) => {
   const serviceColumns = useMemo<MRT_ColumnDef<ServiceDetail>[]>(
     () => [
       { accessorKey: 'service_name', header: 'Serviço' },
       { accessorKey: 'stpe_service_name', header: 'Etapa do Serviço' },
-      { accessorKey: 'amount_execution', header: 'Qtd. Executada' },
-      { accessorKey: 'amount_media', header: 'Qtd. Média' },
+      {
+        accessorKey: 'amount_execution',
+        header: 'Qtd. Executada',
+        aggregationFn: (columnId, rows) => {
+          const sum = rows.reduce((acc, row) => acc + (row.getValue<number>('amount_execution') || 0), 0);
+          console.log('amount_execution rows:', rows.map(row => row.getValue<number>('amount_execution')), 'sum:', sum);
+          return sum;
+        },
+        AggregatedCell: ({ cell }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{cell.getValue<number>()}</span>
+          </>
+        ),
+        Footer: ({ table }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{table.getFilteredRowModel().rows.reduce((sum, row) => sum + (row.getValue<number>('amount_execution') || 0), 0)}</span>
+          </>
+        ),
+      },
+      {
+        accessorKey: 'amount_media',
+        header: 'Qtd. Média',
+        aggregationFn: (columnId, rows) => {
+          const sum = rows.reduce((acc, row) => acc + (row.getValue<number>('amount_media') || 0), 0);
+          console.log('amount_media rows:', rows.map(row => row.getValue<number>('amount_media')), 'sum:', sum);
+          return sum;
+        },
+        Cell: ({ cell }) => cell.getValue<number>().toFixed(2),
+        AggregatedCell: ({ cell }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{cell.getValue<number>().toFixed(2)}</span>
+          </>
+        ),
+        Footer: ({ table }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{table.getFilteredRowModel().rows.reduce((sum, row) => sum + (row.getValue<number>('amount_media') || 0), 0).toFixed(2)}</span>
+          </>
+        ),
+      },
       { accessorKey: 'price_unit', header: 'Preço Unitário' },
-      { accessorKey: 'total_step', header: 'Total Etapa' },
-      { accessorKey: 'production_value', header: 'Valor Produção' },
-      { accessorKey: 'total_production_value', header: 'Valor Total Produção' },
+      {
+        accessorKey: 'total_step',
+        header: 'Total Etapa',
+        aggregationFn: (columnId, rows) => {
+          const sum = rows.reduce((acc, row) => acc + parseCurrency(row.getValue<string>('total_step')), 0);
+          console.log('total_step rows:', rows.map(row => row.getValue<string>('total_step')), 'sum:', sum);
+          return sum;
+        },
+        AggregatedCell: ({ cell }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{cell.getValue<number>().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </>
+        ),
+        Footer: ({ table }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{table.getFilteredRowModel().rows.reduce((sum, row) => sum + parseCurrency(row.getValue<string>('total_step')), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </>
+        ),
+      },
+      {
+        accessorKey: 'production_value',
+        header: 'Valor Produção',
+        aggregationFn: (columnId, rows) => {
+          const sum = rows.reduce((acc, row) => acc + parseCurrency(row.getValue<string>('production_value')), 0);
+          console.log('production_value rows:', rows.map(row => row.getValue<string>('production_value')), 'sum:', sum);
+          return sum;
+        },
+        AggregatedCell: ({ cell }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{cell.getValue<number>().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </>
+        ),
+        Footer: ({ table }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{table.getFilteredRowModel().rows.reduce((sum, row) => sum + parseCurrency(row.getValue<string>('production_value')), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </>
+        ),
+      },
+      {
+        accessorKey: 'total_production_value',
+        header: 'Valor Total Produção',
+        aggregationFn: (columnId, rows) => {
+          const sum = rows.reduce((acc, row) => acc + parseCurrency(row.getValue<string>('total_production_value')), 0);
+          console.log('total_production_value rows:', rows.map(row => row.getValue<string>('total_production_value')), 'sum:', sum);
+          return sum;
+        },
+        AggregatedCell: ({ cell }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{cell.getValue<number>().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </>
+        ),
+        Footer: ({ table }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{table.getFilteredRowModel().rows.reduce((sum, row) => sum + parseCurrency(row.getValue<string>('total_production_value')), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </>
+        ),
+      },
     ],
     []
   );
@@ -52,12 +149,66 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({ details, onReportTypeChan
   const packageColumns = useMemo<MRT_ColumnDef<PackageDetail>[]>(
     () => [
       { accessorKey: 'package_name', header: 'Pacote' },
-      { accessorKey: 'amount_executed', header: 'Qtd. Executada' },
+      {
+        accessorKey: 'amount_executed',
+        header: 'Qtd. Executada',
+        aggregationFn: (columnId, rows) => {
+          const sum = rows.reduce((acc, row) => acc + (row.getValue<number>('amount_executed') || 0), 0);
+          console.log('amount_executed rows:', rows.map(row => row.getValue<number>('amount_executed')), 'sum:', sum);
+          return sum;
+        },
+        AggregatedCell: ({ cell }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{cell.getValue<number>()}</span>
+          </>
+        ),
+        Footer: ({ table }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{table.getFilteredRowModel().rows.reduce((sum, row) => sum + (row.getValue<number>('amount_executed') || 0), 0)}</span>
+          </>
+        ),
+      },
       { accessorKey: 'average_time', header: 'Tempo Médio/Dia' },
       { accessorKey: 'package_price', header: 'Preço Unitário' },
-      { accessorKey: 'total_package', header: 'Total Pacote' },
+      {
+        accessorKey: 'total_package',
+        header: 'Total Pacote',
+        aggregationFn: (columnId, rows) => {
+          const sum = rows.reduce((acc, row) => acc + parseCurrency(row.getValue<string>('total_package')), 0);
+          console.log('total_package rows:', rows.map(row => row.getValue<string>('total_package')), 'sum:', sum);
+          return sum;
+        },
+        AggregatedCell: ({ cell }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{cell.getValue<number>().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </>
+        ),
+        Footer: ({ table }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{table.getFilteredRowModel().rows.reduce((sum, row) => sum + parseCurrency(row.getValue<string>('total_package')), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </>
+        ),
+      },
       { accessorKey: 'package_price_workmanship', header: 'Preço Mão-de-Obra' },
-      { accessorKey: 'total_package_workmanship', header: 'Total Mão-de-Obra' },
+      {
+        accessorKey: 'total_package_workmanship',
+        header: 'Total Mão-de-Obra',
+        aggregationFn: (columnId, rows) => {
+          const sum = rows.reduce((acc, row) => acc + parseCurrency(row.getValue<string>('total_package_workmanship')), 0);
+          console.log('total_package_workmanship rows:', rows.map(row => row.getValue<string>('total_package_workmanship')), 'sum:', sum);
+          return sum;
+        },
+        AggregatedCell: ({ cell }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{cell.getValue<number>().toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </>
+        ),
+        Footer: ({ table }) => (
+          <>
+            Total: <span style={{ color: 'green' }}>{table.getFilteredRowModel().rows.reduce((sum, row) => sum + parseCurrency(row.getValue<string>('total_package_workmanship')), 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+          </>
+        ),
+      },
     ],
     []
   );
