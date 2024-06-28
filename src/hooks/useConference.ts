@@ -25,6 +25,17 @@ interface ReportNotation {
     total_production_value: string;
   }[];
 }
+
+interface ReportChecklist {
+  levels: Record<string, string>;
+  checklist_name: string;
+  inital_dt: string | null;
+  finish_dt: string | null;
+  value_total: string;
+  value_production: string;
+  package_name: string;
+}
+
 export const useConference = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -47,6 +58,7 @@ export const useConference = () => {
   const [listReportsWithTeams, setListReportsWithTeams] = useState<any[]>([]);
   const [listReportsNotation, setListReportsNotation] =
     useState<ReportNotation>();
+    const [listReportsNotationChecklist, setListReportsNotationChecklist] = useState<ReportChecklist[]>([]);
 
   const getReportsNotation = async (
     disjunction: string = "service",
@@ -62,6 +74,21 @@ export const useConference = () => {
       return data;
     } catch (error) {
       console.error("Erro ao obter relatórios de notação:", error);
+      setLoading(false);
+      return [];
+    }
+  };
+  const getReportsNotationChecklist = async (employeeId: string) => {
+    try {
+      const { data } = await api.get(
+        `/reports_notation/${employeeId}/checklist`
+      );
+      console.log("Reports Checklist data:", data);
+      setListReportsNotationChecklist(data); // Atualizado aqui
+      setLoading(false);
+      return data;
+    } catch (error) {
+      console.error("Erro ao obter relatórios de checklist:", error);
       setLoading(false);
       return [];
     }
@@ -292,5 +319,7 @@ export const useConference = () => {
     listGeneralReports,
     getReportsNotation,
     listReportsNotation,
+    getReportsNotationChecklist,
+    listReportsNotationChecklist
   };
 };
