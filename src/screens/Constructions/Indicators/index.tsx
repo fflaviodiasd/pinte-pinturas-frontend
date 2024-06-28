@@ -161,9 +161,9 @@ export function Indicators() {
                 />
               )}
 
-              {listReportsNotation && listReportsNotation.details && (
+              {listReportsNotation && (
                 <ReportDetails
-                  details={listReportsNotation.details.map((detail: any) => ({
+                  details={reportType === 'service' ? listReportsNotation.details.map((detail: any) => ({
                     service_name: detail.service_name,
                     stpe_service_name: detail.stpe_service_name,
                     amount_execution: detail.amount_execution,
@@ -172,6 +172,14 @@ export function Indicators() {
                     total_step: detail.total_step,
                     production_value: detail.production_value,
                     total_production_value: detail.total_production_value,
+                  })) : listReportsNotation.details.map((detail: any) => ({
+                    package_name: detail.package_name,
+                    amount_executed: detail.amount_executed,
+                    average_time: detail.average_time,
+                    package_price: detail.package_price,
+                    total_package: detail.total_package,
+                    package_price_workmanship: detail.package_price_workmanship,
+                    total_package_workmanship: detail.total_package_workmanship,
                   }))}
                   reportType={reportType}
                   onReportTypeChange={handleReportTypeChange}
