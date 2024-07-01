@@ -568,10 +568,9 @@ const Locations = () => {
         message={snackbarMessage}
         messagePaste={snackbarMessagePaste}
         checklistButton={
-          <ChecklistIcon
-            title={"Duplicar nomes de checklists cadastrados"}
-            handleClick={handleOpenChecklistsDrawer}
-          />
+          <Button onClick={handleOpenChecklistsDrawer}>
+            <ChecklistIcon title={"Duplicar nomes de checklists cadastrados"} />
+          </Button>
         }
         copyLine={() => (copyLines ? setCopyLines(false) : setCopyLines(true))}
         paste={paste}

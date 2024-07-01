@@ -4,20 +4,19 @@ import { Tooltip } from "@mui/material";
 
 type ChecklistIconProps = {
   title: string;
-  handleClick: any;
 };
 
-export function ChecklistIcon({ title, handleClick }: ChecklistIconProps) {
+export function ChecklistIcon({ title }: ChecklistIconProps) {
   const { classes } = useStyles();
 
   return (
-    <button className={classes.buttonChecklistIcon} onClick={handleClick}>
+    <div className={classes.containerChecklistIcon}>
       <Tooltip title={title}>
-        <div className={classes.containerChecklistIcon}>
-          <ContentCopy className={classes.checklistIcon} />
+        <div className={classes.titleChecklistIcon}>
+          <ContentCopy className={classes.checklistCopyIcon} />
           Checklist
         </div>
       </Tooltip>
-    </button>
+    </div>
   );
 }
