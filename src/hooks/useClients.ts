@@ -165,7 +165,7 @@ export const useClients = () => {
     const offset = (currentPage - 1) * LIMIT;
     try {
       const { data } = await api.get(
-        `companies/${user.company}/employees/?disabled=false&limit=${LIMIT}&offset=${offset}`
+        `customers/${id}/employees/?disabled=false&limit=${LIMIT}&offset=${offset}`
       );
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,
@@ -174,7 +174,7 @@ export const useClients = () => {
       const getAllClientsEmployees = data.map((result: any) => ({
         id: result.id,
         active: result.active,
-        fullName: result.full_name,
+        fullName: result.name,
         cell_phone: result.cell_phone,
         role: result.office,
         profile: result.profile,
