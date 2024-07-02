@@ -232,19 +232,19 @@ export const useClients = () => {
     const offset = (currentPage - 1) * LIMIT;
     try {
       const { data } = await api.get(
-        `customers/?disabled=false&limit=${LIMIT}&offset=${offset}`
+        `companies/${user.company}/customers_company/?disabled=false&limit=${LIMIT}&offset=${offset}`
       );
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
-      const allClients = data.results.map((result: any) => ({
+      const allClients = data.map((result: any) => ({
         id: result.id,
-        tradingName: result.fantasy_name,
+        tradingName: result.name,
         responsible: result.responsible,
         cnpj: result.cnpj,
         email: result.email,
-        phoneNumber: result.phone_number,
+        phoneNumber: result.phone,
       }));
       setListClients(allClients);
       setLoading(false);
