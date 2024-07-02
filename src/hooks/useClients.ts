@@ -205,6 +205,9 @@ export const useClients = () => {
       const getAllClientsRelatedWorks = data.constructions.map(
         (result: any) => ({
           id: result.id,
+          constructionName: result.name_construction,
+          status: result.status,
+          responsible: result.responsible,
         })
       );
       setListClientsRelatedWorks(getAllClientsRelatedWorks);

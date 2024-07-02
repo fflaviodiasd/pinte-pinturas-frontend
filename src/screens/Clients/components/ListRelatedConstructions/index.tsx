@@ -32,8 +32,8 @@ export const ListRelatedConstructions = () => {
     () => [
       {
         header: "Status",
-        accessorFn: (originalRow) => (originalRow.active ? "true" : "false"),
-        id: "active",
+        accessorFn: (originalRow) => (originalRow.status ? "true" : "false"),
+        id: "status",
         filterVariant: "checkbox",
         Cell: ({ cell }) => {
           const status = cell.getValue() === "true" ? "Ativo" : "Inativo";
@@ -43,7 +43,7 @@ export const ListRelatedConstructions = () => {
         size: 170,
       },
       {
-        accessorKey: "relatedWork",
+        accessorKey: "constructionName",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Nome da Obra",
