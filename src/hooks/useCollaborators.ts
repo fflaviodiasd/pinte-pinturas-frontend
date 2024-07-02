@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { errorMessage, successMessage } from "../components/Messages";
 import { Collaborator } from "../types";
 import { api } from "../services/api";
+import { UserContext } from "../contexts/UserContext";
 
 const LIMIT = 10;
 
 export const useCollaborators = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useContext(UserContext);
 
   const [loading, setLoading] = useState(false);
   const [collaboratorData, setCollaboratorData] = useState<Collaborator>({
@@ -247,20 +249,20 @@ export const useCollaborators = () => {
     const offset = (currentPage - 1) * LIMIT;
     try {
       const { data } = await api.get(
-        `employees/?disabled=false&limit=${LIMIT}&offset=${offset}`
+        `companies/${user.company}/employees/?disabled=false&limit=${LIMIT}&offset=${offset}`
       );
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
-      const allCollaborators = data.results.map((result: any) => ({
+      const allCollaborators = data.map((result: any) => ({
         id: result.id,
-        name: result.name,
-        cell_phone: result.cell_phone,
-        profile: result.profile.name,
-        email: result.email,
-        role: result.office.name,
         active: result.active,
+        avatar: result.avatar,
+        name: result.full_name,
+        cellPhone: result.cell_phone,
+        role: result.office,
+        profile: result.profile,
       }));
       setListCollaborators(allCollaborators);
       setLoading(false);
@@ -269,13 +271,13 @@ export const useCollaborators = () => {
       setLoading(false);
     }
   };
-  
-  const getAllCollaboratorsWithoutPagination = async (currentPage: number = 0) => {
+
+  const getAllCollaboratorsWithoutPagination = async (
+    currentPage: number = 0
+  ) => {
     setLoading(true);
     try {
-      const { data } = await api.get(
-        `employees/`
-      );
+      const { data } = await api.get(`employees/`);
 
       const allCollaborators = data.results.map((result: any) => ({
         id: result.id,
@@ -293,7 +295,6 @@ export const useCollaborators = () => {
       setLoading(false);
     }
   };
-  
 
   return {
     loading,
@@ -312,6 +313,6 @@ export const useCollaborators = () => {
     getAllCollaboratorsHistory,
     getAllCollaboratorsRelatedWorks,
     getCollaboratorBySearch,
-    getAllCollaboratorsWithoutPagination
+    getAllCollaboratorsWithoutPagination,
   };
 };
