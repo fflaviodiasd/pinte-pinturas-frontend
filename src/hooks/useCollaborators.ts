@@ -217,7 +217,7 @@ export const useCollaborators = () => {
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
-      const getAllCollaboratorsRelatedWorks = data.results.map(
+      const getAllCollaboratorsRelatedWorks = data.constructions.map(
         (result: any) => ({
           id: result.id,
           constructionName: result.name_construction,
