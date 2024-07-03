@@ -290,7 +290,7 @@ const Locations = () => {
         for (const key in newItem) {
           if (key === "ids") {
             if (originalItem[key]) {
-              originalItem[key].forEach((item: any, index) => {
+              originalItem[key].forEach((item: any, index: any) => {
                 originalItem.ids[index].name = newItem.ids[index].name;
               });
             } else {
@@ -430,11 +430,15 @@ const Locations = () => {
       console.log("último item", lastItem);
       console.log("lista de construções", listConstructionsLocations);
 
-      const code = generateNextId(lastItem ? lastItem + i + 1 : i + 1);
-      const control = {};
+      const code = generateNextId(listConstructionsLocations.length + i + 1);
+      const control: Record<string, any> = {};
       dynamicColumns.forEach((column, index) => {
-        if (index >= 2) control[column.id] = "";
+        console.log(typeof column.id);
+        if (column.id !== undefined && column.id !== null && index >= 2) {
+          control[column.id] = "";
+        }
       });
+
       const newLine = { checklist: 0, code: code, id: null, ...control };
       newLines.push(newLine);
     }
