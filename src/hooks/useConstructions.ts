@@ -497,7 +497,7 @@ export const useConstructions = () => {
         (construction: any) => ({
           id: construction.id,
           active: construction.active,
-          corporate_name: construction.corporate_name,
+          corporate_name: construction.fantasy_name,
           customer: construction.customer.name || "",
           supervisor: construction.supervisor.name || "",
           execution: construction.execution,
