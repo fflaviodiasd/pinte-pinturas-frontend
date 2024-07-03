@@ -427,6 +427,8 @@ const Locations = () => {
           listConstructionsLocations.length - 1
         ]?.code.slice(-2)
       );
+      console.log("último item", lastItem);
+      console.log("lista de construções", listConstructionsLocations);
 
       const code = generateNextId(listConstructionsLocations.length + i + 1);
       const control: Record<string, any> = {};
