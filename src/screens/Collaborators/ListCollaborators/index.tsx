@@ -115,7 +115,7 @@ export const ListCollaborators = () => {
         ),
       },
       {
-        accessorKey: "cell_phone",
+        accessorKey: "cellPhone",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
         header: "Celular",
