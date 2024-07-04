@@ -18,7 +18,7 @@ interface Checklist {
 interface ChecklistComponentProps {
   getChecklistEndpoint?: string;
   postChecklistEndpoint?: string;
-  control?: ay;
+  control?: any;
   setControl?: any;
   localId?: number;
 }

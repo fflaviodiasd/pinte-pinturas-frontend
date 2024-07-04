@@ -26,7 +26,13 @@ interface Area {
   checklists: Checklist[];
 }
 
-export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
+export const ChecklistDrawer = ({
+  open,
+  onClose,
+  selectedLocalIds,
+  control,
+  setControl,
+}: any) => {
   const [areas, setAreas] = useState<Area[]>([]);
   const [selectedChecklists, setSelectedChecklists] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -79,14 +85,20 @@ export const ChecklistDrawer = ({ open, onClose, selectedLocalIds }: any) => {
                 // Encontrar o nome do checklist pelo id
                 const checklistName = findChecklistNameById(checklistId);
 
-                await api.post(`/areas/${localId}/checklist/`, {
-                  name: checklistName,
-                  order: lastOrder + index + 1,
-                });
+                const response = await api.post(
+                  `/areas/${localId}/checklist/`,
+                  {
+                    name: checklistName,
+                    order: lastOrder + index + 1,
+                  }
+                );
+                setControl(response);
+                onClose();
               })
             );
           })
         );
+
         successMessage("Checklist copiado com sucesso!");
       } catch (error: any) {
         if (
