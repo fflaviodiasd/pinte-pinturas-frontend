@@ -233,7 +233,7 @@ export const ServiceStepTable = ({ order }: any) => {
         accessorKey: "compensation_service",
         header: "Comp. %",
         enableEditing: false,
-        footer: totalCompensation,
+        // footer: totalCompensation,
       },
       {
         accessorKey: "workmanship_price",
@@ -251,7 +251,7 @@ export const ServiceStepTable = ({ order }: any) => {
         accessorKey: "compensation_workmanship",
         header: "Custo %",
         enableEditing: false,
-        footer: totalCompensationWorkmanship,
+        // footer: totalCompensationWorkmanship,
       },
     ],
     [serviceOptions, stepOptions, totalServicePrice, totalWorkmanship]

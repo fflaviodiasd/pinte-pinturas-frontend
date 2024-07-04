@@ -190,9 +190,9 @@ const ReportGeneral: React.FC<ReportGeneralProps> = ({
           <CardContent
             sx={{
               padding: '8px',
-              maxHeight: '100px',
-              overflow: teammates.length > 0 ? 'auto' : 'hidden', 
               height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
             <Typography variant="subtitle2" color={"#a1a1a1"}>
@@ -200,14 +200,9 @@ const ReportGeneral: React.FC<ReportGeneralProps> = ({
             </Typography>
             <Box
               sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                maxHeight: '100px',
-                overflowX: 'auto',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100%',
+                maxHeight: '60px', // Ajuste conforme necessário
+                overflowY: teammates.length > 0 ? 'auto' : 'hidden',
+                marginTop: '8px',
               }}
             >
               {teammates.length > 0 ? (
