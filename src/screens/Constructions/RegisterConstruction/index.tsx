@@ -39,7 +39,8 @@ type HandleChange = {
 export const RegisterConstruction = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { id: constructionId } = useParams();
+  const { id: constructionId , checklistid: checkListId} = useParams();
+  console.log("CHECKLISTID>>>>", checkListId)
   const isEditScreen = constructionId;
   const { classes } = useStyles();
 

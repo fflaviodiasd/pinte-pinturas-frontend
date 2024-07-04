@@ -218,7 +218,7 @@ const DashboardContextProvider = ({
     }
   };
 
-  const [listChecklist, setListChecklist] = useState<any>([]);
+  const [listChecklist, setListChecklist] = useState<any[]>([]);
   const getAllChekList = async () => {
     try {
       const { data } = await api.get(
@@ -474,6 +474,7 @@ const DashboardContextProvider = ({
       getDashboardExecution();
       getDashboardGeneralData();
       getDashboardConstructionUpdate();
+      getAllChekList();
     }
   }, [selectedConstruction]);
 

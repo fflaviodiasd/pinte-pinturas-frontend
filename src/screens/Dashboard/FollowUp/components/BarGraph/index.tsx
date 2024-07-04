@@ -21,6 +21,8 @@ export function BarGraph() {
   const { classes } = useStyles();
   const { dashboardExecution } = useContext(DashboardContext);
 
+  console.log('111111>>>>', dashboardExecution)
+
   ChartJS.register(
     CategoryScale,
     LinearScale,

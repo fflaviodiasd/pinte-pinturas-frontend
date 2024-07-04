@@ -51,6 +51,7 @@ export const AppRoutes = () => {
           />
 
           <Route path="/obras/:id/locais" element={<RegisterConstruction />} />
+          <Route path="/obras/:id/locais/checklist/:checklistid" element={<RegisterConstruction />} />
           <Route
             path="/obras/:id/dados-gerais"
             element={<RegisterConstruction />}
