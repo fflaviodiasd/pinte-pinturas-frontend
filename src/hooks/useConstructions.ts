@@ -650,6 +650,24 @@ export const useConstructions = () => {
     }
   };
 
+  const editConstructionPackage = async (packageId: number, data: { name: string; order?: number; discipline?: string }) => {
+    console.log("Data:", data);
+    setLoading(true);
+    try {
+      const response = await api.patch(`/packages/${packageId}/`, data);
+      if (response.status === 200) {
+        successMessage("Pacote editado com sucesso!");
+      } else {
+        console.log("Erro ao editar pacote!", response.data.detail);
+        errorMessage("Erro ao editar! " + response.data.detail);
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const addConstructionPackage = async (newPackage: any) => {
     setLoading(true);
     try {
@@ -769,6 +787,23 @@ export const useConstructions = () => {
       } else {
         console.log("Erro ao apagar medição!", response.data.detail);
         errorMessage("Erro ao apagar! " + response.data.detail);
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const editConstructionMeasurement = async (measurementId: number, name: string) => {
+    setLoading(true);
+    try {
+      const response = await api.patch(`/measurements/${measurementId}/`, { name });
+      if (response.status === 200) {
+        successMessage("Medição editada com sucesso!");
+      } else {
+        console.log("Erro ao editar medição!", response.data.detail);
+        errorMessage("Erro ao editar! " + response.data.detail);
       }
     } catch (error) {
       throw error;
@@ -1039,5 +1074,7 @@ export const useConstructions = () => {
     listCompanyClients,
     getAllCompanyClients,
     constructionRegister,
+    editConstructionMeasurement,
+    editConstructionPackage
   };
 };
