@@ -72,7 +72,10 @@ const ReportDetails: React.FC<ReportDetailsProps> = ({ details, onReportTypeChan
           console.log('amount_media rows:', rows.map(row => row.getValue<number>('amount_media')), 'sum:', sum);
           return sum;
         },
-        Cell: ({ cell }) => cell.getValue<number>().toFixed(2),
+        Cell: ({ cell }) => {
+          const value = cell.getValue<number>();
+          return value !== undefined ? value.toFixed(2) : 'N/A';
+        },
         AggregatedCell: ({ cell }) => (
           <>
             Total: <span style={{ color: 'green' }}>{cell.getValue<number>().toFixed(2)}</span>

@@ -39,7 +39,7 @@ export const ModalAddMainSupervisor = ({
 }: ModalAddMainSupervisorProps) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Adicionar Encarregado HEHE</DialogTitle>
+      <DialogTitle>Adicionar Encarregado</DialogTitle>
       <DialogContent dividers={true}>
         <RadioGroup
           value={selectedSupervisor}

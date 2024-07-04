@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useConstructions } from "../../../hooks/useConstructions";
-import { Add, Delete } from "@mui/icons-material";
+import { Add, Delete, Edit as EditIcon, Save, Clear } from "@mui/icons-material";
 import { errorMessage, successMessage } from "../../../components/Messages";
 import { ServiceStepTable } from "./ServiceStepsTable";
 import { useStyles } from "./styles";
@@ -44,15 +44,18 @@ export const PackageConstructions = () => {
     disableConstructionPackage,
     addConstructionPackage,
     getAllDisciplines,
+    editConstructionPackage,
   } = useConstructions();
 
   const [disciplineOptions, setDisciplineOptions] = useState<any[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isAddingDiscipline, setIsAddingDiscipline] = useState(false);
-  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(
-    null
-  );
+  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState<string>("");
+  const [editingRowId, setEditingRowId] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState<{ name: string; order?: number; discipline?: string }>({ name: "" });
+  const [editingPackageId, setEditingPackageId] = useState<number>(0);
+
   const { id } = useParams();
 
   useEffect(() => {
@@ -120,28 +123,6 @@ export const PackageConstructions = () => {
     }
   };
 
-  const handleEditPackages: MRT_TableOptions<any>["onEditingRowSave"] = async ({
-    exitEditingMode,
-    row,
-    values,
-    table,
-  }) => {
-    if (!row?.original?.id) {
-      errorMessage("Não foi possível identificar o pacote para atualização.");
-      return;
-    }
-
-    try {
-      console.log("Salvando edições para o pacote:", values);
-
-      successMessage("Pacote atualizado com sucesso.");
-      exitEditingMode();
-    } catch (error) {
-      errorMessage("Erro ao atualizar o pacote.");
-      console.error("Erro ao salvar as edições:", error);
-    }
-  };
-
   const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] =
     async ({ values, table }) => {
       const { id, ...restOfValues } = values;
@@ -155,6 +136,30 @@ export const PackageConstructions = () => {
       setSelectedDiscipline(null);
       table.setCreatingRow(null);
     };
+
+  const handleEditRow = (rowId: string, currentValue: { name: string; order?: number; discipline?: string }, packageId: number) => {
+    setEditingRowId(rowId);
+    setEditingValue(currentValue);
+    setEditingPackageId(packageId);
+  };
+
+  const handleSaveRow = async ({ exitEditingMode, row, values }: any) => {
+    const discipline = typeof values.discipline === 'object' ? values.discipline.value : values.discipline;
+    try {
+      await editConstructionPackage(editingPackageId, { ...values, discipline });
+      setEditingRowId(null);
+      setEditingValue({ name: "" });
+      getAllConstructionPackages();
+      exitEditingMode();
+    } catch (error) {
+      errorMessage("Não foi possível salvar o pacote!");
+    }
+  };
+
+  const handleClearRow = () => {
+    setEditingRowId(null);
+    setEditingValue({ name: "" });
+  };
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -175,6 +180,17 @@ export const PackageConstructions = () => {
           required: true,
           type: "number",
         },
+        Cell: ({ cell, row }): React.ReactNode => {
+          if (editingRowId === row.id) {
+            return (
+              <TextField
+                value={editingValue.order ?? ""}
+                onChange={(e) => setEditingValue({ ...editingValue, order: Number(e.target.value) })}
+              />
+            );
+          }
+          return cell.getValue() as React.ReactNode;
+        },
       },
       {
         accessorKey: "name",
@@ -185,22 +201,35 @@ export const PackageConstructions = () => {
         muiEditTextFieldProps: {
           required: true,
         },
+        Cell: ({ cell, row }): React.ReactNode => {
+          if (editingRowId === row.id) {
+            return (
+              <TextField
+                value={editingValue.name}
+                onChange={(e) => setEditingValue({ ...editingValue, name: e.target.value })}
+              />
+            );
+          }
+          return cell.getValue() as React.ReactNode;
+        },
       },
       {
         accessorKey: "discipline.name",
         header: "Disciplina",
         required: true,
         enableEditing: true,
-        Edit: () => {
-          return (
-            disciplineOptions.length > 0 && (
+        Cell: ({ cell, row }): React.ReactNode => {
+          if (editingRowId === row.id) {
+            return (
               <Autocomplete
                 disablePortal
-                value={selectedDiscipline}
+                value={editingValue.discipline}
                 onChange={(event: any, newValue: string | null) => {
+                  setEditingValue({ ...editingValue, discipline: newValue! });
                   handleSelectChange(newValue);
                 }}
                 onInputChange={(event: any, newValue: string | null) => {
+                  setEditingValue({ ...editingValue, discipline: newValue! });
                   handleValueChange(newValue);
                 }}
                 freeSolo
@@ -214,9 +243,32 @@ export const PackageConstructions = () => {
                   />
                 )}
               />
-            )
-          );
+            );
+          }
+          return cell.getValue() as React.ReactNode;
         },
+        Edit: () => (
+          <Autocomplete
+            disablePortal
+            value={selectedDiscipline}
+            onChange={(event: any, newValue: string | null) => {
+              handleSelectChange(newValue);
+            }}
+            onInputChange={(event: any, newValue: string | null) => {
+              handleValueChange(newValue);
+            }}
+            freeSolo
+            options={disciplineOptions}
+            sx={{ marginBottom: "16px" }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Disciplina"
+                variant="standard"
+              />
+            )}
+          />
+        ),
       },
       {
         accessorKey: "package_value",
@@ -240,7 +292,7 @@ export const PackageConstructions = () => {
         enableEditing: false,
       },
     ],
-    [disciplineOptions, selectedDiscipline]
+    [disciplineOptions, selectedDiscipline, editingRowId, editingValue]
   );
 
   const table = useMaterialReactTable({
@@ -248,22 +300,50 @@ export const PackageConstructions = () => {
     data: listConstructionPackages,
     enableColumnFilterModes: true,
     onCreatingRowSave: handleCreatePackages,
-    onEditingRowSave: handleEditPackages,
+    onEditingRowSave: handleSaveRow,
     enableEditing: true,
     editDisplayMode: "row",
     createDisplayMode: "row",
     state: {
       isSaving,
     },
-    renderRowActions: ({ row }) => (
+    renderRowActions: ({ row, table }) => (
       <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-        <IconButton
-          aria-label="Excluir"
-          onClick={() => handleDisable(row.original.id)}
-          sx={{ color: "#C5C7C8" }}
-        >
-          <Delete />
-        </IconButton>
+        {editingRowId === row.id ? (
+          <>
+            <IconButton
+              aria-label="Salvar"
+              onClick={() => handleSaveRow({ exitEditingMode: table.setEditingRow, row, values: editingValue })}
+              sx={{ color: "#C5C7C8" }}
+            >
+              <Save />
+            </IconButton>
+            <IconButton
+              aria-label="Limpar"
+              onClick={handleClearRow}
+              sx={{ color: "#C5C7C8" }}
+            >
+              <Clear />
+            </IconButton>
+          </>
+        ) : (
+          <>
+            <IconButton
+              aria-label="Editar"
+              onClick={() => handleEditRow(row.id, { name: row.original.name, order: row.original.order, discipline: row.original.discipline?.name }, row.original.id)}
+              sx={{ color: "#C5C7C8" }}
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              aria-label="Excluir"
+              onClick={() => handleDisable(row.original.id)}
+              sx={{ color: "#C5C7C8" }}
+            >
+              <Delete />
+            </IconButton>
+          </>
+        )}
       </div>
     ),
     initialState: { showColumnFilters: true },
@@ -366,10 +446,9 @@ export const PackageConstructions = () => {
     },
     muiTableBodyProps: {
       sx: {
-        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td':
-          {
-            backgroundColor: "#FAFAFA",
-          },
+        '& tr:nth-of-type(odd):not([data-selected="true"]):not([data-pinned="true"]) > td': {
+          backgroundColor: "#FAFAFA",
+        },
       },
     },
     mrtTheme: (theme) => ({

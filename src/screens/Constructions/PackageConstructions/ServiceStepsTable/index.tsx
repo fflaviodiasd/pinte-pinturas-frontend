@@ -10,7 +10,7 @@ import {
 import { useConstructions } from "../../../../hooks/useConstructions";
 
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
-import { Delete, Edit, Add } from "@mui/icons-material";
+import { Delete, Add } from "@mui/icons-material";
 
 interface Step {
   id: number;
@@ -32,10 +32,7 @@ interface PackageStep {
 }
 
 export const ServiceStepTable = ({ order }: any) => {
-  // const [packageSteps, setPackageSteps] = useState([]);
   const [packageSteps, setPackageSteps] = useState<PackageStep[]>([]);
-  // const [serviceOptions, setServiceOptions] = useState([]);
-  // const [stepOptions, setStepOptions] = useState([]);
   const [selectedValue, setSelectedValue] = useState("");
   const [editStepEnabled, setEditStepEnabled] = useState(false);
   const [stepOptions, setStepOptions] = useState<
@@ -123,12 +120,11 @@ export const ServiceStepTable = ({ order }: any) => {
     try {
       console.log("values:", values);
       await addPackageStep(order, values);
-      // setPackageSteps((prevSteps) => [...prevSteps, values]);
-      // table.exitCreatingMode(); // Sai do modo de criação
+      fetchPackageSteps();
+      table.setCreatingRow(null); // Sai do modo de criação e limpa os campos
     } catch (error) {
       console.error("Erro ao adicionar nova etapa:", error);
     }
-    fetchPackageSteps();
   };
 
   const handleDeleteStep = async (stepId: number) => {
@@ -147,6 +143,7 @@ export const ServiceStepTable = ({ order }: any) => {
       value.replace("R$", "").replace(/\./g, "").replace(",", ".")
     );
   };
+
   const priceStrings = packageSteps.map((step) => step.total_price);
   const workmanshipStrings = packageSteps.map((step) => step.total_workmanship);
   const pricesUnit = packageSteps.map((step) => step.price_unit);
@@ -167,6 +164,7 @@ export const ServiceStepTable = ({ order }: any) => {
       currency: "BRL",
     });
   };
+
   const totalServicePrice = formatCurrency(
     prices.reduce((sum, value) => sum + value, 0)
   );
@@ -201,7 +199,6 @@ export const ServiceStepTable = ({ order }: any) => {
           },
         },
       },
-
       {
         accessorFn: (row) => row.step_service.name,
         id: "step_service",
@@ -213,16 +210,11 @@ export const ServiceStepTable = ({ order }: any) => {
       {
         accessorKey: "amount",
         header: "QTD",
-        onChange: (e: any) => {
-          const serviceId = e.target.value;
-          console.log("service:", serviceId);
-        },
       },
       {
         accessorKey: "unit",
         header: "Unidade",
         editVariant: "select",
-        // editSelectOptions: unitOptions,
         enableEditing: false,
       },
       {
@@ -241,7 +233,7 @@ export const ServiceStepTable = ({ order }: any) => {
         accessorKey: "compensation_service",
         header: "Comp. %",
         enableEditing: false,
-        footer: totalCompensation,
+        // footer: totalCompensation,
       },
       {
         accessorKey: "workmanship_price",
@@ -249,7 +241,6 @@ export const ServiceStepTable = ({ order }: any) => {
         enableEditing: false,
         footer: totalWorkmanshipUnit,
       },
-
       {
         accessorKey: "total_workmanship",
         header: "Total Etapa/Uni",
@@ -260,7 +251,7 @@ export const ServiceStepTable = ({ order }: any) => {
         accessorKey: "compensation_workmanship",
         header: "Custo %",
         enableEditing: false,
-        footer: totalCompensationWorkmanship,
+        // footer: totalCompensationWorkmanship,
       },
     ],
     [serviceOptions, stepOptions, totalServicePrice, totalWorkmanship]
@@ -273,16 +264,8 @@ export const ServiceStepTable = ({ order }: any) => {
     enableRowActions: true,
     enableEditing: true,
     createDisplayMode: "row",
-
     renderRowActions: ({ row, table }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        {/* Botão para editar */}
-        {/* <Tooltip title="Editar">
-        <IconButton onClick={() => handleEdit(row.original)} sx={{ color: "#C5C7C8" }}>
-          <Edit />
-        </IconButton>
-      </Tooltip> */}
-        {/* Botão para excluir */}
         <Tooltip title="Excluir">
           <IconButton
             onClick={() => handleDeleteStep(row.original.id)}

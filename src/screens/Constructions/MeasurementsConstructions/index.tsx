@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { IconButton, Grid, Tooltip } from "@mui/material";
-import { Add as AddIcon, Delete } from "@mui/icons-material";
+import { IconButton, Grid, Tooltip, TextField } from "@mui/material";
+import { Add as AddIcon, Edit as EditIcon, Delete, Save, Clear } from "@mui/icons-material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -32,12 +30,13 @@ export const MeasurementsConstructions = () => {
     getAllConstructionsMeasurements,
     disableConstructionMeasurements,
     addConstructionMeasurements,
+    editConstructionMeasurement,
   } = useConstructions();
 
   const [filteredMeasurements, setFilteredMeasurements] = useState<any[]>([]);
-
-  // console.log('construction id pac: ', selectedPackageConstructionId)
-  // console.log("listConstructionsMeasurements: ", listConstructionsMeasurements);
+  const [editingRowId, setEditingRowId] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState<string>("");
+  const [editingMeasurementId, setEditingMeasurementId] = useState<number>(0);
 
   useEffect(() => {
     if (id) {
@@ -47,7 +46,6 @@ export const MeasurementsConstructions = () => {
 
   useEffect(() => {
     if (
-      listConstructionsMeasurements &&
       listConstructionsMeasurements &&
       listConstructionsMeasurements.length > 0
     ) {
@@ -61,7 +59,6 @@ export const MeasurementsConstructions = () => {
   const handleDisable = async (measurementId: number) => {
     try {
       await disableConstructionMeasurements(measurementId);
-      // successMessage("Medição apagada com sucesso!");
       getAllConstructionsMeasurements();
     } catch (error) {
       errorMessage("Não foi possível apagar medição!");
@@ -70,13 +67,32 @@ export const MeasurementsConstructions = () => {
 
   const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] =
     async ({ values, table, exitCreatingMode }) => {
-      // console.log("values for API:", values);
-
       await addConstructionMeasurements(values);
       getAllConstructionsMeasurements();  
       exitCreatingMode();
-
     };
+
+  const handleEditRow = (rowId: string, currentValue: string, measurementId: number) => {
+    setEditingRowId(rowId);
+    setEditingValue(currentValue);
+    setEditingMeasurementId(measurementId);
+  };
+
+  const handleSaveRow = async (rowId: string) => {
+    try {
+      await editConstructionMeasurement(editingMeasurementId, editingValue);
+      setEditingRowId(null);
+      setEditingValue("");
+      getAllConstructionsMeasurements();
+    } catch (error) {
+      errorMessage("Não foi possível salvar a medição!");
+    }
+  };
+
+  const handleClearRow = () => {
+    setEditingRowId(null);
+    setEditingValue("");
+  };
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -84,14 +100,25 @@ export const MeasurementsConstructions = () => {
         accessorKey: "name",
         enableColumnFilterModes: false,
         filterFn: "startsWith",
-        header: "Nome do Pacote",
+        header: "Nome da Medição",
         enableEditing: true,
         muiEditTextFieldProps: {
           required: true,
         },
+        Cell: ({ cell, row }): React.ReactNode => {
+          if (editingRowId === row.id) {
+            return (
+              <TextField
+                value={editingValue}
+                onChange={(e) => setEditingValue(e.target.value)}
+              />
+            );
+          }
+          return cell.getValue() as React.ReactNode;
+        },
       },
     ],
-    []
+    [editingRowId, editingValue]
   );
 
   const table = useMaterialReactTable({
@@ -111,13 +138,41 @@ export const MeasurementsConstructions = () => {
     },
     renderRowActions: ({ row }) => (
       <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-        <IconButton
-          aria-label="Excluir"
-          onClick={() => handleDisable(row.original.id)}
-          sx={{ color: "#C5C7C8" }}
-        >
-          <Delete />
-        </IconButton>
+        {editingRowId === row.id ? (
+          <>
+            <IconButton
+              aria-label="Salvar"
+              onClick={() => handleSaveRow(row.id)}
+              sx={{ color: "#C5C7C8" }}
+            >
+              <Save />
+            </IconButton>
+            <IconButton
+              aria-label="Limpar"
+              onClick={handleClearRow}
+              sx={{ color: "#C5C7C8" }}
+            >
+              <Clear />
+            </IconButton>
+          </>
+        ) : (
+          <>
+            <IconButton
+              aria-label="Editar"
+              onClick={() => handleEditRow(row.id, row.original.name, row.original.id)}
+              sx={{ color: "#C5C7C8" }}
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              aria-label="Excluir"
+              onClick={() => handleDisable(row.original.id)}
+              sx={{ color: "#C5C7C8" }}
+            >
+              <Delete />
+            </IconButton>
+          </>
+        )}
       </div>
     ),
     renderTopToolbar: ({ table }) => (
@@ -141,7 +196,7 @@ export const MeasurementsConstructions = () => {
             table={table}
             className={classes.toolbarButton}
           />
-          <Tooltip title="Adicionar Material">
+          <Tooltip title="Adicionar Medição">
             <IconButton
               onClick={() => {
                 table.setCreatingRow(true);

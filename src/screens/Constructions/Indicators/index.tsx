@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from "react";
 import {
   Grid,
@@ -37,6 +38,9 @@ export function Indicators() {
   const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
   const [searchText, setSearchText] = useState<string>("");
   const [reportType, setReportType] = useState<string>("service");
+  const [selectedMedicoes, setSelectedMedicoes] = useState<string[]>([]);
+  const [selectedEquipes, setSelectedEquipes] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState<[Date, Date] | null>(null);
 
   useEffect(() => {
     getAllCollaboratorsWithoutPagination();
@@ -85,6 +89,23 @@ export function Indicators() {
   const handleStepChange = async (step: number) => {
     if (step === 1 && selectedCollaborator) {
       await getReportsNotationChecklist(selectedCollaborator.id.toString());
+    }
+  };
+
+  const handleButtonClick = (button: string, dates?: [Date, Date], selectedItems?: string[]) => {
+    console.log(`Button clicked in parent component: ${button}`);
+    if (dates) {
+      console.log(`Selected dates: ${dates[0].toLocaleDateString()} - ${dates[1].toLocaleDateString()}`);
+      setDateRange(dates);
+    }
+    if (selectedItems) {
+      if (button === 'Medição') {
+        setSelectedMedicoes(selectedItems);
+        console.log(`Selected Medicoes: ${selectedItems.join(', ')}`);
+      } else if (button === 'Equipes') {
+        setSelectedEquipes(selectedItems);
+        console.log(`Selected Equipes: ${selectedItems.join(', ')}`);
+      }
     }
   };
 
@@ -148,6 +169,7 @@ export function Indicators() {
             console.log(values);
           }}
           onStepChange={handleStepChange}
+          onButtonClick={handleButtonClick}
         >
           <FormikStep label="Geral">
             <Grid container>
