@@ -5,6 +5,8 @@ import { ChipCustomChecklist } from "../ChipCustom/ChipCustomChecklist";
 import { StyledGridChecklist } from "./styles";
 import LaunchIcon from "@mui/icons-material/Launch";
 import { ModalChecklists } from "../Modal/ModalChecklists";
+import { useParams } from "react-router-dom";
+
 
 interface Checklist {
   id: number;
@@ -46,6 +48,9 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
     null
   );
   const [modalOpen, setIsModalOpen] = useState(false);
+  const { id: constructionId , checklistid: checkListId} = useParams();
+
+  console.log("NOVO>>>>>>>>>", checkListId)
 
   const handleClose = () => {
     setIsModalOpen(false);
@@ -86,6 +91,12 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
 
     fetchTooltipData();
   }, [tooltipChecklistId]);
+
+  useEffect(() => {
+    if(checkListId !== undefined){
+      setIsModalOpen(true)
+    }
+  }, [checkListId]);
 
   const handleAddChecklistClick = () => {
     setIsInputVisible(true);
