@@ -121,6 +121,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
                     color: "#FFFFFF",
                     fontFamily: "Open Sans",
                     fontWeight: 600,
+                    width: "100%",
                   }}
                 />
               </td>
