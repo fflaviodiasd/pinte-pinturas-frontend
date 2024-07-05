@@ -51,6 +51,7 @@ export const AppRoutes = () => {
           />
 
           <Route path="/obras/:id/locais" element={<RegisterConstruction />} />
+          <Route path="/obras/:id/locais/checklist/:checklistid" element={<RegisterConstruction />} />
           <Route
             path="/obras/:id/dados-gerais"
             element={<RegisterConstruction />}
@@ -96,6 +97,7 @@ export const AppRoutes = () => {
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
           <Route path="/dashboard/acompanhamento" element={<Dashboard />} />
           <Route path="/dashboard/dados-gerais" element={<Dashboard />} />
+          <Route path="/dashboard/layout" element={<Dashboard />} />
 
           <Route
             path="/apontamentos/dados-do-sistema"

@@ -3,3 +3,22 @@ html {
   height: 100%;
   background-color: #eff1f3;
 }
+
+.custom-tooltip {
+  background-color: #ffffff;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-tooltip .tooltip-title {
+  margin-bottom: 5px;
+  padding-bottom: 3px;
+
+  border-bottom: 1px solid #CCC;
+}
+
+.custom-tooltip .tooltip-content div {
+  margin-bottom: 3px;
+}

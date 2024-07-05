@@ -125,6 +125,8 @@ type DashboardContextProps = {
   getAllConstructions: () => Promise<void>;
   listPackages: Item[];
   getAllPackages: () => Promise<void>;
+  listChecklist: any[];
+  getAllChekList: () => Promise<void>;
   listMeasurements: Item[];
   getAllMeasurements: () => Promise<void>;
   listChecklists: Item[];
@@ -243,6 +245,19 @@ const DashboardContextProvider = ({
         name: construction.name,
       }));
       setListPackages(packageList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [listChecklist, setListChecklist] = useState<any[]>([]);
+  const getAllChekList = async () => {
+    try {
+      const { data } = await api.get(
+        `/constructions/${selectedConstruction.id}/packages_checklists/`
+      );
+      console.log(data)
+      setListChecklist(data);
     } catch (error) {
       console.log(error);
     }
@@ -491,6 +506,7 @@ const DashboardContextProvider = ({
       getDashboardExecution();
       getDashboardGeneralData();
       getDashboardConstructionUpdate();
+      getAllChekList();
     }
   }, [selectedConstruction]);
 
@@ -503,6 +519,8 @@ const DashboardContextProvider = ({
         getAllConstructions,
         listPackages,
         getAllPackages,
+        listChecklist,
+        getAllChekList,
         listMeasurements,
         getAllMeasurements,
         listChecklists,

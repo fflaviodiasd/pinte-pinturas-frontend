@@ -50,8 +50,12 @@ function DashboardComponent() {
   const displayContent = () => {
     if (location.pathname.includes("dados-gerais")) {
       return <GeneralData />;
-    } else {
+    }
+    if(location.pathname.includes("acompanhamento")){
       return <FollowUp />;
+    } 
+    else {
+      return <Layout />;
     }
   };
 
@@ -148,6 +152,11 @@ function DashboardComponent() {
             text="Dados Gerais"
             isActive={shouldBeActive("dados-gerais")}
             onClick={() => navigate(`/dashboard/dados-gerais`)}
+          />
+          <Tab
+            text="Layout"
+            isActive={shouldBeActive("layout")}
+            onClick={() => navigate(`/dashboard/layout`)}
           />
         </Grid>
         <Grid item sm={2} md={3} lg={1} />
