@@ -93,6 +93,7 @@ export const useConstructions = () => {
 
   const [constructInfoData, setConstructInfoData] = useState<any>({});
   const [companiesSupervisorList, setCompaniesSupervisor] = useState<any>([]);
+  const [customersSupervisorList, setCustomersSupervisor] = useState<any>([]);
 
   // const getCompaniesSupervisorList = async () => {
   //   setLoading(true);
@@ -121,6 +122,31 @@ export const useConstructions = () => {
       return [];
     }
   };
+
+  const getCustomersSupervisorList = async (constructionId: string): Promise<Supervisor[]> => {
+    setLoading(true);
+    try {
+      // Primeiro, obtenha os detalhes da construção para obter o ID do cliente
+      const constructionResponse = await api.get(`/constructions/${constructionId}/`);
+      const customerId = constructionResponse.data.customer.id;
+      console.log("ID do cliente:", customerId);
+      console.log(">>>", constructionResponse.data)
+
+      // Agora, obtenha a lista de encarregados do cliente
+      const { data } = await api.get(`/customers/${customerId}/construction_supervisor/`);
+      console.log("Supervisor do cliente:", data);  
+      setLoading(false);
+      setCustomersSupervisor(data);
+      console.log(customersSupervisorList)
+      return data;
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      return [];
+    }
+  };
+
+
 
   const getChecklists = async (checklistId: any) => {
     setLoading(true);
@@ -1075,6 +1101,9 @@ export const useConstructions = () => {
     getAllCompanyClients,
     constructionRegister,
     editConstructionMeasurement,
-    editConstructionPackage
+    editConstructionPackage,
+    getCustomersSupervisorList,
+    customersSupervisorList
+
   };
 };
