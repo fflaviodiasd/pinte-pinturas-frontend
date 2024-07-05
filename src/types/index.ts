@@ -46,6 +46,7 @@ export type Client = {
   corporateName: string;
   municipalRegistration: string;
   stateRegistration: string;
+  registrationDate: string;
   cep: string;
   state: string;
   city: string;
