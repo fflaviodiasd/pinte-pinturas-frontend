@@ -5,6 +5,7 @@ import { InputMask } from "../../../../components/InputMask";
 import { Client } from "../../../../types";
 
 import { useStyles } from "../styles";
+import { useParams } from "react-router-dom";
 
 type GeneralDataFormProps = {
   values: Client;
@@ -23,6 +24,8 @@ export const GeneralDataForm = ({
   handleChange,
 }: GeneralDataFormProps) => {
   const { classes } = useStyles();
+  const { id } = useParams();
+  const isEditScreen = id;
 
   return (
     <Grid
@@ -133,6 +136,22 @@ export const GeneralDataForm = ({
           fullWidth
         />
       </Grid>
+      {isEditScreen ? (
+        <Grid item xs={12} lg={2} className={classes.fieldContainer}>
+          <TextField
+            name="registrationDate"
+            label="Data de Cadastro"
+            value={values.registrationDate}
+            onChange={handleChange}
+            variant="outlined"
+            size="small"
+            fullWidth
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </Grid>
+      ) : null}
     </Grid>
   );
 };
