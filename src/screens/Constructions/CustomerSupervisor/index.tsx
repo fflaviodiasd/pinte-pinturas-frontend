@@ -58,6 +58,8 @@ export const CustomerSupervisor = () => {
     historySupervisor,
     updateResponsibleSecondary,
     loading,
+    getCustomersSupervisorList,
+    customersSupervisorList
   } = useConstructions();
 
   const [selectedSupervisor, setSelectedSupervisor] = useState("");
@@ -70,7 +72,7 @@ export const CustomerSupervisor = () => {
     []
   );
   const [supervisorsToSelect, setSupervisorsToSelect] = useState<Supervisor[]>(
-    companiesSupervisorList
+    customersSupervisorList
   );
   const [secondarySupervisorData, setSecondarySupervisorData] = useState<
     Supervisor[]
@@ -256,7 +258,7 @@ export const CustomerSupervisor = () => {
     if (id) {
       getConstruction(id);
       getHistorySupervisor(id, true);
-      getCompaniesSupervisorList()
+      getCustomersSupervisorList(id)
         .then((supervisors: Supervisor[]) => {
           setSupervisorsToSelect(supervisors);
         })
@@ -311,7 +313,7 @@ export const CustomerSupervisor = () => {
         onClose={handleCloseAddModal}
         handleConfirmAddSupervisor={handleConfirmAddSupervisor}
         handleSelectSupervisor={handleSelectSupervisor}
-        companiesSupervisorList={companiesSupervisorList}
+        companiesSupervisorList={customersSupervisorList}
         selectedSupervisor={selectedSupervisor}
       />
 
@@ -333,7 +335,7 @@ export const CustomerSupervisor = () => {
       <SupervisorDialog
         open={isModalOpen}
         onClose={handleSecondaryClose}
-        companiesSupervisorList={companiesSupervisorList}
+        companiesSupervisorList={customersSupervisorList}
         selectedSupervisors={selectedSupervisors}
         onAddSupervisor={handleAddSupervisor}
         onRemoveSupervisor={handleRemoveSupervisor}

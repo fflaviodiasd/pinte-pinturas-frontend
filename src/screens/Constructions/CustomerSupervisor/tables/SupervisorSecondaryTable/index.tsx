@@ -71,6 +71,8 @@ export const SupervisorSecondaryTable = ({
   const {
     getConstruction,
     getCompaniesSupervisorList,
+    getCustomersSupervisorList,
+    customersSupervisorList,
     companiesSupervisorList,
     constructInfoData,
     updateResponsibleSecondary,
@@ -84,7 +86,7 @@ export const SupervisorSecondaryTable = ({
   const [selectedSupervisors, setSelectedSupervisors] =
     useState(secondaryInfoData);
   const [supervisorsToSelect, setSupervisorsToSelect] = useState(
-    companiesSupervisorList
+    customersSupervisorList
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentSupervisor, setCurrentSupervisor] = useState({
@@ -169,7 +171,7 @@ export const SupervisorSecondaryTable = ({
   const handleCancel = () => {
     // Limpa o estado das variáveis e fecha o modal
     setSelectedSupervisors(secondaryInfoData);
-    setSupervisorsToSelect(companiesSupervisorList);
+    setSupervisorsToSelect(customersSupervisorList);
     handleCloseModal();
   };
 
@@ -194,19 +196,19 @@ export const SupervisorSecondaryTable = ({
   useEffect(() => {
     if (id) {
       getConstruction(id);
-      getCompaniesSupervisorList();
+      getCustomersSupervisorList(id);
     }
   }, [id]);
 
   useEffect(() => {
-    const initialSupervisorsToSelect = companiesSupervisorList.filter(
+    const initialSupervisorsToSelect = customersSupervisorList.filter(
       (supervisor: Supervisor) =>
         !selectedSupervisors.find(
           (selected: Supervisor) => selected.id === supervisor.id
         )
     );
     setSupervisorsToSelect(initialSupervisorsToSelect);
-  }, [companiesSupervisorList, selectedSupervisors]);
+  }, [customersSupervisorList, selectedSupervisors]);
 
   useEffect(() => {
     setSecondaryInfoData(secondaryInfo);
