@@ -181,7 +181,7 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
             table={table}
             className={classes.toolbarButton}
           />
-          <Tooltip title="Adicionar Pacote">
+          <Tooltip title="Adicionar Equipe">
             <IconButton
               onClick={() => {
                 table.setCreatingRow(true);
