@@ -7,7 +7,6 @@ import LaunchIcon from "@mui/icons-material/Launch";
 import { ModalChecklists } from "../Modal/ModalChecklists";
 import { useParams } from "react-router-dom";
 
-
 interface Checklist {
   id: number;
   name: string;
@@ -48,9 +47,9 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
     null
   );
   const [modalOpen, setIsModalOpen] = useState(false);
-  const { id: constructionId , checklistid: checkListId} = useParams();
+  const { id: constructionId, checklistid: checkListId } = useParams();
 
-  console.log("NOVO>>>>>>>>>", checkListId)
+  console.log("NOVO>>>>>>>>>", checkListId);
 
   const handleClose = () => {
     setIsModalOpen(false);
@@ -93,8 +92,8 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
   }, [tooltipChecklistId]);
 
   useEffect(() => {
-    if(checkListId !== undefined){
-      setIsModalOpen(true)
+    if (checkListId !== undefined) {
+      setIsModalOpen(true);
     }
   }, [checkListId]);
 
@@ -172,7 +171,12 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
             onClick={handleAddChecklistClick}
             variant="contained"
             color="primary"
-            style={{ marginRight: "0.5rem", padding: "0", maxWidth: "30px" }}
+            style={{
+              marginRight: "0.5rem",
+              padding: "0",
+              maxWidth: "30px",
+              backgroundColor: "#0076BE",
+            }}
           >
             +
           </Button>

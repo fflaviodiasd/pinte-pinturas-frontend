@@ -599,9 +599,11 @@ const Locations = () => {
                     textTransform: "capitalize",
                     fontFamily: "Open Sans",
                     fontWeight: 600,
-                    color: disabledButton ? "#0076BE" : "",
-                    border: disabledButton ? "1px solid #0076BE" : "",
+                    color: "#FFFFFF",
+                    border: "none",
                     transition: "0.3s ease-in-out",
+                    height: "60%",
+                    backgroundColor: "#0076BE",
                   }}
                 >
                   Adicionar Linha
@@ -614,6 +616,9 @@ const Locations = () => {
                 textTransform: "capitalize",
                 fontFamily: "Open Sans",
                 fontWeight: 600,
+                height: "60%",
+                backgroundColor: "#0076BE",
+                color: "#FFFFFF",
               }}
               onClick={() => {
                 setIsModalOpen(true);
@@ -630,6 +635,9 @@ const Locations = () => {
                 textTransform: "capitalize",
                 fontFamily: "Open Sans",
                 fontWeight: 600,
+                height: "60%",
+                backgroundColor: "#0076BE",
+                color: "#FFFFFF",
               }}
             >
               Salvar
