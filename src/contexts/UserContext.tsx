@@ -17,6 +17,7 @@ import {
   KEY_USER,
 } from "../utils/consts";
 import { User } from "../types";
+import { errorMessage } from "../components/Messages";
 
 type UserContextProviderProps = {
   children: ReactNode;
@@ -135,9 +136,19 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
       setLoading(false);
 
       return false;
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      // errorMessage("Não foi possível realizar autenticação.");
+      if (
+        error.response &&
+        error.response.status === 401 &&
+        error.response.data.detail === "Usuário e/ou senha incorreto(s)"
+      ) {
+        errorMessage(
+          "Não foi possível realizar autenticação. Usuário e/ou senha incorreto(s)."
+        );
+      } else {
+        errorMessage("Não foi possível realizar autenticação.");
+      }
       setLoading(false);
       return true;
     }
