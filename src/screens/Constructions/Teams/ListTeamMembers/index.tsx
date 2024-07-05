@@ -127,72 +127,78 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
           onSubmit={(values) => handleUpdateTeamMembers(values)}
           enableReinitialize={true}
         >
-          <Form>
-            <div className={classes.inputsContainer}>
-              <Field
-                as={TextField}
-                name="teamName"
-                label="Nome da Equipe"
-                variant="outlined"
-                sx={{ width: "50%" }}
-              />
-
-              <Autocomplete
-                id="grouped-demo"
-                value={selectedMembers}
-                options={currentOptions.sort((a, b) =>
-                  a.name.localeCompare(b.name)
-                )}
-                groupBy={(option) => option.name.charAt(0).toUpperCase()}
-                getOptionLabel={(option) => returnedOptions(option)}
-                onChange={(_, newValue) => setSelectedMembers(newValue)}
-                multiple
-                fullWidth
-                filterSelectedOptions
-                renderGroup={(params) => {
-                  return (
-                    <li>
-                      <GroupHeader>{params.group}</GroupHeader>
-                      <GroupItems>{params.children}</GroupItems>
-                    </li>
-                  );
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Adicionar colaborador por nome, matricula ou perfil"
-                  />
-                )}
-              />
-            </div>
-
-            {loading ? (
-              <div className={classes.loadingContainer}>
-                <CircularProgress size={32} />
-              </div>
-            ) : (
-              <>
-                <TableMembers
-                  listTeamMembers={listTeamMembers}
-                  teamId={teamId}
+          {({ values }) => (
+            <Form>
+              <div className={classes.inputsContainer}>
+                <Field
+                  as={TextField}
+                  name="teamName"
+                  label="Nome da Equipe"
+                  variant="outlined"
+                  sx={{ width: "50%" }}
                 />
 
-                <QuantityRowsText quantityRows={listTeamMembers.length} />
+                <Autocomplete
+                  id="grouped-demo"
+                  value={selectedMembers}
+                  options={currentOptions.sort((a, b) =>
+                    a.name.localeCompare(b.name)
+                  )}
+                  groupBy={(option) => option.name.charAt(0).toUpperCase()}
+                  getOptionLabel={(option) => returnedOptions(option)}
+                  onChange={(_, newValue) => setSelectedMembers(newValue)}
+                  multiple
+                  fullWidth
+                  filterSelectedOptions
+                  renderGroup={(params) => {
+                    return (
+                      <li>
+                        <GroupHeader>{params.group}</GroupHeader>
+                        <GroupItems>{params.children}</GroupItems>
+                      </li>
+                    );
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Adicionar colaborador por nome, matricula ou perfil"
+                    />
+                  )}
+                />
+              </div>
 
-                <ButtonsContainer>
-                  <MuiButton
-                    className={classes.cancelButton}
-                    onClick={() => {
-                      setSelectedMembers([]);
-                    }}
-                  >
-                    Cancelar
-                  </MuiButton>
-                  <Button label="Salvar" color="primary" />
-                </ButtonsContainer>
-              </>
-            )}
-          </Form>
+              {loading ? (
+                <div className={classes.loadingContainer}>
+                  <CircularProgress size={32} />
+                </div>
+              ) : (
+                <>
+                  <TableMembers
+                    listTeamMembers={listTeamMembers}
+                    teamId={teamId}
+                  />
+
+                  <QuantityRowsText quantityRows={listTeamMembers.length} />
+
+                  <ButtonsContainer>
+                    <MuiButton
+                      className={classes.cancelButton}
+                      onClick={() => {
+                        setSelectedMembers([]);
+                      }}
+                    >
+                      Cancelar
+                    </MuiButton>
+                    <Button
+                      label="Salvar"
+                      color="primary"
+                      onClick={() => handleUpdateTeamMembers(values)}
+                    />
+                  </ButtonsContainer>
+                </>
+              )}
+            </Form>
+          )}
         </Formik>
       </Grid>
     </Grid>
