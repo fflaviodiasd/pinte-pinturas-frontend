@@ -235,12 +235,6 @@ const Locations = () => {
   }, [valueActual, editState, control]);
 
   const handleCreateLocal = async () => {
-    {
-      /*} const code = generateNextId(rowCount);
-      listConstructionsLocations[listConstructionsLocations.length - 1].code =
-        code;
-    */
-    }
     await addConstructionLocal(dynamicColumns, listConstructionsLocations);
   };
 
@@ -675,6 +669,8 @@ const Locations = () => {
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         selectedLocalIds={selectedLocalIds}
+        setControl={setControl}
+        control={control}
       />
       <ModalPackages modalOpen={modalOpen} handleClose={handleClose} />
     </Grid>
