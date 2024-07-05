@@ -123,7 +123,12 @@ export const LevelComponent: React.FC<LevelComponentProps> = ({
           onClick={handleAddLevelClick}
           variant="contained"
           color="primary"
-          style={{ marginRight: "0.5rem", padding: "0", maxWidth: "30px" }}
+          style={{
+            marginRight: "0.5rem",
+            padding: "0",
+            maxWidth: "30px",
+            backgroundColor: "#0076BE",
+          }}
         >
           +
         </Button>

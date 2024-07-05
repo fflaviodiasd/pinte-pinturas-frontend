@@ -74,10 +74,12 @@ export default function SelectLine({ button, addNewLine }: any) {
         disableElevation
         onClick={handleClick}
         style={{
-          height: "100%",
+          height: "60%",
           paddingTop: 8,
           paddingBottom: 6,
           paddingRight: 10,
+          backgroundColor: "#0076BE",
+          color: "#FFFFFF",
         }}
       >
         <KeyboardArrowDownIcon />
