@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import {
   FormControlLabel,
   Grid,
@@ -40,6 +40,7 @@ type SelectedTeam = {
 export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
   const { classes } = useStyles();
   const { addTeam, updateTeamRow } = useContext(TeamsContext);
+  const [status, setStatus] = useState<any>();
 
   const handleCreateTeam: MRT_TableOptions<any>["onCreatingRowSave"] = ({
     values,
@@ -55,7 +56,7 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
     row,
     values,
   }) => {
-    updateTeamRow(values.name, row.original.id);
+    updateTeamRow(values.name, row.original.id, status);
     exitEditingMode();
   };
 
@@ -69,12 +70,16 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
         filterVariant: "checkbox",
         enableEditing: false,
         Cell: ({ cell }) => {
-          const isActive = cell.getValue() === "true";
-          const status = isActive ? "Ativa" : "Inativa";
+          const [isActive, setIsActive] = useState(cell.getValue() === "true");
+
+          const toggleActive = () => {
+            setIsActive(!isActive);
+            setStatus(!isActive);
+          };
           return (
             <FormControlLabel
-              control={<Switch checked={isActive} />}
-              label={status}
+              control={<Switch checked={isActive} onChange={toggleActive} />}
+              label={isActive ? "Ativa" : "Inativa"}
             />
           );
         },
