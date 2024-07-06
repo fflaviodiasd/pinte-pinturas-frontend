@@ -66,7 +66,7 @@ type TeamsContextProps = {
   ) => Promise<void>;
   getAllTeamMembers: (teamId: number) => Promise<void>;
   setListTeamMembers: Dispatch<SetStateAction<TeamMember[]>>;
-  updateTeamRow: (teamName: string, teamId: number) => Promise<void>;
+  updateTeamRow: (teamName: string, teamId: number, active: boolean) => Promise<void>;
   setListTeams: Dispatch<SetStateAction<Team[]>>;
 };
 
@@ -115,11 +115,16 @@ const TeamsContextProvider = ({ children }: TeamsContextProviderProps) => {
     }
   };
 
-  const updateTeamRow = async (teamName: string, teamId: number) => {
+  const updateTeamRow = async (
+    teamName: string,
+    teamId: number,
+    active: boolean
+  ) => {
     setLoading(true);
     try {
       await api.patch(`teams/${teamId}/`, {
         name: teamName,
+        active: active,
       });
       successMessage("Equipe atualizada com sucesso!");
     } catch (error) {
