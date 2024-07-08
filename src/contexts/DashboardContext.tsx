@@ -226,7 +226,7 @@ const DashboardContextProvider = ({
       );
       const constructionList = data.map((construction: any) => ({
         id: construction.id,
-        name: construction.corporate_name,
+        name: construction.fantasy_name,
       }));
       setListConstructions(constructionList);
     } catch (error) {
