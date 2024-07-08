@@ -162,13 +162,6 @@ export const ListMaterials = () => {
 
       <Grid item xs={12} lg={12} className={classes.tableContainer}>
         <MaterialReactTable table={table} />
-        {Boolean(listMaterials.length) && (
-          <TablePagination
-            count={pagination.pageQuantity}
-            page={pagination.currentPage}
-            onChange={handleChangePagination}
-          />
-        )}
       </Grid>
 
       <ModalRegisterMaterial

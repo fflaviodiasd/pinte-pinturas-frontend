@@ -182,13 +182,6 @@ export const ListCollaborators = () => {
 
       <Grid item xs={12} lg={12} className={classes.tableContainer}>
         <MaterialReactTable table={table} />
-        {Boolean(listCollaborators.length) && (
-          <TablePagination
-            count={pagination.pageQuantity}
-            page={pagination.currentPage}
-            onChange={handleChangePagination}
-          />
-        )}
       </Grid>
 
       <ModalDisable
