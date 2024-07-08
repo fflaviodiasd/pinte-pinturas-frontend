@@ -37,7 +37,7 @@ type HandleChange = {
     : (e: string | React.ChangeEvent<any>) => void;
 };
 
-export const RegisterConstruction = () => {
+export const EmployeesConstruction = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id: constructionId , checklistid: checkListId} = useParams();
