@@ -61,16 +61,15 @@ export function Layout(){
   
           return `(${dia}/${mes}/${ano}, ${hora}:${minutos}:${segundos})`;
         }
-        const autoinicio = formatDate(w.globals.initialSeries[seriesIndex].data[dataPointIndex].autoinicio);
-        const autofinal = formatDate(w.globals.initialSeries[seriesIndex].data[dataPointIndex].autofinal);
-
-
+        const autoinicio = w.globals.initialSeries[seriesIndex].data[dataPointIndex].autoinicio == "" ? "" : formatDate(w.globals.initialSeries[seriesIndex].data[dataPointIndex].autoinicio);
+        const autofinal = w.globals.initialSeries[seriesIndex].data[dataPointIndex].autofinal == "" ? "" : formatDate(w.globals.initialSeries[seriesIndex].data[dataPointIndex].autofinal);
+        
         const content = `
           <div class="custom-tooltip">
-            <div class="tooltip-title">Nome: <strong>${name || "-"}</strong></div>
+            <div class="tooltip-title">Nome: <strong>${name || ""}</strong></div>
             <div class="tooltip-content">
-              <div>Inicio: <strong>${inicio ?? null}</strong> ${autoinicio ?? null}</div>
-              <div>Termino: <strong>${final ?? null}</strong> ${autofinal ?? null}</div>
+              <div>Inicio: <strong>${inicio || ""}</strong> ${autoinicio || ""}</div>
+              <div>Termino: <strong>${final || ""}</strong> ${autofinal || ""}</div>
             </div>
           </div>
         `;
