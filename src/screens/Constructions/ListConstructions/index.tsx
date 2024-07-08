@@ -21,6 +21,8 @@ import { EditIcon } from "../../../components/EditIcon";
 import { styled } from "@mui/material/styles";
 
 import { useStyles } from "./styles";
+import { Delete } from "@mui/icons-material";
+import { ModalDisable } from "../../../components/Table/ModalDisable";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 15,
@@ -38,7 +40,25 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 export const ListConstructions = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { listConstructions, getAllConstructions } = useConstructions();
+  const { listConstructions, getAllConstructions, disableConstruction } = useConstructions();
+
+  const [selectedObraId, setselectedObraId] =
+    useState<number>(0);
+  const [selectedObraName, setselectedObraName] =
+    useState<string>("");
+
+  console.log("OBRA>>>>>>", selectedObraId)
+
+  const [modalOpen, setIsModalOpen] = useState(false);
+  
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleDisable = () => {
+    disableConstruction(selectedObraId);
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     getAllConstructions();
@@ -52,10 +72,26 @@ export const ListConstructions = () => {
         columnDefType: "display",
         size: 50,
         Cell: ({ cell }) => (
+          <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           <EditIcon
             onClick={() => navigate(`/obras/${cell.row.original.id}/locais`)}
             label="Editar"
           />
+          <Delete
+            sx={{ cursor: "pointer", color: "#C5C7C8" }}
+            onClick={() => {
+              setselectedObraId(cell.row.original.id!);
+              setselectedObraName(cell.row.original.name);
+
+              setIsModalOpen(true);
+            }}
+          />
+          </div>
         ),
       },
       {
@@ -205,6 +241,13 @@ export const ListConstructions = () => {
       <Grid item xs={12} lg={12} className={classes.tableContainer}>
         <MaterialReactTable table={table} />
       </Grid>
+
+      <ModalDisable
+        modalOpen={modalOpen}
+        handleCloseModal={handleClose}
+        handleDisable={handleDisable}
+        selectedName={selectedObraName}
+      />
     </Grid>
   );
 };
