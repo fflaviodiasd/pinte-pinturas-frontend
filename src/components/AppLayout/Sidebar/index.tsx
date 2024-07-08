@@ -1,4 +1,4 @@
-import { useState, ReactElement, Fragment, useEffect } from "react";
+import { useState, ReactElement, Fragment, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
@@ -36,6 +36,7 @@ import { Drawer, DrawerHeader } from "./styles";
 // import MaterialsIcon from "../../../assets/images/materials.svg";
 // import ClientsIcon from "../../../assets/images/clients.svg";
 import logoImage from "../../../assets/images/logo.png";
+import { UserContext } from "../../../contexts/UserContext";
 
 interface NavItem {
   text: string;
@@ -47,6 +48,7 @@ interface NavItem {
 export const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   const isSideBarOpen = () => {
     const storageIsSideBarOpen = localStorage.getItem(KEY_SIDEBAR);
@@ -82,9 +84,7 @@ export const Sidebar = () => {
     setOpenConstructionsItemMenu(!openConstructionsItemMenu);
   };
 
-  const user = JSON.parse(localStorage.getItem("@USER"));
   const [navItems, setNavItems] = useState<any>();
-
   useEffect(() => {
     const navItems1: NavItem[] = [
       {

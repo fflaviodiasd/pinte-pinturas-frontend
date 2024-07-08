@@ -65,6 +65,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
         isFirstAccessUser: userParsed.isFirstAccessUser,
         isFirstLogin: userParsed.isFirstLogin,
         type: userParsed.type,
+        profile_type: userParsed.profile_type,
         profileName: userParsed.profileName,
         company: userParsed.company,
       };
@@ -116,6 +117,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
             isFirstAccessUser: data.user.is_first_access_user,
             isFirstLogin: data.user.is_first_login,
             type: data.user.type,
+            profile_type: data.user.profile_type,
             profileName: data.user.profile_name || "",
             company: data.user.company_id || 0,
           })
@@ -125,6 +127,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
           isFirstAccessUser: data.user.is_first_access_user,
           isFirstLogin: data.user.is_first_login,
           type: data.user.type,
+          profile_type: data.user.profile_type,
           profileName: data.user.profile_name || "",
           company: data.user.company_id || 0,
         });

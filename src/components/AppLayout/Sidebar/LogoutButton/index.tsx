@@ -63,7 +63,7 @@ export function LogoutButton() {
               fontSize: "1rem",
             }}
           >
-            {user.type}
+            {user.profile_type}
           </div>
         </div>
       </Box>
