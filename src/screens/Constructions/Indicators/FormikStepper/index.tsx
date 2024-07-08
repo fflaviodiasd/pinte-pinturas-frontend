@@ -155,7 +155,7 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
                     </Box>
                   ))}
                 </Box>
-                <Box sx={{ display: 'flex', gap: 2, position: 'relative' }}>
+                {/* <Box sx={{ display: 'flex', gap: 2, position: 'relative' }}>
                   <Button variant="outlined" startIcon={<CalendarTodayIcon />} onClick={handlePeriodoClick} sx={{ border: 1, borderRadius: 30 }}>
                     Período
                   </Button>
@@ -232,7 +232,7 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
                       <DateRangePicker onChange={(value: any) => handleDateChange(value as [Date, Date])} value={dateRange} />
                     </Box>
                   )}
-                </Box>
+                </Box> */}
               </Box>
               {(dateRange || selectedMedicoes.length > 0 || selectedEquipes.length > 0) && (
                 <Box sx={{ marginTop: 2 }}>

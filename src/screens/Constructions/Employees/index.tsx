@@ -16,7 +16,7 @@ import { useConstructions } from "../../../hooks/useConstructions";
 
 import { ModalRegisterConstructionMaterial } from "../../../components/Modal/ModalRegisterConstructionMaterial";
 import { EmptyTableText } from "../../../components/Table/EmptyTableText";
-
+import { Indicators } from "../Indicators";
 import { useStyles } from "./styles";
 import { SectionTitle } from "../../../components/SectionTitle";
 
@@ -29,10 +29,12 @@ export const ListConstructionsEmployees = () => {
     disableConstructionMaterial,
   } = useConstructions();
 
-  const [selectedConstructionMaterialId, setselectedConstructionMaterialId] =
+  const [selectedConstructionMaterialId, setSelectedConstructionMaterialId] =
     useState<number>(0);
   const [modalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"edit" | "register">("register");
+  const [showIndicators, setShowIndicators] = useState(false); // Estado para controlar a exibição do componente Indicators
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(null); // Estado para armazenar o id do colaborador selecionado
 
   const handleDisable = () => {
     disableConstructionMaterial(selectedConstructionMaterialId);
@@ -48,6 +50,12 @@ export const ListConstructionsEmployees = () => {
   useEffect(() => {
     getAllEmployeesMaterials();
   }, []);
+
+  const filteredEmployees = useMemo(() => {
+    const employees = listEmployeesMaterials.map(({ id, name }) => ({ id, name }));
+    console.log("Filtered Employees:", employees); // Adicionado para verificar os dados
+    return employees;
+  }, [listEmployeesMaterials]);
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -65,9 +73,9 @@ export const ListConstructionsEmployees = () => {
             <Launch
               sx={{ cursor: "pointer", color: "#C5C7C8" }}
               onClick={() => {
-                setselectedConstructionMaterialId(cell.row.original.id!);
-                setIsModalOpen(true);
-                setModalMode("edit");
+                setSelectedConstructionMaterialId(cell.row.original.id!);
+                setSelectedEmployeeId(cell.row.original.id!); // Armazena o id do colaborador selecionado
+                setShowIndicators(true); // Alterar estado para mostrar o componente Indicators
               }}
             />
           </div>
@@ -171,15 +179,18 @@ export const ListConstructionsEmployees = () => {
 
   return (
     <Grid item lg={12} className={classes.container}>
-      <MaterialReactTable table={table} />
-
-      <ModalRegisterConstructionMaterial
+      {showIndicators ? (
+        <Indicators collaborators={filteredEmployees} selectedEmployeeId={selectedEmployeeId} /> // Passar dados filtrados e id do colaborador selecionado para Indicators
+      ) : (
+        <MaterialReactTable table={table} />
+      )}
+      {/* <ModalRegisterConstructionMaterial
         modalOpen={modalOpen}
         handleClose={handleClose}
         mode={modalMode}
         selectedConstructionMaterialId={selectedConstructionMaterialId}
         handleDisable={handleDisable}
-      />
+      /> */}
     </Grid>
   );
 };
