@@ -1,4 +1,4 @@
-import { useState, ReactElement, Fragment } from "react";
+import { useState, ReactElement, Fragment, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
@@ -82,61 +82,120 @@ export const Sidebar = () => {
     setOpenConstructionsItemMenu(!openConstructionsItemMenu);
   };
 
-  const navItems: NavItem[] = [
-    {
-      text: "Clientes",
-      path: "clientes",
-      // icon: <img src={ClientsIcon} alt="Clientes" />,
-      icon: <ClientsIcon />,
-      subItems: [
-        { text: "• Cadastro", path: "/clientes/cadastrar" },
-        { text: "• Listagem", path: "/clientes/listagem" },
-      ],
-    },
-    {
-      text: "Funcionários",
-      path: "colaboradores",
-      // icon: <img src={EmployeesIcon} alt="Funcionários" />,
-      icon: <EmployeesIcon />,
-      subItems: [
-        { text: "• Cadastro", path: "/colaboradores/cadastrar" },
-        { text: "• Listagem", path: "/colaboradores/listagem" },
-      ],
-    },
-    {
-      text: "Obras",
-      path: "obras",
-      // icon: <img src={ConstructionsIcon} alt="Obras" />,
-      icon: <ConstructionsIcon />,
-      subItems: [
-        { text: "• Cadastro", path: "/obras/cadastrar/dados-gerais" },
-        { text: "• Listagem", path: "/obras/listagem" },
-        { text: "• Funcionários", path: "/obras/funcionarios" },
-      ],
-    },
-    {
-      text: "Materiais",
-      path: "materiais",
-      // icon: <img src={MaterialsIcon} alt="Materiais" />,
-      icon: <MaterialsIcon />,
-    },
-    {
-      text: "Medições",
-      path: "medicoes",
-      // icon: <img src={MeasurementsIcon} alt="Medições" />,
-      icon: <MeasurementsIcon />,
-    },
-    {
-      text: "Dashboard",
-      path: "dashboard/acompanhamento",
-      icon: <DashboardIcon />,
-    },
-    {
-      text: "Apontamentos",
-      path: "apontamentos/dados-do-sistema",
-      icon: <InsightsIcon />,
-    },
-  ];
+  const user = JSON.parse(localStorage.getItem("@USER"));
+  const [navItems, setNavItems] = useState<any>();
+
+  useEffect(() => {
+    const navItems1: NavItem[] = [
+      {
+        text: "Clientes",
+        path: "clientes",
+        // icon: <img src={ClientsIcon} alt="Clientes" />,
+        icon: <ClientsIcon />,
+        subItems: [
+          { text: "• Cadastro", path: "/clientes/cadastrar" },
+          { text: "• Listagem", path: "/clientes/listagem" },
+        ],
+      },
+      {
+        text: "Funcionários",
+        path: "colaboradores",
+        // icon: <img src={EmployeesIcon} alt="Funcionários" />,
+        icon: <EmployeesIcon />,
+        subItems: [
+          { text: "• Cadastro", path: "/colaboradores/cadastrar" },
+          { text: "• Listagem", path: "/colaboradores/listagem" },
+        ],
+      },
+      {
+        text: "Obras",
+        path: "obras",
+        // icon: <img src={ConstructionsIcon} alt="Obras" />,
+        icon: <ConstructionsIcon />,
+        subItems: [
+          { text: "• Cadastro", path: "/obras/cadastrar/dados-gerais" },
+          { text: "• Listagem", path: "/obras/listagem" },
+          { text: "• Funcionários", path: "/obras/funcionarios" },
+        ],
+      },
+      {
+        text: "Materiais",
+        path: "materiais",
+        // icon: <img src={MaterialsIcon} alt="Materiais" />,
+        icon: <MaterialsIcon />,
+      },
+      {
+        text: "Medições",
+        path: "medicoes",
+        // icon: <img src={MeasurementsIcon} alt="Medições" />,
+        icon: <MeasurementsIcon />,
+      },
+      {
+        text: "Dashboard",
+        path: "dashboard/acompanhamento",
+        icon: <DashboardIcon />,
+      },
+      {
+        text: "Apontamentos",
+        path: "apontamentos/dados-do-sistema",
+        icon: <InsightsIcon />,
+      },
+    ];
+
+    const navItems2: NavItem[] = [
+      {
+        text: "Obras",
+        path: "obras",
+        // icon: <img src={ConstructionsIcon} alt="Obras" />,
+        icon: <ConstructionsIcon />,
+        subItems: [
+          { text: "• Listagem", path: "/obras/listagem" },
+          { text: "• Funcionários", path: "/obras/funcionarios" },
+        ],
+      },
+    ];
+
+    const navItems3: NavItem[] = [
+      {
+        text: "Obras",
+        path: "obras",
+        // icon: <img src={ConstructionsIcon} alt="Obras" />,
+        icon: <ConstructionsIcon />,
+        subItems: [{ text: "• Listagem", path: "/obras/listagem" }],
+      },
+    ];
+
+    const navItems4: NavItem[] = [
+      {
+        text: "Funcionários",
+        path: "colaboradores",
+        // icon: <img src={EmployeesIcon} alt="Funcionários" />,
+        icon: <EmployeesIcon />,
+        subItems: [
+          { text: "• Cadastro", path: "/colaboradores/cadastrar" },
+          { text: "• Listagem", path: "/colaboradores/listagem" },
+        ],
+      },
+      {
+        text: "Obras",
+        path: "obras",
+        // icon: <img src={ConstructionsIcon} alt="Obras" />,
+        icon: <ConstructionsIcon />,
+        subItems: [{ text: "• Listagem", path: "/obras/listagem" }],
+      },
+    ];
+
+    const type = user.type;
+    if (type === 2 || type === 3) {
+      setNavItems(navItems1);
+    } else if (type >= 4 && type <= 6) {
+      setNavItems(navItems2);
+    } else if (type === 8 || type === 9) {
+      setNavItems(navItems3);
+    } else {
+      setNavItems(navItems4);
+    }
+  }, []);
 
   const returnedIcon = (isOpen: boolean) => {
     if (isOpen) {
@@ -230,7 +289,7 @@ export const Sidebar = () => {
           }}
         >
           <List>
-            {navItems.map((navItem) => {
+            {navItems?.map((navItem) => {
               const { path, subItems } = navItem;
 
               const isActive = verifyPathname(path);

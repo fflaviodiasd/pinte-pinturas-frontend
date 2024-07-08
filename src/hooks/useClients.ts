@@ -85,7 +85,7 @@ export const useClients = () => {
   const addClient = async (clientData: Client) => {
     setLoading(true);
     try {
-      await api.post(`/customers/`, {
+      await api.post(`companies/${user.company}/customers/`, {
         responsible: clientData.responsible,
         fantasy_name: clientData.tradingName,
         cnpj: clientData.cnpj,
@@ -225,6 +225,8 @@ export const useClients = () => {
     currentPage: 1,
     pageQuantity: 1,
   });
+
+  
   const handleChangePagination = (
     _: React.ChangeEvent<unknown>,
     value: number
@@ -233,6 +235,33 @@ export const useClients = () => {
   };
 
   const getAllClients = async (currentPage: number = 0) => {
+    setLoading(true);
+    const offset = (currentPage - 1) * LIMIT;
+    try {
+      const { data } = await api.get(
+        `companies/${user.company}/customers/`
+      );
+      setPagination({
+        currentPage: currentPage === 0 ? 1 : currentPage,
+        pageQuantity: Math.ceil(data.count / LIMIT),
+      });
+      const allClients = data.map((result: any) => ({
+        id: result.id,
+        tradingName: result.name,
+        responsible: result.responsible,
+        cnpj: result.cnpj,
+        email: result.email,
+        phoneNumber: result.phone,
+      }));
+      setListClients(allClients);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const getAllClientsOld = async (currentPage: number = 0) => {
     setLoading(true);
     const offset = (currentPage - 1) * LIMIT;
     try {
