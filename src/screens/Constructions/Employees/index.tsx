@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from "react";
 import { Grid, IconButton, Tooltip } from "@mui/material";
-import { Add as AddIcon, Launch } from "@mui/icons-material";
+import { Add as AddIcon, Download, Launch } from "@mui/icons-material";
 import {
   MRT_ShowHideColumnsButton,
   MRT_ToggleDensePaddingButton,
@@ -42,6 +42,8 @@ export const ListConstructionsEmployees = () => {
   const handleClose = () => {
     setIsModalOpen(false);
   };
+
+  const handleDownloadCsv = () => {}
 
   useEffect(() => {
     getAllEmployeesMaterials();
@@ -146,15 +148,17 @@ export const ListConstructionsEmployees = () => {
             table={table}
             className={classes.toolbarButton}
           />
-          <Tooltip title="Adicionar Material">
+          <Tooltip title="Download da Tabela">
             <IconButton
-              onClick={() => {
-                setIsModalOpen(true);
-                setModalMode("register");
+              onClick={handleDownloadCsv}
+              sx={{
+                color: "#0076be",
+                border: "1px solid #0076be",
+                borderRadius: "4px",
+                "&:hover": { backgroundColor: "rgba(0, 118, 190, 0.04)" },
               }}
-              className={classes.toolbarButton}
             >
-              <AddIcon />
+              <Download />
             </IconButton>
           </Tooltip>
         </div>
