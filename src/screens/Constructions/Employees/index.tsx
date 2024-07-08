@@ -65,9 +65,7 @@ export const ListConstructionsEmployees = () => {
             <Launch
               sx={{ cursor: "pointer", color: "#C5C7C8" }}
               onClick={() => {
-                setselectedConstructionMaterialId(cell.row.original.id!);
-                setIsModalOpen(true);
-                setModalMode("edit");
+                //evento para ser disparado
               }}
             />
           </div>
