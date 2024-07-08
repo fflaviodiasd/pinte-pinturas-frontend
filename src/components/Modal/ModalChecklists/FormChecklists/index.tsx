@@ -1,3 +1,4 @@
+import React, { useRef } from "react";
 import { Box, Button, DialogContent, TextField } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { useParams } from "react-router-dom";
@@ -10,8 +11,12 @@ export const FormChecklists = ({ checklistId }: any) => {
   const { id } = useParams();
   const { updateChecklist, getChecklists, constructionData } =
     useConstructions();
+  const historyInfoRef = useRef<any>();
 
   const handleSubmit = async (values: any) => {
+    if (historyInfoRef.current) {
+      await historyInfoRef.current.saveHistoryInfo();
+    }
     await updateChecklist(values, checklistId);
   };
 
@@ -31,7 +36,7 @@ export const FormChecklists = ({ checklistId }: any) => {
         >
           {() => (
             <Form>
-              <HistoryInfo checklistId={checklistId} />
+              <HistoryInfo checklistId={checklistId} ref={historyInfoRef} />
               <DialogContent
                 style={{
                   display: "flex",
