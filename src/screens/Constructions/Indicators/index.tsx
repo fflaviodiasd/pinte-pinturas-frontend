@@ -139,6 +139,12 @@ export function Indicators({ collaborators, selectedEmployeeId }: IndicatorsProp
     }
   };
 
+  const handleSaveParams = async (params: any) => {
+    console.log('Received params from FormikStepper:', params);
+    if (selectedCollaborator) {
+      await getReportsNotation(reportType, selectedCollaborator.id.toString(), params);
+    }
+  };
 
   return (
     <Formik
@@ -195,6 +201,7 @@ export function Indicators({ collaborators, selectedEmployeeId }: IndicatorsProp
           }}
           onStepChange={handleStepChange}
           onButtonClick={handleButtonClick}
+          onSave={handleSaveParams} // Adicionando o callback onSave
         >
           <FormikStep label="Geral">
             <Grid container>

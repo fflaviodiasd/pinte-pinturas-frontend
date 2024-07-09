@@ -60,13 +60,48 @@ export const useConference = () => {
     useState<ReportNotation>();
     const [listReportsNotationChecklist, setListReportsNotationChecklist] = useState<ReportChecklist[]>([]);
 
+  // const getReportsNotation = async (
+  //   disjunction: string = "service",
+  //   employeeId: string
+  // ) => {
+  //   try {
+  //     const { data } = await api.get(
+  //       `/reports_notation/${employeeId}/general/?disjunction=${disjunction}`
+  //     );
+  //     console.log("Reports Notation data:", data);
+  //     setListReportsNotation(data);
+  //     setLoading(false);
+  //     return data;
+  //   } catch (error) {
+  //     console.error("Erro ao obter relatórios de notação:", error);
+  //     setLoading(false);
+  //     return [];
+  //   }
+  // };
+
   const getReportsNotation = async (
     disjunction: string = "service",
-    employeeId: string
+    employeeId: string,
+    params?: { [key: string]: any }
   ) => {
     try {
+      const queryParams = new URLSearchParams();
+      queryParams.append("disjunction", disjunction);
+  
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== null && value !== undefined && value !== "") {
+            if (Array.isArray(value)) {
+              value.forEach(val => queryParams.append(key, val));
+            } else {
+              queryParams.append(key, value);
+            }
+          }
+        });
+      }
+  
       const { data } = await api.get(
-        `/reports_notation/${employeeId}/general/?disjunction=${disjunction}`
+        `/reports_notation/${employeeId}/general/?${queryParams.toString()}`
       );
       console.log("Reports Notation data:", data);
       setListReportsNotation(data);
@@ -78,6 +113,9 @@ export const useConference = () => {
       return [];
     }
   };
+  
+
+  
   const getReportsNotationChecklist = async (employeeId: string) => {
     try {
       const { data } = await api.get(
