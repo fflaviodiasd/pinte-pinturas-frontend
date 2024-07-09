@@ -175,7 +175,7 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
                   ))}
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2, position: 'relative' }}>
-                  {/* <Button variant="outlined" startIcon={<CalendarTodayIcon />} onClick={handlePeriodoClick} sx={{ border: 1, borderRadius: 30 }}>
+                  <Button variant="outlined" startIcon={<CalendarTodayIcon />} onClick={handlePeriodoClick} sx={{ border: 1, borderRadius: 30 }}>
                     Período
                   </Button>
                   <Button variant="outlined" startIcon={<AssessmentIcon />} onClick={handleMedicaoClick} sx={{ border: 1, borderRadius: 30 }}>
@@ -183,7 +183,7 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
                   </Button>
                   <Button variant="outlined" startIcon={<GroupIcon />} onClick={handleEquipesClick} sx={{ border: 1, borderRadius: 30 }}>
                     Equipes
-                  </Button> */}
+                  </Button>
 
                   {/* Drawer para Período */}
                   <Drawer
