@@ -19,6 +19,7 @@ import ReportGeneral from "./ReportGeneral";
 import ReportDetails from "./ReportDetails"; 
 import ReportChecklist from "./ReportChecklist";
 import { FormikStepper, FormikStep } from './FormikStepper'; 
+import { TeamsContextProvider } from "../../../contexts/TeamsContext";
 
 interface Collaborator {
   id: number;
@@ -185,6 +186,7 @@ export function Indicators({ collaborators, selectedEmployeeId }: IndicatorsProp
             </div>
           </Grid>
         </Grid>
+        <TeamsContextProvider>
 
         <FormikStepper
           initialValues={{}}
@@ -253,6 +255,7 @@ export function Indicators({ collaborators, selectedEmployeeId }: IndicatorsProp
             </Grid>
           </FormikStep>
         </FormikStepper>
+        </TeamsContextProvider>
       </Form>
     </Formik>
   );

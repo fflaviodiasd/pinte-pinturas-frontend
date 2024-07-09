@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Formik, FormikConfig, FormikValues, Form } from 'formik';
-import { Grid, Box, Typography, Button, Popover, MenuItem, Select, FormControl, InputLabel, Checkbox, ListItemText, SelectChangeEvent, Drawer, IconButton } from '@mui/material';
+import { Grid, Box, Typography, Button, Select, FormControl, InputLabel, Checkbox, ListItemText, SelectChangeEvent, Drawer, IconButton, MenuItem } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useStyles } from '../styles';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -10,6 +10,11 @@ import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import '@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import CloseIcon from '@mui/icons-material/Close';
+import { useConstructions } from "../../../../hooks/useConstructions";
+import {
+  TeamsContext,
+  TeamsContextProvider,
+} from "../../../../contexts/TeamsContext";
 
 export interface FormikStepProps extends Pick<FormikConfig<FormikValues>, 'children' | 'validationSchema'> {
   label: string;
@@ -38,6 +43,7 @@ const MenuProps = {
 
 export function FormikStepper({ children, onStepChange, onButtonClick, ...props }: FormikStepperProps) {
   const childrenArray = React.Children.toArray(children) as React.ReactElement<FormikStepProps>[];
+  
   const [step, setStep] = useState(0);
   const currentChild = childrenArray[step] as React.ReactElement<FormikStepProps>;
   const { classes } = useStyles();
@@ -52,11 +58,41 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
   const [selectedEquipes, setSelectedEquipes] = useState<string[]>([]);
   const [drawerOpen, setDrawerOpen] = useState(false); // Estado para controlar a abertura do Drawer
   const [medicaoDrawerOpen, setMedicaoDrawerOpen] = useState(false); // Estado para controlar a abertura do Drawer de Medição
+  const [filteredMeasurements, setFilteredMeasurements] = useState<any[]>([]);
   const [equipesDrawerOpen, setEquipesDrawerOpen] = useState(false); // Estado para controlar a abertura do Drawer de Equipes
 
-  const medicoes = ['Medição 1', 'Medição 2', 'Medição 3'];
-  const equipes = ['Equipe 1', 'Equipe 2', 'Equipe 3'];
+  const {
+    listTeams,
+    getAllTeams,
+  } = useContext(TeamsContext);
+  const { id } = useParams();
+  const {
+    listConstructionsMeasurements,
+    getAllConstructionsMeasurements,
+  } = useConstructions();
 
+  useEffect(() => {
+    if (id) {
+      getAllConstructionsMeasurements();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    getAllTeams();
+  }, []);
+
+  useEffect(() => {
+    if (
+      listConstructionsMeasurements &&
+      listConstructionsMeasurements.length > 0
+    ) {
+      const filteredData = listConstructionsMeasurements.filter(
+        (measurement) => measurement.construction.toString() === id
+      );
+      setFilteredMeasurements(filteredData);
+    }
+  }, [listConstructionsMeasurements, id]);
+  
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -196,7 +232,7 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
                         <CloseIcon />
                       </IconButton>
                       <DateRangePicker onChange={(value: any) => handleDateChange(value as [Date, Date])} value={dateRange} />
-                      <Box sx={{ flexGrow: 1 }} /> {/* Espacço flexível para empurrar o botão "Salvar" para o rodapé */}
+                      <Box sx={{ flexGrow: 1 }} /> {/* Espaço flexível para empurrar o botão "Salvar" para o rodapé */}
                       <Button variant="contained" color="primary" onClick={handleSaveClick} sx={{ mt: 2 }}>
                         Salvar
                       </Button>
@@ -222,15 +258,15 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
                           renderValue={(selected) => (selected as string[]).join(', ')}
                           MenuProps={MenuProps}
                         >
-                          {medicoes.map((name) => (
-                            <MenuItem key={name} value={name}>
-                              <Checkbox checked={selectedMedicoes.indexOf(name) > -1} />
-                              <ListItemText primary={name} />
+                          {filteredMeasurements.map((measurement) => (
+                            <MenuItem key={measurement.id} value={measurement.name}>
+                              <Checkbox checked={selectedMedicoes.indexOf(measurement.name) > -1} />
+                              <ListItemText primary={measurement.name} />
                             </MenuItem>
                           ))}
                         </Select>
                       </FormControl>
-                      <Box sx={{ flexGrow: 1 }} /> {/* Espacço flexível para empurrar o botão "Salvar" para o rodapé */}
+                      <Box sx={{ flexGrow: 1 }} /> {/* Espaço flexível para empurrar o botão "Salvar" para o rodapé */}
                       <Button variant="contained" color="primary" onClick={handleSaveMedicaoClick} sx={{ mt: 2 }}>
                         Salvar
                       </Button>
@@ -255,16 +291,17 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
                           onChange={handleEquipesChange}
                           renderValue={(selected) => (selected as string[]).join(', ')}
                           MenuProps={MenuProps}
+                          label="Equipes"
                         >
-                          {equipes.map((name) => (
-                            <MenuItem key={name} value={name}>
-                              <Checkbox checked={selectedEquipes.indexOf(name) > -1} />
-                              <ListItemText primary={name} />
+                          {listTeams.map((team) => (
+                            <MenuItem key={team.id} value={team.name}>
+                              <Checkbox checked={selectedEquipes.indexOf(team.name) > -1} />
+                              <ListItemText primary={team.name} />
                             </MenuItem>
                           ))}
                         </Select>
                       </FormControl>
-                      <Box sx={{ flexGrow: 1 }} /> {/* Espacço flexível para empurrar o botão "Salvar" para o rodapé */}
+                      <Box sx={{ flexGrow: 1 }} /> {/* Espaço flexível para empurrar o botão "Salvar" para o rodapé */}
                       <Button variant="contained" color="primary" onClick={handleSaveEquipesClick} sx={{ mt: 2 }}>
                         Salvar
                       </Button>

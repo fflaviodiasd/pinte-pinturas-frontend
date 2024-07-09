@@ -42,6 +42,9 @@ const TeamsComponent = () => {
     getAllTeams();
   }, []);
 
+  console.log("TeamsComponent", listTeams);
+
+
   const handleOpenModal = (selectedTeam: SelectedTeam) => {
     setSelectedTeam(selectedTeam);
     setIsModalOpen(true);
