@@ -115,7 +115,7 @@ export const Sidebar = () => {
         subItems: [
           { text: "• Cadastro", path: "/obras/cadastrar/dados-gerais" },
           { text: "• Listagem", path: "/obras/listagem" },
-          { text: "• Funcionários", path: "/obras/funcionarios" },
+          // { text: "• Funcionários", path: "/obras/funcionarios" },
         ],
       },
       {
