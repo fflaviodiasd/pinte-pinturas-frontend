@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Formik, FormikConfig, FormikValues, Form } from 'formik';
-import { Grid, Box, Typography, Button, Popover, MenuItem, Select, FormControl, InputLabel, Checkbox, ListItemText, SelectChangeEvent } from '@mui/material';
+import { Grid, Box, Typography, Button, Popover, MenuItem, Select, FormControl, InputLabel, Checkbox, ListItemText, SelectChangeEvent, Drawer, IconButton } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useStyles } from '../styles';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -9,6 +9,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import '@wojtekmaj/react-daterange-picker/dist/DateRangePicker.css';
 import 'react-calendar/dist/Calendar.css';
+import CloseIcon from '@mui/icons-material/Close';
 
 export interface FormikStepProps extends Pick<FormikConfig<FormikValues>, 'children' | 'validationSchema'> {
   label: string;
@@ -49,6 +50,9 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
   const [equipesAnchorEl, setEquipesAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedMedicoes, setSelectedMedicoes] = useState<string[]>([]);
   const [selectedEquipes, setSelectedEquipes] = useState<string[]>([]);
+  const [drawerOpen, setDrawerOpen] = useState(false); // Estado para controlar a abertura do Drawer
+  const [medicaoDrawerOpen, setMedicaoDrawerOpen] = useState(false); // Estado para controlar a abertura do Drawer de Medição
+  const [equipesDrawerOpen, setEquipesDrawerOpen] = useState(false); // Estado para controlar a abertura do Drawer de Equipes
 
   const medicoes = ['Medição 1', 'Medição 2', 'Medição 3'];
   const equipes = ['Equipe 1', 'Equipe 2', 'Equipe 3'];
@@ -70,48 +74,63 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
 
   const handlePeriodoClick = () => {
     console.log('Período button clicked');
-    setShowDatePicker((prev) => !prev);
+    setDrawerOpen(true); // Abrir o Drawer ao clicar no botão de Período
   };
 
   const handleDateChange = (dates: [Date, Date]) => {
     setDateRange(dates);
-    if (dates && dates[0] && dates[1]) {
-      setShowDatePicker(false);
-      if (onButtonClick) {
-        onButtonClick('Período', dates);
-      }
-    }
   };
 
-  const handleMedicaoClick = (event: React.MouseEvent<HTMLElement>) => {
-    setMedicaoAnchorEl(event.currentTarget);
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
   };
 
-  const handleEquipesClick = (event: React.MouseEvent<HTMLElement>) => {
-    setEquipesAnchorEl(event.currentTarget);
-  };
-
-  const handleMedicaoClose = () => {
-    setMedicaoAnchorEl(null);
-  };
-
-  const handleEquipesClose = () => {
-    setEquipesAnchorEl(null);
+  const handleMedicaoClick = () => {
+    console.log('Medição button clicked');
+    setMedicaoDrawerOpen(true); // Abrir o Drawer ao clicar no botão de Medição
   };
 
   const handleMedicoesChange = (event: SelectChangeEvent<string[]>) => {
     const value = event.target.value as string[];
     setSelectedMedicoes(value);
-    if (onButtonClick) {
-      onButtonClick('Medição', undefined, value);
-    }
+  };
+
+  const handleMedicaoDrawerClose = () => {
+    setMedicaoDrawerOpen(false);
+  };
+
+  const handleEquipesClick = () => {
+    console.log('Equipes button clicked');
+    setEquipesDrawerOpen(true); // Abrir o Drawer ao clicar no botão de Equipes
   };
 
   const handleEquipesChange = (event: SelectChangeEvent<string[]>) => {
     const value = event.target.value as string[];
     setSelectedEquipes(value);
+  };
+
+  const handleEquipesDrawerClose = () => {
+    setEquipesDrawerOpen(false);
+  };
+
+  const handleSaveClick = () => {
+    setDrawerOpen(false); // Fechar o Drawer ao clicar no botão Salvar
+    if (onButtonClick && dateRange) {
+      onButtonClick('Período', dateRange);
+    }
+  };
+
+  const handleSaveMedicaoClick = () => {
+    setMedicaoDrawerOpen(false); // Fechar o Drawer ao clicar no botão Salvar
     if (onButtonClick) {
-      onButtonClick('Equipes', undefined, value);
+      onButtonClick('Medição', undefined, selectedMedicoes);
+    }
+  };
+
+  const handleSaveEquipesClick = () => {
+    setEquipesDrawerOpen(false); // Fechar o Drawer ao clicar no botão Salvar
+    if (onButtonClick) {
+      onButtonClick('Equipes', undefined, selectedEquipes);
     }
   };
 
@@ -155,84 +174,103 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
                     </Box>
                   ))}
                 </Box>
-                {/* <Box sx={{ display: 'flex', gap: 2, position: 'relative' }}>
-                  <Button variant="outlined" startIcon={<CalendarTodayIcon />} onClick={handlePeriodoClick} sx={{ border: 1, borderRadius: 30 }}>
+                <Box sx={{ display: 'flex', gap: 2, position: 'relative' }}>
+                  {/* <Button variant="outlined" startIcon={<CalendarTodayIcon />} onClick={handlePeriodoClick} sx={{ border: 1, borderRadius: 30 }}>
                     Período
                   </Button>
                   <Button variant="outlined" startIcon={<AssessmentIcon />} onClick={handleMedicaoClick} sx={{ border: 1, borderRadius: 30 }}>
                     Medição
                   </Button>
-                  <Popover
-                    open={Boolean(medicaoAnchorEl)}
-                    anchorEl={medicaoAnchorEl}
-                    onClose={handleMedicaoClose}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'center',
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'center',
-                    }}
-                  >
-                    <FormControl sx={{ m: 1, width: 300 }}>
-                      <InputLabel>Medição</InputLabel>
-                      <Select
-                        multiple
-                        value={selectedMedicoes}
-                        onChange={handleMedicoesChange}
-                        renderValue={(selected) => (selected as string[]).join(', ')}
-                        MenuProps={MenuProps}
-                      >
-                        {medicoes.map((name) => (
-                          <MenuItem key={name} value={name}>
-                            <Checkbox checked={selectedMedicoes.indexOf(name) > -1} />
-                            <ListItemText primary={name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Popover>
                   <Button variant="outlined" startIcon={<GroupIcon />} onClick={handleEquipesClick} sx={{ border: 1, borderRadius: 30 }}>
                     Equipes
-                  </Button>
-                  <Popover
-                    open={Boolean(equipesAnchorEl)}
-                    anchorEl={equipesAnchorEl}
-                    onClose={handleEquipesClose}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'center',
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'center',
-                    }}
+                  </Button> */}
+
+                  {/* Drawer para Período */}
+                  <Drawer
+                    anchor="right"
+                    open={drawerOpen}
+                    onClose={handleDrawerClose}
                   >
-                    <FormControl sx={{ m: 1, width: 300 }}>
-                      <InputLabel>Equipes</InputLabel>
-                      <Select
-                        multiple
-                        value={selectedEquipes}
-                        onChange={handleEquipesChange}
-                        renderValue={(selected) => (selected as string[]).join(', ')}
-                        MenuProps={MenuProps}
-                      >
-                        {equipes.map((name) => (
-                          <MenuItem key={name} value={name}>
-                            <Checkbox checked={selectedEquipes.indexOf(name) > -1} />
-                            <ListItemText primary={name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Popover>
-                  {showDatePicker && (
-                    <Box sx={{ position: 'absolute', bottom: '100%', zIndex: 10, mb: 2 }}>
+                    <Box sx={{ width: 300, p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                      <IconButton onClick={handleDrawerClose} sx={{ alignSelf: 'flex-end', mb: 2 }}>
+                        <CloseIcon />
+                      </IconButton>
                       <DateRangePicker onChange={(value: any) => handleDateChange(value as [Date, Date])} value={dateRange} />
+                      <Box sx={{ flexGrow: 1 }} /> {/* Espacço flexível para empurrar o botão "Salvar" para o rodapé */}
+                      <Button variant="contained" color="primary" onClick={handleSaveClick} sx={{ mt: 2 }}>
+                        Salvar
+                      </Button>
                     </Box>
-                  )}
-                </Box> */}
+                  </Drawer>
+
+                  {/* Drawer para Medição */}
+                  <Drawer
+                    anchor="right"
+                    open={medicaoDrawerOpen}
+                    onClose={handleMedicaoDrawerClose}
+                  >
+                    <Box sx={{ width: 300, p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                      <IconButton onClick={handleMedicaoDrawerClose} sx={{ alignSelf: 'flex-end', mb: 2 }}>
+                        <CloseIcon />
+                      </IconButton>
+                      <FormControl sx={{ m: 1, width: '100%' }}>
+                        <InputLabel>Medição</InputLabel>
+                        <Select
+                          multiple
+                          value={selectedMedicoes}
+                          onChange={handleMedicoesChange}
+                          renderValue={(selected) => (selected as string[]).join(', ')}
+                          MenuProps={MenuProps}
+                        >
+                          {medicoes.map((name) => (
+                            <MenuItem key={name} value={name}>
+                              <Checkbox checked={selectedMedicoes.indexOf(name) > -1} />
+                              <ListItemText primary={name} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <Box sx={{ flexGrow: 1 }} /> {/* Espacço flexível para empurrar o botão "Salvar" para o rodapé */}
+                      <Button variant="contained" color="primary" onClick={handleSaveMedicaoClick} sx={{ mt: 2 }}>
+                        Salvar
+                      </Button>
+                    </Box>
+                  </Drawer>
+
+                  {/* Drawer para Equipes */}
+                  <Drawer
+                    anchor="right"
+                    open={equipesDrawerOpen}
+                    onClose={handleEquipesDrawerClose}
+                  >
+                    <Box sx={{ width: 300, p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                      <IconButton onClick={handleEquipesDrawerClose} sx={{ alignSelf: 'flex-end', mb: 2 }}>
+                        <CloseIcon />
+                      </IconButton>
+                      <FormControl sx={{ m: 1, width: '100%' }}>
+                        <InputLabel>Equipes</InputLabel>
+                        <Select
+                          multiple
+                          value={selectedEquipes}
+                          onChange={handleEquipesChange}
+                          renderValue={(selected) => (selected as string[]).join(', ')}
+                          MenuProps={MenuProps}
+                        >
+                          {equipes.map((name) => (
+                            <MenuItem key={name} value={name}>
+                              <Checkbox checked={selectedEquipes.indexOf(name) > -1} />
+                              <ListItemText primary={name} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <Box sx={{ flexGrow: 1 }} /> {/* Espacço flexível para empurrar o botão "Salvar" para o rodapé */}
+                      <Button variant="contained" color="primary" onClick={handleSaveEquipesClick} sx={{ mt: 2 }}>
+                        Salvar
+                      </Button>
+                    </Box>
+                  </Drawer>
+                </Box>
               </Box>
               {(dateRange || selectedMedicoes.length > 0 || selectedEquipes.length > 0) && (
                 <Box sx={{ marginTop: 2 }}>
