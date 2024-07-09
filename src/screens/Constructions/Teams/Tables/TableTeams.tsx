@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useContext, useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import {
   FormControlLabel,
   Grid,
@@ -58,6 +57,10 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
   }) => {
     updateTeamRow(values.name, row.original.id, status);
     exitEditingMode();
+  };
+
+  const handleCloseCollapse = (row: any, table: any) => {
+    table.setExpanded({ [row.id]: !row.getIsExpanded() });
   };
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
@@ -200,7 +203,10 @@ export const TableTeams = ({ listTeams, handleOpenModal }: TableTeamsProps) => {
       </Grid>
     ),
     renderDetailPanel: ({ row }) => (
-      <ListTeamMembers teamId={Number(row.original.id)} />
+      <ListTeamMembers
+        teamId={Number(row.original.id)}
+        handleCloseCollapse={() => handleCloseCollapse(row, table)}
+      />
     ),
   });
 
