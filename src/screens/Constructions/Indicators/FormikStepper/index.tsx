@@ -28,6 +28,7 @@ interface FormikStepperProps extends FormikConfig<FormikValues> {
   children: React.ReactNode;
   onStepChange?: (step: number) => void;
   onButtonClick?: (button: string, dates?: [Date, Date], selectedItems?: string[]) => void;
+  onSave?: (params: any) => void; // Adicionando a prop onSave
 }
 
 const ITEM_HEIGHT = 48;
@@ -41,7 +42,7 @@ const MenuProps = {
   },
 };
 
-export function FormikStepper({ children, onStepChange, onButtonClick, ...props }: FormikStepperProps) {
+export function FormikStepper({ children, onStepChange, onButtonClick, onSave, ...props }: FormikStepperProps) {
   const childrenArray = React.Children.toArray(children) as React.ReactElement<FormikStepProps>[];
   
   const [step, setStep] = useState(0);
@@ -92,6 +93,16 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
       setFilteredMeasurements(filteredData);
     }
   }, [listConstructionsMeasurements, id]);
+
+  useEffect(() => {
+    const params = {
+      measurements: selectedMedicoes,
+      teams: selectedEquipes,
+      start_dt: dateRange ? dateRange[0].toLocaleDateString('en-CA') : null,
+      end_dt: dateRange ? dateRange[1].toLocaleDateString('en-CA') : null,
+    };
+    console.log('Params:', params);
+  }, [selectedMedicoes, selectedEquipes, dateRange]);
   
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -154,6 +165,15 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
     if (onButtonClick && dateRange) {
       onButtonClick('Período', dateRange);
     }
+    if (onSave) {
+      const params = {
+        measurements: selectedMedicoes,
+        teams: selectedEquipes,
+        start_dt: dateRange ? dateRange[0].toLocaleDateString('en-CA') : null,
+        end_dt: dateRange ? dateRange[1].toLocaleDateString('en-CA') : null,
+      };
+      onSave(params);
+    }
   };
 
   const handleSaveMedicaoClick = () => {
@@ -161,12 +181,30 @@ export function FormikStepper({ children, onStepChange, onButtonClick, ...props 
     if (onButtonClick) {
       onButtonClick('Medição', undefined, selectedMedicoes);
     }
+    if (onSave) {
+      const params = {
+        measurements: selectedMedicoes,
+        teams: selectedEquipes,
+        start_dt: dateRange ? dateRange[0].toLocaleDateString('en-CA') : null,
+        end_dt: dateRange ? dateRange[1].toLocaleDateString('en-CA') : null,
+      };
+      onSave(params);
+    }
   };
 
   const handleSaveEquipesClick = () => {
     setEquipesDrawerOpen(false); // Fechar o Drawer ao clicar no botão Salvar
     if (onButtonClick) {
       onButtonClick('Equipes', undefined, selectedEquipes);
+    }
+    if (onSave) {
+      const params = {
+        measurements: selectedMedicoes,
+        teams: selectedEquipes,
+        start_dt: dateRange ? dateRange[0].toLocaleDateString('en-CA') : null,
+        end_dt: dateRange ? dateRange[1].toLocaleDateString('en-CA') : null,
+      };
+      onSave(params);
     }
   };
 
