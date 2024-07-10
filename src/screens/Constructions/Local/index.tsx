@@ -87,6 +87,7 @@ const Locations = () => {
     if (selectAllChecked) {
       setSelectedLocalIds([]);
       setListChecked([]);
+      setListCheckedPaste([]);
       setSelectedRows(new Set());
     } else {
       const newSelectedIds = listConstructionsLocations.map((item) => item.id);
@@ -143,6 +144,10 @@ const Locations = () => {
     }
   }, [pendingUpdates]);
 
+  useEffect(() => {
+    console.log(listChecked);
+  }, [listChecked]);
+
   const updateLocationData = (cell: any, newValue: any) => {
     //CRIEI UMA FUNÇÃO QUE ATUALIZA A CÉLULA EM VEZ DE ATUALIZAR DIRETO DENTRO DO CHANGE, NESSA EU USO UMA FUNÇÃO DE CALLBACK DO PRÓRPIO SET DO USESTATE PARA GARANTIR QUE VOU USAR A VERSÃO MAIS ATUALIZADA DA LISTA
     setListConstructionsLocations((currentLocations) => {
@@ -160,7 +165,7 @@ const Locations = () => {
               return itemId;
             });
           }
-
+          updatedLocation.edit = true;
           return updatedLocation;
         }
         return location;
@@ -313,8 +318,11 @@ const Locations = () => {
     setCopyLines(false);
     const newSetEmpty = new Set<number>();
     setSelectedRows(newSetEmpty);
+    setSelectedRowsPaste(newSetEmpty);
     setSelectedLocalIds([]);
+    setSelectedLocalIdsPaste([]);
     setListChecked([]);
+    setListCheckedPaste([]);
     const updatedArray = updateArray(
       [...listConstructionsLocations],
       listChecked,
@@ -664,6 +672,10 @@ const Locations = () => {
       if (selectedRowsPaste.has(+row.id)) {
         className += " selected-row-paste";
       }
+      if (row.original.edit) {
+        className += " selected-row-edit";
+      }
+
       return {
         className,
       };
