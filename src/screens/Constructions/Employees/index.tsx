@@ -73,9 +73,7 @@ export const ListConstructionsEmployees = () => {
             <Launch
               sx={{ cursor: "pointer", color: "#C5C7C8" }}
               onClick={() => {
-                setSelectedConstructionMaterialId(cell.row.original.id!);
-                setSelectedEmployeeId(cell.row.original.id!); // Armazena o id do colaborador selecionado
-                setShowIndicators(true); // Alterar estado para mostrar o componente Indicators
+                //evento para ser disparado
               }}
             />
           </div>
