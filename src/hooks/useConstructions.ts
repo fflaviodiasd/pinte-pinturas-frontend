@@ -419,10 +419,11 @@ export const useConstructions = () => {
       const constructionMaterialsList = data.map((result: any) => ({
         id: result.id,
         material: result.name,
+        name: result.name,
         group: result.total_company,
         productionBatch: result.total_workmanship,
       }));
-      console.log(data);
+       console.log(constructionMaterialsList);
       setListEmployeesMaterials(constructionMaterialsList);
       setLoading(false);
     } catch (error) {

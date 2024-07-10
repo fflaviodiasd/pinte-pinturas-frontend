@@ -254,16 +254,32 @@ const constructionFormValues = {
   number: "",
 };
 
+// const list = [
+//   { text: "Locais", path: "locais" },
+//   { text: "Dados Gerais", path: "dados-gerais" },
+//   { text: "Endereço", path: "endereco" },
+//   { text: "Encarregados", path: "supervisores" },
+//   { text: "Encarregados do Cliente", path: "encarregados-cliente" },
+//   { text: "Materiais", path: "materiais" },
+//   { text: "Equipes", path: "equipes" },
+//   { text: "Serviços", path: "servicos" },
+//   { text: "Pacotes", path: "pacotes" },
+//   { text: "Medições", path: "medicoes" },
+//   { text: "Funcionários", path: "funcionarios" },
+// ];
+
 const list = [
   { text: "Locais", path: "locais" },
+  { text: "Serviços", path: "servicos" },
+  { text: "Pacotes", path: "pacotes" },
+  { text: "Equipes", path: "equipes" },
+  { text: "Medições", path: "medicoes" },
+
+
   { text: "Dados Gerais", path: "dados-gerais" },
   { text: "Endereço", path: "endereco" },
   { text: "Encarregados", path: "supervisores" },
   { text: "Encarregados do Cliente", path: "encarregados-cliente" },
   { text: "Materiais", path: "materiais" },
-  { text: "Equipes", path: "equipes" },
-  { text: "Serviços", path: "servicos" },
-  { text: "Pacotes", path: "pacotes" },
-  { text: "Medições", path: "medicoes" },
   { text: "Funcionários", path: "funcionarios" },
 ];

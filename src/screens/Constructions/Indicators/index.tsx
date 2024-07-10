@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from "react";
 import {
   Grid,
@@ -20,20 +19,26 @@ import ReportGeneral from "./ReportGeneral";
 import ReportDetails from "./ReportDetails"; 
 import ReportChecklist from "./ReportChecklist";
 import { FormikStepper, FormikStep } from './FormikStepper'; 
+import { TeamsContextProvider } from "../../../contexts/TeamsContext";
 
 interface Collaborator {
   id: number;
   name: string;
 }
 
-export function Indicators() {
+interface IndicatorsProps {
+  collaborators: Collaborator[];
+  selectedEmployeeId: number | null; // Adicione esta linha
+}
+
+export function Indicators({ collaborators, selectedEmployeeId }: IndicatorsProps) { // Ajuste aqui
   const { id: collaboratorId } = useParams<{ id: string }>();
   const isEditScreen = Boolean(collaboratorId);
   const { classes } = useStyles();
-  const { getAllCollaborators, listCollaborators, getAllCollaboratorsWithoutPagination } = useCollaborators();
+  const { getAllCollaborators, getAllCollaboratorsWithoutPagination } = useCollaborators();
   const { getReportsNotation, getReportsNotationChecklist, listReportsNotation, listReportsNotationChecklist } = useConference(); 
 
-  const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
+  const [listcollaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedCollaborator, setSelectedCollaborator] = useState<Collaborator | null>(null);
   const [searchText, setSearchText] = useState<string>("");
@@ -47,14 +52,39 @@ export function Indicators() {
   }, []);
 
   useEffect(() => {
-    console.log('lista colaboradores', listCollaborators); 
-    if (Array.isArray(listCollaborators)) {
-      setCollaborators(listCollaborators);
-      if (listCollaborators.length > 0) {
-        handleSelectCollaborator(listCollaborators[0]);
+    console.log('Received collaborators:', collaborators);
+    setCollaborators(collaborators);
+  }, [collaborators]);
+
+  const filteredCollaborators = useMemo(() => {
+    if (!collaborators || !searchText) return collaborators;
+    return collaborators.filter((collaborator) =>
+      collaborator.name?.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }, [collaborators, searchText]);
+  
+  useEffect(() => {
+    if (filteredCollaborators.length > 0) {
+      if (selectedEmployeeId) {
+        const selected = filteredCollaborators.find(c => c.id === selectedEmployeeId) || filteredCollaborators[0];
+        setSelectedCollaborator(selected);
+        handleSelectCollaborator(selected);
+      } else {
+        setSelectedCollaborator(filteredCollaborators[0]);
+        handleSelectCollaborator(filteredCollaborators[0]);
       }
     }
-  }, [listCollaborators]);
+  }, [filteredCollaborators, selectedEmployeeId]);
+
+  useEffect(() => {
+    console.log('lista colaboradores', listcollaborators); 
+    if (Array.isArray(listcollaborators)) {
+      setCollaborators(listcollaborators);
+      if (listcollaborators.length > 0) {
+        handleSelectCollaborator(listcollaborators[0]);
+      }
+    }
+  }, [listcollaborators]);
 
   useEffect(() => {
     console.log('listReportsNotation', listReportsNotation); 
@@ -109,11 +139,12 @@ export function Indicators() {
     }
   };
 
-  const filteredCollaborators = useMemo(() => {
-    return collaborators.filter((collaborator) =>
-      collaborator.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-  }, [collaborators, searchText]);
+  const handleSaveParams = async (params: any) => {
+    console.log('Received params from FormikStepper:', params);
+    if (selectedCollaborator) {
+      await getReportsNotation(reportType, selectedCollaborator.id.toString(), params);
+    }
+  };
 
   return (
     <Formik
@@ -125,7 +156,6 @@ export function Indicators() {
       <Form autoComplete="off">
         <Grid container>
           <Grid item sm={12} md={12} lg={12} className={classes.headerContainer}>
-            <Breadcrumb breadcrumbPath1="Obras" breadcrumbPath2="Funcionários" />
 
             <div className={classes.actionBar}>
               <div className={classes.actionBarLeftContent}>
@@ -149,7 +179,7 @@ export function Indicators() {
                       onChange={(e) => setSearchText(e.target.value)}
                     />
                   </MenuItem>
-                  {filteredCollaborators.map((collaborator: Collaborator) => (
+                  {filteredCollaborators.map((collaborator: Collaborator, index: number) => (
                     <MenuItem
                       key={collaborator.id}
                       onClick={() => handleSelectCollaborator(collaborator)}
@@ -162,6 +192,7 @@ export function Indicators() {
             </div>
           </Grid>
         </Grid>
+        <TeamsContextProvider>
 
         <FormikStepper
           initialValues={{}}
@@ -170,6 +201,7 @@ export function Indicators() {
           }}
           onStepChange={handleStepChange}
           onButtonClick={handleButtonClick}
+          onSave={handleSaveParams} // Adicionando o callback onSave
         >
           <FormikStep label="Geral">
             <Grid container>
@@ -230,6 +262,7 @@ export function Indicators() {
             </Grid>
           </FormikStep>
         </FormikStepper>
+        </TeamsContextProvider>
       </Form>
     </Formik>
   );

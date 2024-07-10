@@ -22,6 +22,7 @@ import { ButtonsContainer, GroupHeader, GroupItems, useStyles } from "./styles";
 
 type ListTeamMembers = {
   teamId: number;
+  handleCloseCollapse?: any;
 };
 
 type TeamMember = {
@@ -40,7 +41,10 @@ type FormUpdateTeamMembers = {
   teamName: string;
 };
 
-export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
+export const ListTeamMembers = ({
+  teamId,
+  handleCloseCollapse,
+}: ListTeamMembers) => {
   const { classes } = useStyles();
   const {
     loading,
@@ -185,6 +189,7 @@ export const ListTeamMembers = ({ teamId }: ListTeamMembers) => {
                       className={classes.cancelButton}
                       onClick={() => {
                         setSelectedMembers([]);
+                        handleCloseCollapse();
                       }}
                     >
                       Cancelar

@@ -4,3 +4,7 @@ table .selected-row {
 table .selected-row-paste {
   background-color: #c6d7fbfe !important;
 }
+
+table .selected-row-edit {
+  background-color: #fbcac6fe !important;
+}
