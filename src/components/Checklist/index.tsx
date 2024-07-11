@@ -20,7 +20,9 @@ interface ChecklistComponentProps {
   getChecklistEndpoint?: string;
   postChecklistEndpoint?: string;
   control?: any;
+  open?: boolean;
   setControl?: any;
+  setOpen?: any;
   localId?: number;
 }
 
@@ -37,6 +39,8 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
   localId,
   setControl,
   control,
+  open,
+  setOpen,
 }) => {
   const [checklist, setChecklist] = useState<Checklist[]>([]);
   const [isInputVisible, setIsInputVisible] = useState(false);
@@ -49,11 +53,16 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
   const [modalOpen, setIsModalOpen] = useState(false);
   const { id: constructionId, checklistid: checkListId } = useParams();
 
-  console.log("NOVO>>>>>>>>>", checkListId);
-
   const handleClose = () => {
     setIsModalOpen(false);
+    setOpen(false);
   };
+
+  useEffect(() => {
+    if (open) {
+      setIsModalOpen(true);
+    }
+  }, [open]);
 
   useEffect(() => {
     const fetchChecklist = async () => {
@@ -65,7 +74,6 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
             bg: STATUS_COLORS[checklist.status],
           }))
         );
-        console.log(response);
       } catch (error) {
         console.error("Erro ao buscar checklists:", error);
       }
@@ -114,7 +122,6 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
             name: valueActual,
             order: checklist.length + 1,
           });
-          console.log(response);
           const newChecklist: Checklist = {
             ...response.data,
             color:
@@ -143,7 +150,6 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
           const response = await api.put(`/checklists/${editingChipId}/`, {
             name: valueActual,
           });
-          console.log(response);
           setValueActual("");
           setEditingChipId(null);
         } catch (error) {
