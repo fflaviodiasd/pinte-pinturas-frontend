@@ -28,9 +28,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
   const [editMode, setEditMode] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ChecklistItem | null>(null);
   const [editedDates, setEditedDates] = useState<{ [key: string]: string }>({});
-  
-  console.log("1:::::::::::::", checklist)
-  console.log("2:::::::::::::", checklistHistory)
+
   const { id: constructionId } = useParams();
 
   const getChecklistsHistories = useCallback(async () => {

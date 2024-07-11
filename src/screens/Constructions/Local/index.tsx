@@ -80,6 +80,7 @@ const Locations = () => {
   const [listChecked, setListChecked] = useState<any[]>([]);
   const [listCheckedPaste, setListCheckedPaste] = useState<any[]>([]);
   const [paste, setPaste] = useState<any>();
+  const [open, setOpen] = useState<any>();
 
   const [selectAllChecked, setSelectAllChecked] = useState(false);
 
@@ -190,9 +191,11 @@ const Locations = () => {
               }
               return (
                 <div>
-                  {editState.rowId === row.id
-                    ? row.original.code || generateNextId(rowCount)
-                    : row.original.code}
+                  <a href="#" onClick={() => handleLinkClick(row)}>
+                    {editState.rowId === row.id
+                      ? row.original.code || generateNextId(rowCount)
+                      : row.original.code}
+                  </a>
                 </div>
               );
             },
@@ -238,6 +241,11 @@ const Locations = () => {
 
     fetchLevel();
   }, [valueActual, editState, control]);
+
+  const handleLinkClick = (row: any) => {   
+    table.setExpanded({ [row.id]: !row.getIsExpanded() });
+    setOpen(true);
+  };
 
   const handleCreateLocal = async () => {
     await addConstructionLocal(dynamicColumns, listConstructionsLocations);
@@ -549,6 +557,8 @@ const Locations = () => {
               setControl={setControl}
               control={control}
               localId={row.original.id}
+              open={open}
+              setOpen={setOpen}
             />
           )}
         </div>

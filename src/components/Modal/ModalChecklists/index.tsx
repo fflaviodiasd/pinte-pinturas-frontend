@@ -26,6 +26,7 @@ export const ModalChecklists = ({
   localId,
 }: ModalChecklistsProps) => {
   const [area, setArea] = useState("");
+  const [link, setLink] = useState<any>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,6 +34,7 @@ export const ModalChecklists = ({
         const response = await api.get(`areas/${localId}/checklist`);
         const data = response.data.area;
         setArea(data);
+        setLink(response.data.url_card_trello);
       } catch (error) {
         console.error("Erro ao buscar dados do backend:", error);
       }
@@ -50,17 +52,34 @@ export const ModalChecklists = ({
       PaperProps={{
         style: {
           width: "60%",
-          maxWidth: "none"
-        }
+          maxWidth: "none",
+        },
       }}
     >
-      <div style={{ padding: "1rem" }}>
-        <span
-          style={{ fontFamily: "Open Sans", fontWeight: 600, fontSize: "1rem" }}
+      <div
+        style={{
+          padding: "1rem",
+          paddingTop: "0px",
+          paddingLeft: "0px",
+          position: "relative",
+        }}
+      >
+        <a
+          href={link || "#"}
+          style={{
+            fontFamily: "Open Sans",
+            fontWeight: 600,
+            fontSize: "1rem",
+            position: "fixed",
+            backgroundColor: "white",
+            width: "59%",
+            padding: "15px",
+            zIndex: "999",
+          }}
         >
           {area}
-        </span>
-        <div style={{ paddingTop: "0.5rem", paddingBottom: "1rem" }}>
+        </a>
+        <div style={{ paddingTop: "4rem", paddingBottom: "1rem" }}>
           <TextField
             type="text"
             //value={searchTerm}
