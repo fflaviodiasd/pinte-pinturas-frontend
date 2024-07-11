@@ -118,9 +118,22 @@ export const useCollaborators = () => {
       successMessage("Colaborador adicionado com sucesso!");
       navigate("/colaboradores/listagem");
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      errorMessage("Não foi possível adicionar colaborador!");
+      if (error.response && error.response.status === 400) {
+        if (
+          error.response.data.includes(
+            "Já existem funcionários/usuários com e-mail"
+          )
+        ) {
+          errorMessage(
+            "Não foi possível cadastrar colaborador! Já existe um colaborador cadastrado com o email informado."
+          );
+        }
+      } else {
+        errorMessage("Não foi possível cadastrar colaborador!");
+      }
+
       setLoading(false);
     }
   };

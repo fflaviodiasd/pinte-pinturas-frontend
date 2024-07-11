@@ -107,13 +107,25 @@ export const useClients = () => {
       );
       setLoading(false);
       navigate("/clientes/listagem");
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      errorMessage("Não foi possível adicionar cliente!");
+      if (error.response && error.response.status === 400) {
+        if (
+          error.response.data.includes(
+            "Já existe um Cliente cadastrado com esse email."
+          )
+        ) {
+          errorMessage(
+            "Não foi possível cadastrar cliente! Já existe um cliente cadastrado com o email informado."
+          );
+        }
+      } else {
+        errorMessage("Não foi possível cadastrar cliente!");
+      }
+
       setLoading(false);
     }
   };
-
   const updateClient = async (clientData: Client) => {
     setLoading(true);
     try {
@@ -226,7 +238,6 @@ export const useClients = () => {
     pageQuantity: 1,
   });
 
-  
   const handleChangePagination = (
     _: React.ChangeEvent<unknown>,
     value: number
@@ -238,9 +249,7 @@ export const useClients = () => {
     setLoading(true);
     const offset = (currentPage - 1) * LIMIT;
     try {
-      const { data } = await api.get(
-        `companies/${user.company}/customers/`
-      );
+      const { data } = await api.get(`companies/${user.company}/customers/`);
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
