@@ -70,12 +70,15 @@ export const ListConstructionsEmployees = () => {
               alignItems: "center",
             }}
           >
-            <Launch
+           <Launch
               sx={{ cursor: "pointer", color: "#C5C7C8" }}
               onClick={() => {
-                //evento para ser disparado
+                setSelectedConstructionMaterialId(cell.row.original.id!);
+                setSelectedEmployeeId(cell.row.original.id!); // Armazena o id do colaborador selecionado
+                setShowIndicators(true); // Alterar estado para mostrar o componente Indicators
               }}
             />
+
           </div>
         ),
       },

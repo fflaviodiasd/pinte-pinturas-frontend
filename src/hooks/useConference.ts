@@ -115,11 +115,27 @@ export const useConference = () => {
   };
   
 
-  
-  const getReportsNotationChecklist = async (employeeId: string) => {
+  const getReportsNotationChecklist = async (
+    employeeId: string,
+    params?: { [key: string]: any }
+  ) => {
     try {
+      const queryParams = new URLSearchParams();
+  
+      if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+          if (value !== null && value !== undefined && value !== "") {
+            if (Array.isArray(value)) {
+              value.forEach(val => queryParams.append(key, val));
+            } else {
+              queryParams.append(key, value);
+            }
+          }
+        });
+      }
+  
       const { data } = await api.get(
-        `/reports_notation/${employeeId}/checklist`
+        `/reports_notation/${employeeId}/checklist?${queryParams.toString()}`
       );
       console.log("Reports Checklist data:", data);
       setListReportsNotationChecklist(data); // Atualizado aqui
@@ -131,6 +147,24 @@ export const useConference = () => {
       return [];
     }
   };
+  
+
+  
+  // const getReportsNotationChecklist = async (employeeId: string) => {
+  //   try {
+  //     const { data } = await api.get(
+  //       `/reports_notation/${employeeId}/checklist`
+  //     );
+  //     console.log("Reports Checklist data:", data);
+  //     setListReportsNotationChecklist(data); // Atualizado aqui
+  //     setLoading(false);
+  //     return data;
+  //   } catch (error) {
+  //     console.error("Erro ao obter relatórios de checklist:", error);
+  //     setLoading(false);
+  //     return [];
+  //   }
+  // };
 
   const getConferenceData = async (
     measurementId: string,

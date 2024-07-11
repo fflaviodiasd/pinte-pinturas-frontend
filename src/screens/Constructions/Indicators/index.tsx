@@ -143,6 +143,7 @@ export function Indicators({ collaborators, selectedEmployeeId }: IndicatorsProp
     console.log('Received params from FormikStepper:', params);
     if (selectedCollaborator) {
       await getReportsNotation(reportType, selectedCollaborator.id.toString(), params);
+      await getReportsNotationChecklist(selectedCollaborator.id.toString(), params);
     }
   };
 
