@@ -256,7 +256,7 @@ const DashboardContextProvider = ({
       const { data } = await api.get(
         `/constructions/${selectedConstruction.id}/packages_checklists/`
       );
-      console.log(data)
+      console.log(data);
       setListChecklist(data);
     } catch (error) {
       console.log(error);
@@ -327,7 +327,7 @@ const DashboardContextProvider = ({
       const { data } = await api.get(
         `constructions/${selectedConstruction.id}/employees/`
       );
-      console.log("getAllEmployees", data);
+      setListEmployees(data);
       // const allEmployees = data.areas
       //   .map((item: any) => item.checklists)
       //   .flat();
