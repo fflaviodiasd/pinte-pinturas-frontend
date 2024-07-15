@@ -1,6 +1,7 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   useLocation,
+  useParams,
   // useNavigate
 } from "react-router-dom";
 import { Button, Grid, IconButton, Typography } from "@mui/material";
@@ -29,7 +30,15 @@ function MeasurementsComponent() {
   const location = useLocation();
   // const navigate = useNavigate();
   const { classes } = useStyles();
-  const { selectedConstruction } = useContext(MeasurementsContext);
+  const { selectedConstruction, setSelectedConstruction } = useContext(MeasurementsContext);
+  const {id: constructionID}: any = useParams();
+
+  useEffect(() => {
+    setSelectedConstruction({
+      id: parseInt(constructionID),
+      name: '',
+    });
+  }, [])
 
   // const displayContent = () => {
   //   if (location.pathname.includes("pacotes")) {
