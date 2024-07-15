@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Grid, IconButton, Typography } from "@mui/material";
 import { KeyboardArrowDownRounded as ArrowForwardIcon } from "@mui/icons-material/";
 
@@ -28,7 +28,7 @@ function AppointmentsComponent() {
   const location = useLocation();
   const navigate = useNavigate();
   const { classes } = useStyles();
-  const { selectedConstruction } = useContext(AppointmentsContext);
+  const { selectedConstruction, setSelectedConstruction } = useContext(AppointmentsContext);
 
   const displayContent = () => {
     if (location.pathname.includes("dados-do-sistema")) {
@@ -41,10 +41,18 @@ function AppointmentsComponent() {
   };
 
   const [open, setOpen] = useState(false);
+  const {id: constructionID}: any = useParams();
 
   const handleClickOpen = () => {
     setOpen(true);
+    
   };
+  useEffect(() => {
+    setSelectedConstruction({
+      id: parseInt(constructionID),
+      name: '',
+    });
+  }, [])
 
   const handleClose = () => {
     setOpen(false);
@@ -53,46 +61,23 @@ function AppointmentsComponent() {
   return (
     <Grid container>
       <Grid item sm={12} md={12} lg={12} className={classes.titleContainer}>
-        <Typography className={classes.title}>Apontamentos</Typography>
-
-        <div className={classes.constructionFilterContainer}>
-          <Typography
-            className={classes.constructionFilterText}
-            onClick={() => handleClickOpen()}
-          >
-            {selectedConstruction.name
-              ? selectedConstruction.name
-              : "Selecionar Obra"}
-          </Typography>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="close"
-            onClick={() => handleClickOpen()}
-          >
-            <ArrowForwardIcon
-              className={classes.openFilterButton}
-              fontSize="small"
-            />
-          </IconButton>
-        </div>
       </Grid>
       <Grid item sm={12} md={12} lg={12} className={classes.tabContainer}>
         <Grid item sm={12} md={12} lg={12} style={{ display: "flex", gap: 8 }}>
           <Tab
             text="Dados Gerais do Sistema"
             isActive={location.pathname.includes("dados-do-sistema")}
-            onClick={() => navigate(`/apontamentos/dados-do-sistema`)}
+            onClick={() => navigate(`/obras/${constructionID}/medicoes/dados-do-sistema`)}
           />
           <Tab
             text="Medições do Sistema"
             isActive={location.pathname.includes("medicoes-do-sistema")}
-            onClick={() => navigate(`/apontamentos/medicoes-do-sistema`)}
+            onClick={() => navigate(`/obras/${constructionID}/medicoes/medicoes-do-sistema`)}
           />
           <Tab
             text="Produção do Sistema"
             isActive={location.pathname.includes("producao-do-sistema")}
-            onClick={() => navigate(`/apontamentos/producao-do-sistema`)}
+            onClick={() => navigate(`/obras/${constructionID}/medicoes/producao-do-sistema`)}
           />
         </Grid>
       </Grid>

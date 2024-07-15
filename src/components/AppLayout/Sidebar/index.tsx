@@ -125,21 +125,10 @@ export const Sidebar = () => {
         icon: <MaterialsIcon />,
       },
       {
-        text: "Medições",
-        path: "medicoes",
-        // icon: <img src={MeasurementsIcon} alt="Medições" />,
-        icon: <MeasurementsIcon />,
-      },
-      {
         text: "Dashboard",
         path: "dashboard/acompanhamento",
         icon: <DashboardIcon />,
-      },
-      {
-        text: "Apontamentos",
-        path: "apontamentos/dados-do-sistema",
-        icon: <InsightsIcon />,
-      },
+      }
     ];
 
     const navItems2: NavItem[] = [

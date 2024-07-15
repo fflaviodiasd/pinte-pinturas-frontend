@@ -119,6 +119,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
     socket.on('checklist_updated', (data) => {
       console.log('Received checklist_updated data from the server:', data?.data?.checklist_history);
       setChecklist(data?.data?.checklist_history)
+      setChecklistHistory(data?.data?.checklist_history); 
     });
 
     return () => {
@@ -139,9 +140,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
       <tbody>
         {Object.keys(STATUS_COLORS).map((status: string, index: number) => {
 
-          const filteredItems = checklist.length > 0 ? checklist.filter(
-            (item: ChecklistItem) => item.status === status
-          ) : checklistHistory.filter(
+          const filteredItems = checklistHistory.filter(
             (item: ChecklistItem) => item.status === status
           );
 

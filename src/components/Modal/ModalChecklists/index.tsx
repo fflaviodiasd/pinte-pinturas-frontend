@@ -66,6 +66,7 @@ export const ModalChecklists = ({
       >
         <a
           href={link || "#"}
+          target="_blank"
           style={{
             fontFamily: "Open Sans",
             fontWeight: 600,
