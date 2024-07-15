@@ -52,37 +52,6 @@ function MeasurementsComponent() {
 
   return (
     <Grid container>
-      <Grid item sm={12} md={12} lg={12} className={classes.titleContainer}>
-        <Typography className={classes.title}>Medições</Typography>
-
-        <div className={classes.constructionFilterContainer}>
-          <Typography
-            className={classes.constructionFilterText}
-            onClick={() => {
-              setSelectedFilter("construction");
-              handleClickOpen();
-            }}
-          >
-            {selectedConstruction.name
-              ? selectedConstruction.name
-              : "Selecionar Obra"}
-          </Typography>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="close"
-            onClick={() => {
-              setSelectedFilter("construction");
-              handleClickOpen();
-            }}
-          >
-            <ArrowForwardIcon
-              className={classes.openFilterButton}
-              fontSize="small"
-            />
-          </IconButton>
-        </div>
-      </Grid>
       <Grid item sm={12} md={12} lg={12} className={classes.tabContainer}>
         <Grid item sm={2} md={2} lg={2} style={{ display: "flex", gap: 8 }}>
           {/* <Tab

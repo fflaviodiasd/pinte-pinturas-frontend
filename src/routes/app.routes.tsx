@@ -105,16 +105,16 @@ export const AppRoutes = () => {
           <Route path="/dashboard/layout" element={<Dashboard />} />
 
           <Route
-            path="/apontamentos/dados-do-sistema"
-            element={<Appointments />}
+            path="/obras/:id/medicoes/dados-do-sistema"
+            element={<RegisterConstruction />}
           />
           <Route
-            path="/apontamentos/medicoes-do-sistema"
-            element={<Appointments />}
+            path="/obras/:id/medicoes/medicoes-do-sistema"
+            element={<RegisterConstruction />}
           />
           <Route
-            path="/apontamentos/producao-do-sistema"
-            element={<Appointments />}
+            path="/obras/:id/medicoes/producao-do-sistema"
+            element={<RegisterConstruction />}
           />
 
           <Route path="*" element={<Navigate to="/" />} />

@@ -20,6 +20,8 @@ import { SectionTitle } from "../../../components/SectionTitle";
 import { errorMessage } from "../../../components/Messages";
 
 import { useStyles } from "./styles";
+import { Measurements } from "../../Measurements";
+import { Appointments } from "../../Appointments";
 
 export const MeasurementsConstructions = () => {
   const { classes } = useStyles();
@@ -240,8 +242,11 @@ export const MeasurementsConstructions = () => {
   });
 
   return (
-    <Grid item lg={12} className={classes.container}>
-      <MaterialReactTable table={table} />
-    </Grid>
+      <Grid item lg={12} className={classes.container}>
+        <MaterialReactTable table={table} />
+        <Measurements />
+        <Appointments />
+      </Grid>
+
   );
 };
