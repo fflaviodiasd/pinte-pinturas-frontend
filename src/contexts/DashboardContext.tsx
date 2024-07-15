@@ -311,7 +311,7 @@ const DashboardContextProvider = ({
       const { data } = await api.get(
         `constructions/${selectedConstruction.id}/users/`
       );
-      console.log("getAllUsers", data);
+      setListUsers(data);
       // const allUsers = data.areas
       //   .map((item: any) => item.checklists)
       //   .flat();
