@@ -37,6 +37,9 @@ export const EmployeeFilter = ({ handleClose }: EmployeeFilterProps) => {
   useEffect(() => {
     getAllEmployees();
   }, []);
+  useEffect(() => {
+    console.log(listEmployees);
+  }, [listEmployees]);
 
   const getStoredOptions = () => {
     const employeeOptionsStorage = localStorage.getItem(
