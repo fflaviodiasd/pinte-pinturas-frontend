@@ -15,6 +15,7 @@ import { ProductionSystem } from "./ProductionSystem";
 import { ModalFilters } from "./components/ModalFilters";
 
 import { Tab, useStyles } from "./styles";
+import { MeasurementsContext } from "../../contexts/MeasurementsContext";
 
 export const Appointments = () => {
   return (

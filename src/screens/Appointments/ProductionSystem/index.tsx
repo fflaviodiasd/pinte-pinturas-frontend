@@ -154,9 +154,11 @@ export const ProductionSystem = () => {
     });
 
     return [
+      ...dynamicColumns,
       {
         accessorKey: "package_name",
         header: "Nome do Pacote",
+        
       },
       {
         accessorKey: "initial_dt",
@@ -205,8 +207,7 @@ export const ProductionSystem = () => {
       {
         accessorKey: "checklist",
         header: "Checklist",
-      },
-      ...dynamicColumns,
+      }
     ];
   };
 

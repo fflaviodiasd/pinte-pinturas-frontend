@@ -50,9 +50,6 @@ export const DataTable = () => {
               </tbody>
             </table>
           </TableContainer>
-          <Typography className={classes.totalResultsText}>
-            Mostrando 10 de 234 linhas.
-          </Typography>
         </>
       ) : (
         <div className={classes.emptyDataContainer}>
