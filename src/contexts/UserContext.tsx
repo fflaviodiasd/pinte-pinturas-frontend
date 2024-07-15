@@ -101,14 +101,13 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
 
   const login = async (values: LoginData) => {
     setLoading(true);
-    api.defaults.headers.common["Authorization"] = "";
+    // api.defaults.headers.common["Authorization"] = "";
+    //ESTÁ COMENTANDO POR QUE ESTAVA IMPEDINDO DE CARREGAR OS DADOS NO PRIMEIRO LOGIN
     localStorage.clear();
 
     try {
       const { data } = await api.post("/accounts/token/", values);
-      console.log(data);
       api.defaults.headers.common["Authorization"] = `Bearer ${data.access}`;
-
       if (data.user) {
         localStorage.setItem(
           KEY_USER,
