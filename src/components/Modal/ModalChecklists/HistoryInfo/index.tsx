@@ -63,7 +63,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
     setEditMode(true);
   };
 
-  const handleBlur = () => {
+  const handleBlur = () =>{
     setEditMode(false);
   };
 
