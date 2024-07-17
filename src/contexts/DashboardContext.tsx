@@ -61,6 +61,7 @@ type ConstructionUpdate = {
   team: string;
   time: string;
   responsible: string;
+  name_area: string;
 }[];
 
 type Interaction = {
@@ -492,6 +493,7 @@ const DashboardContextProvider = ({
         status: item.status,
         team: item.team || "Sem Equipe",
         time: item.time,
+        name_area: item.name_area
       }));
       setDashboardConstructionUpdate(constructionUpdateList);
     } catch (error) {

@@ -103,7 +103,7 @@ export const ChecklistComponent: React.FC<ChecklistComponentProps> = ({
     if (checkListId !== undefined) {
       setIsModalOpen(true);
     }
-  }, [checkListId]);
+  }, []);
 
   const handleAddChecklistClick = () => {
     setIsInputVisible(true);
