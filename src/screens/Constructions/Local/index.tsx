@@ -55,7 +55,7 @@ const Locations = () => {
   const [dynamicColumns, setDynamicColumns] = useState<
     CustomMRT_ColumnDef<any>[]
   >([]);
-  const { id } = useParams();
+  const { id, checklistid: checkListId  } = useParams();
 
   const {
     listConstructionsLocations,
@@ -83,6 +83,8 @@ const Locations = () => {
   const [open, setOpen] = useState<any>();
 
   const [selectAllChecked, setSelectAllChecked] = useState(false);
+
+  console.log(listConstructionsLocations)
 
   const handleSelectAll = () => {
     if (selectAllChecked) {
@@ -189,6 +191,13 @@ const Locations = () => {
                   ? (row.original.code = generateNextId(rowCount))
                   : null;
               }
+              useEffect(() => {
+                if(checkListId == row?.original?.code){
+                  table.setExpanded({ [row?.original?.code]: !row.getIsExpanded() });
+                  setOpen(true);
+                }
+              }, [])
+              console.log(row?.original?.code)
               return (
                 <div>
                   <a href="#" onClick={() => handleLinkClick(row)}>
@@ -242,7 +251,8 @@ const Locations = () => {
     fetchLevel();
   }, [valueActual, editState, control]);
 
-  const handleLinkClick = (row: any) => {   
+  const handleLinkClick = (row: any) => {
+    console.log(">>>>>>>",row?.original?.code) 
     table.setExpanded({ [row.id]: !row.getIsExpanded() });
     setOpen(true);
   };

@@ -182,11 +182,6 @@ export function MeasurementsServices() {
               </tbody>
             </table>
           </TableContainer2>
-          <Typography
-            style={{ fontFamily: "Open Sans", color: "#2E3132", fontSize: 14 }}
-          >
-            Mostrando 10 de 234 linhas.
-          </Typography>
         </div>
       </Grid>
       <Grid
