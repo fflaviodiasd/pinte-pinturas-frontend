@@ -145,7 +145,7 @@ export const ProductionSystem = () => {
       data && data.length > 0 && data[0].levels
         ? Object.keys(data[0].levels)
         : [];
-
+    console.log("asdasd>>>", levels)
     levels.forEach((level) => {
       dynamicColumns.push({
         accessorKey: `levels.${level}`,

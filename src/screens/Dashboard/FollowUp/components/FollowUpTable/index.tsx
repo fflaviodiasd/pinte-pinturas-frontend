@@ -8,7 +8,7 @@ import { LabelColor, TableContainer, useStyles } from "./styles";
 
 export function FollowUpTable() {
   const { classes } = useStyles();
-  const { dashboardConstructionUpdate } = useContext(DashboardContext);
+  const { dashboardConstructionUpdate, selectedConstruction } = useContext(DashboardContext);
 
   const hasDataTable = dashboardConstructionUpdate.length > 0;
 
@@ -79,7 +79,9 @@ export function FollowUpTable() {
                                 cursor: "pointer",
                               }}
                             >
-                              {construction.area}
+                              <a href={`http://localhost:5173/obras/${selectedConstruction.id}/locais/checklist/${construction.name_area}`}>
+                                {construction.area}
+                              </a>
                             </Typography>
                           </Tooltip>
                         </td>
