@@ -8,6 +8,7 @@ export type User = {
   type: number;
   profile_type: string;
   profile_id?: number;
+  companyCustomerId?: number;
 };
 
 export type Collaborator = {

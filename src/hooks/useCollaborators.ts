@@ -263,16 +263,23 @@ export const useCollaborators = () => {
   const getAllCollaborators = async (currentPage: number = 0) => {
     setLoading(true);
     const offset = (currentPage - 1) * LIMIT;
+    let endpoint = `companies/${user.company}/employees/?disabled=false&limit=${LIMIT}&offset=${offset}`;
+
+    if (user.type === 7 || user.type === 9) {
+      endpoint = `customers/${user.companyCustomerId}/company_employees/`;
+    }
+
+    console.log(endpoint);
+
     try {
-      const { data } = await api.get(
-        `companies/${user.company}/employees/?disabled=false&limit=${LIMIT}&offset=${offset}`
-      );
+      const { data } = await api.get(endpoint);
       console.log(data);
 
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
+
       const allCollaborators = data.map((result: any) => ({
         id: result.id,
         active: result.active,
@@ -282,6 +289,7 @@ export const useCollaborators = () => {
         role: result.office,
         profile: result.profile,
       }));
+
       setListCollaborators(allCollaborators);
       setLoading(false);
     } catch (error) {
