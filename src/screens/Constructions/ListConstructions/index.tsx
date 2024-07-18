@@ -40,17 +40,16 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 export const ListConstructions = () => {
   const { classes } = useStyles();
   const navigate = useNavigate();
-  const { listConstructions, getAllConstructions, disableConstruction } = useConstructions();
+  const { listConstructions, getAllConstructions, disableConstruction } =
+    useConstructions();
 
-  const [selectedObraId, setselectedObraId] =
-    useState<number>(0);
-  const [selectedObraName, setselectedObraName] =
-    useState<string>("");
+  const [selectedObraId, setselectedObraId] = useState<number>(0);
+  const [selectedObraName, setselectedObraName] = useState<string>("");
 
-  console.log("OBRA>>>>>>", selectedObraId)
+  console.log("OBRA>>>>>>", selectedObraId);
 
   const [modalOpen, setIsModalOpen] = useState(false);
-  
+
   const handleClose = () => {
     setIsModalOpen(false);
   };
@@ -73,24 +72,24 @@ export const ListConstructions = () => {
         size: 50,
         Cell: ({ cell }) => (
           <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <EditIcon
-            onClick={() => navigate(`/obras/${cell.row.original.id}/locais`)}
-            label="Editar"
-          />
-          <Delete
-            sx={{ cursor: "pointer", color: "#C5C7C8" }}
-            onClick={() => {
-              setselectedObraId(cell.row.original.id!);
-              setselectedObraName(cell.row.original.name);
-
-              setIsModalOpen(true);
+            style={{
+              display: "flex",
+              alignItems: "center",
             }}
-          />
+          >
+            <EditIcon
+              onClick={() => navigate(`/obras/${cell.row.original.id}/locais`)}
+              label="Editar"
+            />
+            <Delete
+              sx={{ cursor: "pointer", color: "#C5C7C8" }}
+              onClick={() => {
+                setselectedObraId(cell.row.original.id!);
+                setselectedObraName(cell.row.original.corporate_name);
+
+                setIsModalOpen(true);
+              }}
+            />
           </div>
         ),
       },

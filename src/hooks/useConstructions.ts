@@ -380,7 +380,7 @@ export const useConstructions = () => {
     try {
       await api.delete(`constructions/${constructionId}`);
       getAllConstructions();
-      successMessage("Obra desabilitada com sucesso!");
+      successMessage("Obra apagada com sucesso!");
       setLoading(false);
     } catch (error) {
       console.log(error);
