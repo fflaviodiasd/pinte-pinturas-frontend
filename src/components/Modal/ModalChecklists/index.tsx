@@ -80,7 +80,7 @@ export const ModalChecklists = ({
         >
           {area}
         </a>
-        <div style={{ paddingTop: "4rem", paddingBottom: "1rem" }}>
+        <div style={{ paddingTop: "4rem", paddingBottom: "1rem", paddingLeft: "1rem" }}>
           <TextField
             type="text"
             //value={searchTerm}
@@ -96,8 +96,11 @@ export const ModalChecklists = ({
             }}
           />
         </div>
-
-        <AccordionChecklists localId={localId} />
+        <div style={{
+          paddingLeft: "1rem"
+        }}>
+          <AccordionChecklists localId={localId} />
+        </div>
         <DialogActions>
           <Button onClick={handleClose}>
             <Typography style={{ textTransform: "capitalize" }}>
