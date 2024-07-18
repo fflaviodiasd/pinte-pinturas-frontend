@@ -16,6 +16,7 @@ import { ModalFilters } from "./components/ModalFilters";
 
 import { Tab, useStyles } from "./styles";
 import { MeasurementsContext } from "../../contexts/MeasurementsContext";
+import { UserContext } from "../../contexts/UserContext";
 
 export const Appointments = () => {
   return (
@@ -29,7 +30,9 @@ function AppointmentsComponent() {
   const location = useLocation();
   const navigate = useNavigate();
   const { classes } = useStyles();
-  const { selectedConstruction, setSelectedConstruction } = useContext(AppointmentsContext);
+  const { selectedConstruction, setSelectedConstruction } =
+    useContext(AppointmentsContext);
+  const { user } = useContext(UserContext);
 
   const displayContent = () => {
     if (location.pathname.includes("dados-do-sistema")) {
@@ -42,18 +45,17 @@ function AppointmentsComponent() {
   };
 
   const [open, setOpen] = useState(false);
-  const {id: constructionID}: any = useParams();
+  const { id: constructionID }: any = useParams();
 
   const handleClickOpen = () => {
     setOpen(true);
-    
   };
   useEffect(() => {
     setSelectedConstruction({
       id: parseInt(constructionID),
-      name: '',
+      name: "",
     });
-  }, [])
+  }, []);
 
   const handleClose = () => {
     setOpen(false);
@@ -61,25 +63,40 @@ function AppointmentsComponent() {
 
   return (
     <Grid container>
-      <Grid item sm={12} md={12} lg={12} className={classes.titleContainer}>
-      </Grid>
+      <Grid
+        item
+        sm={12}
+        md={12}
+        lg={12}
+        className={classes.titleContainer}
+      ></Grid>
       <Grid item sm={12} md={12} lg={12} className={classes.tabContainer}>
         <Grid item sm={12} md={12} lg={12} style={{ display: "flex", gap: 8 }}>
           <Tab
             text="Dados Gerais do Sistema"
             isActive={location.pathname.includes("dados-do-sistema")}
-            onClick={() => navigate(`/obras/${constructionID}/medicoes/dados-do-sistema`)}
+            onClick={() =>
+              navigate(`/obras/${constructionID}/medicoes/dados-do-sistema`)
+            }
           />
           <Tab
             text="Medições do Sistema"
             isActive={location.pathname.includes("medicoes-do-sistema")}
-            onClick={() => navigate(`/obras/${constructionID}/medicoes/medicoes-do-sistema`)}
+            onClick={() =>
+              navigate(`/obras/${constructionID}/medicoes/medicoes-do-sistema`)
+            }
           />
-          <Tab
-            text="Produção do Sistema"
-            isActive={location.pathname.includes("producao-do-sistema")}
-            onClick={() => navigate(`/obras/${constructionID}/medicoes/producao-do-sistema`)}
-          />
+          {user.type <= 3 && (
+            <Tab
+              text="Produção do Sistema"
+              isActive={location.pathname.includes("producao-do-sistema")}
+              onClick={() =>
+                navigate(
+                  `/obras/${constructionID}/medicoes/producao-do-sistema`
+                )
+              }
+            />
+          )}
         </Grid>
       </Grid>
 

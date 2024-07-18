@@ -230,14 +230,14 @@ export const useCollaborators = () => {
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
-      const getAllCollaboratorsRelatedWorks = data.constructions.map(
-        (result: any) => ({
-          id: result.id,
-          constructionName: result.name_construction,
-          status: result.status,
-          responsible: result.responsible,
-        })
-      );
+      console.log(data);
+
+      const getAllCollaboratorsRelatedWorks = data.map((result: any) => ({
+        id: result.id,
+        constructionName: result.name_construction || result.fantasy_name,
+        status: result.status,
+        responsible: result.responsible || result.supervisor,
+      }));
       setListCollaboratorsRelatedWorks(getAllCollaboratorsRelatedWorks);
       setLoading(false);
     } catch (error) {
@@ -267,6 +267,8 @@ export const useCollaborators = () => {
       const { data } = await api.get(
         `companies/${user.company}/employees/?disabled=false&limit=${LIMIT}&offset=${offset}`
       );
+      console.log(data);
+
       setPagination({
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),

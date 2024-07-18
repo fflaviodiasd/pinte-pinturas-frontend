@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { Button, Grid, Typography } from "@mui/material";
 import { Formik, Form as FormikForm } from "formik";
@@ -27,6 +27,7 @@ import { AddressForm } from "./components/AddressForm";
 
 import { TabsContainer, useStyles } from "./styles";
 import { ListConstructionsEmployees } from "../Employees";
+import { UserContext } from "../../../contexts/UserContext";
 
 type HandleChange = {
   (e: React.ChangeEvent<any>): void;
@@ -40,8 +41,8 @@ type HandleChange = {
 export const RegisterConstruction = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { id: constructionId , checklistid: checkListId} = useParams();
-  console.log("CHECKLISTID>>>>", checkListId)
+  const { id: constructionId, checklistid: checkListId } = useParams();
+  console.log("CHECKLISTID>>>>", checkListId);
   const isEditScreen = constructionId;
   const { classes } = useStyles();
 
@@ -54,6 +55,51 @@ export const RegisterConstruction = () => {
   } = useNewConstructions();
 
   const [selectedTab, setSelectedTab] = useState(1);
+  const [list, setList] = useState<any>();
+  const { user } = useContext(UserContext);
+
+  useEffect(() => {
+    const list1 = [
+      { text: "Locais", path: "locais" },
+      { text: "Serviços", path: "servicos" },
+      { text: "Pacotes", path: "pacotes" },
+      { text: "Equipes", path: "equipes" },
+      { text: "Medições", path: "medicoes" },
+
+      { text: "Dados Gerais", path: "dados-gerais" },
+      { text: "Endereço", path: "endereco" },
+      { text: "Encarregados", path: "supervisores" },
+      { text: "Encarregados do Cliente", path: "encarregados-cliente" },
+      { text: "Materiais", path: "materiais" },
+      { text: "Funcionários", path: "funcionarios" },
+    ];
+
+    const list2 = [
+      { text: "Locais", path: "locais" },
+      { text: "Dados Gerais", path: "dados-gerais" },
+      { text: "Endereço", path: "endereco" },
+      { text: "Encarregados", path: "supervisores" },
+      { text: "Encarregados do Cliente", path: "encarregados-cliente" },
+      { text: "Equipes", path: "equipes" },
+      { text: "Medições", path: "medicoes" },
+    ];
+
+    const list3 = [
+      { text: "Locais", path: "locais" },
+      { text: "Dados Gerais", path: "dados-gerais" },
+      { text: "Endereço", path: "endereco" },
+      { text: "Encarregados", path: "supervisores" },
+      { text: "Medições", path: "medicoes" },
+    ];
+    const type = user.type;
+    if (type === 2 || type === 3) {
+      setList(list1);
+    } else if (type >= 4 && type <= 6) {
+      setList(list2);
+    } else {
+      setList(list3);
+    }
+  }, []);
 
   const handleSelectTab = (index: number) => {
     setSelectedTab(index);
@@ -208,7 +254,7 @@ export const RegisterConstruction = () => {
                     />
                   </>
                 ) : (
-                  list.map((tab) => (
+                  list?.map((tab) => (
                     <Tab
                       key={tab.text}
                       text={tab.text}
@@ -253,33 +299,3 @@ const constructionFormValues = {
   complement: "",
   number: "",
 };
-
-// const list = [
-//   { text: "Locais", path: "locais" },
-//   { text: "Dados Gerais", path: "dados-gerais" },
-//   { text: "Endereço", path: "endereco" },
-//   { text: "Encarregados", path: "supervisores" },
-//   { text: "Encarregados do Cliente", path: "encarregados-cliente" },
-//   { text: "Materiais", path: "materiais" },
-//   { text: "Equipes", path: "equipes" },
-//   { text: "Serviços", path: "servicos" },
-//   { text: "Pacotes", path: "pacotes" },
-//   { text: "Medições", path: "medicoes" },
-//   { text: "Funcionários", path: "funcionarios" },
-// ];
-
-const list = [
-  { text: "Locais", path: "locais" },
-  { text: "Serviços", path: "servicos" },
-  { text: "Pacotes", path: "pacotes" },
-  { text: "Equipes", path: "equipes" },
-  { text: "Medições", path: "medicoes" },
-
-
-  { text: "Dados Gerais", path: "dados-gerais" },
-  { text: "Endereço", path: "endereco" },
-  { text: "Encarregados", path: "supervisores" },
-  { text: "Encarregados do Cliente", path: "encarregados-cliente" },
-  { text: "Materiais", path: "materiais" },
-  { text: "Funcionários", path: "funcionarios" },
-];

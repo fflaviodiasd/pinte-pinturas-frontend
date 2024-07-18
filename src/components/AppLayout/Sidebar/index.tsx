@@ -128,7 +128,7 @@ export const Sidebar = () => {
         text: "Dashboard",
         path: "dashboard/acompanhamento",
         icon: <DashboardIcon />,
-      }
+      },
     ];
 
     const navItems2: NavItem[] = [
@@ -141,6 +141,11 @@ export const Sidebar = () => {
           { text: "• Listagem", path: "/obras/listagem" },
           { text: "• Funcionários", path: "/obras/funcionarios" },
         ],
+      },
+      {
+        text: "Dashboard",
+        path: "dashboard/acompanhamento",
+        icon: <DashboardIcon />,
       },
     ];
 

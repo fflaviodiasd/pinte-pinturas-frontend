@@ -20,11 +20,13 @@ import { AppointmentsContext } from "../../../contexts/AppointmentsContext";
 import { EmptyTableText } from "../../../components/Table/EmptyTableText";
 
 import { useStyles } from "./styles";
+import { UserContext } from "../../../contexts/UserContext";
 
 export const GeneralDataSystem = () => {
   const { classes } = useStyles();
   const { selectedConstruction, listGeneralReports, getGeneralReports } =
     useContext(AppointmentsContext);
+  const { user } = useContext(UserContext);
 
   const [data, setData] = useState<any[]>([]);
 
@@ -37,6 +39,8 @@ export const GeneralDataSystem = () => {
       });
     }
   }, [selectedConstruction.id]);
+
+  const [showColumn, setShowColumn] = useState(false);       
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -195,6 +199,7 @@ export const GeneralDataSystem = () => {
           );
         },
       },
+
       {
         accessorKey: "amount_to_pay",
         header: "Valor a Pagar",
@@ -406,6 +411,7 @@ export const GeneralDataSystem = () => {
   const table = useMaterialReactTable({
     columns,
     data,
+    
     enableGrouping: true,
     enableEditing: false,
     enableExpanding: true,

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-useless-catch */
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MRT_ColumnDef } from "material-react-table";
 
@@ -123,21 +123,27 @@ export const useConstructions = () => {
     }
   };
 
-  const getCustomersSupervisorList = async (constructionId: string): Promise<Supervisor[]> => {
+  const getCustomersSupervisorList = async (
+    constructionId: string
+  ): Promise<Supervisor[]> => {
     setLoading(true);
     try {
       // Primeiro, obtenha os detalhes da construção para obter o ID do cliente
-      const constructionResponse = await api.get(`/constructions/${constructionId}/`);
+      const constructionResponse = await api.get(
+        `/constructions/${constructionId}/`
+      );
       const customerId = constructionResponse.data.customer.id;
       console.log("ID do cliente:", customerId);
-      console.log(">>>", constructionResponse.data)
+      console.log(">>>", constructionResponse.data);
 
       // Agora, obtenha a lista de encarregados do cliente
-      const { data } = await api.get(`/customers/${customerId}/construction_supervisor/`);
-      console.log("Supervisor do cliente:", data);  
+      const { data } = await api.get(
+        `/customers/${customerId}/construction_supervisor/`
+      );
+      console.log("Supervisor do cliente:", data);
       setLoading(false);
       setCustomersSupervisor(data);
-      console.log(customersSupervisorList)
+      console.log(customersSupervisorList);
       return data;
     } catch (error) {
       console.error(error);
@@ -145,8 +151,6 @@ export const useConstructions = () => {
       return [];
     }
   };
-
-
 
   const getChecklists = async (checklistId: any) => {
     setLoading(true);
@@ -409,9 +413,9 @@ export const useConstructions = () => {
     }
   };
 
-  const [listEmployeesMaterials, setListEmployeesMaterials] = useState<
-    any[]
-  >([]);
+  const [listEmployeesMaterials, setListEmployeesMaterials] = useState<any[]>(
+    []
+  );
   const getAllEmployeesMaterials = async () => {
     setLoading(true);
     try {
@@ -423,7 +427,7 @@ export const useConstructions = () => {
         group: result.total_company,
         productionBatch: result.total_workmanship,
       }));
-       console.log(constructionMaterialsList);
+      console.log(constructionMaterialsList);
       setListEmployeesMaterials(constructionMaterialsList);
       setLoading(false);
     } catch (error) {
@@ -536,20 +540,30 @@ export const useConstructions = () => {
   const [listConstructions, setListConstructions] = useState<
     ConstructionItem[]
   >([]);
+
   const getAllConstructions = async () => {
     setLoading(true);
     try {
-      const { data } = await api.get(
-        `/companies/${user.company}/constructions/`
-      );
+      let query;
+      if (user.type === 2 || user.type === 3) {
+        query = `/companies/${user.company}/constructions/`;
+      } else if (user.type === 7) {
+        query = `customers/${user.profile_id}/related_works/`;
+      } else {
+        query = `employees/${user.profile_id}/related_works/`;
+      }
+      const { data } = await api.get(query);
+
+      console.log(data);
+
       const constructionList: ConstructionItem[] = data.map(
         (construction: any) => ({
           id: construction.id,
           active: construction.active,
           corporate_name: construction.fantasy_name,
-          customer: construction.customer.name || "",
-          supervisor: construction.supervisor.name || "",
-          execution: construction.execution,
+          customer: construction.name || "",
+          supervisor: construction.supervisor || "",
+          execution: construction.execution || 0,
         })
       );
 
@@ -699,7 +713,10 @@ export const useConstructions = () => {
     }
   };
 
-  const editConstructionPackage = async (packageId: number, data: { name: string; order?: number; discipline?: string }) => {
+  const editConstructionPackage = async (
+    packageId: number,
+    data: { name: string; order?: number; discipline?: string }
+  ) => {
     console.log("Data:", data);
     setLoading(true);
     try {
@@ -844,10 +861,15 @@ export const useConstructions = () => {
     }
   };
 
-  const editConstructionMeasurement = async (measurementId: number, name: string) => {
+  const editConstructionMeasurement = async (
+    measurementId: number,
+    name: string
+  ) => {
     setLoading(true);
     try {
-      const response = await api.patch(`/measurements/${measurementId}/`, { name });
+      const response = await api.patch(`/measurements/${measurementId}/`, {
+        name,
+      });
       if (response.status === 200) {
         successMessage("Medição editada com sucesso!");
       } else {
@@ -1128,7 +1150,6 @@ export const useConstructions = () => {
     editConstructionMeasurement,
     editConstructionPackage,
     getCustomersSupervisorList,
-    customersSupervisorList
-
+    customersSupervisorList,
   };
 };

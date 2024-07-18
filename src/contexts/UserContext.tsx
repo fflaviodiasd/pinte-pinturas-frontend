@@ -28,6 +28,7 @@ type UserContextProps = {
   user: User;
   setUser: Dispatch<SetStateAction<User>>;
   isSigned: boolean;
+  profile_id?: number;
   setIsSigned: Dispatch<SetStateAction<boolean>>;
   loginData: LoginData;
   login: (values: LoginData) => Promise<boolean>;
@@ -68,6 +69,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
         profile_type: userParsed.profile_type,
         profileName: userParsed.profileName,
         company: userParsed.company,
+        profile_id: userParsed.profile_id,
       };
     }
     return {
@@ -77,6 +79,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
       type: 0,
       profileName: "",
       company: 0,
+      profile_id: 0,
     };
   };
   const [user, setUser] = useState<User>(loadUser());
@@ -119,6 +122,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
             profile_type: data.user.profile_type,
             profileName: data.user.profile_name || "",
             company: data.user.company_id || 0,
+            profile_id: data.user.profile_id,
           })
         );
         setUser({
@@ -129,6 +133,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
           profile_type: data.user.profile_type,
           profileName: data.user.profile_name || "",
           company: data.user.company_id || 0,
+          profile_id: data.user.profile_id,
         });
       }
       localStorage.setItem(KEY_TOKEN, data.access);
