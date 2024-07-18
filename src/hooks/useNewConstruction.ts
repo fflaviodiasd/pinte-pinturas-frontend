@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-useless-catch */
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { UserContext } from "../contexts/UserContext";
@@ -138,6 +138,7 @@ export const useNewConstructions = () => {
       const { data } = await api.get(
         `/companies/${user.company}/constructions/`
       );
+
       const constructionList: ConstructionItem[] = data.map(
         (construction: any) => ({
           id: construction.id,

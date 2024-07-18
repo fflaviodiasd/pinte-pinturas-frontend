@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
@@ -38,6 +44,7 @@ import SelectLine from "../../../components/SelectLine";
 import "./style.css";
 import { successMessage } from "../../../components/Messages";
 import { EmptyTableText } from "../../../components/Table/EmptyTableText";
+import { UserContext } from "../../../contexts/UserContext";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +88,7 @@ const Locations = () => {
   const [listCheckedPaste, setListCheckedPaste] = useState<any[]>([]);
   const [paste, setPaste] = useState<any>();
   const [open, setOpen] = useState<any>();
+  const { user } = useContext(UserContext);
 
   const [selectAllChecked, setSelectAllChecked] = useState(false);
 
@@ -144,10 +152,6 @@ const Locations = () => {
       setPendingUpdates([]); // LIMPA TODAS AS ATUALIZAÇÕES PENDENTES
     }
   }, [pendingUpdates]);
-
-  useEffect(() => {
-    console.log(listChecked);
-  }, [listChecked]);
 
   const updateLocationData = (cell: any, newValue: any) => {
     //CRIEI UMA FUNÇÃO QUE ATUALIZA A CÉLULA EM VEZ DE ATUALIZAR DIRETO DENTRO DO CHANGE, NESSA EU USO UMA FUNÇÃO DE CALLBACK DO PRÓRPIO SET DO USESTATE PARA GARANTIR QUE VOU USAR A VERSÃO MAIS ATUALIZADA DA LISTA
@@ -242,7 +246,7 @@ const Locations = () => {
     fetchLevel();
   }, [valueActual, editState, control]);
 
-  const handleLinkClick = (row: any) => {   
+  const handleLinkClick = (row: any) => {
     table.setExpanded({ [row.id]: !row.getIsExpanded() });
     setOpen(true);
   };
@@ -569,14 +573,16 @@ const Locations = () => {
     // onCreatingRowSave: handleCreateLocal,
     renderRowActions: ({ row }) => (
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Checkbox
-          checked={
-            selectedLocalIds.includes(+row.id) ||
-            selectedLocalIdsPaste.includes(+row.id)
-          }
-          sx={{ cursor: "pointer", color: "#C5C7C8" }}
-          onClick={() => handleCheckboxClick(row)}
-        />
+        {user.type < 7 && (
+          <Checkbox
+            checked={
+              selectedLocalIds.includes(+row.id) ||
+              selectedLocalIdsPaste.includes(+row.id)
+            }
+            sx={{ cursor: "pointer", color: "#C5C7C8" }}
+            onClick={() => handleCheckboxClick(row)}
+          />
+        )}
       </Box>
     ),
     renderBottomToolbarCustomActions: () => (

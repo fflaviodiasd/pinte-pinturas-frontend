@@ -1,7 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { IconButton, Grid, Tooltip, TextField } from "@mui/material";
-import { Add as AddIcon, Edit as EditIcon, Delete, Save, Clear } from "@mui/icons-material";
+import {
+  Add as AddIcon,
+  Edit as EditIcon,
+  Delete,
+  Save,
+  Clear,
+} from "@mui/icons-material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -22,6 +28,7 @@ import { errorMessage } from "../../../components/Messages";
 import { useStyles } from "./styles";
 import { Measurements } from "../../Measurements";
 import { Appointments } from "../../Appointments";
+import { UserContext } from "../../../contexts/UserContext";
 
 export const MeasurementsConstructions = () => {
   const { classes } = useStyles();
@@ -70,11 +77,15 @@ export const MeasurementsConstructions = () => {
   const handleCreatePackages: MRT_TableOptions<any>["onCreatingRowSave"] =
     async ({ values, table, exitCreatingMode }) => {
       await addConstructionMeasurements(values);
-      getAllConstructionsMeasurements();  
+      getAllConstructionsMeasurements();
       exitCreatingMode();
     };
 
-  const handleEditRow = (rowId: string, currentValue: string, measurementId: number) => {
+  const handleEditRow = (
+    rowId: string,
+    currentValue: string,
+    measurementId: number
+  ) => {
     setEditingRowId(rowId);
     setEditingValue(currentValue);
     setEditingMeasurementId(measurementId);
@@ -161,7 +172,9 @@ export const MeasurementsConstructions = () => {
           <>
             <IconButton
               aria-label="Editar"
-              onClick={() => handleEditRow(row.id, row.original.name, row.original.id)}
+              onClick={() =>
+                handleEditRow(row.id, row.original.name, row.original.id)
+              }
               sx={{ color: "#C5C7C8" }}
             >
               <EditIcon />
@@ -240,13 +253,19 @@ export const MeasurementsConstructions = () => {
       draggingBorderColor: theme.palette.secondary.main,
     }),
   });
+  const { user } = useContext(UserContext);
 
   return (
-      <Grid item lg={12} className={classes.container}>
-        <MaterialReactTable table={table} />
-        <Measurements />
+    <Grid item lg={12} className={classes.container}>
+      {user.type === 2 || user.type === 3 ? (
+        <>
+          <MaterialReactTable table={table} />
+          <Measurements />
+          <Appointments />
+        </>
+      ) : (
         <Appointments />
-      </Grid>
-
+      )}
+    </Grid>
   );
 };

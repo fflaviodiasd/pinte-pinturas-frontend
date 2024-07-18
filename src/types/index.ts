@@ -7,6 +7,7 @@ export type User = {
   isFirstLogin: boolean;
   type: number;
   profile_type: string;
+  profile_id?: number;
 };
 
 export type Collaborator = {

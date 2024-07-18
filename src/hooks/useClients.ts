@@ -216,14 +216,12 @@ export const useClients = () => {
         currentPage: currentPage === 0 ? 1 : currentPage,
         pageQuantity: Math.ceil(data.count / LIMIT),
       });
-      const getAllClientsRelatedWorks = data.constructions.map(
-        (result: any) => ({
-          id: result.id,
-          constructionName: result.name_construction,
-          status: result.status,
-          responsible: result.responsible,
-        })
-      );
+      const getAllClientsRelatedWorks = data.map((result: any) => ({
+        id: result.id,
+        constructionName: result.name_construction || result.fantasy_name,
+        status: result.status,
+        responsible: result.responsible || result.supervisor,
+      }));
       setListClientsRelatedWorks(getAllClientsRelatedWorks);
       setLoading(false);
     } catch (error) {
