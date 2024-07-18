@@ -40,7 +40,8 @@ export const GeneralDataSystem = () => {
     }
   }, [selectedConstruction.id]);
 
-  const [showColumn, setShowColumn] = useState(false);       
+  const typeShowColumn = user.type !== 4 && user.type !== 5 && user.type !== 6;
+  const [showColumn, setShowColumn] = useState(typeShowColumn);
 
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
@@ -359,7 +360,7 @@ export const GeneralDataSystem = () => {
         },
       })),
     ],
-    [listGeneralReports]
+    [listGeneralReports, showColumn]
   );
 
   const handleDownloadCsv = () => {
@@ -411,7 +412,7 @@ export const GeneralDataSystem = () => {
   const table = useMaterialReactTable({
     columns,
     data,
-    
+
     enableGrouping: true,
     enableEditing: false,
     enableExpanding: true,
@@ -425,6 +426,10 @@ export const GeneralDataSystem = () => {
       expanded: true, // Expandir todos os grupos por padrão
       grouping: ["checklist_name", "area_name", "measurement_name"],
       pagination: { pageIndex: 0, pageSize: 20 },
+      columnVisibility: {
+        total_to_pay: showColumn ? true : false,
+        amount_to_pay: showColumn ? true : false,
+      },
     },
     muiFilterTextFieldProps: (props) => {
       return {
