@@ -70,6 +70,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
         profileName: userParsed.profileName,
         company: userParsed.company,
         profile_id: userParsed.profile_id,
+        companyCustomerId: userParsed.companyCustomerId,
       };
     }
     return {
@@ -80,6 +81,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
       profileName: "",
       company: 0,
       profile_id: 0,
+      companyCustomerId: 0,
     };
   };
   const [user, setUser] = useState<User>(loadUser());
@@ -123,6 +125,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
             profileName: data.user.profile_name || "",
             company: data.user.company_id || 0,
             profile_id: data.user.profile_id,
+            companyCustomerId: data.user.company_customer_id || 0,
           })
         );
         setUser({
@@ -134,6 +137,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
           profileName: data.user.profile_name || "",
           company: data.user.company_id || 0,
           profile_id: data.user.profile_id,
+          companyCustomerId: data.user.company_customer_id || 0,
         });
       }
       localStorage.setItem(KEY_TOKEN, data.access);
