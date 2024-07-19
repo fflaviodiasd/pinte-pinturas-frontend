@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { Box, Button, DialogContent, TextField } from "@mui/material";
 import { Field, Form, Formik } from "formik";
 import { useParams } from "react-router-dom";
@@ -6,6 +6,7 @@ import { SelectChecklists } from "../SelectChecklists";
 import { useConstructions } from "../../../../hooks/useConstructions";
 import { useEffect } from "react";
 import { HistoryInfo } from "../HistoryInfo";
+import { UserContext } from "../../../../contexts/UserContext";
 
 export const FormChecklists = ({ checklistId }: any) => {
   const { id } = useParams();
@@ -20,11 +21,16 @@ export const FormChecklists = ({ checklistId }: any) => {
     await updateChecklist(values, checklistId);
   };
 
+  const { user } = useContext(UserContext);
+
   useEffect(() => {
     if (checklistId) {
       getChecklists(checklistId);
     }
   }, [checklistId]);
+
+  const isUserTypeDisabled =
+    user.type === 7 || user.type === 8 || user.type === 9;
 
   return (
     <div>
@@ -56,6 +62,7 @@ export const FormChecklists = ({ checklistId }: any) => {
                         InputLabelProps={{
                           shrink: !!form.values.number,
                         }}
+                        disabled={isUserTypeDisabled}
                       />
                     )}
                   </Field>
@@ -70,6 +77,7 @@ export const FormChecklists = ({ checklistId }: any) => {
                         InputLabelProps={{
                           shrink: !!form.values.checklistName,
                         }}
+                        disabled={isUserTypeDisabled}
                       />
                     )}
                   </Field>
@@ -82,6 +90,7 @@ export const FormChecklists = ({ checklistId }: any) => {
                     optionKey="id"
                     optionValueKey="id"
                     optionLabelKey="name"
+                    disabled={isUserTypeDisabled}
                   />
                   <SelectChecklists
                     name="measurement"
@@ -90,6 +99,7 @@ export const FormChecklists = ({ checklistId }: any) => {
                     optionKey="id"
                     optionValueKey="id"
                     optionLabelKey="name"
+                    disabled={isUserTypeDisabled}
                   />
                   <SelectChecklists
                     name="package"
@@ -98,6 +108,7 @@ export const FormChecklists = ({ checklistId }: any) => {
                     optionKey="id"
                     optionValueKey="id"
                     optionLabelKey="name"
+                    disabled={isUserTypeDisabled}
                   />
                 </div>
                 <div
@@ -114,6 +125,7 @@ export const FormChecklists = ({ checklistId }: any) => {
                       fontFamily: "Open Sans",
                       fontWeight: 600,
                     }}
+                    disabled={isUserTypeDisabled}
                   >
                     Salvar
                   </Button>
