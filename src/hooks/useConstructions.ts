@@ -110,9 +110,14 @@ export const useConstructions = () => {
   const getCompaniesSupervisorList = async (): Promise<Supervisor[]> => {
     setLoading(true);
     try {
-      const { data } = await api.get(
-        `companies/${user.company}/construction_supervisor`
-      );
+      let query: any;
+      if (user.type === 7 || user.type === 9) {
+        query = `/customers/${user.companyCustomerId}/company_employees/`;
+      } else {
+        query = `/customers/${user.company}/construction_supervisor/`;
+      }
+      const { data } = await api.get(query);
+
       setLoading(false);
       setCompaniesSupervisor(data);
       return data;
@@ -137,9 +142,15 @@ export const useConstructions = () => {
       console.log(">>>", constructionResponse.data);
 
       // Agora, obtenha a lista de encarregados do cliente
-      const { data } = await api.get(
-        `/customers/${customerId}/construction_supervisor/`
-      );
+      let query: any;
+      if (user.type === 7 || user.type === 9) {
+        query = `/customers/${user.companyCustomerId}/company_employees/`;
+      } else {
+        query = `/customers/${customerId}/construction_supervisor/`;
+      }
+      const { data } = await api.get(query);
+      console.log("Resposta do data", data);
+
       console.log("Supervisor do cliente:", data);
       setLoading(false);
       setCustomersSupervisor(data);

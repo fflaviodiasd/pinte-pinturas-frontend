@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
@@ -46,6 +46,7 @@ import { EmptyTableText } from "../../../../../components/Table/EmptyTableText";
 import { SectionTitle } from "../../../../../components/SectionTitle";
 
 import { useStyles } from "../styles";
+import { UserContext } from "../../../../../contexts/UserContext";
 
 interface Supervisor {
   id: number;
@@ -67,6 +68,7 @@ export const SupervisorSecondaryTable = ({
   const { classes } = useStyles();
   // const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useContext(UserContext);
 
   const {
     getConstruction,
@@ -311,6 +313,7 @@ export const SupervisorSecondaryTable = ({
             <IconButton
               onClick={handleOpenModal}
               className={classes.toolbarButton}
+              disabled={user.type === 5 || user.type === 6 || user.type === 8}
             >
               <PersonAddIcon />
             </IconButton>
