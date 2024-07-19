@@ -5,6 +5,8 @@ import {
 } from "@mui/icons-material";
 
 import { useStyles } from "./styles";
+import { UserContext } from "../../../../../contexts/UserContext";
+import { useContext } from "react";
 
 type MainSupervisorActionsProps = {
   handleChangeSupervisor: () => void;
@@ -16,6 +18,7 @@ export const MainSupervisorActions = ({
   handleDeleteSupervisor,
 }: MainSupervisorActionsProps) => {
   const { classes } = useStyles();
+  const { user } = useContext(UserContext);
 
   return (
     <div>
@@ -24,6 +27,7 @@ export const MainSupervisorActions = ({
           color="primary"
           className={classes.changeMainSupervisorButton}
           onClick={handleChangeSupervisor}
+          disabled={user.type === 5 || user.type === 6 || user.type === 8}
         >
           <AutorenewIcon />
         </IconButton>

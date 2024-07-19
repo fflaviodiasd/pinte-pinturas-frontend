@@ -59,7 +59,7 @@ export const CustomerSupervisor = () => {
     updateResponsibleSecondary,
     loading,
     getCustomersSupervisorList,
-    customersSupervisorList
+    customersSupervisorList,
   } = useConstructions();
 
   const [selectedSupervisor, setSelectedSupervisor] = useState("");
