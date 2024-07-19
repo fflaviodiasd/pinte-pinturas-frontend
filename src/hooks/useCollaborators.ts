@@ -284,7 +284,7 @@ export const useCollaborators = () => {
         id: result.id,
         active: result.active,
         avatar: result.avatar,
-        name: result.full_name,
+        name: result.name,
         cellPhone: result.cell_phone,
         role: result.office,
         profile: result.profile,
