@@ -16,6 +16,7 @@ interface SelectChecklistsProps {
   optionKey: string;
   optionValueKey: string;
   optionLabelKey: string;
+  disabled?: any;
 }
 
 export const SelectChecklists: React.FC<SelectChecklistsProps> = ({
@@ -26,6 +27,7 @@ export const SelectChecklists: React.FC<SelectChecklistsProps> = ({
   optionKey,
   optionValueKey,
   optionLabelKey,
+  disabled,
 }) => {
   const [field] = useField(name);
   const [options, setOptions] = useState<Option[]>([]);
@@ -54,7 +56,13 @@ export const SelectChecklists: React.FC<SelectChecklistsProps> = ({
       size="small"
     >
       <InputLabel id={`${name}-label`}>{label}</InputLabel>
-      <Select labelId={`${name}-label`} id={name} {...field} label={label}>
+      <Select
+        labelId={`${name}-label`}
+        id={name}
+        {...field}
+        label={label}
+        disabled={disabled}
+      >
         {loading ? (
           <MenuItem disabled>Carregando opções...</MenuItem>
         ) : (

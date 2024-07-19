@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { api } from "../../../../services/api";
 import { Chip, TextField } from "@mui/material";
 import { InputMask } from "../../../InputMask";
 import { errorMessage, successMessage } from "../../../Messages";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
-
+import { UserContext } from "../../../../contexts/UserContext";
 
 interface History {
   written_date: string;
@@ -30,6 +30,11 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
   const [editedDates, setEditedDates] = useState<{ [key: string]: string }>({});
 
   const { id: constructionId } = useParams();
+
+  const { user } = useContext(UserContext);
+
+  const isUserTypeDisabled =
+    user.type === 7 || user.type === 8 || user.type === 9;
 
   const getChecklistsHistories = useCallback(async () => {
     try {
@@ -63,7 +68,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
     setEditMode(true);
   };
 
-  const handleBlur = () =>{
+  const handleBlur = () => {
     setEditMode(false);
   };
 
@@ -102,24 +107,27 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
   };
 
   useEffect(() => {
-    const socket = io('ws://10.10.5.240:86/', {
-      transports: [ "websocket" ]
+    const socket = io("ws://10.10.5.240:86/", {
+      transports: ["websocket"],
     });
 
-    socket.emit("request_join_room", {room: constructionId?.toString()})
+    socket.emit("request_join_room", { room: constructionId?.toString() });
 
-    socket.on('connect', () => {
-      console.log('Connected to the server');
+    socket.on("connect", () => {
+      console.log("Connected to the server");
     });
 
-    socket.on('disconnect', () => {
-      console.log('Disconnected from the server');
+    socket.on("disconnect", () => {
+      console.log("Disconnected from the server");
     });
 
-    socket.on('checklist_updated', (data) => {
-      console.log('Received checklist_updated data from the server:', data?.data?.checklist_history);
-      setChecklist(data?.data?.checklist_history)
-      setChecklistHistory(data?.data?.checklist_history); 
+    socket.on("checklist_updated", (data) => {
+      console.log(
+        "Received checklist_updated data from the server:",
+        data?.data?.checklist_history
+      );
+      setChecklist(data?.data?.checklist_history);
+      setChecklistHistory(data?.data?.checklist_history);
     });
 
     return () => {
@@ -139,11 +147,9 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
       </thead>
       <tbody>
         {Object.keys(STATUS_COLORS).map((status: string, index: number) => {
-
           const filteredItems = checklistHistory.filter(
             (item: ChecklistItem) => item.status === status
           );
-
 
           return (
             <tr key={index}>
@@ -178,6 +184,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
                             InputProps={{
                               inputComponent: InputMask as any,
                             }}
+                            disabled={isUserTypeDisabled}
                           />
                         ) : (
                           <span onClick={() => handleEditClick(item, status)}>
@@ -201,6 +208,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
                     InputProps={{
                       inputComponent: InputMask as any,
                     }}
+                    disabled={isUserTypeDisabled}
                   />
                 )}
               </td>
