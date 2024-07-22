@@ -33,8 +33,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
 
   const { user } = useContext(UserContext);
 
-  const isUserTypeDisabled =
-    user.type === 7 || user.type === 8 || user.type === 9;
+  const isTypeDisabled = user.type === 7 || user.type === 8 || user.type === 9;
 
   const getChecklistsHistories = useCallback(async () => {
     try {
@@ -136,7 +135,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
   }, []);
 
   return (
-    <table>
+    <table style={{ width: "100%" }}>
       <thead>
         <tr style={{ color: "#2E3132" }}>
           <th>Etapa</th>
@@ -152,7 +151,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
           );
 
           return (
-            <tr key={index}>
+            <tr key={index} style={{ borderBottom: "1px solid #ccc" }}>
               <td>
                 <Chip
                   label={status}
@@ -165,7 +164,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
                   }}
                 />
               </td>
-              <td>
+              <td style={{ textAlign: "center", padding: "10px" }}>
                 {filteredItems.length > 0 ? (
                   filteredItems.map(
                     (item: ChecklistItem, itemIndex: number) => (
@@ -179,12 +178,13 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
                             ) => handleDateChange(e, status)}
                             onKeyDown={(e) => handleKeyDown(e, status)}
                             onBlur={handleBlur}
-                            variant="outlined"
+                            variant="standard"
                             size="small"
                             InputProps={{
                               inputComponent: InputMask as any,
+                              disableUnderline: true,
                             }}
-                            disabled={isUserTypeDisabled}
+                            disabled={isTypeDisabled}
                           />
                         ) : (
                           <span onClick={() => handleEditClick(item, status)}>
@@ -196,28 +196,32 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
                   )
                 ) : (
                   <TextField
-                    style={{ width: "80%" }}
+                    style={{
+                      width: "100%",
+                      textAlign: "center",
+                    }}
                     value={editedDates[status] || ""}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleDateChange(e, status)
                     }
                     onKeyDown={(e) => handleKeyDown(e, status)}
                     onBlur={handleBlur}
-                    variant="outlined"
+                    variant="standard"
                     size="small"
                     InputProps={{
                       inputComponent: InputMask as any,
+                      disableUnderline: true,
                     }}
-                    disabled={isUserTypeDisabled}
+                    disabled={isTypeDisabled}
                   />
                 )}
               </td>
-              <td>
+              <td style={{ textAlign: "center", padding: "10px" }}>
                 {filteredItems.length > 0 && (
                   <span>{filteredItems[0].histories.marking_action_date}</span>
                 )}
               </td>
-              <td>
+              <td style={{ textAlign: "center", padding: "10px" }}>
                 {filteredItems.length > 0 && (
                   <span>{filteredItems[0].histories.responsible_action}</span>
                 )}
