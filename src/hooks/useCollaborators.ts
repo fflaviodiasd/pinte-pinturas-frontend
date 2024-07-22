@@ -263,10 +263,13 @@ export const useCollaborators = () => {
   const getAllCollaborators = async (currentPage: number = 0) => {
     setLoading(true);
     const offset = (currentPage - 1) * LIMIT;
-    let endpoint = `companies/${user.company}/employees/?disabled=false&limit=${LIMIT}&offset=${offset}`;
+
+    let endpoint;
 
     if (user.type === 7 || user.type === 9) {
       endpoint = `customers/${user.companyCustomerId}/company_employees/`;
+    } else {
+      endpoint = `companies/${user.company}/employees/?disabled=false&limit=${LIMIT}&offset=${offset}`;
     }
 
     console.log(endpoint);
@@ -284,7 +287,8 @@ export const useCollaborators = () => {
         id: result.id,
         active: result.active,
         avatar: result.avatar,
-        name: result.name,
+        name:
+          user.type === 7 || user.type === 9 ? result.name : result.full_name,
         cellPhone: result.cell_phone,
         role: result.office,
         profile: result.profile,
