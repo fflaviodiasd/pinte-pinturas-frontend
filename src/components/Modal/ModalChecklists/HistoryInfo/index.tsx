@@ -33,8 +33,7 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
 
   const { user } = useContext(UserContext);
 
-  const isUserTypeDisabled =
-    user.type === 7 || user.type === 8 || user.type === 9;
+  const isTypeDisabled = user.type === 7 || user.type === 8 || user.type === 9;
 
   const getChecklistsHistories = useCallback(async () => {
     try {
@@ -179,12 +178,13 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
                             ) => handleDateChange(e, status)}
                             onKeyDown={(e) => handleKeyDown(e, status)}
                             onBlur={handleBlur}
-                            variant="outlined"
+                            variant="standard"
                             size="small"
                             InputProps={{
                               inputComponent: InputMask as any,
+                              disableUnderline: true,
                             }}
-                            disabled={isUserTypeDisabled}
+                            disabled={isTypeDisabled}
                           />
                         ) : (
                           <span onClick={() => handleEditClick(item, status)}>
@@ -196,19 +196,22 @@ export function HistoryInfo({ checklistId }: HistoryInfoProps) {
                   )
                 ) : (
                   <TextField
-                    style={{ width: "80%" }}
+                    style={{
+                      width: "80%",
+                    }}
                     value={editedDates[status] || ""}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleDateChange(e, status)
                     }
                     onKeyDown={(e) => handleKeyDown(e, status)}
                     onBlur={handleBlur}
-                    variant="outlined"
+                    variant="standard"
                     size="small"
                     InputProps={{
                       inputComponent: InputMask as any,
+                      disableUnderline: true,
                     }}
-                    disabled={isUserTypeDisabled}
+                    disabled={isTypeDisabled}
                   />
                 )}
               </td>
