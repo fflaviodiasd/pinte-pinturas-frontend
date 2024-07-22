@@ -40,8 +40,8 @@ type HandleChange = {
 export const EmployeesConstruction = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { id: constructionId , checklistid: checkListId} = useParams();
-  console.log("CHECKLISTID>>>>", checkListId)
+  const { id: constructionId, checklistid: checkListId } = useParams();
+  console.log("CHECKLISTID>>>>", checkListId);
   const isEditScreen = constructionId;
   const { classes } = useStyles();
 
@@ -274,7 +274,6 @@ const list = [
   { text: "Pacotes", path: "pacotes" },
   { text: "Equipes", path: "equipes" },
   { text: "Medições", path: "medicoes" },
-
 
   { text: "Dados Gerais", path: "dados-gerais" },
   { text: "Endereço", path: "endereco" },

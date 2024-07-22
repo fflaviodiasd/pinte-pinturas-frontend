@@ -6,6 +6,8 @@ import { InputMask } from "../../../../../components/InputMask";
 import { ConstructionRegister } from "../../../../../types";
 
 import { useStyles } from "../styles";
+import { UserContext } from "../../../../../contexts/UserContext";
+import { useContext } from "react";
 
 type AddressFormProps = {
   values: ConstructionRegister;
@@ -22,6 +24,10 @@ type AddressFormProps = {
 export const AddressForm = ({ values, handleChange }: AddressFormProps) => {
   const { classes } = useStyles();
 
+  const { user } = useContext(UserContext);
+
+  const isTypeDisabled = user.type === 7 || user.type === 8 || user.type === 9;
+
   return (
     <Grid container className={classes.formContainer}>
       <Grid item xs={12} lg={1} className={classes.fieldContainer}>
@@ -36,6 +42,7 @@ export const AddressForm = ({ values, handleChange }: AddressFormProps) => {
           InputProps={{
             inputComponent: InputMask as any,
           }}
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={1} className={classes.fieldContainer}>
@@ -47,6 +54,7 @@ export const AddressForm = ({ values, handleChange }: AddressFormProps) => {
           variant="outlined"
           size="small"
           fullWidth
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={5} className={classes.fieldContainer}>
@@ -58,6 +66,7 @@ export const AddressForm = ({ values, handleChange }: AddressFormProps) => {
           variant="outlined"
           size="small"
           fullWidth
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={5} className={classes.fieldContainer}>
@@ -69,6 +78,7 @@ export const AddressForm = ({ values, handleChange }: AddressFormProps) => {
           variant="outlined"
           size="small"
           fullWidth
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={4} className={classes.fieldContainer}>
@@ -80,6 +90,7 @@ export const AddressForm = ({ values, handleChange }: AddressFormProps) => {
           variant="outlined"
           size="small"
           fullWidth
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={6} className={classes.fieldContainer}>
@@ -91,6 +102,7 @@ export const AddressForm = ({ values, handleChange }: AddressFormProps) => {
           variant="outlined"
           size="small"
           fullWidth
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={2} className={classes.fieldContainer}>
@@ -105,6 +117,7 @@ export const AddressForm = ({ values, handleChange }: AddressFormProps) => {
           InputProps={{
             inputComponent: NumberInput as any,
           }}
+          disabled={isTypeDisabled}
         />
       </Grid>
     </Grid>

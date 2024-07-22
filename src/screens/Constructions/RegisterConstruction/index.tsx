@@ -254,7 +254,7 @@ export const RegisterConstruction = () => {
                     />
                   </>
                 ) : (
-                  list?.map((tab) => (
+                  list?.map((tab: any) => (
                     <Tab
                       key={tab.text}
                       text={tab.text}

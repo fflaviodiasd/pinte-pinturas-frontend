@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import {
   Grid,
   TextField,
@@ -18,6 +18,7 @@ import { SelectClientComponent } from "../../../../../components/Select/Client";
 import { InputMask } from "../../../../../components/InputMask";
 
 import { useStyles } from "../styles";
+import { UserContext } from "../../../../../contexts/UserContext";
 
 type GeneralDataFormProps = {
   values: ConstructionRegister;
@@ -37,6 +38,10 @@ export const GeneralDataForm = ({
 }: GeneralDataFormProps) => {
   const { classes } = useStyles();
 
+  const { user } = useContext(UserContext);
+
+  const isTypeDisabled = user.type === 7 || user.type === 8 || user.type === 9;
+
   const { listCompanyClients, getAllCompanyClients } = useConstructions();
 
   useEffect(() => {
@@ -55,6 +60,7 @@ export const GeneralDataForm = ({
           size="small"
           fullWidth
           required
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={5} className={classes.fieldContainer}>
@@ -62,6 +68,7 @@ export const GeneralDataForm = ({
           name="customer"
           label="Cliente"
           options={listCompanyClients}
+          disabled={isTypeDisabled}
         />
       </Grid>
 
@@ -77,6 +84,7 @@ export const GeneralDataForm = ({
           InputProps={{
             inputComponent: InputMask as any,
           }}
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={4} className={classes.fieldContainer}>
@@ -89,6 +97,7 @@ export const GeneralDataForm = ({
           size="small"
           fullWidth
           required
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={3} className={classes.fieldContainer}>
@@ -104,6 +113,7 @@ export const GeneralDataForm = ({
           InputProps={{
             inputComponent: InputMask as any,
           }}
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={2} className={classes.fieldContainer}>
@@ -116,6 +126,7 @@ export const GeneralDataForm = ({
           size="small"
           fullWidth
           required
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={3} className={classes.fieldContainer}>
@@ -129,6 +140,7 @@ export const GeneralDataForm = ({
           fullWidth
           required
           type="email"
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={2} className={classes.fieldContainer}>
@@ -141,6 +153,7 @@ export const GeneralDataForm = ({
           size="small"
           fullWidth
           required
+          disabled={isTypeDisabled}
         />
       </Grid>
       <Grid item xs={12} lg={2} className={classes.fieldContainer}>
@@ -152,6 +165,7 @@ export const GeneralDataForm = ({
           variant="outlined"
           size="small"
           fullWidth
+          disabled={isTypeDisabled}
         />
       </Grid>
 
@@ -162,6 +176,7 @@ export const GeneralDataForm = ({
           name="active"
           checked={values.active}
           onChange={handleChange}
+          disabled={isTypeDisabled}
         />
       </Grid>
     </Grid>
