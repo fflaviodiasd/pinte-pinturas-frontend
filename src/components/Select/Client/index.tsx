@@ -11,6 +11,7 @@ interface SelectClientComponentProps {
   name: string;
   error?: string;
   options: CompanyClientItem[];
+  disabled?: any;
 }
 
 export const SelectClientComponent = ({
@@ -18,6 +19,7 @@ export const SelectClientComponent = ({
   name,
   options,
   error,
+  disabled,
 }: SelectClientComponentProps) => {
   const [field] = useField(name);
 
@@ -27,6 +29,7 @@ export const SelectClientComponent = ({
       error={Boolean(error)}
       variant="outlined"
       size="small"
+      disabled={disabled}
     >
       <InputLabel id={`${name}-label`}>{label}</InputLabel>
       <Select labelId={`${name}-label`} id={name} {...field} label={label}>
