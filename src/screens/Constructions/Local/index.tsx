@@ -62,7 +62,7 @@ const Locations = () => {
   const [dynamicColumns, setDynamicColumns] = useState<
     CustomMRT_ColumnDef<any>[]
   >([]);
-  const { id, checklistid: checkListId  } = useParams();
+  const { id, checklistid: checkListId } = useParams();
 
   const {
     listConstructionsLocations,
@@ -92,7 +92,7 @@ const Locations = () => {
 
   const [selectAllChecked, setSelectAllChecked] = useState(false);
 
-  console.log(listConstructionsLocations)
+  console.log(listConstructionsLocations);
 
   const handleSelectAll = () => {
     if (selectAllChecked) {
@@ -196,12 +196,14 @@ const Locations = () => {
                   : null;
               }
               useEffect(() => {
-                if(checkListId == row?.original?.code){
-                  table.setExpanded({ [row?.original?.code]: !row.getIsExpanded() });
+                if (checkListId == row?.original?.code) {
+                  table.setExpanded({
+                    [row?.original?.code]: !row.getIsExpanded(),
+                  });
                   setOpen(true);
                 }
-              }, [])
-              console.log(row?.original?.code)
+              }, []);
+              console.log(row?.original?.code);
               return (
                 <div>
                   <a href="#" onClick={() => handleLinkClick(row)}>
@@ -450,9 +452,6 @@ const Locations = () => {
           listConstructionsLocations.length - 1
         ]?.code.slice(-2)
       );
-      console.log("último item", lastItem);
-      console.log("lista de construções", listConstructionsLocations);
-
       const code = generateNextId(listConstructionsLocations.length + i + 1);
       const control: Record<string, any> = {};
       dynamicColumns.forEach((column, index) => {
@@ -462,7 +461,13 @@ const Locations = () => {
         }
       });
 
-      const newLine = { checklist: 0, code: code, id: null, ...control };
+      const newLine = {
+        checklist: 0,
+        code: code,
+        id: null,
+        multi: numLines > 1 ? true : false,
+        ...control,
+      };
       newLines.push(newLine);
     }
     // Adiciona as novas linhas de uma vez
@@ -698,6 +703,9 @@ const Locations = () => {
         className += " selected-row-paste";
       }
       if (row.original.edit) {
+        className += " selected-row-edit";
+      }
+      if (row.original.multi) {
         className += " selected-row-edit";
       }
 
