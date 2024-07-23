@@ -105,32 +105,32 @@ export function Layout(){
         colorScale: {
           ranges: [
             {
-              from: 0,
-              to: 0,
+              from: 1,
+              to: 1,
               color: '#F44336', // Não Liberado (vermelho)
               name: 'Não Liberado'
             },
             {
-              from: 1,
-              to: 1,
+              from: 2,
+              to: 2,
               color: '#FF9800', // Liberado (amarelo)
               name: 'Liberado'
             },
             {
-              from: 2,
-              to: 2,
+              from: 3,
+              to: 3,
               color: '#4CAF50', // Iniciado (verde)
               name: 'Iniciado'
             },
             {
-              from: 3,
-              to: 3,
+              from: 4,
+              to: 4,
               color: '#2196F3', // Finalizado (azul)
               name: 'Finalizado'
             },
             {
-              from: 4,
-              to: 4,
+              from: 5,
+              to: 5,
               color: '#673AB7', // Entregue (roxo)
               name: 'Entregue'
             }
