@@ -70,7 +70,7 @@ export default function AccordionChecklists({ localId }: any) {
           onChange={() => handleAccordionChange(index)}
           sx={{ marginBottom: "1rem" }}
         >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <AccordionSummary expandIcon={expandAll ? null : <ExpandMoreIcon />}>
             <div
               style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
             >
