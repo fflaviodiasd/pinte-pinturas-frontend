@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -10,7 +10,8 @@ import { api } from "../../../../services/api";
 export default function AccordionChecklists({ localId }: any) {
   const [checklistName, setChecklistName] = useState([]);
   const [area, setArea] = useState("");
-  const [expanded, setExpanded] = useState(false);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [expandAll, setExpandAll] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,7 +26,7 @@ export default function AccordionChecklists({ localId }: any) {
     };
 
     fetchData();
-  }, []);
+  }, [localId]);
 
   const STATUS_COLORS: { [key: string]: string } = {
     "NÃO LIBERADA": "#F44336",
@@ -33,6 +34,21 @@ export default function AccordionChecklists({ localId }: any) {
     INICIADA: "#4CAF50",
     FINALIZADA: "#2196F3",
     ENTREGUE: "#512DA8",
+  };
+
+  const handleAccordionChange = (index: number) => {
+    if (expandedIndex === index) {
+      setExpandedIndex(null);
+    } else {
+      setExpandedIndex(index);
+    }
+  };
+
+  const toggleExpandAll = () => {
+    setExpandAll(!expandAll);
+    if (!expandAll) {
+      setExpandedIndex(null);
+    }
   };
 
   return (
@@ -43,16 +59,16 @@ export default function AccordionChecklists({ localId }: any) {
           border: "none",
           backgroundColor: "#FFFFFF",
         }}
-        onClick={() => setExpanded(!expanded)}
+        onClick={toggleExpandAll}
       >
-        {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        {expandAll ? <ExpandLessIcon /> : <ExpandMoreIcon />}
       </button>
       {checklistName.map((item: any, index) => (
         <Accordion
-          expanded={expanded}
-          onChange={() => setExpanded(!expanded)}
-          sx={{ marginBottom: "1rem" }}
           key={item.id}
+          expanded={expandAll || expandedIndex === index}
+          onChange={() => handleAccordionChange(index)}
+          sx={{ marginBottom: "1rem" }}
         >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <div
