@@ -546,6 +546,7 @@ export const useConstructions = () => {
     customer: string;
     supervisor: string;
     execution: number;
+    url_board_trello: string;
   };
 
   const [listConstructions, setListConstructions] = useState<
@@ -575,6 +576,7 @@ export const useConstructions = () => {
           customer: construction.customer || "",
           supervisor: construction.supervisor || "",
           execution: construction.execution || 0,
+          url_board_trello: construction.url_board_trello || ""
         })
       );
 
