@@ -45,6 +45,7 @@ import "./style.css";
 import { successMessage } from "../../../components/Messages";
 import { EmptyTableText } from "../../../components/Table/EmptyTableText";
 import { UserContext } from "../../../contexts/UserContext";
+import { MeasurementsContext } from "../../../contexts/MeasurementsContext";
 
 const queryClient = new QueryClient();
 
@@ -67,7 +68,9 @@ const Locations = () => {
   const {
     listConstructionsLocations,
     getAllConstructionsLocations,
+    listConstructions,
     addConstructionLocal,
+    getAllConstructions,
     disableConstructionLocal,
     setListConstructionsLocations,
   } = useConstructions();
@@ -88,11 +91,10 @@ const Locations = () => {
   const [listCheckedPaste, setListCheckedPaste] = useState<any[]>([]);
   const [paste, setPaste] = useState<any>();
   const [open, setOpen] = useState<any>();
+  const [ListConstructionsUrl, setListConstructions] = useState<any>(null);
   const { user } = useContext(UserContext);
-
+  
   const [selectAllChecked, setSelectAllChecked] = useState(false);
-
-  console.log(listConstructionsLocations);
 
   const handleSelectAll = () => {
     if (selectAllChecked) {
@@ -141,6 +143,10 @@ const Locations = () => {
       setIsLoaded(true);
     }
   }, [dynamicColumns]);
+
+  useEffect(() => {
+    getAllConstructions();
+  }, []);
 
   const [pendingUpdates, setPendingUpdates] = useState<any>([]);
 
@@ -625,6 +631,21 @@ const Locations = () => {
             iamento
           </Typography>
           <div style={{ display: "flex", gap: "0.5rem" }}>
+            <Button
+                variant="contained"
+                style={{
+                  textTransform: "capitalize",
+                  fontFamily: "Open Sans",
+                  marginRight: "2rem",
+                  fontWeight: 600,
+                  height: "60%",
+                  backgroundColor: "#0076BE",
+                  color: "#FFFFFF",
+                }}
+                onClick={() => window.open(listConstructions.filter((idConstruction) => idConstruction.id === parseInt(id))[0].url_board_trello)}
+              >
+                Dashboard Trello
+              </Button>
             <SelectLine
               addNewLine={addNewLine}
               button={

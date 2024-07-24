@@ -145,6 +145,7 @@ const MeasurementsContextProvider = ({
       const constructionList = data.map((construction: any) => ({
         id: construction.id,
         name: construction.fantasy_name,
+        url_board_trello: construction.url_board_trello
       }));
       // console.log("constructionList", constructionList);
       setListConstructions(constructionList);
