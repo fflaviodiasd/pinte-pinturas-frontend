@@ -14,10 +14,18 @@ $ cp example.env .env
 $
 $ # Instalação dos pacotes
 $ # Pode usar yarn ou npm
+$ # Se npm
 $ npm install
+$ 
+$ # Se yarn
+$ yarn
 $
 $ # Inicie a aplicação (development mode)
+$ # Se npm
 $ npm run dev
+$
+$ # Se yarn
+$ yarn dev
 $
 $ # Acesse a aplicação web no navegador: http://localhost:5173/
 ```
