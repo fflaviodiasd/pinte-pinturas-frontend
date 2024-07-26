@@ -47,7 +47,8 @@ export function Layout(){
         const name = w.globals.initialSeries[seriesIndex].data[dataPointIndex].nome;
         const inicio = w.globals.initialSeries[seriesIndex].data[dataPointIndex].inicio;
         const final = w.globals.initialSeries[seriesIndex].data[dataPointIndex].final;
-
+        const pacote = w.globals.initialSeries[seriesIndex].name;
+        
         function formatDate(date: string){
           const data = new Date(date);
   
@@ -66,7 +67,8 @@ export function Layout(){
         
         const content = `
           <div class="custom-tooltip">
-            <div class="tooltip-title">Nome: <strong>${name || ""}</strong></div>
+            <div>Nome: <strong>${name || ""}</strong></div>
+            <div class="tooltip-title">Pacote: <strong>${pacote || ""}</strong></div>
             <div class="tooltip-content">
               <div>Inicio: <strong>${inicio || ""}</strong> ${autoinicio || ""}</div>
               <div>Termino: <strong>${final || ""}</strong> ${autofinal || ""}</div>
