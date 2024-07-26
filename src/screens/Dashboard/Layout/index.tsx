@@ -47,7 +47,7 @@ export function Layout(){
         const name = w.globals.initialSeries[seriesIndex].data[dataPointIndex].nome;
         const inicio = w.globals.initialSeries[seriesIndex].data[dataPointIndex].inicio;
         const final = w.globals.initialSeries[seriesIndex].data[dataPointIndex].final;
-        const pacote = w.globals.initialSeries[seriesIndex].name;
+        const pacote = w.globals.initialSeries[seriesIndex].data[dataPointIndex].pacote;
         
         function formatDate(date: string){
           const data = new Date(date);
