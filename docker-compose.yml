@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  pinte-pinturas-web:
+    build:
+      context: .
+    container_name: pinte-pinturas-web
+    ports:
+      - "80:80"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env.stage
+    environment:
+      - NGINX_PORT=80
