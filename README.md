@@ -1,52 +1,147 @@
-# Projeto Pinte Pinturas
+# Pinte Pinturas FrontEnd
 
-React + TypeScript + Vite
+![ReactJS](https://img.shields.io/badge/reactJS-3670A0?style=for-the-badge&logo=react)
+![Socket.io](https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101)
 
-## ✨ Como Executar Localmente
-```bash
-$ # Clone ou descompacte o código
-$ git clone https://gitlab.sfiec.org.br/senai-istemm/pinte-pinturas/pinte-pinturas-frontend
-$ cd pinte-pinturas-frontend
-$
-$ # Substitua o arquivo example.env por .env e atualize os valores das variáveis de acordo com suas configurações.
-$ # Exemplo: VITE_APP_API="http://<ip-da-maquina>:8080/api"
-$ cp example.env .env
-$
-$ # Instalação dos pacotes
-$ # Pode usar yarn ou npm
-$ # Se npm
-$ npm install
-$ 
-$ # Se yarn
-$ yarn
-$
-$ # Inicie a aplicação (development mode)
-$ # Se npm
-$ npm run dev
-$
-$ # Se yarn
-$ yarn dev
-$
-$ # Acesse a aplicação web no navegador: http://localhost:5173/
+Aplicação Web de gestão de serviços da construção civil, com aplicação de Computação em Nuvem e Big Data e foco
+inicial nos serviços de pinturas de obras.
+
+## Tecnologias
+
+Esse projeto foi desenvolvido com as seguintes tecnologias:
+
+- [Material UI](https://mui.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Material React Table](https://www.material-react-table.com/)
+- [ApexCharts](https://apexcharts.com/react-chart-demos/)
+- [Styled-Components](https://styled-components.com/)
+- [ReactJS](https://pt-br.reactjs.org/)
+- [Socket.IO](https://socket.io/docs/v4/)
+
+## Requisitos
+
+### 1 - Node 20.0
+```
+sudo apt update -y
+
+sudo apt upgrade -y
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+nvm install 20
+```
+### 2 - Git
+
+```
+sudo apt-get update && sudo apt upgrade
+
+sudo apt install git -y
+
+git --version
 ```
 
-> Nota: Para utilizar o aplicativo corretamente é necessário ter o backend em execução.
+## 💻 Como Executar Localmente
 
-<br />
+### 1 - Clone ou descompacte o código
 
-## ✨ Como Executar no Docker
+```
+git clone https://gitlab.sfiec.org.br/senai-istemm/pinte-pinturas/pinte-pinturas-frontend.git
+```
 
-1. Clone ou descompacte o código-fonte
-1. Substitua o arquivo `example.env` por `.env` e atualize os valores das variáveis de acordo com suas configurações. Exemplo: VITE_APP_API="http://<ip-da-maquina>:8080/api"
-1. Execute os containers com o seguinte comando:
- 
-    ```bash
-    # Usando o arquivo docker-compose padrão
-    docker-compose up -d --build
-    ```
-1. Após finalizar o processo de instalação, o sistema estará disponível para acessar no navegador.
+### 2 - Navegue até a pasta
 
-<br />
+```
+cd pinte-pinturas-frontend/
 
+npm install
 
+npm run dev
+```
 
+### 4 - Crie o arquivo .env
+
+```
+touch .env
+```
+
+## 📂 Estrutura Base do Projeto
+
+O projeto foi codificado usando a estrutura apresentada abaixo.
+
+```
+│
+├── public/
+│   └── icon.ico
+│
+├── src/
+│   ├── assets/
+│   │   └── images/
+│   ├── components/
+│   │   ├── AppLayout/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.ts
+│   │   ├── Button/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.ts
+│   │   └── Sidebar/
+│   │       ├── index.tsx
+│   │       └── styles.ts
+│   ├── contexts/
+│   ├── hooks/
+│   ├── pages/
+│   │   ├── Login/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.ts
+│   │   ├── RecoverPasswd/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.ts
+│   │   └── ResetPasswd/
+│   │       ├── index.tsx
+│   │       └── styles.ts
+│   ├── routes/
+│   │   ├── app.routes.tsx
+│   │   ├── auth.routes.tsx
+│   │   └── index.tsx
+│   ├── screens/
+│   │   ├── Appointments/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.ts
+│   │   ├── Clients/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.ts
+│   │   ├── Collaborators/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.ts
+│   │   ├── Constructions/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.ts
+│   │   ├── Dashboard/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.ts
+│   │   ├── Home/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.ts
+│   │   ├── Materials/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.ts
+│   │   ├── Measurements/
+│   │   │   ├── index.tsx
+│   │   │   └── styles.ts
+│   │   └── Settings/
+│   │       └── index.tsx
+│   ├── Service/
+│   │   └── index.tsx
+│   ├── types/
+│   │   └── index.tsx
+│   ├── utils/
+│   │   └── index.tsx
+│   ├── App.js
+│   ├── App.css
+│   ├── index.js
+│   └── serviceWorker.js
+│
+├── .gitignore
+├── package.json
+├── README.md
+└── yarn.lock
+```
