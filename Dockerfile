@@ -32,4 +32,4 @@ WORKDIR /usr/share/nginx/html
 COPY /.nginx/templates/nginx.conf.template  /etc/nginx/templates/nginx.conf.template 
 COPY --from=build /app/build /usr/share/nginx/html
 
-CMD ["/bin/sh" , "-c" , "envsubst '$NGINX_PORT' < /etc/nginx/templates/nginx.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"]
+CMD ["/bin/sh" , "-c" , "envsubst '$PORT' < /etc/nginx/templates/nginx.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"]
