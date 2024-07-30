@@ -3,3 +3,6 @@ build:
     web: Dockerfile
   config:
     NGINX_PORT: 80
+
+run:
+  web: serve -s build
