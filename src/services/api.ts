@@ -8,7 +8,7 @@ import {
 
 const baseApiURL = () => {
   if (process.env.NODE_ENV === "production") {
-    return import.meta.env.VITE_APP_API;
+    return "https://pinte-pinturas-d0510d5ca892.herokuapp.com/api/";
   }
   return import.meta.env.VITE_APP_API;
 };
