@@ -8,7 +8,7 @@ import {
 
 const baseApiURL = () => {
   if (process.env.NODE_ENV === "production") {
-    return "https://pinte4.herokuapp.com/api/";
+    return import.meta.env.VITE_APP_API;
   }
   return import.meta.env.VITE_APP_API;
 };
